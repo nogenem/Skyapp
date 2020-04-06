@@ -1,0 +1,13 @@
+{
+  "git.enabled": true,
+  "eslint.workingDirectories": [
+    {
+      "directory": "client-react",
+      "changeProcessCWD": true
+    },
+    {
+      "directory": "server-node",
+      "changeProcessCWD": true
+    }
+  ]
+}
