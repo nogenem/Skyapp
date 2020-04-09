@@ -13,16 +13,15 @@ const connector = connect(mapStateToProps);
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
 const defaultProps = {
-  // ownProps
   isPrivate: false
 };
 
-type OwnProps = {
+interface OwnProps {
   children: React.ReactNode;
-};
-type MyProps = OwnProps & typeof defaultProps & PropsFromRedux;
+}
+export type Props = OwnProps & typeof defaultProps & PropsFromRedux;
 
-const Router = ({ isPrivate, isAuthenticated, children }: MyProps) => {
+const Router = ({ isPrivate, isAuthenticated, children }: Props) => {
   if ((isPrivate && !isAuthenticated) || (!isPrivate && isAuthenticated))
     return <div />;
   return (

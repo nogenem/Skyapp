@@ -1,7 +1,5 @@
 import React from "react";
 
-import PropTypes from "prop-types";
-
 import Spinner from "../Spinner";
 
 interface IErrors {
@@ -12,25 +10,29 @@ interface IData {
   [x: string]: any;
 }
 
-export interface OwnState {
-  loading: boolean;
-  errors: IErrors;
-}
-
 interface IGetInputByName {
   (name: string): HTMLInputElement;
 }
 
-export interface OwnProps {
-  id: string;
+interface OwnState {
+  loading: boolean;
+  errors: IErrors;
+}
+export type State = OwnState;
+
+const defaultProps = {
+  id: "",
+  validate: (data: IData): IErrors => ({}),
+  resetData: (getInputByName: IGetInputByName) => {}
+};
+interface OwnProps {
   getData: (getInputByName: IGetInputByName) => IData;
-  resetData: (getInputByName: IGetInputByName) => void;
-  validate: (data: IData) => IErrors;
   submit: (data: IData) => Promise<void>;
   render: (state: OwnState) => React.ReactNode;
 }
+export type Props = OwnProps & typeof defaultProps;
 
-const initialState = {
+const initialState: State = {
   loading: false,
   errors: {}
 };
@@ -38,16 +40,9 @@ const initialState = {
 const getId = (id: string) =>
   id || `sky-form-${Math.floor(Math.random() * 100000)}`;
 
-const Form = ({
-  id,
-  getData,
-  resetData,
-  validate,
-  submit,
-  render
-}: OwnProps) => {
+const Form = ({ id, getData, resetData, validate, submit, render }: Props) => {
   const [formId, setFormId] = React.useState(getId(id));
-  const [state, setState] = React.useState<OwnState>(initialState);
+  const [state, setState] = React.useState<State>(initialState);
   const isMounted = React.useRef(false);
 
   React.useEffect(() => {
@@ -108,21 +103,6 @@ const Form = ({
   );
 };
 
-Form.propTypes = {
-  // ownProps
-  id: PropTypes.string,
-  validate: PropTypes.func,
-  render: PropTypes.func.isRequired,
-  getData: PropTypes.func.isRequired,
-  resetData: PropTypes.func.isRequired,
-  submit: PropTypes.func.isRequired
-};
-
-Form.defaultProps = {
-  // ownProps
-  id: "",
-  validate: () => ({}),
-  resetData: () => {}
-};
+Form.defaultProps = defaultProps;
 
 export default Form;

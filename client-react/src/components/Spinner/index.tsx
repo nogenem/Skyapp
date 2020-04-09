@@ -1,16 +1,18 @@
 import React from "react";
 
 import { CircularProgress, CircularProgressProps } from "@material-ui/core";
-import PropTypes from "prop-types";
 
 import useStyles from "./useStyles";
 
-interface OwnProps extends CircularProgressProps {
-  show: boolean;
-  containerStyle?: React.CSSProperties;
-}
+const defaultProps = {
+  show: false,
+  containerStyle: {} as React.CSSProperties
+};
 
-const Spinner = ({ show, containerStyle, ...props }: OwnProps) => {
+interface OwnProps extends CircularProgressProps {}
+export type Props = OwnProps & typeof defaultProps;
+
+const Spinner = ({ show, containerStyle, ...props }: Props) => {
   const classes = useStyles();
 
   if (!show) return null;
@@ -25,16 +27,6 @@ const Spinner = ({ show, containerStyle, ...props }: OwnProps) => {
   );
 };
 
-Spinner.propTypes = {
-  // ownProps
-  show: PropTypes.bool,
-  containerStyle: PropTypes.object
-};
-
-Spinner.defaultProps = {
-  // ownProps
-  show: false,
-  containerStyle: {}
-};
+Spinner.defaultProps = defaultProps;
 
 export default Spinner;

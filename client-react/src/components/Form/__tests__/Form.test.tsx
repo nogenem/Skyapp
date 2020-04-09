@@ -6,9 +6,9 @@ import {
   waitForElementToBeRemoved
 } from "@testing-library/react";
 
-import Form, { OwnState, OwnProps } from "../index";
+import Form, { State, Props } from "../index";
 
-const FormContent = ({ errors }: OwnState) => (
+const FormContent = ({ errors }: State) => (
   <>
     <input data-testid="nickname" name="nickname" type="text" />
     {errors.nickname ? <span role="alert">{errors.nickname}</span> : null}
@@ -18,7 +18,7 @@ const FormContent = ({ errors }: OwnState) => (
 
 describe("Form", () => {
   it("renders and works correctly", async () => {
-    const props: OwnProps = {
+    const props: Props = {
       id: "form",
       validate: jest.fn(() => ({})),
       render: jest.fn(FormContent),
@@ -54,7 +54,7 @@ describe("Form", () => {
   });
 
   it("passes the `validate`'s errors correctly", async () => {
-    const props: OwnProps = {
+    const props: Props = {
       id: "form",
       validate: jest.fn(() => ({ nickname: "Cant be blank" })),
       render: jest.fn(FormContent),
