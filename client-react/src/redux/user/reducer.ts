@@ -1,7 +1,11 @@
+import { createSelector } from "reselect";
+
+import { AppState } from "../store";
 import { UserAction, UserActions, UserState } from "./types";
 
 export const initialState: UserState = {
-  _id: ""
+  _id: "",
+  token: ""
 };
 
 export default function user(
@@ -17,3 +21,11 @@ export default function user(
       return state;
   }
 }
+
+// Selectors
+export const getUser = (state: AppState) => state.user || initialState;
+export const getId = createSelector(getUser, userData => userData._id || "");
+export const getToken = createSelector(
+  getUser,
+  userData => userData.token || ""
+);

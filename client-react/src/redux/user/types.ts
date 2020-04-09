@@ -1,5 +1,6 @@
 export interface User {
   _id: string;
+  token?: string;
 }
 
 export type UserState = User;
