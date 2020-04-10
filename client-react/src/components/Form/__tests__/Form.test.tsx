@@ -8,6 +8,10 @@ import {
 
 import Form, { State, Props } from "../index";
 
+interface ICredentials {
+  nickname: string;
+}
+
 const FormContent = ({ errors }: State) => (
   <>
     <input data-testid="nickname" name="nickname" type="text" />
@@ -18,7 +22,7 @@ const FormContent = ({ errors }: State) => (
 
 describe("Form", () => {
   it("renders and works correctly", async () => {
-    const props: Props = {
+    const props: Props<ICredentials> = {
       id: "form",
       validate: jest.fn(() => ({})),
       render: jest.fn(FormContent),
@@ -54,7 +58,7 @@ describe("Form", () => {
   });
 
   it("passes the `validate`'s errors correctly", async () => {
-    const props: Props = {
+    const props: Props<ICredentials> = {
       id: "form",
       validate: jest.fn(() => ({ nickname: "Cant be blank" })),
       render: jest.fn(FormContent),

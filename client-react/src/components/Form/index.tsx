@@ -2,15 +2,11 @@ import React from "react";
 
 import Spinner from "../Spinner";
 
-interface IErrors {
+export interface IErrors {
   [x: string]: string;
 }
 
-interface IData {
-  [x: string]: any;
-}
-
-interface IGetInputByName {
+export interface IGetInputByName {
   (name: string): HTMLInputElement;
 }
 
@@ -22,15 +18,15 @@ export type State = OwnState;
 
 const defaultProps = {
   id: "",
-  validate: (data: IData): IErrors => ({}),
   resetData: (getInputByName: IGetInputByName) => {}
 };
-interface OwnProps {
-  getData: (getInputByName: IGetInputByName) => IData;
-  submit: (data: IData) => Promise<void>;
+interface OwnProps<D> {
+  getData: (getInputByName: IGetInputByName) => D;
+  submit: (data: D) => Promise<void>;
   render: (state: OwnState) => React.ReactNode;
+  validate: (data: D) => IErrors;
 }
-export type Props = OwnProps & typeof defaultProps;
+export type Props<D> = OwnProps<D> & typeof defaultProps;
 
 const initialState: State = {
   loading: false,
@@ -40,7 +36,14 @@ const initialState: State = {
 const getId = (id: string) =>
   id || `sky-form-${Math.floor(Math.random() * 100000)}`;
 
-const Form = ({ id, getData, resetData, validate, submit, render }: Props) => {
+function Form<D>({
+  id,
+  getData,
+  resetData,
+  validate,
+  submit,
+  render
+}: Props<D>) {
   const [formId, setFormId] = React.useState(getId(id));
   const [state, setState] = React.useState<State>(initialState);
   const isMounted = React.useRef(false);
@@ -101,7 +104,7 @@ const Form = ({ id, getData, resetData, validate, submit, render }: Props) => {
       <Spinner show={state.loading} size="4rem" />
     </>
   );
-};
+}
 
 Form.defaultProps = defaultProps;
 
