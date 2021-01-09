@@ -46,7 +46,7 @@ describe('Form', () => {
     fireEvent.click(getByText(/submit/i));
 
     await waitForElementToBeRemoved(() => queryByTestId(/spinner_div/i), {
-      container,
+      container: container as HTMLElement,
     }); // wait for the Spinner to disappear
 
     expect(props.getData).toHaveBeenCalledTimes(1);

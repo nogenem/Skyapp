@@ -45,6 +45,7 @@ exports[`SignupPage renders correctly 1`] = `
             >
               Nickname
               <span
+                aria-hidden="true"
                 class="MuiFormLabel-asterisk MuiInputLabel-asterisk"
               >
                  
@@ -66,10 +67,10 @@ exports[`SignupPage renders correctly 1`] = `
               />
               <fieldset
                 aria-hidden="true"
-                class="PrivateNotchedOutline-root-213 MuiOutlinedInput-notchedOutline"
+                class="PrivateNotchedOutline-root-6 MuiOutlinedInput-notchedOutline"
               >
                 <legend
-                  class="PrivateNotchedOutline-legendLabelled-215"
+                  class="PrivateNotchedOutline-legendLabelled-8"
                 >
                   <span>
                     Nickname
@@ -90,6 +91,7 @@ exports[`SignupPage renders correctly 1`] = `
             >
               Email
               <span
+                aria-hidden="true"
                 class="MuiFormLabel-asterisk MuiInputLabel-asterisk"
               >
                  
@@ -111,10 +113,10 @@ exports[`SignupPage renders correctly 1`] = `
               />
               <fieldset
                 aria-hidden="true"
-                class="PrivateNotchedOutline-root-213 MuiOutlinedInput-notchedOutline"
+                class="PrivateNotchedOutline-root-6 MuiOutlinedInput-notchedOutline"
               >
                 <legend
-                  class="PrivateNotchedOutline-legendLabelled-215"
+                  class="PrivateNotchedOutline-legendLabelled-8"
                 >
                   <span>
                     Email
@@ -135,6 +137,7 @@ exports[`SignupPage renders correctly 1`] = `
             >
               Password
               <span
+                aria-hidden="true"
                 class="MuiFormLabel-asterisk MuiInputLabel-asterisk"
               >
                  
@@ -156,10 +159,10 @@ exports[`SignupPage renders correctly 1`] = `
               />
               <fieldset
                 aria-hidden="true"
-                class="PrivateNotchedOutline-root-213 MuiOutlinedInput-notchedOutline"
+                class="PrivateNotchedOutline-root-6 MuiOutlinedInput-notchedOutline"
               >
                 <legend
-                  class="PrivateNotchedOutline-legendLabelled-215"
+                  class="PrivateNotchedOutline-legendLabelled-8"
                 >
                   <span>
                     Password
@@ -180,6 +183,7 @@ exports[`SignupPage renders correctly 1`] = `
             >
               Password Confirmation
               <span
+                aria-hidden="true"
                 class="MuiFormLabel-asterisk MuiInputLabel-asterisk"
               >
                  
@@ -201,10 +205,10 @@ exports[`SignupPage renders correctly 1`] = `
               />
               <fieldset
                 aria-hidden="true"
-                class="PrivateNotchedOutline-root-213 MuiOutlinedInput-notchedOutline"
+                class="PrivateNotchedOutline-root-6 MuiOutlinedInput-notchedOutline"
               >
                 <legend
-                  class="PrivateNotchedOutline-legendLabelled-215"
+                  class="PrivateNotchedOutline-legendLabelled-8"
                 >
                   <span>
                     Password Confirmation
@@ -215,7 +219,7 @@ exports[`SignupPage renders correctly 1`] = `
             </div>
           </div>
           <button
-            class="MuiButtonBase-root MuiButton-root MuiButton-contained makeStyles-submit-154 MuiButton-containedPrimary MuiButton-fullWidth"
+            class="MuiButtonBase-root MuiButton-root MuiButton-contained makeStyles-submit-5 MuiButton-containedPrimary MuiButton-fullWidth"
             tabindex="0"
             type="submit"
           >
