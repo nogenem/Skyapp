@@ -62,10 +62,10 @@ function Form<D>({
   }, [id]);
 
   const getInputByName: IGetInputByName = name =>
-    document.querySelector(`#${id} input[name="${name}"]`) as HTMLInputElement;
+    document.querySelector(`#${formId} input[name="${name}"]`) as HTMLInputElement;
 
   const focusOnFirstInput = () => {
-    const el = document.querySelector(`#${id} input[name]`) as HTMLElement;
+    const el = document.querySelector(`#${formId} input[name]`) as HTMLElement;
     if (el) el.focus();
   };
 
