@@ -66,7 +66,7 @@ const Signup = ({ signup }: Props) => {
                 component={ReachLink}
                 to="/signin"
               >
-                {"Already have an account? Sign In"}
+                Sign In
               </Link>
             </Grid>
           </Grid>
