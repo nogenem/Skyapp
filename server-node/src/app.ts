@@ -17,7 +17,6 @@ class AppController {
 
   generalMiddlewares(): void {
     this.app.use(cors());
-    this.app.options('*', cors());
     this.app.use(bodyParser.json());
   }
 

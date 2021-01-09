@@ -1,3 +1,5 @@
+import dotenv from 'dotenv';
+
 const envs: { [env: string]: string } = {
   test: '.env.test',
   dev: '.env.dev',
@@ -6,7 +8,7 @@ const envs: { [env: string]: string } = {
   production: '.env.prod',
 };
 const env: string = process.env.NODE_ENV || 'dev';
-require('dotenv').config({
+dotenv.config({
   path: envs[env],
 });
 
