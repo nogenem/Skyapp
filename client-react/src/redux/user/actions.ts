@@ -1,4 +1,4 @@
-import { Dispatch } from "redux";
+import { Dispatch } from 'redux';
 
 export const signin = () => (dispatch: Dispatch) => {};
 
@@ -9,5 +9,5 @@ export interface ICredentials {
   password_confirmation: string;
 }
 export const signup = (credentials: ICredentials) => (dispatch: Dispatch) => {
-  console.log("credentials", credentials);
+  console.log('credentials', credentials);
 };

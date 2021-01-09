@@ -1,12 +1,12 @@
-import React from "react";
+import React from 'react';
 
-import { CssBaseline } from "@material-ui/core";
+import { CssBaseline } from '@material-ui/core';
 
-import { Router } from "~/components";
-import { Signup } from "~/pages";
+import { Router } from '~/components';
+import { Signup } from '~/pages';
 
-import "./styles.css";
-import useStyles from "./useStyles";
+import './styles.css';
+import useStyles from './useStyles';
 
 function App() {
   const classes = useStyles();

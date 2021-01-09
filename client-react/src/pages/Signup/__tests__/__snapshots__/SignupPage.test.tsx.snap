@@ -249,7 +249,7 @@ exports[`SignupPage renders correctly 1`] = `
               class="MuiTypography-root MuiLink-root MuiLink-underlineAlways MuiTypography-body2 MuiTypography-colorTextPrimary"
               href="/signin"
             >
-              Already have an account? Sign In
+              Sign In
             </a>
           </div>
         </div>

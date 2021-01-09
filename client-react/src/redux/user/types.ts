@@ -6,8 +6,8 @@ export interface User {
 export type UserState = User;
 
 export enum UserActions {
-  SIGNED_IN = "@user/SIGNED_IN",
-  SIGNED_OUT = "@user/SIGNED_OUT"
+  SIGNED_IN = '@user/SIGNED_IN',
+  SIGNED_OUT = '@user/SIGNED_OUT',
 }
 
 interface UserActionType<T, P> {

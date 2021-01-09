@@ -1,12 +1,12 @@
-import React from "react";
+import React from 'react';
 
-import { CircularProgress, CircularProgressProps } from "@material-ui/core";
+import { CircularProgress, CircularProgressProps } from '@material-ui/core';
 
-import useStyles from "./useStyles";
+import useStyles from './useStyles';
 
 const defaultProps = {
   show: false,
-  containerStyle: {} as React.CSSProperties
+  containerStyle: {} as React.CSSProperties,
 };
 
 interface OwnProps extends CircularProgressProps {}

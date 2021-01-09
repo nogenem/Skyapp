@@ -1,16 +1,16 @@
-import { createSelector } from "reselect";
+import { createSelector } from 'reselect';
 
-import { AppState } from "../store";
-import { UserAction, UserActions, UserState } from "./types";
+import { AppState } from '../store';
+import { UserAction, UserActions, UserState } from './types';
 
 export const initialState: UserState = {
-  _id: "",
-  token: ""
+  _id: '',
+  token: '',
 };
 
 export default function user(
   state = initialState,
-  action: UserAction
+  action: UserAction,
 ): UserState {
   switch (action.type) {
     case UserActions.SIGNED_IN:
@@ -24,8 +24,8 @@ export default function user(
 
 // Selectors
 export const getUser = (state: AppState) => state.user || initialState;
-export const getId = createSelector(getUser, userData => userData._id || "");
+export const getId = createSelector(getUser, userData => userData._id || '');
 export const getToken = createSelector(
   getUser,
-  userData => userData.token || ""
+  userData => userData.token || '',
 );

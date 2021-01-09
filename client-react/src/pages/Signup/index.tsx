@@ -1,21 +1,21 @@
-import React from "react";
-import { connect, ConnectedProps } from "react-redux";
+import React from 'react';
+import { connect, ConnectedProps } from 'react-redux';
 
-import { Grid, Avatar, Typography, Link } from "@material-ui/core";
-import { LockOutlined as LockOutlinedIcon } from "@material-ui/icons";
+import { Grid, Avatar, Typography, Link } from '@material-ui/core';
+import { LockOutlined as LockOutlinedIcon } from '@material-ui/icons';
 import {
   Link as ReachLink,
   navigate,
-  RouteComponentProps
-} from "@reach/router";
+  RouteComponentProps,
+} from '@reach/router';
 
-import { signup as signupAction, ICredentials } from "~/redux/user/actions";
+import { signup as signupAction, ICredentials } from '~/redux/user/actions';
 
-import Form from "./Form";
-import useStyles from "./useStyles";
+import Form from './Form';
+import useStyles from './useStyles';
 
 const mapDispatchToProps = {
-  signup: signupAction
+  signup: signupAction,
 };
 
 const connector = connect(null, mapDispatchToProps);
@@ -28,7 +28,7 @@ const Signup = ({ signup }: Props) => {
 
   const submit = async (credentials: ICredentials) => {
     await signup(credentials);
-    navigate("/chat");
+    navigate('/chat');
   };
 
   return (

@@ -1,6 +1,6 @@
-import React from "react";
+import React from 'react';
 
-import Spinner from "../Spinner";
+import Spinner from '../Spinner';
 
 export interface IErrors {
   [x: string]: string;
@@ -17,8 +17,8 @@ interface OwnState {
 export type State = OwnState;
 
 const defaultProps = {
-  id: "",
-  resetData: (getInputByName: IGetInputByName) => {}
+  id: '',
+  resetData: (getInputByName: IGetInputByName) => {},
 };
 interface OwnProps<D> {
   getData: (getInputByName: IGetInputByName) => D;
@@ -30,7 +30,7 @@ export type Props<D> = OwnProps<D> & typeof defaultProps;
 
 const initialState: State = {
   loading: false,
-  errors: {}
+  errors: {},
 };
 
 const getId = (id: string) =>
@@ -42,7 +42,7 @@ function Form<D>({
   resetData,
   validate,
   submit,
-  render
+  render,
 }: Props<D>) {
   const [formId, setFormId] = React.useState(getId(id));
   const [state, setState] = React.useState<State>(initialState);
@@ -62,7 +62,9 @@ function Form<D>({
   }, [id]);
 
   const getInputByName: IGetInputByName = name =>
-    document.querySelector(`#${formId} input[name="${name}"]`) as HTMLInputElement;
+    document.querySelector(
+      `#${formId} input[name="${name}"]`,
+    ) as HTMLInputElement;
 
   const focusOnFirstInput = () => {
     const el = document.querySelector(`#${formId} input[name]`) as HTMLElement;
@@ -87,7 +89,7 @@ function Form<D>({
         if (isMounted.current) {
           setState({
             loading: false,
-            errors: err
+            errors: err,
           });
         }
       }
@@ -98,7 +100,7 @@ function Form<D>({
 
   return (
     <>
-      <form id={formId} onSubmit={onSubmit} style={{ width: "100%" }}>
+      <form id={formId} onSubmit={onSubmit} style={{ width: '100%' }}>
         {render(state)}
       </form>
       <Spinner show={state.loading} size="4rem" />

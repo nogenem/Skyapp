@@ -1,11 +1,11 @@
-import React from "react";
+import React from 'react';
 
-import { Box, BoxProps } from "@material-ui/core";
+import { Box, BoxProps } from '@material-ui/core';
 
-import useStyles from "./useStyles";
+import useStyles from './useStyles';
 
 const defaultProps = {
-  className: ""
+  className: '',
 };
 
 interface OwnProps extends BoxProps {

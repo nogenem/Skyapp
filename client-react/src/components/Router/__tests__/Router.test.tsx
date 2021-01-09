@@ -1,14 +1,14 @@
-import React from "react";
-import { Provider } from "react-redux";
+import React from 'react';
+import { Provider } from 'react-redux';
 
-import { RouteComponentProps } from "@reach/router";
-import { render } from "@testing-library/react";
-import configureStore from "redux-mock-store";
-import thunk from "redux-thunk";
+import { RouteComponentProps } from '@reach/router';
+import { render } from '@testing-library/react';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
 
-import { AppState } from "~/redux/store";
+import { AppState } from '~/redux/store';
 
-import Router from "../index";
+import Router from '../index';
 
 const middlewares = [thunk];
 const mockStore = configureStore(middlewares);
@@ -16,49 +16,49 @@ const mockStore = configureStore(middlewares);
 const emptyState: Partial<AppState> = {};
 const renderWithRedux = (
   ui: React.ReactNode,
-  initialState: Partial<AppState> = emptyState
+  initialState: Partial<AppState> = emptyState,
 ) => {
   const store = mockStore(initialState);
   return {
-    ...render(<Provider store={store}>{ui}</Provider>)
+    ...render(<Provider store={store}>{ui}</Provider>),
   };
 };
 
 type Props = RouteComponentProps;
 const HelloWorld = (props: Props) => <span>Hello World</span>;
 
-describe("Router", () => {
-  it("renders `children` when `isPrivate` is false and `isAuthenticated` is false", () => {
+describe('Router', () => {
+  it('renders `children` when `isPrivate` is false and `isAuthenticated` is false', () => {
     const { getByText } = renderWithRedux(
       <Router>
         <HelloWorld default />
-      </Router>
+      </Router>,
     );
 
     expect(getByText(/hello world/i)).toBeInTheDocument();
   });
 
-  it("renders `children` when `isPrivate` is true and `isAuthenticated` is true", () => {
-    const initialState = { user: { _id: "", token: "123456789" } };
+  it('renders `children` when `isPrivate` is true and `isAuthenticated` is true', () => {
+    const initialState = { user: { _id: '', token: '123456789' } };
 
     const { getByText } = renderWithRedux(
       <Router isPrivate>
         <HelloWorld default />
       </Router>,
-      initialState
+      initialState,
     );
 
     expect(getByText(/hello world/i)).toBeInTheDocument();
   });
 
   it("doesn't render `children` when `isPrivate` is false and `isAuthenticated` is true", () => {
-    const initialState = { user: { _id: "", token: "123456789" } };
+    const initialState = { user: { _id: '', token: '123456789' } };
 
     const { queryByText } = renderWithRedux(
       <Router>
         <HelloWorld default />
       </Router>,
-      initialState
+      initialState,
     );
 
     expect(queryByText(/hello world/i)).toBeNull();
@@ -68,7 +68,7 @@ describe("Router", () => {
     const { queryByText } = renderWithRedux(
       <Router isPrivate>
         <HelloWorld default />
-      </Router>
+      </Router>,
     );
 
     expect(queryByText(/hello world/i)).toBeNull();

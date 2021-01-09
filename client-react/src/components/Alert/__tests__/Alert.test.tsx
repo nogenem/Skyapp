@@ -1,15 +1,15 @@
-import React from "react";
+import React from 'react';
 
-import { render } from "@testing-library/react";
+import { render } from '@testing-library/react';
 
-import Alert from "../index";
+import Alert from '../index';
 
-describe("Spinner", () => {
-  it("renders correctly when passing children", () => {
+describe('Spinner', () => {
+  it('renders correctly when passing children', () => {
     const { getByText } = render(
       <Alert>
         <div>Hello World</div>
-      </Alert>
+      </Alert>,
     );
 
     expect(getByText(/hello world/i)).toBeInTheDocument();

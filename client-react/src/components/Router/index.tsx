@@ -1,19 +1,19 @@
-import React from "react";
-import { connect, ConnectedProps } from "react-redux";
+import React from 'react';
+import { connect, ConnectedProps } from 'react-redux';
 
-import { Router as ReachRouter } from "@reach/router";
+import { Router as ReachRouter } from '@reach/router';
 
-import { AppState } from "~/redux/store";
-import { getToken } from "~/redux/user/reducer";
+import { AppState } from '~/redux/store';
+import { getToken } from '~/redux/user/reducer';
 
 const mapStateToProps = (state: AppState) => ({
-  isAuthenticated: !!getToken(state)
+  isAuthenticated: !!getToken(state),
 });
 const connector = connect(mapStateToProps);
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
 const defaultProps = {
-  isPrivate: false
+  isPrivate: false,
 };
 
 interface OwnProps {

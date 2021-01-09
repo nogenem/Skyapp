@@ -1,26 +1,26 @@
-import React from "react";
+import React from 'react';
 
-import { TextField, Button } from "@material-ui/core";
-import isEmail from "validator/lib/isEmail";
+import { TextField, Button } from '@material-ui/core';
+import isEmail from 'validator/lib/isEmail';
 
-import { Alert } from "~/components";
+import { Alert } from '~/components';
 import BaseForm, {
   IErrors,
   IGetInputByName,
-  State as BaseFormState
-} from "~/components/Form";
+  State as BaseFormState,
+} from '~/components/Form';
 import {
   INVALID_EMAIL,
   CANT_BE_BLANK,
   PASSWORDS_MUST_MATCH,
-  fieldIsTooShort
-} from "~/constants/errors";
-import { MIN_PASSWORD_LEN } from "~/constants/validation_limits";
-import { ICredentials } from "~/redux/user/actions";
+  fieldIsTooShort,
+} from '~/constants/errors';
+import { MIN_PASSWORD_LEN } from '~/constants/validation_limits';
+import { ICredentials } from '~/redux/user/actions';
 
-import useStyles from "./useStyles";
+import useStyles from './useStyles';
 
-const FORM_ID = "signup-form";
+const FORM_ID = 'signup-form';
 
 interface OwnProps {
   submit: (data: ICredentials) => Promise<void>;
@@ -32,10 +32,10 @@ function Form({ submit }: Props) {
   const classes = useStyles();
 
   const getData = (getInputByName: IGetInputByName): ICredentials => ({
-    nickname: getInputByName("nickname").value.trim(),
-    email: getInputByName("email").value.trim(),
-    password: getInputByName("password").value.trim(),
-    password_confirmation: getInputByName("password_confirmation").value.trim()
+    nickname: getInputByName('nickname').value.trim(),
+    email: getInputByName('email').value.trim(),
+    password: getInputByName('password').value.trim(),
+    password_confirmation: getInputByName('password_confirmation').value.trim(),
   });
 
   const validate = (data: ICredentials) => {
