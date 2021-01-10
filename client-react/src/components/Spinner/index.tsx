@@ -1,2 +1,2 @@
 export { default as Spinner } from './Spinner';
-export type { Props } from './Spinner';
+export type { TProps } from './Spinner';

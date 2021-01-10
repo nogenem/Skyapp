@@ -1,20 +1,23 @@
 import userReducer, { initialState } from '../reducer';
 import { EUserActions } from '../types';
-import type { User, UserAction } from '../types';
+import type { IUser, TUserAction } from '../types';
 
 describe('user reducer', () => {
   it('should handle SIGNED_IN', () => {
-    const user: User = {
+    const user: IUser = {
       _id: '1',
     };
-    const action: UserAction = { type: EUserActions.SIGNED_IN, payload: user };
+    const action: TUserAction = { type: EUserActions.SIGNED_IN, payload: user };
 
     // TODO: Fix this after implementing the action
     expect(userReducer(undefined, action)).toEqual(initialState);
   });
 
   it('should handle SIGNED_OUT', () => {
-    const action: UserAction = { type: EUserActions.SIGNED_OUT, payload: null };
+    const action: TUserAction = {
+      type: EUserActions.SIGNED_OUT,
+      payload: null,
+    };
 
     // TODO: Fix this after implementing the action
     expect(userReducer(undefined, action)).toEqual(initialState);

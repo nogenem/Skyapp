@@ -1,23 +1,23 @@
-interface User {
+interface IUser {
   _id: string;
   token?: string;
 }
 
-type UserState = User;
+type TUserState = IUser;
 
 enum EUserActions {
   SIGNED_IN = '@user/SIGNED_IN',
   SIGNED_OUT = '@user/SIGNED_OUT',
 }
 
-interface UserActionType<T, P> {
+interface IUserActionType<T, P> {
   type: T;
   payload: P;
 }
 
-type UserAction =
-  | UserActionType<typeof EUserActions.SIGNED_IN, User>
-  | UserActionType<typeof EUserActions.SIGNED_OUT, null>;
+type TUserAction =
+  | IUserActionType<typeof EUserActions.SIGNED_IN, IUser>
+  | IUserActionType<typeof EUserActions.SIGNED_OUT, null>;
 
-export type { User, UserState, UserAction };
+export type { IUser, TUserState, TUserAction };
 export { EUserActions };

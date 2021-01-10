@@ -8,13 +8,13 @@ const defaultProps = {
   className: '',
 };
 
-interface OwnProps extends BoxProps {
+interface IOwnProps extends BoxProps {
   children: React.ReactNode;
 }
 
-type Props = OwnProps & typeof defaultProps;
+type TProps = IOwnProps & typeof defaultProps;
 
-const Alert = ({ children, className, ...props }: Props) => {
+const Alert = ({ children, className, ...props }: TProps) => {
   const classes = useStyles();
   return (
     <Box
@@ -34,5 +34,5 @@ const Alert = ({ children, className, ...props }: Props) => {
 
 Alert.defaultProps = defaultProps;
 
-export type { Props };
+export type { TProps };
 export default Alert;

@@ -10,25 +10,25 @@ interface IGetInputByName {
   (name: string): HTMLInputElement;
 }
 
-interface OwnState {
+interface IOwnState {
   loading: boolean;
   errors: IErrors;
 }
-type State = OwnState;
+type TState = IOwnState;
 
 const defaultProps = {
   id: '',
   resetData: (getInputByName: IGetInputByName) => {},
 };
-interface OwnProps<D> {
+interface IOwnProps<D> {
   getData: (getInputByName: IGetInputByName) => D;
   submit: (data: D) => Promise<void>;
-  render: (state: OwnState) => React.ReactNode;
+  render: (state: IOwnState) => React.ReactNode;
   validate: (data: D) => IErrors;
 }
-type Props<D> = OwnProps<D> & typeof defaultProps;
+type TProps<D> = IOwnProps<D> & typeof defaultProps;
 
-const initialState: State = {
+const initialState: TState = {
   loading: false,
   errors: {},
 };
@@ -43,9 +43,9 @@ function Form<D>({
   validate,
   submit,
   render,
-}: Props<D>) {
+}: TProps<D>) {
   const [formId, setFormId] = React.useState(getId(id));
-  const [state, setState] = React.useState<State>(initialState);
+  const [state, setState] = React.useState<TState>(initialState);
   const isMounted = React.useRef(false);
 
   React.useEffect(() => {
@@ -110,5 +110,5 @@ function Form<D>({
 
 Form.defaultProps = defaultProps;
 
-export type { IErrors, IGetInputByName, State, Props };
+export type { IErrors, IGetInputByName, TState, TProps };
 export default Form;

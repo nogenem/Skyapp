@@ -6,17 +6,17 @@ import { render } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
-import type { AppState } from '~/redux/store';
+import type { IAppState } from '~/redux/store';
 
 import { Router } from '../index';
 
 const middlewares = [thunk];
 const mockStore = configureStore(middlewares);
 
-const emptyState: Partial<AppState> = {};
+const emptyState: Partial<IAppState> = {};
 const renderWithRedux = (
   ui: React.ReactNode,
-  initialState: Partial<AppState> = emptyState,
+  initialState: Partial<IAppState> = emptyState,
 ) => {
   const store = mockStore(initialState);
   return {
@@ -24,8 +24,8 @@ const renderWithRedux = (
   };
 };
 
-type Props = RouteComponentProps;
-const HelloWorld = (props: Props) => <span>Hello World</span>;
+type TProps = RouteComponentProps;
+const HelloWorld = (props: TProps) => <span>Hello World</span>;
 
 describe('Router', () => {
   it('renders `children` when `isPrivate` is false and `isAuthenticated` is false', () => {

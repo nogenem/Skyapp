@@ -8,7 +8,7 @@ import { Form as BaseForm } from '~/components/Form';
 import type {
   IErrors,
   IGetInputByName,
-  State as BaseFormState,
+  TState as TBaseFormState,
 } from '~/components/Form';
 import {
   INVALID_EMAIL,
@@ -23,13 +23,13 @@ import useStyles from './useStyles';
 
 const FORM_ID = 'signup-form';
 
-interface OwnProps {
+interface IOwnProps {
   submit: (data: ICredentials) => Promise<void>;
 }
 
-type Props = OwnProps;
+type TProps = IOwnProps;
 
-function Form({ submit }: Props) {
+function Form({ submit }: TProps) {
   const classes = useStyles();
 
   const getData = (getInputByName: IGetInputByName): ICredentials => ({
@@ -60,7 +60,7 @@ function Form({ submit }: Props) {
     return errors;
   };
 
-  const renderForm = ({ errors }: BaseFormState) => (
+  const renderForm = ({ errors }: TBaseFormState) => (
     <>
       {errors.global && <Alert>{errors.global}</Alert>}
       <TextField
@@ -138,5 +138,5 @@ function Form({ submit }: Props) {
   );
 }
 
-export type { Props };
+export type { TProps };
 export default Form;

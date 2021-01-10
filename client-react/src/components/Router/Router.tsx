@@ -3,25 +3,25 @@ import { connect, ConnectedProps } from 'react-redux';
 
 import { Router as ReachRouter } from '@reach/router';
 
-import type { AppState } from '~/redux/store';
+import type { IAppState } from '~/redux/store';
 import { getToken } from '~/redux/user/reducer';
 
-const mapStateToProps = (state: AppState) => ({
+const mapStateToProps = (state: IAppState) => ({
   isAuthenticated: !!getToken(state),
 });
 const connector = connect(mapStateToProps);
-type PropsFromRedux = ConnectedProps<typeof connector>;
+type TPropsFromRedux = ConnectedProps<typeof connector>;
 
 const defaultProps = {
   isPrivate: false,
 };
 
-interface OwnProps {
+interface IOwnProps {
   children: React.ReactNode;
 }
-type Props = OwnProps & typeof defaultProps & PropsFromRedux;
+type TProps = IOwnProps & typeof defaultProps & TPropsFromRedux;
 
-const Router = ({ isPrivate, isAuthenticated, children }: Props) => {
+const Router = ({ isPrivate, isAuthenticated, children }: TProps) => {
   if ((isPrivate && !isAuthenticated) || (!isPrivate && isAuthenticated))
     return <div />;
   return (
@@ -34,6 +34,6 @@ const Router = ({ isPrivate, isAuthenticated, children }: Props) => {
 
 Router.defaultProps = defaultProps;
 
-export type { Props };
+export type { TProps };
 export const UnconnectedRouter = Router;
 export default connector(Router);

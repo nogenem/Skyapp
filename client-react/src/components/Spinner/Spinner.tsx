@@ -9,10 +9,10 @@ const defaultProps = {
   containerStyle: {} as React.CSSProperties,
 };
 
-interface OwnProps extends CircularProgressProps {}
-type Props = OwnProps & typeof defaultProps;
+interface IOwnProps extends CircularProgressProps {}
+type TProps = IOwnProps & typeof defaultProps;
 
-const Spinner = ({ show, containerStyle, ...props }: Props) => {
+const Spinner = ({ show, containerStyle, ...props }: TProps) => {
   const classes = useStyles();
 
   if (!show) return null;
@@ -29,5 +29,5 @@ const Spinner = ({ show, containerStyle, ...props }: Props) => {
 
 Spinner.defaultProps = defaultProps;
 
-export type { Props };
+export type { TProps };
 export default Spinner;

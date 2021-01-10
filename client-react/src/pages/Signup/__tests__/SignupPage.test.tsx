@@ -5,17 +5,17 @@ import { render } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
-import type { AppState } from '~/redux/store';
+import type { IAppState } from '~/redux/store';
 
 import { Signup as SignupPage } from '../index';
 
 const middlewares = [thunk];
 const mockStore = configureStore(middlewares);
 
-const emptyState: Partial<AppState> = {};
+const emptyState: Partial<IAppState> = {};
 const renderWithRedux = (
   ui: React.ReactNode,
-  initialState: Partial<AppState> = emptyState,
+  initialState: Partial<IAppState> = emptyState,
 ) => {
   const store = mockStore(initialState);
   return {

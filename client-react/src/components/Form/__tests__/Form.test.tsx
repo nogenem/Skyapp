@@ -7,13 +7,13 @@ import {
 } from '@testing-library/react';
 
 import { Form } from '../index';
-import type { State, Props } from '../index';
+import type { TState, TProps } from '../index';
 
 interface ICredentials {
   nickname: string;
 }
 
-const FormContent = ({ errors }: State) => (
+const FormContent = ({ errors }: TState) => (
   <>
     <input data-testid="nickname" name="nickname" type="text" />
     {errors.nickname ? <span role="alert">{errors.nickname}</span> : null}
@@ -23,7 +23,7 @@ const FormContent = ({ errors }: State) => (
 
 describe('Form', () => {
   it('renders and works correctly', async () => {
-    const props: Props<ICredentials> = {
+    const props: TProps<ICredentials> = {
       id: 'form',
       validate: jest.fn(() => ({})),
       render: jest.fn(FormContent),
@@ -59,7 +59,7 @@ describe('Form', () => {
   });
 
   it("passes the `validate`'s errors correctly", async () => {
-    const props: Props<ICredentials> = {
+    const props: TProps<ICredentials> = {
       id: 'form',
       validate: jest.fn(() => ({ nickname: 'Cant be blank' })),
       render: jest.fn(FormContent),

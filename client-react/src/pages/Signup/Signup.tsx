@@ -20,11 +20,11 @@ const mapDispatchToProps = {
 };
 
 const connector = connect(null, mapDispatchToProps);
-type PropsFromRedux = ConnectedProps<typeof connector>;
+type TPropsFromRedux = ConnectedProps<typeof connector>;
 
-type Props = RouteComponentProps & PropsFromRedux;
+type TProps = RouteComponentProps & TPropsFromRedux;
 
-const Signup = ({ signup }: Props) => {
+const Signup = ({ signup }: TProps) => {
   const classes = useStyles();
 
   const submit = async (credentials: ICredentials) => {
@@ -77,6 +77,6 @@ const Signup = ({ signup }: Props) => {
   );
 };
 
-export type { Props };
+export type { TProps };
 export const UnconnectedSignup = Signup;
 export default connector(Signup);
