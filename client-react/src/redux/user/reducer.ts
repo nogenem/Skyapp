@@ -1,7 +1,8 @@
 import { createSelector } from 'reselect';
 
-import { AppState } from '../store';
-import { UserAction, UserActions, UserState } from './types';
+import type { AppState } from '../store';
+import { EUserActions } from './types';
+import type { UserAction, UserState } from './types';
 
 export const initialState: UserState = {
   _id: '',
@@ -13,9 +14,9 @@ export default function user(
   action: UserAction,
 ): UserState {
   switch (action.type) {
-    case UserActions.SIGNED_IN:
+    case EUserActions.SIGNED_IN:
       return state;
-    case UserActions.SIGNED_OUT:
+    case EUserActions.SIGNED_OUT:
       return state;
     default:
       return state;

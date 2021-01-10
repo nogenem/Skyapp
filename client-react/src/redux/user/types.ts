@@ -1,11 +1,11 @@
-export interface User {
+interface User {
   _id: string;
   token?: string;
 }
 
-export type UserState = User;
+type UserState = User;
 
-export enum UserActions {
+enum EUserActions {
   SIGNED_IN = '@user/SIGNED_IN',
   SIGNED_OUT = '@user/SIGNED_OUT',
 }
@@ -15,6 +15,9 @@ interface UserActionType<T, P> {
   payload: P;
 }
 
-export type UserAction =
-  | UserActionType<typeof UserActions.SIGNED_IN, User>
-  | UserActionType<typeof UserActions.SIGNED_OUT, null>;
+type UserAction =
+  | UserActionType<typeof EUserActions.SIGNED_IN, User>
+  | UserActionType<typeof EUserActions.SIGNED_OUT, null>;
+
+export type { User, UserState, UserAction };
+export { EUserActions };

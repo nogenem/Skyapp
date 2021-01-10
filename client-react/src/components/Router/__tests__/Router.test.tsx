@@ -6,9 +6,9 @@ import { render } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
-import { AppState } from '~/redux/store';
+import type { AppState } from '~/redux/store';
 
-import Router from '../index';
+import { Router } from '../index';
 
 const middlewares = [thunk];
 const mockStore = configureStore(middlewares);

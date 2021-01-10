@@ -6,7 +6,8 @@ import {
   waitForElementToBeRemoved,
 } from '@testing-library/react';
 
-import Form, { State, Props } from '../index';
+import { Form } from '../index';
+import type { State, Props } from '../index';
 
 interface ICredentials {
   nickname: string;

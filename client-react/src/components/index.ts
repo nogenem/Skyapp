@@ -1,6 +1,4 @@
-import Alert from './Alert';
-import Form from './Form';
-import Router from './Router';
-import Spinner from './Spinner';
-
-export { Alert, Form, Router, Spinner };
+export { Alert } from './Alert';
+export { Form } from './Form';
+export { Router } from './Router';
+export { Spinner } from './Spinner';

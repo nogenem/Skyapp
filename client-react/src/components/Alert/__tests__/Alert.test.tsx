@@ -2,7 +2,7 @@ import React from 'react';
 
 import { render } from '@testing-library/react';
 
-import Alert from '../index';
+import { Alert } from '../index';
 
 describe('Spinner', () => {
   it('renders correctly when passing children', () => {

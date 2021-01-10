@@ -2,7 +2,7 @@ import React from 'react';
 
 import { render } from '@testing-library/react';
 
-import Spinner from '../index';
+import { Spinner } from '../index';
 
 describe('Spinner', () => {
   it('renders correctly when `show` is true', () => {
