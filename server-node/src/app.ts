@@ -30,7 +30,7 @@ class AppController {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       async (err: Error, req: Request, res: Response, _next: NextFunction) => {
         const { NODE_ENV } = process.env;
-        if (NODE_ENV === 'dev' || NODE_ENV === 'development') {
+        if (NODE_ENV === 'development') {
           return res.status(500).json(err);
         }
 

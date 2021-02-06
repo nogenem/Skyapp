@@ -1,20 +1,24 @@
+// eslint-disable-next-line import-helpers/order-imports
 import dotenv from 'dotenv';
-import http from 'http';
-import killPort from 'kill-port';
 
-import app from '~/app';
-
+/* eslint-disable import/first */
 const envs: { [env: string]: string } = {
-  test: '.env.test',
-  dev: '.env.dev',
-  development: '.env.dev',
-  prod: '.env.prod',
+  test: '.env',
+  development: '.env',
   production: '.env.prod',
 };
-const env: string = process.env.NODE_ENV || 'dev';
+const env: string = process.env.NODE_ENV || 'development';
 dotenv.config({
   path: envs[env],
 });
+
+import http from 'http';
+import killPort from 'kill-port';
+
+import app from './app';
+import db from './db';
+
+db.openConnection();
 
 process
   .on('exit', code => {

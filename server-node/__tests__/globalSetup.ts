@@ -1,13 +1,11 @@
 import dotenv from 'dotenv';
 
 const envs: { [env: string]: string } = {
-  test: '.env.test',
-  dev: '.env.dev',
-  development: '.env.dev',
-  prod: '.env.prod',
+  test: '.env',
+  development: '.env',
   production: '.env.prod',
 };
-const env: string = process.env.NODE_ENV || 'dev';
+const env: string = process.env.NODE_ENV || 'development';
 dotenv.config({
   path: envs[env],
 });
