@@ -4,7 +4,7 @@ import { render } from '@testing-library/react';
 
 import { Alert } from '../index';
 
-describe('Spinner', () => {
+describe('Alert', () => {
   it('renders correctly when passing children', () => {
     const { getByText } = render(
       <Alert>
