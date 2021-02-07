@@ -22,6 +22,7 @@ module.exports = {
     sourceType: 'module',
   },
   rules: {
+    'no-underscore-dangle': 'off',
     'no-console': 'off',
     'import/prefer-default-export': 'off',
     'import/extensions': 'off',
