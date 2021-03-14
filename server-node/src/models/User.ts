@@ -1,10 +1,12 @@
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 import mongoose, { Document } from 'mongoose';
 import uniqueValidator from 'mongoose-unique-validator';
 
 import { EMAIL_ALREADY_TAKEN } from '~/constants/error_messages';
 
 const SALT = 10;
+const TOKEN_EXPIRES_IN = '2 hours';
 
 // https://hackernoon.com/how-to-link-mongoose-and-typescript-for-a-single-source-of-truth-94o3uqc
 // https://stackoverflow.com/questions/50614345/property-virtual-does-not-exist-on-type-typeof-schema
@@ -12,6 +14,9 @@ interface IUser {
   nickname: string;
   email: string;
   passwordHash: string;
+
+  confirmed?: boolean;
+  confirmationToken?: string;
 
   // virtual
   password?: string;
@@ -24,7 +29,10 @@ interface IUserDoc extends IUser, Document {
   // My methods
   isValidPassword: (password: string) => boolean;
   updatePasswordHash: (password?: string) => void;
-  toAuthJSON: () => Partial<IUser>;
+  toAuthJSON: (tokenExpires?: boolean) => Partial<IUser>;
+  setConfirmationToken: () => void;
+  generateJWT: (tokenExpires?: boolean) => string;
+  generateConfirmationUrl: (host: string) => string;
 }
 
 const schema = new mongoose.Schema<IUserDoc>(
@@ -37,6 +45,8 @@ const schema = new mongoose.Schema<IUserDoc>(
       unique: true,
     },
     passwordHash: { type: String, required: true, toJSON: false },
+    confirmed: { type: Boolean, default: false },
+    confirmationToken: { type: String, default: '' },
   },
   { timestamps: true },
 );
@@ -74,13 +84,43 @@ schema.method(
   },
 );
 
-schema.method('toAuthJSON', function toAuthJSON() {
+schema.method('toAuthJSON', function toAuthJSON(tokenExpires = true) {
   return {
     _id: this._id,
     nickname: this.nickname,
     email: this.email,
+    confirmed: this.confirmed,
+    token: this.generateJWT(tokenExpires),
   };
 });
+
+schema.method('generateJWT', function generateJWT(tokenExpires = true) {
+  return jwt.sign(
+    {
+      _id: this._id,
+      nickname: this.nickname,
+      email: this.email,
+      confirmed: this.confirmed,
+    },
+    process.env.JWT_SECRET,
+    tokenExpires
+      ? {
+          expiresIn: TOKEN_EXPIRES_IN,
+        }
+      : {},
+  );
+});
+
+schema.method('setConfirmationToken', function setConfirmationToken() {
+  this.confirmationToken = this.generateJWT(true);
+});
+
+schema.method(
+  'generateConfirmationUrl',
+  function generateConfirmationUrl(host: string) {
+    return `${host}/confirmation/${this.confirmationToken}`;
+  },
+);
 
 schema.plugin(uniqueValidator, { message: EMAIL_ALREADY_TAKEN });
 
