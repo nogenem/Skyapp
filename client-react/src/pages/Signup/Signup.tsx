@@ -10,7 +10,7 @@ import {
 } from '@reach/router';
 
 import { signup as signupAction } from '~/redux/user/actions';
-import type { ICredentials } from '~/redux/user/actions';
+import type { ICredentials } from '~/redux/user/types';
 
 import { Form } from './Form';
 import useStyles from './useStyles';

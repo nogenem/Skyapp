@@ -178,8 +178,8 @@ exports[`SignupPage renders correctly 1`] = `
             <label
               class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined Mui-required Mui-required"
               data-shrink="false"
-              for="signup-form-password_confirmation"
-              id="signup-form-password_confirmation-label"
+              for="signup-form-passwordConfirmation"
+              id="signup-form-passwordConfirmation-label"
             >
               Password Confirmation
               <span
@@ -195,10 +195,10 @@ exports[`SignupPage renders correctly 1`] = `
             >
               <input
                 aria-invalid="false"
-                autocomplete="password_confirmation"
+                autocomplete="passwordConfirmation"
                 class="MuiInputBase-input MuiOutlinedInput-input"
-                id="signup-form-password_confirmation"
-                name="password_confirmation"
+                id="signup-form-passwordConfirmation"
+                name="passwordConfirmation"
                 required=""
                 type="password"
                 value=""

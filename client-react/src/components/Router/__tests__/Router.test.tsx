@@ -27,6 +27,14 @@ const renderWithRedux = (
 type TProps = RouteComponentProps;
 const HelloWorld = (props: TProps) => <span>Hello World</span>;
 
+const initialUser = {
+  _id: '',
+  nickname: '',
+  email: '',
+  confirmed: false,
+  token: '123456789',
+};
+
 describe('Router', () => {
   it('renders `children` when `isPrivate` is false and `isAuthenticated` is false', () => {
     const { getByText } = renderWithRedux(
@@ -39,7 +47,7 @@ describe('Router', () => {
   });
 
   it('renders `children` when `isPrivate` is true and `isAuthenticated` is true', () => {
-    const initialState = { user: { _id: '', token: '123456789' } };
+    const initialState = { user: initialUser };
 
     const { getByText } = renderWithRedux(
       <Router isPrivate>
@@ -52,7 +60,7 @@ describe('Router', () => {
   });
 
   it("doesn't render `children` when `isPrivate` is false and `isAuthenticated` is true", () => {
-    const initialState = { user: { _id: '', token: '123456789' } };
+    const initialState = { user: initialUser };
 
     const { queryByText } = renderWithRedux(
       <Router>

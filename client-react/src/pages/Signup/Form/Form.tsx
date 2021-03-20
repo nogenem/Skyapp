@@ -17,7 +17,7 @@ import {
   fieldIsTooShort,
 } from '~/constants/errors';
 import { MIN_PASSWORD_LEN } from '~/constants/validation_limits';
-import type { ICredentials } from '~/redux/user/actions';
+import type { ICredentials } from '~/redux/user/types';
 
 import useStyles from './useStyles';
 
@@ -36,7 +36,7 @@ function Form({ submit }: TProps) {
     nickname: getInputByName('nickname').value.trim(),
     email: getInputByName('email').value.trim(),
     password: getInputByName('password').value.trim(),
-    password_confirmation: getInputByName('password_confirmation').value.trim(),
+    passwordConfirmation: getInputByName('passwordConfirmation').value.trim(),
   });
 
   const validate = (data: ICredentials) => {
@@ -50,13 +50,12 @@ function Form({ submit }: TProps) {
     else if (data.password.length < MIN_PASSWORD_LEN)
       errors.password = fieldIsTooShort(MIN_PASSWORD_LEN);
 
-    if (!data.password_confirmation)
-      errors.password_confirmation = CANT_BE_BLANK;
-    else if (data.password_confirmation.length < MIN_PASSWORD_LEN)
-      errors.password_confirmation = fieldIsTooShort(MIN_PASSWORD_LEN);
+    if (!data.passwordConfirmation) errors.passwordConfirmation = CANT_BE_BLANK;
+    else if (data.passwordConfirmation.length < MIN_PASSWORD_LEN)
+      errors.passwordConfirmation = fieldIsTooShort(MIN_PASSWORD_LEN);
 
-    if (data.password !== data.password_confirmation)
-      errors.password_confirmation = PASSWORDS_MUST_MATCH;
+    if (data.password !== data.passwordConfirmation)
+      errors.passwordConfirmation = PASSWORDS_MUST_MATCH;
     return errors;
   };
 
@@ -102,15 +101,15 @@ function Form({ submit }: TProps) {
         margin="normal"
       />
       <TextField
-        id={`${FORM_ID}-password_confirmation`}
-        name="password_confirmation"
+        id={`${FORM_ID}-passwordConfirmation`}
+        name="passwordConfirmation"
         label="Password Confirmation"
-        autoComplete="password_confirmation"
+        autoComplete="passwordConfirmation"
         type="password"
         fullWidth
         required
-        error={!!errors.password_confirmation}
-        helperText={errors.password_confirmation}
+        error={!!errors.passwordConfirmation}
+        helperText={errors.passwordConfirmation}
         variant="outlined"
         margin="normal"
       />

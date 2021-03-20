@@ -6,6 +6,9 @@ import type { TUserAction, TUserState } from './types';
 
 export const initialState: TUserState = {
   _id: '',
+  nickname: '',
+  email: '',
+  confirmed: false,
   token: '',
 };
 
@@ -15,7 +18,8 @@ export default function user(
 ): TUserState {
   switch (action.type) {
     case EUserActions.SIGNED_IN:
-      return state;
+      const { _id, nickname, email, confirmed, token } = action.payload;
+      return { _id, nickname, email, confirmed, token };
     case EUserActions.SIGNED_OUT:
       return state;
     default:

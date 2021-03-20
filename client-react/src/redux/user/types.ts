@@ -1,5 +1,15 @@
+interface ICredentials {
+  nickname: string;
+  email: string;
+  password: string;
+  passwordConfirmation: string;
+}
+
 interface IUser {
   _id: string;
+  nickname: string;
+  email: string;
+  confirmed: boolean;
   token?: string;
 }
 
@@ -19,5 +29,5 @@ type TUserAction =
   | IUserActionType<typeof EUserActions.SIGNED_IN, IUser>
   | IUserActionType<typeof EUserActions.SIGNED_OUT, null>;
 
-export type { IUser, TUserState, TUserAction };
+export type { ICredentials, IUser, TUserState, TUserAction };
 export { EUserActions };
