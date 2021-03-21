@@ -7,7 +7,7 @@ import thunk from 'redux-thunk';
 
 import type { IAppState } from '~/redux/store';
 
-import { Signup as SignupPage } from '../index';
+import { SignUp as SignUpPage } from '../index';
 
 const middlewares = [thunk];
 const mockStore = configureStore(middlewares);
@@ -26,9 +26,9 @@ const renderWithRedux = (
 // TODO: Add better tests for this !?
 // The ./Form is already being tested by this
 // and the ~/components/Form is being tested there, so...
-describe('SignupPage', () => {
+describe('SignUpPage', () => {
   it('renders correctly', () => {
-    const { container } = renderWithRedux(<SignupPage />);
+    const { container } = renderWithRedux(<SignUpPage />);
 
     expect(container).toMatchSnapshot();
   });

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`SignupPage renders correctly 1`] = `
+exports[`SignUpPage renders correctly 1`] = `
 <div>
   <div
     class="MuiGrid-root makeStyles-root-1 MuiGrid-container"
@@ -31,7 +31,7 @@ exports[`SignupPage renders correctly 1`] = `
           Sign up
         </h1>
         <form
-          id="signup-form"
+          id="sign-up-form"
           style="width: 100%;"
         >
           <div
@@ -40,8 +40,8 @@ exports[`SignupPage renders correctly 1`] = `
             <label
               class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined Mui-required Mui-required"
               data-shrink="false"
-              for="signup-form-nickname"
-              id="signup-form-nickname-label"
+              for="sign-up-form-nickname"
+              id="sign-up-form-nickname-label"
             >
               Nickname
               <span
@@ -59,7 +59,7 @@ exports[`SignupPage renders correctly 1`] = `
                 aria-invalid="false"
                 autocomplete="nickname"
                 class="MuiInputBase-input MuiOutlinedInput-input"
-                id="signup-form-nickname"
+                id="sign-up-form-nickname"
                 name="nickname"
                 required=""
                 type="text"
@@ -86,8 +86,8 @@ exports[`SignupPage renders correctly 1`] = `
             <label
               class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined Mui-required Mui-required"
               data-shrink="false"
-              for="signup-form-email"
-              id="signup-form-email-label"
+              for="sign-up-form-email"
+              id="sign-up-form-email-label"
             >
               Email
               <span
@@ -105,7 +105,7 @@ exports[`SignupPage renders correctly 1`] = `
                 aria-invalid="false"
                 autocomplete="email"
                 class="MuiInputBase-input MuiOutlinedInput-input"
-                id="signup-form-email"
+                id="sign-up-form-email"
                 name="email"
                 required=""
                 type="email"
@@ -132,8 +132,8 @@ exports[`SignupPage renders correctly 1`] = `
             <label
               class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined Mui-required Mui-required"
               data-shrink="false"
-              for="signup-form-password"
-              id="signup-form-password-label"
+              for="sign-up-form-password"
+              id="sign-up-form-password-label"
             >
               Password
               <span
@@ -151,7 +151,7 @@ exports[`SignupPage renders correctly 1`] = `
                 aria-invalid="false"
                 autocomplete="password"
                 class="MuiInputBase-input MuiOutlinedInput-input"
-                id="signup-form-password"
+                id="sign-up-form-password"
                 name="password"
                 required=""
                 type="password"
@@ -178,8 +178,8 @@ exports[`SignupPage renders correctly 1`] = `
             <label
               class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined Mui-required Mui-required"
               data-shrink="false"
-              for="signup-form-passwordConfirmation"
-              id="signup-form-passwordConfirmation-label"
+              for="sign-up-form-passwordConfirmation"
+              id="sign-up-form-passwordConfirmation-label"
             >
               Password Confirmation
               <span
@@ -197,7 +197,7 @@ exports[`SignupPage renders correctly 1`] = `
                 aria-invalid="false"
                 autocomplete="passwordConfirmation"
                 class="MuiInputBase-input MuiOutlinedInput-input"
-                id="signup-form-passwordConfirmation"
+                id="sign-up-form-passwordConfirmation"
                 name="passwordConfirmation"
                 required=""
                 type="password"

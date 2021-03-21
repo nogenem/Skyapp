@@ -20,7 +20,7 @@ import type { ISignInCredentials } from '~/redux/user/types';
 
 import useStyles from './useStyles';
 
-const FORM_ID = 'signin-form';
+const FORM_ID = 'sign-in-form';
 
 interface IOwnProps {
   submit: (data: ISignInCredentials) => Promise<void>;

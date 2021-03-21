@@ -9,14 +9,14 @@ import {
   RouteComponentProps,
 } from '@reach/router';
 
-import { signup as signupAction } from '~/redux/user/actions';
+import { signUp as signUpAction } from '~/redux/user/actions';
 import type { ISignUpCredentials } from '~/redux/user/types';
 
 import { Form } from './Form';
 import useStyles from './useStyles';
 
 const mapDispatchToProps = {
-  signup: signupAction,
+  signUp: signUpAction,
 };
 
 const connector = connect(null, mapDispatchToProps);
@@ -24,11 +24,11 @@ type TPropsFromRedux = ConnectedProps<typeof connector>;
 
 type TProps = RouteComponentProps & TPropsFromRedux;
 
-const Signup = ({ signup }: TProps) => {
+const SignUp = ({ signUp }: TProps) => {
   const classes = useStyles();
 
   const submit = async (credentials: ISignUpCredentials) => {
-    await signup(credentials);
+    await signUp(credentials);
     navigate('/chat');
   };
 
@@ -78,5 +78,5 @@ const Signup = ({ signup }: TProps) => {
 };
 
 export type { TProps };
-export const UnconnectedSignup = Signup;
-export default connector(Signup);
+export const UnconnectedSignUp = SignUp;
+export default connector(SignUp);

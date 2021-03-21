@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`SigninPage renders correctly 1`] = `
+exports[`SignInPage renders correctly 1`] = `
 <div>
   <div
     class="MuiGrid-root makeStyles-root-1 MuiGrid-container"
@@ -31,7 +31,7 @@ exports[`SigninPage renders correctly 1`] = `
           Sign in
         </h1>
         <form
-          id="signin-form"
+          id="sign-in-form"
           style="width: 100%;"
         >
           <div
@@ -40,8 +40,8 @@ exports[`SigninPage renders correctly 1`] = `
             <label
               class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined Mui-required Mui-required"
               data-shrink="false"
-              for="signin-form-email"
-              id="signin-form-email-label"
+              for="sign-in-form-email"
+              id="sign-in-form-email-label"
             >
               Email
               <span
@@ -59,7 +59,7 @@ exports[`SigninPage renders correctly 1`] = `
                 aria-invalid="false"
                 autocomplete="email"
                 class="MuiInputBase-input MuiOutlinedInput-input"
-                id="signin-form-email"
+                id="sign-in-form-email"
                 name="email"
                 required=""
                 type="email"
@@ -86,8 +86,8 @@ exports[`SigninPage renders correctly 1`] = `
             <label
               class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined Mui-required Mui-required"
               data-shrink="false"
-              for="signin-form-password"
-              id="signin-form-password-label"
+              for="sign-in-form-password"
+              id="sign-in-form-password-label"
             >
               Password
               <span
@@ -105,7 +105,7 @@ exports[`SigninPage renders correctly 1`] = `
                 aria-invalid="false"
                 autocomplete="password"
                 class="MuiInputBase-input MuiOutlinedInput-input"
-                id="signin-form-password"
+                id="sign-in-form-password"
                 name="password"
                 required=""
                 type="password"

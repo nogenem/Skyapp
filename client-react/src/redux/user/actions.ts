@@ -17,16 +17,16 @@ export const userSignedIn = (user: IUser) => (dispatch: Dispatch) => {
   });
 };
 
-export const signup = (credentials: ISignUpCredentials) => (
+export const signUp = (credentials: ISignUpCredentials) => (
   dispatch: Dispatch,
 ) =>
-  api.auth.signup(credentials).then(({ user }) => {
+  api.auth.signUp(credentials).then(({ user }) => {
     userSignedIn(user)(dispatch);
   });
 
-export const signin = (credentials: ISignInCredentials) => (
+export const signIn = (credentials: ISignInCredentials) => (
   dispatch: Dispatch,
 ) =>
-  api.auth.signin(credentials).then(({ user }) => {
+  api.auth.signIn(credentials).then(({ user }) => {
     userSignedIn(user)(dispatch);
   });

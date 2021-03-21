@@ -3,7 +3,7 @@ import thunk from 'redux-thunk';
 
 import api from '~/services/api';
 
-import { userSignedIn, signup, signin } from '../actions';
+import { userSignedIn, signUp, signIn } from '../actions';
 import { EUserActions } from '../types';
 import type {
   IUser,
@@ -34,7 +34,7 @@ describe('auth actions', () => {
     expect(store.getActions()).toEqual(expectedActions);
   });
 
-  it('signup', async () => {
+  it('signUp', async () => {
     const user: IUser = {
       _id: '1',
       nickname: 'test',
@@ -52,18 +52,18 @@ describe('auth actions', () => {
     const expectedActions = [
       { type: EUserActions.SIGNED_IN, payload: user } as TUserAction,
     ];
-    const spy = jest.spyOn(api.auth, 'signup').mockImplementationOnce(() => {
+    const spy = jest.spyOn(api.auth, 'signUp').mockImplementationOnce(() => {
       return Promise.resolve({ user });
     });
     const store = mockStore({});
 
-    await signup(credentials)(store.dispatch);
+    await signUp(credentials)(store.dispatch);
 
     expect(spy).toHaveBeenCalledWith(credentials);
     expect(store.getActions()).toEqual(expectedActions);
   });
 
-  it('signin', async () => {
+  it('signIn', async () => {
     const user: IUser = {
       _id: '1',
       nickname: 'test',
@@ -78,13 +78,13 @@ describe('auth actions', () => {
     const expectedActions = [
       { type: EUserActions.SIGNED_IN, payload: user } as TUserAction,
     ];
-    const spy = jest.spyOn(api.auth, 'signin').mockImplementationOnce(() => {
+    const spy = jest.spyOn(api.auth, 'signIn').mockImplementationOnce(() => {
       return Promise.resolve({ user });
     });
 
     const store = mockStore({});
 
-    await signin(credentials)(store.dispatch);
+    await signIn(credentials)(store.dispatch);
 
     expect(spy).toHaveBeenCalledWith(credentials);
     expect(store.getActions()).toEqual(expectedActions);

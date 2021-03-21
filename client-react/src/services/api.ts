@@ -7,8 +7,8 @@ import type {
 
 export const END_POINTS = {
   auth: {
-    signup: 'api/auth/signup',
-    signin: 'api/auth/signin',
+    signUp: 'api/auth/signup',
+    signIn: 'api/auth/signin',
   },
 };
 
@@ -18,13 +18,13 @@ export const axiosInstance = axios.create({
 
 export default {
   auth: {
-    signup: (credentials: ISignUpCredentials) =>
+    signUp: (credentials: ISignUpCredentials) =>
       axiosInstance
-        .post(END_POINTS.auth.signup, { ...credentials })
+        .post(END_POINTS.auth.signUp, { ...credentials })
         .then(res => res.data),
-    signin: (credentials: ISignInCredentials) =>
+    signIn: (credentials: ISignInCredentials) =>
       axiosInstance
-        .post(END_POINTS.auth.signin, { ...credentials })
+        .post(END_POINTS.auth.signIn, { ...credentials })
         .then(res => res.data),
   },
 };

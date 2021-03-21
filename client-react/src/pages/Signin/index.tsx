@@ -1,2 +1,2 @@
-export { default as Signin } from './Signin';
-export type { TProps } from './Signin';
+export { default as SignIn } from './SignIn';
+export type { TProps } from './SignIn';

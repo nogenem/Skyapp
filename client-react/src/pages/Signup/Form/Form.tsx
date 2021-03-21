@@ -21,7 +21,7 @@ import type { ISignUpCredentials } from '~/redux/user/types';
 
 import useStyles from './useStyles';
 
-const FORM_ID = 'signup-form';
+const FORM_ID = 'sign-up-form';
 
 interface IOwnProps {
   submit: (data: ISignUpCredentials) => Promise<void>;
