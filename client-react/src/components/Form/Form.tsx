@@ -1,5 +1,7 @@
 import React from 'react';
 
+import handleServerErrors from '~/utils/handleServerErrors';
+
 import { Spinner } from '../Spinner';
 
 interface IErrors {
@@ -87,9 +89,10 @@ function Form<D>({
         }
       } catch (err) {
         if (isMounted.current) {
+          const serverErrors = handleServerErrors(err);
           setState({
             loading: false,
-            errors: err,
+            errors: serverErrors,
           });
         }
       }
