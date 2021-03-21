@@ -6,6 +6,6 @@ import { auth } from '../validators';
 
 const routes = express.Router();
 
-routes.post('/auth/signup', validate(auth.signup), AuthController.signup);
+routes.post('/auth/signup', validate(auth.signUp), AuthController.signUp);
 
 export default routes;

@@ -7,7 +7,7 @@ import getHostName from '~/utils/getHostName';
 import handleErrors from '~/utils/handleErrors';
 
 export default {
-  async signup(req: Request, res: Response): Promise<Response<unknown>> {
+  async signUp(req: Request, res: Response): Promise<Response<unknown>> {
     const { nickname, email, password } = req.body;
 
     const host = getHostName(req.headers);

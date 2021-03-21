@@ -11,7 +11,7 @@ import {
 } from '../constants/validation_limits';
 
 const auth = {
-  signup: [
+  signUp: [
     body('nickname')
       .trim()
       .isLength({ min: MIN_NICKNAME_LEN })

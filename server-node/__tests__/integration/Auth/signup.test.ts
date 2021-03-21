@@ -24,7 +24,7 @@ const mockedNodemailer = nodemailer as jest.Mocked<typeof nodemailer>;
 describe('Signup', () => {
   setupDB();
 
-  it('should be able to signup and should send a confirmation email', async () => {
+  it('should be able to sign up and should send a confirmation email', async () => {
     const user: IUser = await factory.attrs('User', {}, { password: '123456' });
 
     const mockedReturn = ({
@@ -44,7 +44,7 @@ describe('Signup', () => {
     expect(userRecord.confirmationToken).toBe(DEFAULT_TOKEN);
   });
 
-  it('should not be able to signup with missing credentials', async () => {
+  it('should not be able to sign up with missing credentials', async () => {
     const user: IUser = await factory.attrs<IUser>('User', { password: '' });
 
     const res = await request.post('/api/auth/signup').send({ ...user });
@@ -54,7 +54,7 @@ describe('Signup', () => {
     expect(userRecord).toBeFalsy();
   });
 
-  it('should not be able to signup with an already existing email', async () => {
+  it('should not be able to sign up with an already existing email', async () => {
     const user1: IUser = await factory.create<IUser>('User', {
       email: 'test@test.com',
     });
