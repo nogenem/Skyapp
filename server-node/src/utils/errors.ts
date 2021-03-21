@@ -1,4 +1,8 @@
-import { INTERNAL_SERVER_ERROR, INVALID_ID } from '../constants/error_messages';
+import {
+  INTERNAL_SERVER_ERROR,
+  INVALID_ID,
+  ROUTE_NOT_FOUND_ERROR,
+} from '../constants/error_messages';
 
 interface IMsgObj<T> {
   [x: string]: T;
@@ -34,3 +38,5 @@ export const invalidIdError = (): CustomError =>
   new CustomError({ global: INVALID_ID });
 export const mongooseErrors = (errs: IMsgObj<string>): CustomError =>
   new CustomError(errs);
+export const routeNotFoundError = (): CustomError =>
+  new CustomError({ global: ROUTE_NOT_FOUND_ERROR }, 404);

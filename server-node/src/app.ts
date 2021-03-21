@@ -3,6 +3,8 @@ import cors from 'cors';
 import express, { Express, Request, Response, NextFunction } from 'express';
 
 import { publicRoutes } from './routes';
+import { routeNotFoundError } from './utils/errors';
+import handleErrors from './utils/handleErrors';
 
 class AppController {
   app: Express;
@@ -13,6 +15,7 @@ class AppController {
     this.generalMiddlewares();
     this.publicRoutes();
     this.exceptionHandler();
+    this.notFoundHandler();
   }
 
   generalMiddlewares(): void {
@@ -29,12 +32,16 @@ class AppController {
     this.app.use(
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       async (err: Error, req: Request, res: Response, _next: NextFunction) => {
-        const { NODE_ENV } = process.env;
-        if (NODE_ENV === 'development') {
-          return res.status(500).json(err);
-        }
+        return handleErrors(err, res);
+      },
+    );
+  }
 
-        return res.status(500).json({ error: 'Internal server error' });
+  notFoundHandler(): void {
+    this.app.use(
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      async (req: Request, res: Response, _next: NextFunction) => {
+        return handleErrors(routeNotFoundError(), res);
       },
     );
   }
