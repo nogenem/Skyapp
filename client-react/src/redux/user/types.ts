@@ -1,8 +1,13 @@
-interface ICredentials {
+interface ISignUpCredentials {
   nickname: string;
   email: string;
   password: string;
   passwordConfirmation: string;
+}
+
+interface ISignInCredentials {
+  email: string;
+  password: string;
 }
 
 interface IUser {
@@ -29,5 +34,11 @@ type TUserAction =
   | IUserActionType<typeof EUserActions.SIGNED_IN, IUser>
   | IUserActionType<typeof EUserActions.SIGNED_OUT, null>;
 
-export type { ICredentials, IUser, TUserState, TUserAction };
+export type {
+  ISignUpCredentials,
+  ISignInCredentials,
+  IUser,
+  TUserState,
+  TUserAction,
+};
 export { EUserActions };

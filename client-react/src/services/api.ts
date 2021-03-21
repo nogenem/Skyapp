@@ -1,10 +1,14 @@
 import axios from 'axios';
 
-import { ICredentials } from '~/redux/user/types';
+import type {
+  ISignUpCredentials,
+  ISignInCredentials,
+} from '~/redux/user/types';
 
 export const END_POINTS = {
   auth: {
     signup: 'api/auth/signup',
+    signin: 'api/auth/signin',
   },
 };
 
@@ -14,9 +18,13 @@ export const axiosInstance = axios.create({
 
 export default {
   auth: {
-    signup: (credentials: ICredentials) =>
+    signup: (credentials: ISignUpCredentials) =>
       axiosInstance
         .post(END_POINTS.auth.signup, { ...credentials })
+        .then(res => res.data),
+    signin: (credentials: ISignInCredentials) =>
+      axiosInstance
+        .post(END_POINTS.auth.signin, { ...credentials })
         .then(res => res.data),
   },
 };

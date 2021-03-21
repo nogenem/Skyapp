@@ -9,14 +9,14 @@ import {
   RouteComponentProps,
 } from '@reach/router';
 
-import { signup as signupAction } from '~/redux/user/actions';
-import type { ISignUpCredentials } from '~/redux/user/types';
+import { signin as signinAction } from '~/redux/user/actions';
+import type { ISignInCredentials } from '~/redux/user/types';
 
 import { Form } from './Form';
 import useStyles from './useStyles';
 
 const mapDispatchToProps = {
-  signup: signupAction,
+  signin: signinAction,
 };
 
 const connector = connect(null, mapDispatchToProps);
@@ -24,11 +24,11 @@ type TPropsFromRedux = ConnectedProps<typeof connector>;
 
 type TProps = RouteComponentProps & TPropsFromRedux;
 
-const Signup = ({ signup }: TProps) => {
+const Signin = ({ signin }: TProps) => {
   const classes = useStyles();
 
-  const submit = async (credentials: ISignUpCredentials) => {
-    await signup(credentials);
+  const submit = async (credentials: ISignInCredentials) => {
+    await signin(credentials);
     navigate('/chat');
   };
 
@@ -40,7 +40,7 @@ const Signup = ({ signup }: TProps) => {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign up
+            Sign in
           </Typography>
 
           <Form submit={submit} />
@@ -65,9 +65,9 @@ const Signup = ({ signup }: TProps) => {
                 color="textPrimary"
                 underline="always"
                 component={ReachLink}
-                to="/signin"
+                to="/signup"
               >
-                Sign In
+                {"Don't have an account? Sign Up"}
               </Link>
             </Grid>
           </Grid>
@@ -78,5 +78,5 @@ const Signup = ({ signup }: TProps) => {
 };
 
 export type { TProps };
-export const UnconnectedSignup = Signup;
-export default connector(Signup);
+export const UnconnectedSignin = Signin;
+export default connector(Signin);

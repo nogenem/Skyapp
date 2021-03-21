@@ -3,7 +3,7 @@ import React from 'react';
 import { CssBaseline } from '@material-ui/core';
 
 import { Router } from '~/components';
-import { Signup } from '~/pages';
+import { Signup, Signin } from '~/pages';
 
 import './styles.css';
 import useStyles from './useStyles';
@@ -17,6 +17,7 @@ function App() {
       <main className={classes.content}>
         <Router>
           <Signup path="/signup" />
+          <Signin path="/signin" />
         </Router>
       </main>
     </>

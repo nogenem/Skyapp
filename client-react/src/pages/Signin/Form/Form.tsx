@@ -13,18 +13,17 @@ import type {
 import {
   INVALID_EMAIL,
   CANT_BE_BLANK,
-  PASSWORDS_MUST_MATCH,
   fieldIsTooShort,
 } from '~/constants/errors';
 import { MIN_PASSWORD_LEN } from '~/constants/validation_limits';
-import type { ISignUpCredentials } from '~/redux/user/types';
+import type { ISignInCredentials } from '~/redux/user/types';
 
 import useStyles from './useStyles';
 
-const FORM_ID = 'signup-form';
+const FORM_ID = 'signin-form';
 
 interface IOwnProps {
-  submit: (data: ISignUpCredentials) => Promise<void>;
+  submit: (data: ISignInCredentials) => Promise<void>;
 }
 
 type TProps = IOwnProps;
@@ -32,17 +31,13 @@ type TProps = IOwnProps;
 function Form({ submit }: TProps) {
   const classes = useStyles();
 
-  const getData = (getInputByName: IGetInputByName): ISignUpCredentials => ({
-    nickname: getInputByName('nickname').value.trim(),
+  const getData = (getInputByName: IGetInputByName): ISignInCredentials => ({
     email: getInputByName('email').value.trim(),
     password: getInputByName('password').value.trim(),
-    passwordConfirmation: getInputByName('passwordConfirmation').value.trim(),
   });
 
-  const validate = (data: ISignUpCredentials) => {
+  const validate = (data: ISignInCredentials) => {
     const errors = {} as IErrors;
-
-    if (!data.nickname) errors.nickname = CANT_BE_BLANK;
 
     if (!isEmail(data.email)) errors.email = INVALID_EMAIL;
 
@@ -50,30 +45,12 @@ function Form({ submit }: TProps) {
     else if (data.password.length < MIN_PASSWORD_LEN)
       errors.password = fieldIsTooShort(MIN_PASSWORD_LEN);
 
-    if (!data.passwordConfirmation) errors.passwordConfirmation = CANT_BE_BLANK;
-    else if (data.passwordConfirmation.length < MIN_PASSWORD_LEN)
-      errors.passwordConfirmation = fieldIsTooShort(MIN_PASSWORD_LEN);
-
-    if (data.password !== data.passwordConfirmation)
-      errors.passwordConfirmation = PASSWORDS_MUST_MATCH;
     return errors;
   };
 
   const renderForm = ({ errors }: TBaseFormState) => (
     <>
       {errors.global && <Alert>{errors.global}</Alert>}
-      <TextField
-        id={`${FORM_ID}-nickname`}
-        name="nickname"
-        label="Nickname"
-        autoComplete="nickname"
-        fullWidth
-        required
-        error={!!errors.nickname}
-        helperText={errors.nickname}
-        variant="outlined"
-        margin="normal"
-      />
       <TextField
         id={`${FORM_ID}-email`}
         name="email"
@@ -100,19 +77,6 @@ function Form({ submit }: TProps) {
         variant="outlined"
         margin="normal"
       />
-      <TextField
-        id={`${FORM_ID}-passwordConfirmation`}
-        name="passwordConfirmation"
-        label="Password Confirmation"
-        autoComplete="passwordConfirmation"
-        type="password"
-        fullWidth
-        required
-        error={!!errors.passwordConfirmation}
-        helperText={errors.passwordConfirmation}
-        variant="outlined"
-        margin="normal"
-      />
 
       <Button
         className={classes.submit}
@@ -121,13 +85,13 @@ function Form({ submit }: TProps) {
         variant="contained"
         color="primary"
       >
-        Sign Up
+        Sign In
       </Button>
     </>
   );
 
   return (
-    <BaseForm<ISignUpCredentials>
+    <BaseForm<ISignInCredentials>
       id={FORM_ID}
       submit={submit}
       getData={getData}
