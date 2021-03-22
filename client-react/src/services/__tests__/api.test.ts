@@ -41,6 +41,7 @@ describe('api', () => {
       const signInCredentials: ISignInCredentials = {
         email: 'test@test.com',
         password: '123456789',
+        rememberMe: false,
       };
       const expectedRet = { user: {} };
       adapter.onPost(END_POINTS.auth.signIn).reply(configs => {

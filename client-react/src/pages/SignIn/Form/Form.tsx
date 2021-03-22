@@ -1,6 +1,11 @@
 import React from 'react';
 
-import { TextField, Button } from '@material-ui/core';
+import {
+  TextField,
+  Button,
+  FormControlLabel,
+  Checkbox,
+} from '@material-ui/core';
 import isEmail from 'validator/lib/isEmail';
 
 import { Alert } from '~/components';
@@ -34,6 +39,7 @@ function Form({ submit }: TProps) {
   const getData = (getInputByName: IGetInputByName): ISignInCredentials => ({
     email: getInputByName('email').value.trim(),
     password: getInputByName('password').value.trim(),
+    rememberMe: getInputByName('remember_me').checked,
   });
 
   const validate = (data: ISignInCredentials) => {
@@ -76,6 +82,10 @@ function Form({ submit }: TProps) {
         helperText={errors.password}
         variant="outlined"
         margin="normal"
+      />
+      <FormControlLabel
+        control={<Checkbox name="remember_me" color="primary" />}
+        label="Remember me"
       />
 
       <Button

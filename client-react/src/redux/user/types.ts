@@ -8,6 +8,7 @@ interface ISignUpCredentials {
 interface ISignInCredentials {
   email: string;
   password: string;
+  rememberMe: boolean;
 }
 
 interface IUser {

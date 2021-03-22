@@ -74,6 +74,7 @@ describe('auth actions', () => {
     const credentials: ISignInCredentials = {
       email: 'test@test.com',
       password: '123456',
+      rememberMe: false,
     };
     const expectedActions = [
       { type: EUserActions.SIGNED_IN, payload: user } as TUserAction,

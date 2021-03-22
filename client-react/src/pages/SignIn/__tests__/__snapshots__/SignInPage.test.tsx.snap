@@ -126,6 +126,44 @@ exports[`SignInPage renders correctly 1`] = `
               </fieldset>
             </div>
           </div>
+          <label
+            class="MuiFormControlLabel-root"
+          >
+            <span
+              aria-disabled="false"
+              class="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-10 MuiCheckbox-root MuiCheckbox-colorPrimary MuiIconButton-colorPrimary"
+            >
+              <span
+                class="MuiIconButton-label"
+              >
+                <input
+                  class="PrivateSwitchBase-input-13"
+                  data-indeterminate="false"
+                  name="remember_me"
+                  type="checkbox"
+                  value=""
+                />
+                <svg
+                  aria-hidden="true"
+                  class="MuiSvgIcon-root"
+                  focusable="false"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
+                  />
+                </svg>
+              </span>
+              <span
+                class="MuiTouchRipple-root"
+              />
+            </span>
+            <span
+              class="MuiTypography-root MuiFormControlLabel-label MuiTypography-body1"
+            >
+              Remember me
+            </span>
+          </label>
           <button
             class="MuiButtonBase-root MuiButton-root MuiButton-contained makeStyles-submit-5 MuiButton-containedPrimary MuiButton-fullWidth"
             tabindex="0"
