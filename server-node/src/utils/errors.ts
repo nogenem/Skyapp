@@ -2,6 +2,7 @@ import {
   INTERNAL_SERVER_ERROR,
   INVALID_ID,
   ROUTE_NOT_FOUND_ERROR,
+  INVALID_CREDENTIALS,
 } from '../constants/error_messages';
 
 interface IMsgObj<T> {
@@ -32,11 +33,18 @@ export class CustomError extends Error {
 
 export const validatorErrors = (errs: IMsgObj<TMsgObjTypes>): CustomError =>
   new CustomError(errs);
+
 export const internalServerError = (): CustomError =>
   new CustomError({ global: INTERNAL_SERVER_ERROR }, 500);
+
 export const invalidIdError = (): CustomError =>
   new CustomError({ global: INVALID_ID });
+
 export const mongooseErrors = (errs: IMsgObj<string>): CustomError =>
   new CustomError(errs);
+
 export const routeNotFoundError = (): CustomError =>
   new CustomError({ global: ROUTE_NOT_FOUND_ERROR }, 404);
+
+export const invalidCredentialsError = (): CustomError =>
+  new CustomError({ global: INVALID_CREDENTIALS });

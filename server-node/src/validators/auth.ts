@@ -26,6 +26,13 @@ const auth = {
       .custom((value, { req }) => value === req.body.password.trim())
       .withMessage(PASSWORDS_MUST_MATCH),
   ],
+  signIn: [
+    body('email').trim().isEmail().withMessage(INVALID_EMAIL),
+    body('password')
+      .trim()
+      .isLength({ min: MIN_PASSWORD_LEN })
+      .withMessage(fieldIsTooShort(MIN_PASSWORD_LEN)),
+  ],
 };
 
 export default auth;
