@@ -6,6 +6,7 @@ import { EUserActions } from './types';
 import type {
   ISignUpCredentials,
   ISignInCredentials,
+  IConfirmationCredentials,
   IUser,
   TUserAction,
 } from './types';
@@ -28,5 +29,12 @@ export const signIn = (credentials: ISignInCredentials) => (
   dispatch: Dispatch,
 ) =>
   api.auth.signIn(credentials).then(({ user }) => {
+    userSignedIn(user)(dispatch);
+  });
+
+export const confirmation = (credentials: IConfirmationCredentials) => (
+  dispatch: Dispatch,
+) =>
+  api.auth.confirmation(credentials).then(({ user }) => {
     userSignedIn(user)(dispatch);
   });

@@ -3,17 +3,20 @@ import thunk from 'redux-thunk';
 
 import api from '~/services/api';
 
-import { userSignedIn, signUp, signIn } from '../actions';
+import { userSignedIn, signUp, signIn, confirmation } from '../actions';
 import { EUserActions } from '../types';
 import type {
   IUser,
   TUserAction,
   ISignUpCredentials,
   ISignInCredentials,
+  IConfirmationCredentials,
 } from '../types';
 
 const middlewares = [thunk];
 const mockStore = configureStore(middlewares);
+
+const VALID_TOKEN = '123456789';
 
 describe('auth actions', () => {
   it('userSignedIn', async () => {
@@ -40,7 +43,7 @@ describe('auth actions', () => {
       nickname: 'test',
       email: 'test@test.com',
       confirmed: false,
-      token: '123456789',
+      token: VALID_TOKEN,
     };
     const credentials: ISignUpCredentials = {
       nickname: 'test',
@@ -69,7 +72,7 @@ describe('auth actions', () => {
       nickname: 'test',
       email: 'test@test.com',
       confirmed: false,
-      token: '123456789',
+      token: VALID_TOKEN,
     };
     const credentials: ISignInCredentials = {
       email: 'test@test.com',
@@ -86,6 +89,34 @@ describe('auth actions', () => {
     const store = mockStore({});
 
     await signIn(credentials)(store.dispatch);
+
+    expect(spy).toHaveBeenCalledWith(credentials);
+    expect(store.getActions()).toEqual(expectedActions);
+  });
+
+  it('confirmation', async () => {
+    const user: IUser = {
+      _id: '1',
+      nickname: 'test',
+      email: 'test@test.com',
+      confirmed: false,
+      token: VALID_TOKEN,
+    };
+    const credentials: IConfirmationCredentials = {
+      token: VALID_TOKEN,
+    };
+    const expectedActions = [
+      { type: EUserActions.SIGNED_IN, payload: user } as TUserAction,
+    ];
+    const spy = jest
+      .spyOn(api.auth, 'confirmation')
+      .mockImplementationOnce(() => {
+        return Promise.resolve({ user });
+      });
+
+    const store = mockStore({});
+
+    await confirmation(credentials)(store.dispatch);
 
     expect(spy).toHaveBeenCalledWith(credentials);
     expect(store.getActions()).toEqual(expectedActions);

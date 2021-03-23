@@ -11,6 +11,10 @@ interface ISignInCredentials {
   rememberMe: boolean;
 }
 
+interface IConfirmationCredentials {
+  token: string;
+}
+
 interface IUser {
   _id: string;
   nickname: string;
@@ -38,6 +42,7 @@ type TUserAction =
 export type {
   ISignUpCredentials,
   ISignInCredentials,
+  IConfirmationCredentials,
   IUser,
   TUserState,
   TUserAction,

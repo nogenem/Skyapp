@@ -3,9 +3,12 @@ import MockAdapter from 'axios-mock-adapter';
 import type {
   ISignUpCredentials,
   ISignInCredentials,
+  IConfirmationCredentials,
 } from '~/redux/user/types';
 
 import api, { axiosInstance, END_POINTS } from '../api';
+
+const VALID_TOKEN = '123456789';
 
 describe('api', () => {
   const adapter = new MockAdapter(axiosInstance);
@@ -51,6 +54,23 @@ describe('api', () => {
       });
 
       const ret = await api.auth.signIn(signInCredentials);
+      expect(ret).toEqual(expectedRet);
+    });
+
+    it('.confirmation', async () => {
+      expect.assertions(2);
+
+      const confirmationCredentials: IConfirmationCredentials = {
+        token: VALID_TOKEN,
+      };
+      const expectedRet = { user: {} };
+      adapter.onPost(END_POINTS.auth.confirmation).reply(configs => {
+        // axios-mock-adapter uses stringify on the data ;/
+        expect(JSON.stringify(confirmationCredentials)).toBe(configs.data);
+        return [200, expectedRet];
+      });
+
+      const ret = await api.auth.confirmation(confirmationCredentials);
       expect(ret).toEqual(expectedRet);
     });
   });
