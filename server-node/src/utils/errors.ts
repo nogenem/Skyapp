@@ -3,6 +3,7 @@ import {
   INVALID_ID,
   ROUTE_NOT_FOUND_ERROR,
   INVALID_CREDENTIALS,
+  INVALID_EXPIRED_TOKEN,
 } from '../constants/error_messages';
 
 interface IMsgObj<T> {
@@ -48,3 +49,6 @@ export const routeNotFoundError = (): CustomError =>
 
 export const invalidCredentialsError = (): CustomError =>
   new CustomError({ global: INVALID_CREDENTIALS });
+
+export const invalidOrExpiredTokenError = (): CustomError =>
+  new CustomError({ global: INVALID_EXPIRED_TOKEN });

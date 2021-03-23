@@ -1,5 +1,7 @@
 import { body } from 'express-validator';
 
+import { invalidOrExpiredTokenError } from '~/utils/errors';
+
 import {
   INVALID_EMAIL,
   PASSWORDS_MUST_MATCH,
@@ -32,6 +34,13 @@ const auth = {
       .trim()
       .isLength({ min: MIN_PASSWORD_LEN })
       .withMessage(fieldIsTooShort(MIN_PASSWORD_LEN)),
+  ],
+  confirmation: [
+    body('token')
+      .trim()
+      .not()
+      .isEmpty()
+      .withMessage(invalidOrExpiredTokenError()),
   ],
 };
 

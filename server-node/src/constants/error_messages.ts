@@ -7,3 +7,4 @@ export const EMAIL_ALREADY_TAKEN = 'This email is already taken';
 export const INVALID_ID = 'Invalid id';
 export const ROUTE_NOT_FOUND_ERROR = 'Route not found';
 export const INVALID_CREDENTIALS = 'Invalid credentials';
+export const INVALID_EXPIRED_TOKEN = 'Invalid or expired token';

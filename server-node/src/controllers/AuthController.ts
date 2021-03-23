@@ -1,9 +1,17 @@
 import { Request, Response } from 'express';
+import jwt from 'jsonwebtoken';
 
-import { USER_CREATED, SIGNIN_SUCCESS } from '~/constants/return_messages';
+import {
+  USER_CREATED,
+  SIGNIN_SUCCESS,
+  ACC_CONFIRMED,
+} from '~/constants/return_messages';
 import { sendConfirmationEmail } from '~/mailer';
 import { User } from '~/models';
-import { invalidCredentialsError } from '~/utils/errors';
+import {
+  invalidCredentialsError,
+  invalidOrExpiredTokenError,
+} from '~/utils/errors';
 import getHostName from '~/utils/getHostName';
 import handleErrors from '~/utils/handleErrors';
 
@@ -18,6 +26,10 @@ interface ISignInCredentials {
   email: string;
   password: string;
   rememberMe: boolean;
+}
+
+interface IConfirmationCredentials {
+  token: string;
 }
 
 export default {
@@ -57,6 +69,38 @@ export default {
       return handleErrors(err, res);
     }
   },
+  async confirmation(req: Request, res: Response): Promise<Response<unknown>> {
+    const { token } = req.body as IConfirmationCredentials;
+
+    try {
+      jwt.verify(token, process.env.JWT_SECRET);
+    } catch (err) {
+      return handleErrors(invalidOrExpiredTokenError(), res);
+    }
+
+    try {
+      const user = await User.findOneAndUpdate(
+        { confirmationToken: token },
+        { confirmationToken: '', confirmed: true },
+        { new: true },
+      );
+
+      if (user) {
+        return res.json({
+          message: ACC_CONFIRMED,
+          user: user.toAuthJSON(),
+        });
+      }
+
+      return handleErrors(invalidOrExpiredTokenError(), res);
+    } catch (err) {
+      return handleErrors(err, res);
+    }
+  },
 };
 
-export type { ISignInCredentials, ISignUpCredentials };
+export type {
+  ISignInCredentials,
+  ISignUpCredentials,
+  IConfirmationCredentials,
+};
