@@ -38,3 +38,7 @@ export const confirmation = (credentials: IConfirmationCredentials) => (
   api.auth.confirmation(credentials).then(({ user }) => {
     userSignedIn(user)(dispatch);
   });
+
+export const resendConfirmationEmail = (
+  credentials: IConfirmationCredentials,
+) => () => api.auth.resendConfirmationEmail(credentials);

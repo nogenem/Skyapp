@@ -3,7 +3,13 @@ import thunk from 'redux-thunk';
 
 import api from '~/services/api';
 
-import { userSignedIn, signUp, signIn, confirmation } from '../actions';
+import {
+  userSignedIn,
+  signUp,
+  signIn,
+  confirmation,
+  resendConfirmationEmail,
+} from '../actions';
 import { EUserActions } from '../types';
 import type {
   IUser,
@@ -120,5 +126,21 @@ describe('auth actions', () => {
 
     expect(spy).toHaveBeenCalledWith(credentials);
     expect(store.getActions()).toEqual(expectedActions);
+  });
+
+  it('resendConfirmationEmail', async () => {
+    const message = 'success';
+    const credentials: IConfirmationCredentials = {
+      token: VALID_TOKEN,
+    };
+    const spy = jest
+      .spyOn(api.auth, 'resendConfirmationEmail')
+      .mockImplementationOnce(() => {
+        return Promise.resolve({ message });
+      });
+
+    await resendConfirmationEmail(credentials)();
+
+    expect(spy).toHaveBeenCalledWith(credentials);
   });
 });

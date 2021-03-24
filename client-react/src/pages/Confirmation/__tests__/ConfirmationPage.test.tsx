@@ -2,7 +2,11 @@ import React from 'react';
 import { Provider } from 'react-redux';
 
 import * as router from '@reach/router';
-import { render, waitForElementToBeRemoved } from '@testing-library/react';
+import {
+  render,
+  waitForElementToBeRemoved,
+  fireEvent,
+} from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
@@ -88,10 +92,12 @@ describe('Unconnected ConfirmationPage', () => {
     ) => {}) as router.NavigateFn;
     const spy = jest.spyOn(router, 'navigate').mockImplementationOnce(mockFunc);
     const confirmation = jest.fn(() => Promise.resolve());
+    const resendConfirmationEmail = jest.fn(() => Promise.resolve());
 
     const { container, queryByTestId } = render(
       <UnconnectedConfirmationPage
         confirmation={confirmation}
+        resendConfirmationEmail={resendConfirmationEmail}
         token={credentials.token}
       />,
     );
@@ -116,9 +122,12 @@ describe('Unconnected ConfirmationPage', () => {
         }),
       ),
     );
+    const resendConfirmationEmail = jest.fn(() => Promise.resolve());
+
     const { container, getByRole, queryByTestId } = render(
       <UnconnectedConfirmationPage
         confirmation={confirmation}
+        resendConfirmationEmail={resendConfirmationEmail}
         token={credentials.token}
       />,
     );
@@ -131,6 +140,88 @@ describe('Unconnected ConfirmationPage', () => {
 
     expect(confirmation).toHaveBeenCalledTimes(1);
     expect(confirmation).toHaveBeenCalledWith(credentials);
+    expect(alert).toHaveTextContent(/invalid token/i);
+  });
+
+  it('Trys to resend confirmation email and shows primary alert', async () => {
+    const credentials: IConfirmationCredentials = { token: INVALID_TOKEN };
+
+    const confirmation = jest.fn(() =>
+      Promise.reject(
+        mockServerResponse({
+          global: 'Invalid token',
+        }),
+      ),
+    );
+    const resendConfirmationEmail = jest.fn(() => Promise.resolve());
+
+    const { container, getByRole, queryByTestId, getByText } = render(
+      <UnconnectedConfirmationPage
+        confirmation={confirmation}
+        resendConfirmationEmail={resendConfirmationEmail}
+        token={credentials.token}
+      />,
+    );
+
+    await waitForElementToBeRemoved(() => queryByTestId(/spinner_div/i), {
+      container: container as HTMLElement,
+    }); // wait for the Spinner to disappear
+
+    fireEvent.click(getByText(/resend confirmation email/i));
+
+    await waitForElementToBeRemoved(() => queryByTestId(/spinner_div/i), {
+      container: container as HTMLElement,
+    }); // wait for the Spinner to disappear
+
+    const alert = getByRole('alert');
+
+    expect(resendConfirmationEmail).toHaveBeenCalledTimes(1);
+    expect(resendConfirmationEmail).toHaveBeenCalledWith(credentials);
+    expect(alert).toHaveTextContent(
+      /the confirmation email was resend! please check your email\./i,
+    );
+  });
+
+  it('Trys to resend confirmation email and shows error alert', async () => {
+    const credentials: IConfirmationCredentials = { token: INVALID_TOKEN };
+
+    const confirmation = jest.fn(() =>
+      Promise.reject(
+        mockServerResponse({
+          global: 'Invalid token',
+        }),
+      ),
+    );
+    const resendConfirmationEmail = jest.fn(() =>
+      Promise.reject(
+        mockServerResponse({
+          global: 'Invalid token',
+        }),
+      ),
+    );
+
+    const { container, getByRole, queryByTestId, getByText } = render(
+      <UnconnectedConfirmationPage
+        confirmation={confirmation}
+        resendConfirmationEmail={resendConfirmationEmail}
+        token={credentials.token}
+      />,
+    );
+
+    await waitForElementToBeRemoved(() => queryByTestId(/spinner_div/i), {
+      container: container as HTMLElement,
+    }); // wait for the Spinner to disappear
+
+    fireEvent.click(getByText(/resend confirmation email/i));
+
+    await waitForElementToBeRemoved(() => queryByTestId(/spinner_div/i), {
+      container: container as HTMLElement,
+    }); // wait for the Spinner to disappear
+
+    const alert = getByRole('alert');
+
+    expect(resendConfirmationEmail).toHaveBeenCalledTimes(1);
+    expect(resendConfirmationEmail).toHaveBeenCalledWith(credentials);
     expect(alert).toHaveTextContent(/invalid token/i);
   });
 });

@@ -73,5 +73,24 @@ describe('api', () => {
       const ret = await api.auth.confirmation(confirmationCredentials);
       expect(ret).toEqual(expectedRet);
     });
+
+    it('.resendConfirmationEmail', async () => {
+      expect.assertions(2);
+
+      const resendEmailCredentials: IConfirmationCredentials = {
+        token: VALID_TOKEN,
+      };
+      const expectedRet = { message: 'success' };
+      adapter.onPost(END_POINTS.auth.resendConfirmationEmail).reply(configs => {
+        // axios-mock-adapter uses stringify on the data ;/
+        expect(JSON.stringify(resendEmailCredentials)).toBe(configs.data);
+        return [200, expectedRet];
+      });
+
+      const ret = await api.auth.resendConfirmationEmail(
+        resendEmailCredentials,
+      );
+      expect(ret).toEqual(expectedRet);
+    });
   });
 });

@@ -11,6 +11,7 @@ export const END_POINTS = {
     signUp: 'api/auth/signup',
     signIn: 'api/auth/signin',
     confirmation: 'api/auth/confirmation',
+    resendConfirmationEmail: 'api/auth/resend_confirmation_email',
   },
 };
 
@@ -31,6 +32,10 @@ export default {
     confirmation: (credentials: IConfirmationCredentials) =>
       axiosInstance
         .post(END_POINTS.auth.confirmation, { ...credentials })
+        .then(res => res.data),
+    resendConfirmationEmail: (credentials: IConfirmationCredentials) =>
+      axiosInstance
+        .post(END_POINTS.auth.resendConfirmationEmail, { ...credentials })
         .then(res => res.data),
   },
 };
