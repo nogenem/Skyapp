@@ -42,6 +42,13 @@ const auth = {
       .isEmpty()
       .withMessage(invalidOrExpiredTokenError()),
   ],
+  resend_confirmation_email: [
+    body('token')
+      .trim()
+      .not()
+      .isEmpty()
+      .withMessage(invalidOrExpiredTokenError()),
+  ],
 };
 
 export default auth;

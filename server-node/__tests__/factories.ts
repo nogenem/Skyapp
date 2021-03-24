@@ -15,6 +15,8 @@ factory.define(
       password: pass, // virtual
       passwordConfirmation: pass, // virtual
       passwordHash: pass,
+      confirmationToken: '',
+      confirmed: false,
     };
   },
 );

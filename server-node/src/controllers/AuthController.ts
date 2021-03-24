@@ -5,6 +5,7 @@ import {
   USER_CREATED,
   SIGNIN_SUCCESS,
   ACC_CONFIRMED,
+  CONFIRMATION_EMAIL_WAS_RESEND,
 } from '~/constants/return_messages';
 import { sendConfirmationEmail } from '~/mailer';
 import { User } from '~/models';
@@ -89,6 +90,31 @@ export default {
         return res.json({
           message: ACC_CONFIRMED,
           user: user.toAuthJSON(),
+        });
+      }
+
+      return handleErrors(invalidOrExpiredTokenError(), res);
+    } catch (err) {
+      return handleErrors(err, res);
+    }
+  },
+  async resend_confirmation_email(
+    req: Request,
+    res: Response,
+  ): Promise<Response<unknown>> {
+    const { token } = req.body as IConfirmationCredentials;
+    const host = getHostName(req.headers);
+
+    try {
+      const user = await User.findOne({ confirmationToken: token });
+
+      if (user) {
+        user.setConfirmationToken();
+
+        const userRecord = await user.save();
+        sendConfirmationEmail(userRecord, host);
+        return res.status(200).json({
+          message: CONFIRMATION_EMAIL_WAS_RESEND,
         });
       }
 
