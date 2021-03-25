@@ -11,7 +11,7 @@ import {
   confirmation as confirmationAction,
   resendConfirmationEmail as resendConfirmationEmailAction,
 } from '~/redux/user/actions';
-import type { IConfirmationCredentials } from '~/redux/user/types';
+import type { ITokenCredentials } from '~/redux/user/types';
 import handleServerErrors from '~/utils/handleServerErrors';
 
 import useStyles from './useStyles';
@@ -65,7 +65,7 @@ const Confirmation = ({
   const handleResendEmail = async () => {
     try {
       setState({ resendingEmail: STATES.SENDING, errors: {} });
-      const credentials: IConfirmationCredentials = {
+      const credentials: ITokenCredentials = {
         token: token as string,
       };
       await resendConfirmationEmail(credentials);
@@ -88,7 +88,7 @@ const Confirmation = ({
   React.useEffect(() => {
     async function confirm() {
       try {
-        const credentials: IConfirmationCredentials = {
+        const credentials: ITokenCredentials = {
           token: token as string,
         };
         await confirmation(credentials);

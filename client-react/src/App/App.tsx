@@ -1,15 +1,46 @@
 import React from 'react';
+import { connect, ConnectedProps } from 'react-redux';
 
 import { CssBaseline } from '@material-ui/core';
+import { RouteComponentProps } from '@reach/router';
 
-import { Router } from '~/components';
+import { Router, Spinner } from '~/components';
+import { LOCAL_STORAGE_TOKEN } from '~/constants/localStorageKeys';
 import { SignUp, SignIn, Confirmation } from '~/pages';
+import { validateToken as validateTokenAction } from '~/redux/user/actions';
 
 import './styles.css';
 import useStyles from './useStyles';
 
-function App() {
+const mapDispatchToProps = {
+  validateToken: validateTokenAction,
+};
+
+const connector = connect(null, mapDispatchToProps);
+type TPropsFromRedux = ConnectedProps<typeof connector>;
+
+type TProps = RouteComponentProps & TPropsFromRedux;
+
+function App({ validateToken }: TProps) {
+  const [loading, setLoading] = React.useState(true);
   const classes = useStyles();
+
+  React.useEffect(() => {
+    async function signin() {
+      const token = localStorage.getItem(LOCAL_STORAGE_TOKEN);
+      if (!token) return false;
+      try {
+        await validateToken({ token });
+      } catch (err) {
+        if (process.env.NODE_ENV !== 'test') console.error(err);
+      }
+      return false;
+    }
+
+    signin().then(() => setLoading(false));
+  }, [validateToken]);
+
+  if (loading) return <Spinner show />;
 
   return (
     <>
@@ -25,4 +56,6 @@ function App() {
   );
 }
 
-export default App;
+export type { TProps };
+export const UnconnectedApp = App;
+export default connector(App);

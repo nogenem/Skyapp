@@ -1,17 +1,20 @@
 import { Dispatch } from 'redux';
 
+import { LOCAL_STORAGE_TOKEN } from '~/constants/localStorageKeys';
 import api from '~/services/api';
 
 import { EUserActions } from './types';
 import type {
   ISignUpCredentials,
   ISignInCredentials,
-  IConfirmationCredentials,
+  ITokenCredentials,
   IUser,
   TUserAction,
 } from './types';
 
 export const userSignedIn = (user: IUser) => (dispatch: Dispatch) => {
+  localStorage.setItem(LOCAL_STORAGE_TOKEN, user.token as string);
+
   dispatch<TUserAction>({
     type: EUserActions.SIGNED_IN,
     payload: user,
@@ -32,13 +35,19 @@ export const signIn = (credentials: ISignInCredentials) => (
     userSignedIn(user)(dispatch);
   });
 
-export const confirmation = (credentials: IConfirmationCredentials) => (
+export const confirmation = (credentials: ITokenCredentials) => (
   dispatch: Dispatch,
 ) =>
   api.auth.confirmation(credentials).then(({ user }) => {
     userSignedIn(user)(dispatch);
   });
 
-export const resendConfirmationEmail = (
-  credentials: IConfirmationCredentials,
-) => () => api.auth.resendConfirmationEmail(credentials);
+export const resendConfirmationEmail = (credentials: ITokenCredentials) => () =>
+  api.auth.resendConfirmationEmail(credentials);
+
+export const validateToken = (credentials: ITokenCredentials) => (
+  dispatch: Dispatch,
+) =>
+  api.auth.validateToken(credentials).then(({ decodedData }) => {
+    userSignedIn({ ...decodedData, token: credentials.token })(dispatch);
+  });

@@ -11,7 +11,7 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
 import type { IAppState } from '~/redux/store';
-import { IConfirmationCredentials } from '~/redux/user/types';
+import { ITokenCredentials } from '~/redux/user/types';
 import type {
   IServerErrorsObject,
   IPartialAxiosError,
@@ -84,7 +84,7 @@ describe('Unconnected ConfirmationPage', () => {
   });
 
   it('Trys to confirm valid token and navigates to `/chat`', async () => {
-    const credentials: IConfirmationCredentials = { token: VALID_TOKEN };
+    const credentials: ITokenCredentials = { token: VALID_TOKEN };
 
     const mockFunc = (async (
       to: string,
@@ -113,7 +113,7 @@ describe('Unconnected ConfirmationPage', () => {
   });
 
   it('Trys to confirm invalid token and shows error alert', async () => {
-    const credentials: IConfirmationCredentials = { token: INVALID_TOKEN };
+    const credentials: ITokenCredentials = { token: INVALID_TOKEN };
 
     const confirmation = jest.fn(() =>
       Promise.reject(
@@ -144,7 +144,7 @@ describe('Unconnected ConfirmationPage', () => {
   });
 
   it('Trys to resend confirmation email and shows primary alert', async () => {
-    const credentials: IConfirmationCredentials = { token: INVALID_TOKEN };
+    const credentials: ITokenCredentials = { token: INVALID_TOKEN };
 
     const confirmation = jest.fn(() =>
       Promise.reject(
@@ -183,7 +183,7 @@ describe('Unconnected ConfirmationPage', () => {
   });
 
   it('Trys to resend confirmation email and shows error alert', async () => {
-    const credentials: IConfirmationCredentials = { token: INVALID_TOKEN };
+    const credentials: ITokenCredentials = { token: INVALID_TOKEN };
 
     const confirmation = jest.fn(() =>
       Promise.reject(

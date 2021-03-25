@@ -3,7 +3,7 @@ import axios from 'axios';
 import type {
   ISignUpCredentials,
   ISignInCredentials,
-  IConfirmationCredentials,
+  ITokenCredentials,
 } from '~/redux/user/types';
 
 export const END_POINTS = {
@@ -12,6 +12,7 @@ export const END_POINTS = {
     signIn: 'api/auth/signin',
     confirmation: 'api/auth/confirmation',
     resendConfirmationEmail: 'api/auth/resend_confirmation_email',
+    validateToken: 'api/auth/validate_token',
   },
 };
 
@@ -29,13 +30,17 @@ export default {
       axiosInstance
         .post(END_POINTS.auth.signIn, { ...credentials })
         .then(res => res.data),
-    confirmation: (credentials: IConfirmationCredentials) =>
+    confirmation: (credentials: ITokenCredentials) =>
       axiosInstance
         .post(END_POINTS.auth.confirmation, { ...credentials })
         .then(res => res.data),
-    resendConfirmationEmail: (credentials: IConfirmationCredentials) =>
+    resendConfirmationEmail: (credentials: ITokenCredentials) =>
       axiosInstance
         .post(END_POINTS.auth.resendConfirmationEmail, { ...credentials })
+        .then(res => res.data),
+    validateToken: (credentials: ITokenCredentials) =>
+      axiosInstance
+        .post(END_POINTS.auth.validateToken, { ...credentials })
         .then(res => res.data),
   },
 };

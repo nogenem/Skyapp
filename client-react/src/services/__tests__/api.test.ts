@@ -3,7 +3,7 @@ import MockAdapter from 'axios-mock-adapter';
 import type {
   ISignUpCredentials,
   ISignInCredentials,
-  IConfirmationCredentials,
+  ITokenCredentials,
 } from '~/redux/user/types';
 
 import api, { axiosInstance, END_POINTS } from '../api';
@@ -60,7 +60,7 @@ describe('api', () => {
     it('.confirmation', async () => {
       expect.assertions(2);
 
-      const confirmationCredentials: IConfirmationCredentials = {
+      const confirmationCredentials: ITokenCredentials = {
         token: VALID_TOKEN,
       };
       const expectedRet = { user: {} };
@@ -77,7 +77,7 @@ describe('api', () => {
     it('.resendConfirmationEmail', async () => {
       expect.assertions(2);
 
-      const resendEmailCredentials: IConfirmationCredentials = {
+      const resendEmailCredentials: ITokenCredentials = {
         token: VALID_TOKEN,
       };
       const expectedRet = { message: 'success' };
@@ -90,6 +90,23 @@ describe('api', () => {
       const ret = await api.auth.resendConfirmationEmail(
         resendEmailCredentials,
       );
+      expect(ret).toEqual(expectedRet);
+    });
+
+    it('.validateToken', async () => {
+      expect.assertions(2);
+
+      const validateTokenCredentials: ITokenCredentials = {
+        token: VALID_TOKEN,
+      };
+      const expectedRet = { decodedData: {} };
+      adapter.onPost(END_POINTS.auth.validateToken).reply(configs => {
+        // axios-mock-adapter uses stringify on the data ;/
+        expect(JSON.stringify(validateTokenCredentials)).toBe(configs.data);
+        return [200, expectedRet];
+      });
+
+      const ret = await api.auth.validateToken(validateTokenCredentials);
       expect(ret).toEqual(expectedRet);
     });
   });

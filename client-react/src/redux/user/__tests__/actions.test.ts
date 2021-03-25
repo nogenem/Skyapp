@@ -1,6 +1,7 @@
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
+import { LOCAL_STORAGE_TOKEN } from '~/constants/localStorageKeys';
 import api from '~/services/api';
 
 import {
@@ -9,6 +10,7 @@ import {
   signIn,
   confirmation,
   resendConfirmationEmail,
+  validateToken,
 } from '../actions';
 import { EUserActions } from '../types';
 import type {
@@ -16,7 +18,7 @@ import type {
   TUserAction,
   ISignUpCredentials,
   ISignInCredentials,
-  IConfirmationCredentials,
+  ITokenCredentials,
 } from '../types';
 
 const middlewares = [thunk];
@@ -31,8 +33,8 @@ describe('auth actions', () => {
       nickname: 'test',
       email: 'test@test.com',
       confirmed: false,
+      token: VALID_TOKEN,
     };
-
     const expectedActions = [
       { type: EUserActions.SIGNED_IN, payload: user } as TUserAction,
     ];
@@ -41,6 +43,7 @@ describe('auth actions', () => {
     userSignedIn(user)(store.dispatch);
 
     expect(store.getActions()).toEqual(expectedActions);
+    expect(localStorage.getItem(LOCAL_STORAGE_TOKEN)).toBe(user.token);
   });
 
   it('signUp', async () => {
@@ -108,7 +111,7 @@ describe('auth actions', () => {
       confirmed: false,
       token: VALID_TOKEN,
     };
-    const credentials: IConfirmationCredentials = {
+    const credentials: ITokenCredentials = {
       token: VALID_TOKEN,
     };
     const expectedActions = [
@@ -130,7 +133,7 @@ describe('auth actions', () => {
 
   it('resendConfirmationEmail', async () => {
     const message = 'success';
-    const credentials: IConfirmationCredentials = {
+    const credentials: ITokenCredentials = {
       token: VALID_TOKEN,
     };
     const spy = jest
@@ -142,5 +145,33 @@ describe('auth actions', () => {
     await resendConfirmationEmail(credentials)();
 
     expect(spy).toHaveBeenCalledWith(credentials);
+  });
+
+  it('validateToken', async () => {
+    const user: IUser = {
+      _id: '1',
+      nickname: 'test',
+      email: 'test@test.com',
+      confirmed: false,
+      token: VALID_TOKEN,
+    };
+    const credentials: ITokenCredentials = {
+      token: VALID_TOKEN,
+    };
+    const expectedActions = [
+      { type: EUserActions.SIGNED_IN, payload: user } as TUserAction,
+    ];
+    const spy = jest
+      .spyOn(api.auth, 'validateToken')
+      .mockImplementationOnce(() => {
+        return Promise.resolve({ decodedData: user });
+      });
+
+    const store = mockStore({});
+
+    await validateToken(credentials)(store.dispatch);
+
+    expect(spy).toHaveBeenCalledWith(credentials);
+    expect(store.getActions()).toEqual(expectedActions);
   });
 });
