@@ -42,7 +42,7 @@ const auth = {
       .isEmpty()
       .withMessage(invalidOrExpiredTokenError()),
   ],
-  resend_confirmation_email: [
+  resendConfirmationEmail: [
     body('token')
       .trim()
       .not()

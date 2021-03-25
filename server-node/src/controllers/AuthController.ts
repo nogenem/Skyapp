@@ -98,7 +98,7 @@ export default {
       return handleErrors(err, res);
     }
   },
-  async resend_confirmation_email(
+  async resendConfirmationEmail(
     req: Request,
     res: Response,
   ): Promise<Response<unknown>> {

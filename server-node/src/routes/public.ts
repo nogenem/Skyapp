@@ -15,8 +15,8 @@ routes.post(
 );
 routes.post(
   '/auth/resend_confirmation_email',
-  validate(auth.resend_confirmation_email),
-  AuthController.resend_confirmation_email,
+  validate(auth.resendConfirmationEmail),
+  AuthController.resendConfirmationEmail,
 );
 
 export default routes;
