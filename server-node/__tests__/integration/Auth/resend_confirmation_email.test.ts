@@ -2,7 +2,7 @@ import nodemailer, { Transporter } from 'nodemailer';
 import supertest from 'supertest';
 
 import app from '~/app';
-import type { IConfirmationCredentials } from '~/controllers';
+import type { ITokenCredentials } from '~/controllers';
 import { User } from '~/models';
 import type { IUser, IUserDoc } from '~/models';
 
@@ -26,7 +26,7 @@ describe('Resend_Confirmation_Email', () => {
 
   it('should be able to resend a confirmation email', async () => {
     await factory.create<IUser>('User', { confirmationToken: VALID_TOKEN }, {});
-    const credentials: IConfirmationCredentials = {
+    const credentials: ITokenCredentials = {
       token: VALID_TOKEN,
     };
 
@@ -51,7 +51,7 @@ describe('Resend_Confirmation_Email', () => {
 
   it('should not be able to resend a confirmation email with wrong token', async () => {
     await factory.create<IUser>('User', { confirmationToken: VALID_TOKEN }, {});
-    const credentials: IConfirmationCredentials = {
+    const credentials: ITokenCredentials = {
       token: INVALID_TOKEN,
     };
 

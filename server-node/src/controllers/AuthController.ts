@@ -6,6 +6,7 @@ import {
   SIGNIN_SUCCESS,
   ACC_CONFIRMED,
   CONFIRMATION_EMAIL_WAS_RESEND,
+  TOKEN_IS_VALID,
 } from '~/constants/return_messages';
 import { sendConfirmationEmail } from '~/mailer';
 import { User } from '~/models';
@@ -29,7 +30,7 @@ interface ISignInCredentials {
   rememberMe: boolean;
 }
 
-interface IConfirmationCredentials {
+interface ITokenCredentials {
   token: string;
 }
 
@@ -71,7 +72,7 @@ export default {
     }
   },
   async confirmation(req: Request, res: Response): Promise<Response<unknown>> {
-    const { token } = req.body as IConfirmationCredentials;
+    const { token } = req.body as ITokenCredentials;
 
     try {
       jwt.verify(token, process.env.JWT_SECRET);
@@ -102,7 +103,7 @@ export default {
     req: Request,
     res: Response,
   ): Promise<Response<unknown>> {
-    const { token } = req.body as IConfirmationCredentials;
+    const { token } = req.body as ITokenCredentials;
     const host = getHostName(req.headers);
 
     try {
@@ -123,10 +124,24 @@ export default {
       return handleErrors(err, res);
     }
   },
+  async validateToken(req: Request, res: Response): Promise<Response<unknown>> {
+    const { token } = req.body as ITokenCredentials;
+
+    try {
+      const decodedData = jwt.verify(token, process.env.JWT_SECRET) as Record<
+        string,
+        unknown
+      >;
+      delete decodedData.iat;
+
+      return res.status(200).json({
+        message: TOKEN_IS_VALID,
+        decodedData,
+      });
+    } catch (err) {
+      return handleErrors(invalidOrExpiredTokenError(), res);
+    }
+  },
 };
 
-export type {
-  ISignInCredentials,
-  ISignUpCredentials,
-  IConfirmationCredentials,
-};
+export type { ISignInCredentials, ISignUpCredentials, ITokenCredentials };

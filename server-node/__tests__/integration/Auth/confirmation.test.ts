@@ -1,7 +1,7 @@
 import supertest from 'supertest';
 
 import app from '~/app';
-import type { IConfirmationCredentials } from '~/controllers';
+import type { ITokenCredentials } from '~/controllers';
 import { User } from '~/models';
 import type { IUserDoc } from '~/models';
 
@@ -28,7 +28,7 @@ describe('Confirmation', () => {
     const user: IUserDoc = await factory.create<IUserDoc>('User', {
       confirmationToken: VALID_TOKEN,
     });
-    const credentials: IConfirmationCredentials = {
+    const credentials: ITokenCredentials = {
       token: user.confirmationToken as string,
     };
 
@@ -44,7 +44,7 @@ describe('Confirmation', () => {
     const user: IUserDoc = await factory.create<IUserDoc>('User', {
       confirmationToken: INVALID_TOKEN,
     });
-    const credentials: IConfirmationCredentials = {
+    const credentials: ITokenCredentials = {
       token: user.confirmationToken as string,
     };
 
@@ -60,7 +60,7 @@ describe('Confirmation', () => {
     const user: IUserDoc = await factory.create<IUserDoc>('User', {
       confirmationToken: VALID_TOKEN,
     });
-    const credentials: IConfirmationCredentials = {
+    const credentials: ITokenCredentials = {
       token: user.confirmationToken as string,
     };
 

@@ -18,5 +18,10 @@ routes.post(
   validate(auth.resendConfirmationEmail),
   AuthController.resendConfirmationEmail,
 );
+routes.post(
+  '/auth/validate_token',
+  validate(auth.validateToken),
+  AuthController.validateToken,
+);
 
 export default routes;

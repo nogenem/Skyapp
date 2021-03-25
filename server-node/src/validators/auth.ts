@@ -49,6 +49,13 @@ const auth = {
       .isEmpty()
       .withMessage(invalidOrExpiredTokenError()),
   ],
+  validateToken: [
+    body('token')
+      .trim()
+      .not()
+      .isEmpty()
+      .withMessage(invalidOrExpiredTokenError()),
+  ],
 };
 
 export default auth;
