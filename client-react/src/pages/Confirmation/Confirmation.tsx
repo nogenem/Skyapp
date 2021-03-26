@@ -51,7 +51,7 @@ interface OwnProps extends RouteComponentProps {
   token?: string;
 }
 
-type TProps = RouteComponentProps & TPropsFromRedux & OwnProps;
+type TProps = TPropsFromRedux & OwnProps;
 
 const Confirmation = ({
   token,

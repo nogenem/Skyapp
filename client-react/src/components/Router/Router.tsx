@@ -9,7 +9,7 @@ import { getToken } from '~/redux/user/reducer';
 const mapStateToProps = (state: IAppState) => ({
   isAuthenticated: !!getToken(state),
 });
-const connector = connect(mapStateToProps);
+const connector = connect(mapStateToProps, {});
 type TPropsFromRedux = ConnectedProps<typeof connector>;
 
 const defaultProps = {
@@ -23,7 +23,7 @@ type TProps = IOwnProps & typeof defaultProps & TPropsFromRedux;
 
 const Router = ({ isPrivate, isAuthenticated, children }: TProps) => {
   if ((isPrivate && !isAuthenticated) || (!isPrivate && isAuthenticated))
-    return <div />;
+    return null;
   return (
     // https://github.com/reach/router/issues/63
     <ReachRouter primary={false} component={React.Fragment}>

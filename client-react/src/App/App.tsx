@@ -6,7 +6,7 @@ import { RouteComponentProps } from '@reach/router';
 
 import { Router, Spinner } from '~/components';
 import { LOCAL_STORAGE_TOKEN } from '~/constants/localStorageKeys';
-import { SignUp, SignIn, Confirmation } from '~/pages';
+import { SignUp, SignIn, Confirmation, Redirect, Chat } from '~/pages';
 import { validateToken as validateTokenAction } from '~/redux/user/actions';
 
 import './styles.css';
@@ -50,6 +50,12 @@ function App({ validateToken }: TProps) {
           <SignUp path="/signup" />
           <SignIn path="/signin" />
           <Confirmation path="/confirmation/:token" />
+          <Redirect default />
+        </Router>
+        <Router isPrivate>
+          <Chat path="/chat" />
+          <Confirmation path="/confirmation/:token" />
+          <Redirect default />
         </Router>
       </main>
     </>
