@@ -16,6 +16,7 @@ import {
   invalidOrExpiredTokenError,
   noUserWithSuchEmailError,
   userStillHasAValidTokenToResetPasswordError,
+  userStillHasAValidConfirmationTokenError,
 } from '~/utils/errors';
 import getHostName from '~/utils/getHostName';
 import handleErrors from '~/utils/handleErrors';
@@ -117,7 +118,16 @@ export default {
       const user = await User.findOne({ confirmationToken: token });
 
       if (user) {
-        // TODO: Check if saved token is still valid!
+        let isValidToken = true;
+        try {
+          jwt.verify(user.confirmationToken as string, process.env.JWT_SECRET);
+        } catch (err) {
+          isValidToken = false;
+        }
+
+        if (isValidToken)
+          return handleErrors(userStillHasAValidConfirmationTokenError(), res);
+
         user.setConfirmationToken();
 
         const userRecord = await user.save();

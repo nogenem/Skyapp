@@ -6,6 +6,7 @@ import {
   INVALID_EXPIRED_TOKEN,
   NO_USER_WITH_SUCH_EMAIL,
   USER_STILL_HAS_A_VALID_TOKEN_TO_RESET_PASSWORD,
+  USER_STILL_HAS_A_VALID_CONFIRMATION_TOKEN,
 } from '../constants/error_messages';
 
 interface IMsgObj<T> {
@@ -60,3 +61,6 @@ export const noUserWithSuchEmailError = (): CustomError =>
 
 export const userStillHasAValidTokenToResetPasswordError = (): CustomError =>
   new CustomError({ email: USER_STILL_HAS_A_VALID_TOKEN_TO_RESET_PASSWORD });
+
+export const userStillHasAValidConfirmationTokenError = (): CustomError =>
+  new CustomError({ email: USER_STILL_HAS_A_VALID_CONFIRMATION_TOKEN });
