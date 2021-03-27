@@ -5,3 +5,5 @@ export const ACC_CONFIRMED = 'User account confirmed with success';
 export const CONFIRMATION_EMAIL_WAS_RESEND =
   'The confirmation email was resend';
 export const TOKEN_IS_VALID = 'The token is valid';
+export const RESET_PASSWORD_EMAIL_SENT =
+  'The reset password email was sent with success';

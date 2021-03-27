@@ -17,6 +17,7 @@ interface IUser {
 
   confirmed?: boolean;
   confirmationToken?: string;
+  resetPasswordToken?: string;
 
   // virtual
   password?: string;
@@ -33,6 +34,8 @@ interface IUserDoc extends IUser, Document {
   setConfirmationToken: () => void;
   generateJWT: (tokenExpires?: boolean) => string;
   generateConfirmationUrl: (host: string) => string;
+  setResetPasswordToken: () => void;
+  generateResetPasswordUrl: (host: string) => string;
 }
 
 const schema = new mongoose.Schema<IUserDoc>(
@@ -47,6 +50,7 @@ const schema = new mongoose.Schema<IUserDoc>(
     passwordHash: { type: String, required: true, toJSON: false },
     confirmed: { type: Boolean, default: false },
     confirmationToken: { type: String, default: '' },
+    resetPasswordToken: { type: String, default: '' },
   },
   { timestamps: true },
 );
@@ -119,6 +123,17 @@ schema.method(
   'generateConfirmationUrl',
   function generateConfirmationUrl(host: string) {
     return `${host}/confirmation/${this.confirmationToken}`;
+  },
+);
+
+schema.method('setResetPasswordToken', function setResetPasswordToken() {
+  this.resetPasswordToken = this.generateJWT(true);
+});
+
+schema.method(
+  'generateResetPasswordUrl',
+  function generateResetPasswordUrl(host: string) {
+    return `${host}/reset_password/${this.resetPasswordToken}`;
   },
 );
 

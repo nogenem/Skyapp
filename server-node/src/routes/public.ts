@@ -23,5 +23,10 @@ routes.post(
   validate(auth.validateToken),
   AuthController.validateToken,
 );
+routes.post(
+  '/auth/forgot_password',
+  validate(auth.forgotPassword),
+  AuthController.forgotPassword,
+);
 
 export default routes;

@@ -56,6 +56,7 @@ const auth = {
       .isEmpty()
       .withMessage(invalidOrExpiredTokenError()),
   ],
+  forgotPassword: [body('email').trim().isEmail().withMessage(INVALID_EMAIL)],
 };
 
 export default auth;

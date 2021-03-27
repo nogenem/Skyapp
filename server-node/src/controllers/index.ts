@@ -3,4 +3,5 @@ export type {
   ISignInCredentials,
   ISignUpCredentials,
   ITokenCredentials,
+  IForgotPasswordCredentials,
 } from './AuthController';

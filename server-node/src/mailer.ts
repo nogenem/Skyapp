@@ -47,3 +47,25 @@ export async function sendConfirmationEmail(
 
   return tranport.sendMail(email);
 }
+
+export async function sendResetPasswordEmail(
+  user: IUserDoc,
+  host: string,
+): Promise<SentMessageInfo> {
+  const tranport = setup();
+  const url = user.generateResetPasswordUrl(host);
+  const email = {
+    from,
+    to: `${user.email} <${user.email}>`,
+    subject: 'Reset Password',
+    html: `
+    <h2>Simple-Chat</h2>
+    <p>
+      To reset your password, please click on the link below.</br>
+      <a href="${url}" target="_blank">${url}</a>
+    </p>
+    `,
+  };
+
+  return tranport.sendMail(email);
+}

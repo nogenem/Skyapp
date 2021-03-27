@@ -4,6 +4,8 @@ import {
   ROUTE_NOT_FOUND_ERROR,
   INVALID_CREDENTIALS,
   INVALID_EXPIRED_TOKEN,
+  NO_USER_WITH_SUCH_EMAIL,
+  USER_STILL_HAS_A_VALID_TOKEN_TO_RESET_PASSWORD,
 } from '../constants/error_messages';
 
 interface IMsgObj<T> {
@@ -52,3 +54,9 @@ export const invalidCredentialsError = (): CustomError =>
 
 export const invalidOrExpiredTokenError = (): CustomError =>
   new CustomError({ global: INVALID_EXPIRED_TOKEN });
+
+export const noUserWithSuchEmailError = (): CustomError =>
+  new CustomError({ email: NO_USER_WITH_SUCH_EMAIL });
+
+export const userStillHasAValidTokenToResetPasswordError = (): CustomError =>
+  new CustomError({ email: USER_STILL_HAS_A_VALID_TOKEN_TO_RESET_PASSWORD });

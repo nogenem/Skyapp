@@ -7,12 +7,15 @@ import {
   ACC_CONFIRMED,
   CONFIRMATION_EMAIL_WAS_RESEND,
   TOKEN_IS_VALID,
+  RESET_PASSWORD_EMAIL_SENT,
 } from '~/constants/return_messages';
-import { sendConfirmationEmail } from '~/mailer';
+import { sendConfirmationEmail, sendResetPasswordEmail } from '~/mailer';
 import { User } from '~/models';
 import {
   invalidCredentialsError,
   invalidOrExpiredTokenError,
+  noUserWithSuchEmailError,
+  userStillHasAValidTokenToResetPasswordError,
 } from '~/utils/errors';
 import getHostName from '~/utils/getHostName';
 import handleErrors from '~/utils/handleErrors';
@@ -32,6 +35,10 @@ interface ISignInCredentials {
 
 interface ITokenCredentials {
   token: string;
+}
+
+interface IForgotPasswordCredentials {
+  email: string;
 }
 
 export default {
@@ -110,6 +117,7 @@ export default {
       const user = await User.findOne({ confirmationToken: token });
 
       if (user) {
+        // TODO: Check if saved token is still valid!
         user.setConfirmationToken();
 
         const userRecord = await user.save();
@@ -142,6 +150,51 @@ export default {
       return handleErrors(invalidOrExpiredTokenError(), res);
     }
   },
+  async forgotPassword(
+    req: Request,
+    res: Response,
+  ): Promise<Response<unknown>> {
+    const { email } = req.body as IForgotPasswordCredentials;
+    const host = getHostName(req.headers);
+
+    try {
+      const user = await User.findOne({ email });
+
+      if (user) {
+        if (user.resetPasswordToken) {
+          let isValidToken = true;
+          try {
+            jwt.verify(user.resetPasswordToken, process.env.JWT_SECRET);
+          } catch (err) {
+            isValidToken = false;
+          }
+
+          if (isValidToken)
+            return handleErrors(
+              userStillHasAValidTokenToResetPasswordError(),
+              res,
+            );
+        }
+
+        user.setResetPasswordToken();
+
+        const userRecord = await user.save();
+        sendResetPasswordEmail(userRecord, host);
+        return res.status(200).json({
+          message: RESET_PASSWORD_EMAIL_SENT,
+        });
+      }
+
+      return handleErrors(noUserWithSuchEmailError(), res);
+    } catch (err) {
+      return handleErrors(err, res);
+    }
+  },
 };
 
-export type { ISignInCredentials, ISignUpCredentials, ITokenCredentials };
+export type {
+  ISignInCredentials,
+  ISignUpCredentials,
+  ITokenCredentials,
+  IForgotPasswordCredentials,
+};

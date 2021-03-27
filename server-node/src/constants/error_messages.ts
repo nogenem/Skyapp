@@ -8,3 +8,6 @@ export const INVALID_ID = 'Invalid id';
 export const ROUTE_NOT_FOUND_ERROR = 'Route not found';
 export const INVALID_CREDENTIALS = 'Invalid credentials';
 export const INVALID_EXPIRED_TOKEN = 'Invalid or expired token';
+export const USER_STILL_HAS_A_VALID_TOKEN_TO_RESET_PASSWORD =
+  'User still has a valid token to reset password';
+export const NO_USER_WITH_SUCH_EMAIL = 'There is no user with such email';
