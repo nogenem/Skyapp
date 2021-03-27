@@ -15,8 +15,7 @@ import {
   invalidCredentialsError,
   invalidOrExpiredTokenError,
   noUserWithSuchEmailError,
-  userStillHasAValidTokenToResetPasswordError,
-  userStillHasAValidConfirmationTokenError,
+  lastEmailSentIsStillValidError,
 } from '~/utils/errors';
 import getHostName from '~/utils/getHostName';
 import handleErrors from '~/utils/handleErrors';
@@ -126,7 +125,7 @@ export default {
         }
 
         if (isValidToken)
-          return handleErrors(userStillHasAValidConfirmationTokenError(), res);
+          return handleErrors(lastEmailSentIsStillValidError(), res);
 
         user.setConfirmationToken();
 
@@ -180,10 +179,7 @@ export default {
           }
 
           if (isValidToken)
-            return handleErrors(
-              userStillHasAValidTokenToResetPasswordError(),
-              res,
-            );
+            return handleErrors(lastEmailSentIsStillValidError(), res);
         }
 
         user.setResetPasswordToken();
