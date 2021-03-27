@@ -11,8 +11,9 @@ import {
   confirmation,
   resendConfirmationEmail,
   validateToken,
+  forgotPassword,
 } from '../actions';
-import { EUserActions } from '../types';
+import { EUserActions, IForgotPasswordCredentials } from '../types';
 import type {
   IUser,
   TUserAction,
@@ -173,5 +174,21 @@ describe('auth actions', () => {
 
     expect(spy).toHaveBeenCalledWith(credentials);
     expect(store.getActions()).toEqual(expectedActions);
+  });
+
+  it('forgotPassword', async () => {
+    const message = 'success';
+    const credentials: IForgotPasswordCredentials = {
+      email: 'test@test.com',
+    };
+    const spy = jest
+      .spyOn(api.auth, 'forgotPassword')
+      .mockImplementationOnce(() => {
+        return Promise.resolve({ message });
+      });
+
+    await forgotPassword(credentials)();
+
+    expect(spy).toHaveBeenCalledWith(credentials);
   });
 });

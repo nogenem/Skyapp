@@ -4,6 +4,7 @@ import type {
   ISignUpCredentials,
   ISignInCredentials,
   ITokenCredentials,
+  IForgotPasswordCredentials,
 } from '~/redux/user/types';
 
 export const END_POINTS = {
@@ -13,6 +14,7 @@ export const END_POINTS = {
     confirmation: 'api/auth/confirmation',
     resendConfirmationEmail: 'api/auth/resend_confirmation_email',
     validateToken: 'api/auth/validate_token',
+    forgotPassword: 'api/auth/forgot_password',
   },
 };
 
@@ -41,6 +43,10 @@ export default {
     validateToken: (credentials: ITokenCredentials) =>
       axiosInstance
         .post(END_POINTS.auth.validateToken, { ...credentials })
+        .then(res => res.data),
+    forgotPassword: (credentials: IForgotPasswordCredentials) =>
+      axiosInstance
+        .post(END_POINTS.auth.forgotPassword, { ...credentials })
         .then(res => res.data),
   },
 };

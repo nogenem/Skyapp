@@ -4,6 +4,7 @@ import type {
   ISignUpCredentials,
   ISignInCredentials,
   ITokenCredentials,
+  IForgotPasswordCredentials,
 } from '~/redux/user/types';
 
 import api, { axiosInstance, END_POINTS } from '../api';
@@ -107,6 +108,23 @@ describe('api', () => {
       });
 
       const ret = await api.auth.validateToken(validateTokenCredentials);
+      expect(ret).toEqual(expectedRet);
+    });
+
+    it('.forgotPassword', async () => {
+      expect.assertions(2);
+
+      const forgotPasswordCredentials: IForgotPasswordCredentials = {
+        email: 'test@test.com',
+      };
+      const expectedRet = { message: 'success' };
+      adapter.onPost(END_POINTS.auth.forgotPassword).reply(configs => {
+        // axios-mock-adapter uses stringify on the data ;/
+        expect(JSON.stringify(forgotPasswordCredentials)).toBe(configs.data);
+        return [200, expectedRet];
+      });
+
+      const ret = await api.auth.forgotPassword(forgotPasswordCredentials);
       expect(ret).toEqual(expectedRet);
     });
   });

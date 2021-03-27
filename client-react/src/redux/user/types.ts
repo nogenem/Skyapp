@@ -15,6 +15,10 @@ interface ITokenCredentials {
   token: string;
 }
 
+interface IForgotPasswordCredentials {
+  email: string;
+}
+
 interface IUser {
   _id: string;
   nickname: string;
@@ -43,6 +47,7 @@ export type {
   ISignUpCredentials,
   ISignInCredentials,
   ITokenCredentials,
+  IForgotPasswordCredentials,
   IUser,
   TUserState,
   TUserAction,

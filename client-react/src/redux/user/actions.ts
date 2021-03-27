@@ -3,7 +3,7 @@ import { Dispatch } from 'redux';
 import { LOCAL_STORAGE_TOKEN } from '~/constants/localStorageKeys';
 import api from '~/services/api';
 
-import { EUserActions } from './types';
+import { EUserActions, IForgotPasswordCredentials } from './types';
 import type {
   ISignUpCredentials,
   ISignInCredentials,
@@ -51,3 +51,6 @@ export const validateToken = (credentials: ITokenCredentials) => (
   api.auth.validateToken(credentials).then(({ decodedData }) => {
     userSignedIn({ ...decodedData, token: credentials.token })(dispatch);
   });
+
+export const forgotPassword = (credentials: IForgotPasswordCredentials) => () =>
+  api.auth.forgotPassword(credentials);
