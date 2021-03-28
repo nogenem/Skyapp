@@ -13,6 +13,7 @@ import {
   Redirect,
   Chat,
   ForgotPassword,
+  ResetPassword,
 } from '~/pages';
 import { validateToken as validateTokenAction } from '~/redux/user/actions';
 
@@ -58,6 +59,7 @@ function App({ validateToken }: TProps) {
           <SignIn path="/signin" />
           <Confirmation path="/confirmation/:token" />
           <ForgotPassword path="/forgot_password" />
+          <ResetPassword path="/reset_password/:token" />
           <Redirect default />
         </Router>
         <Router isPrivate>

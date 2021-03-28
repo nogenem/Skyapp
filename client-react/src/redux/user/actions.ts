@@ -3,7 +3,11 @@ import { Dispatch } from 'redux';
 import { LOCAL_STORAGE_TOKEN } from '~/constants/localStorageKeys';
 import api from '~/services/api';
 
-import { EUserActions, IForgotPasswordCredentials } from './types';
+import {
+  EUserActions,
+  IForgotPasswordCredentials,
+  IResetPasswordCredentials,
+} from './types';
 import type {
   ISignUpCredentials,
   ISignInCredentials,
@@ -54,3 +58,10 @@ export const validateToken = (credentials: ITokenCredentials) => (
 
 export const forgotPassword = (credentials: IForgotPasswordCredentials) => () =>
   api.auth.forgotPassword(credentials);
+
+export const resetPassword = (credentials: IResetPasswordCredentials) => (
+  dispatch: Dispatch,
+) =>
+  api.auth.resetPassword(credentials).then(({ user }) => {
+    userSignedIn(user)(dispatch);
+  });

@@ -6,6 +6,7 @@ import { LockOutlined as LockOutlinedIcon } from '@material-ui/icons';
 import { RouteComponentProps, navigate } from '@reach/router';
 
 import { Alert, Spinner } from '~/components';
+import type { IErrors } from '~/components/Form';
 import useObjState from '~/hooks/useObjState';
 import {
   confirmation as confirmationAction,
@@ -21,10 +22,6 @@ const STATES = {
   SENDING: 2,
   COMPLETED: 3,
 } as const;
-
-interface IErrors {
-  [x: string]: string;
-}
 
 interface IOwnState {
   validatingToken: typeof STATES[keyof typeof STATES];

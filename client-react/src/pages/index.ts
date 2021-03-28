@@ -4,3 +4,4 @@ export { Confirmation } from './Confirmation';
 export { Redirect } from './Redirect';
 export { Chat } from './Chat';
 export { ForgotPassword } from './ForgotPassword';
+export { ResetPassword } from './ResetPassword';

@@ -12,8 +12,13 @@ import {
   resendConfirmationEmail,
   validateToken,
   forgotPassword,
+  resetPassword,
 } from '../actions';
-import { EUserActions, IForgotPasswordCredentials } from '../types';
+import {
+  EUserActions,
+  IForgotPasswordCredentials,
+  IResetPasswordCredentials,
+} from '../types';
 import type {
   IUser,
   TUserAction,
@@ -190,5 +195,36 @@ describe('auth actions', () => {
     await forgotPassword(credentials)();
 
     expect(spy).toHaveBeenCalledWith(credentials);
+  });
+
+  it('resetPassword', async () => {
+    const user: IUser = {
+      _id: '1',
+      nickname: 'test',
+      email: 'test@test.com',
+      confirmed: false,
+      token: VALID_TOKEN,
+    };
+    const credentials: IResetPasswordCredentials = {
+      newPassword: '123456',
+      newPasswordConfirmation: '123456',
+      token: VALID_TOKEN,
+    };
+    const expectedActions = [
+      { type: EUserActions.SIGNED_IN, payload: user } as TUserAction,
+    ];
+
+    const spy = jest
+      .spyOn(api.auth, 'resetPassword')
+      .mockImplementationOnce(() => {
+        return Promise.resolve({ user });
+      });
+
+    const store = mockStore({});
+
+    await resetPassword(credentials)(store.dispatch);
+
+    expect(spy).toHaveBeenCalledWith(credentials);
+    expect(store.getActions()).toEqual(expectedActions);
   });
 });

@@ -19,6 +19,12 @@ interface IForgotPasswordCredentials {
   email: string;
 }
 
+interface IResetPasswordCredentials {
+  newPassword: string;
+  newPasswordConfirmation: string;
+  token: string;
+}
+
 interface IUser {
   _id: string;
   nickname: string;
@@ -48,6 +54,7 @@ export type {
   ISignInCredentials,
   ITokenCredentials,
   IForgotPasswordCredentials,
+  IResetPasswordCredentials,
   IUser,
   TUserState,
   TUserAction,
