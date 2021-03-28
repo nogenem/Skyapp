@@ -57,6 +57,21 @@ const auth = {
       .withMessage(invalidOrExpiredTokenError()),
   ],
   forgotPassword: [body('email').trim().isEmail().withMessage(INVALID_EMAIL)],
+  resetPassword: [
+    body('newPassword')
+      .trim()
+      .isLength({ min: MIN_PASSWORD_LEN })
+      .withMessage(fieldIsTooShort(MIN_PASSWORD_LEN)),
+    body('newPasswordConfirmation')
+      .trim()
+      .custom((value, { req }) => value === req.body.newPassword.trim())
+      .withMessage(PASSWORDS_MUST_MATCH),
+    body('token')
+      .trim()
+      .not()
+      .isEmpty()
+      .withMessage(invalidOrExpiredTokenError()),
+  ],
 };
 
 export default auth;

@@ -8,6 +8,7 @@ import {
   CONFIRMATION_EMAIL_WAS_RESEND,
   TOKEN_IS_VALID,
   RESET_PASSWORD_EMAIL_SENT,
+  PASSWORD_CHANGED,
 } from '~/constants/return_messages';
 import { sendConfirmationEmail, sendResetPasswordEmail } from '~/mailer';
 import { User } from '~/models';
@@ -39,6 +40,12 @@ interface ITokenCredentials {
 
 interface IForgotPasswordCredentials {
   email: string;
+}
+
+interface IResetPasswordCredentials {
+  token: string;
+  newPassword: string;
+  newPasswordConfirmation: string;
 }
 
 export default {
@@ -196,6 +203,34 @@ export default {
       return handleErrors(err, res);
     }
   },
+  async resetPassword(req: Request, res: Response): Promise<Response<unknown>> {
+    const { newPassword, token } = req.body as IResetPasswordCredentials;
+
+    try {
+      jwt.verify(token, process.env.JWT_SECRET);
+    } catch (err) {
+      return handleErrors(invalidOrExpiredTokenError(), res);
+    }
+
+    try {
+      const user = await User.findOne({ resetPasswordToken: token });
+
+      if (user) {
+        user.updatePasswordHash(newPassword);
+        user.resetPasswordToken = '';
+        const userRecord = await user.save();
+
+        return res.status(200).json({
+          message: PASSWORD_CHANGED,
+          user: userRecord.toAuthJSON(),
+        });
+      }
+
+      return handleErrors(invalidOrExpiredTokenError(), res);
+    } catch (err) {
+      return handleErrors(err, res);
+    }
+  },
 };
 
 export type {
@@ -203,4 +238,5 @@ export type {
   ISignUpCredentials,
   ITokenCredentials,
   IForgotPasswordCredentials,
+  IResetPasswordCredentials,
 };

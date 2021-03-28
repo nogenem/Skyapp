@@ -28,5 +28,10 @@ routes.post(
   validate(auth.forgotPassword),
   AuthController.forgotPassword,
 );
+routes.post(
+  '/auth/reset_password',
+  validate(auth.resetPassword),
+  AuthController.resetPassword,
+);
 
 export default routes;

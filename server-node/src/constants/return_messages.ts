@@ -7,3 +7,4 @@ export const CONFIRMATION_EMAIL_WAS_RESEND =
 export const TOKEN_IS_VALID = 'The token is valid';
 export const RESET_PASSWORD_EMAIL_SENT =
   'The reset password email was sent with success';
+export const PASSWORD_CHANGED = 'Password changed with success';
