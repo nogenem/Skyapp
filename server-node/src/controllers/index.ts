@@ -6,3 +6,5 @@ export type {
   IForgotPasswordCredentials,
   IResetPasswordCredentials,
 } from './AuthController';
+
+export { default as ChatController } from './ChatController';

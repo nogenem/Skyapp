@@ -26,6 +26,14 @@ interface IUser {
   virtualPasswordConfirmation?: string;
 }
 
+interface IAuthUser {
+  _id: string;
+  nickname: string;
+  email: string;
+  confirmed: boolean;
+  token?: string;
+}
+
 interface IUserDoc extends IUser, Document {
   // My methods
   isValidPassword: (password: string) => boolean;
@@ -88,15 +96,18 @@ schema.method(
   },
 );
 
-schema.method('toAuthJSON', function toAuthJSON(tokenExpires = true) {
-  return {
-    _id: this._id,
-    nickname: this.nickname,
-    email: this.email,
-    confirmed: this.confirmed,
-    token: this.generateJWT(tokenExpires),
-  };
-});
+schema.method(
+  'toAuthJSON',
+  function toAuthJSON(tokenExpires = true): IAuthUser {
+    return {
+      _id: this._id,
+      nickname: this.nickname,
+      email: this.email,
+      confirmed: !!this.confirmed,
+      token: this.generateJWT(tokenExpires),
+    };
+  },
+);
 
 schema.method('generateJWT', function generateJWT(tokenExpires = true) {
   return jwt.sign(
@@ -139,5 +150,5 @@ schema.method(
 
 schema.plugin(uniqueValidator, { message: EMAIL_ALREADY_TAKEN });
 
-export type { IUser, IUserDoc };
+export type { IUser, IUserDoc, IAuthUser };
 export default mongoose.model<IUserDoc>('User', schema);

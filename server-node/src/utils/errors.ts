@@ -6,6 +6,7 @@ import {
   INVALID_EXPIRED_TOKEN,
   NO_USER_WITH_SUCH_EMAIL,
   LAST_EMAIL_SENT_IS_STILL_VALID,
+  NO_TOKEN,
 } from '../constants/error_messages';
 
 interface IMsgObj<T> {
@@ -60,3 +61,6 @@ export const noUserWithSuchEmailError = (): CustomError =>
 
 export const lastEmailSentIsStillValidError = (): CustomError =>
   new CustomError({ email: LAST_EMAIL_SENT_IS_STILL_VALID });
+
+export const noTokenError = (): CustomError =>
+  new CustomError({ global: NO_TOKEN });

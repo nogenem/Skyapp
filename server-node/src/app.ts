@@ -2,7 +2,8 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import express, { Express, Request, Response, NextFunction } from 'express';
 
-import { publicRoutes } from './routes';
+import auth from './middlewares/auth';
+import { publicRoutes, privateRoutes } from './routes';
 import { routeNotFoundError } from './utils/errors';
 import handleErrors from './utils/handleErrors';
 
@@ -14,6 +15,8 @@ class AppController {
 
     this.generalMiddlewares();
     this.publicRoutes();
+    this.privateMiddlewares();
+    this.privateRoutes();
     this.exceptionHandler();
     this.notFoundHandler();
   }
@@ -26,6 +29,14 @@ class AppController {
   publicRoutes(): void {
     this.app.use('/public', express.static('public'));
     this.app.use('/api', publicRoutes);
+  }
+
+  privateMiddlewares() {
+    this.app.use(auth);
+  }
+
+  privateRoutes() {
+    this.app.use('/api', privateRoutes);
   }
 
   exceptionHandler(): void {
