@@ -27,6 +27,11 @@ import type {
   ITokenCredentials,
 } from '../types';
 
+jest.mock('../../../utils/setAuthorizationHeader', () => ({
+  __esModule: true,
+  default: () => {},
+}));
+
 const middlewares = [thunk];
 const mockStore = configureStore(middlewares);
 

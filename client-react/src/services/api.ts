@@ -18,6 +18,10 @@ export const END_POINTS = {
     forgotPassword: 'api/auth/forgot_password',
     resetPassword: 'api/auth/reset_password',
   },
+  chat: {
+    // TODO: Remove later
+    test: 'api/chat/test',
+  },
 };
 
 export const axiosInstance = axios.create({
@@ -54,5 +58,10 @@ export default {
       axiosInstance
         .post(END_POINTS.auth.resetPassword, { ...credentials })
         .then(res => res.data),
+  },
+  chat: {
+    // TODO: Remove later
+    test: () =>
+      axiosInstance.post(END_POINTS.chat.test, {}).then(res => res.data),
   },
 };

@@ -2,6 +2,7 @@ import { Dispatch } from 'redux';
 
 import { LOCAL_STORAGE_TOKEN } from '~/constants/localStorageKeys';
 import api from '~/services/api';
+import setAuthorizationHeader from '~/utils/setAuthorizationHeader';
 
 import {
   EUserActions,
@@ -18,6 +19,7 @@ import type {
 
 export const userSignedIn = (user: IUser) => (dispatch: Dispatch) => {
   localStorage.setItem(LOCAL_STORAGE_TOKEN, user.token as string);
+  setAuthorizationHeader(user.token);
 
   dispatch<TUserAction>({
     type: EUserActions.SIGNED_IN,
