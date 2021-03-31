@@ -4,7 +4,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { CssBaseline } from '@material-ui/core';
 import { RouteComponentProps } from '@reach/router';
 
-import { Router, Spinner } from '~/components';
+import { UnauthenticatedNavBar, Router, Spinner } from '~/components';
 import { LOCAL_STORAGE_TOKEN } from '~/constants/localStorageKeys';
 import {
   SignUp,
@@ -53,6 +53,7 @@ function App({ validateToken }: TProps) {
   return (
     <>
       <CssBaseline />
+      <UnauthenticatedNavBar />
       <main className={classes.content}>
         <Router>
           <SignUp path="/signup" />
