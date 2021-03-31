@@ -3,10 +3,12 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
 
 import rootReducer from './rootReducer';
+import type { TThemeState } from './theme/types';
 import type { TUserState } from './user/types';
 
 interface IAppState {
   user: TUserState;
+  theme: TThemeState;
 }
 
 let enhancer = applyMiddleware(thunk);

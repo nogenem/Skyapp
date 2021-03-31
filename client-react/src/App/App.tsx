@@ -4,7 +4,12 @@ import { connect, ConnectedProps } from 'react-redux';
 import { CssBaseline } from '@material-ui/core';
 import { RouteComponentProps } from '@reach/router';
 
-import { UnauthenticatedNavBar, Router, Spinner } from '~/components';
+import {
+  UnauthenticatedNavBar,
+  Router,
+  Spinner,
+  ThemeProvider,
+} from '~/components';
 import { LOCAL_STORAGE_TOKEN } from '~/constants/localStorageKeys';
 import {
   SignUp,
@@ -51,7 +56,7 @@ function App({ validateToken }: TProps) {
   if (loading) return <Spinner show />;
 
   return (
-    <>
+    <ThemeProvider>
       <CssBaseline />
       <UnauthenticatedNavBar />
       <main className={classes.content}>
@@ -69,7 +74,7 @@ function App({ validateToken }: TProps) {
           <Redirect default />
         </Router>
       </main>
-    </>
+    </ThemeProvider>
   );
 }
 

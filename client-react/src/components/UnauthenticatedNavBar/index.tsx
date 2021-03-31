@@ -1,2 +1,5 @@
-export { default as UnauthenticatedNavBar } from './UnauthenticatedNavBar';
+export {
+  default as UnauthenticatedNavBar,
+  UnconnectedUnauthenticatedNavBar,
+} from './UnauthenticatedNavBar';
 export type { TProps } from './UnauthenticatedNavBar';

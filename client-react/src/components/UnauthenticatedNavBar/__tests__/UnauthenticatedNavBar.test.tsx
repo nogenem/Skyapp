@@ -1,13 +1,17 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 
-import { render } from '@testing-library/react';
+import { render, fireEvent } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
 import type { IAppState } from '~/redux/store';
+import { TThemeMode } from '~/redux/theme/types';
 
-import { UnauthenticatedNavBar } from '../index';
+import {
+  UnauthenticatedNavBar,
+  UnconnectedUnauthenticatedNavBar,
+} from '../index';
 
 const middlewares = [thunk];
 const mockStore = configureStore(middlewares);
@@ -44,5 +48,21 @@ describe('UnauthenticatedNavBar', () => {
       initialState,
     );
     expect(queryByText(/skyapp/i)).not.toBeInTheDocument();
+  });
+
+  it('can switch themes', () => {
+    const props = {
+      isAuthenticated: false,
+      theme: 'light' as TThemeMode,
+      switchMode: jest.fn(),
+    };
+    const { getByTestId } = render(
+      <UnconnectedUnauthenticatedNavBar {...props} />,
+    );
+
+    fireEvent.click(getByTestId('toggle_theme_btn'));
+
+    expect(props.switchMode).toHaveBeenCalledTimes(1);
+    expect(props.switchMode).toHaveBeenCalledWith('dark');
   });
 });
