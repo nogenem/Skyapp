@@ -1,18 +1,30 @@
 import React from 'react';
+import { connect, ConnectedProps } from 'react-redux';
 
 import { Button } from '@material-ui/core';
 import { RouteComponentProps } from '@reach/router';
 
+import { ConfirmEmailCTA } from '~/components';
+import { IAppState } from '~/redux/store';
+import { getConfirmed } from '~/redux/user/reducer';
 import api from '~/services/api';
 
-type TProps = RouteComponentProps;
+const mapStateToProps = (state: IAppState) => ({
+  isUserEmailConfirmed: !!getConfirmed(state),
+});
+const connector = connect(mapStateToProps, {});
+type TPropsFromRedux = ConnectedProps<typeof connector>;
 
-const Chat = (props: TProps) => {
+type TProps = TPropsFromRedux & RouteComponentProps;
+
+const Chat = ({ isUserEmailConfirmed }: TProps) => {
   // TODO: Remove later
   const handleTest = async () => {
     const user = await api.chat.test();
     console.log(user);
   };
+
+  if (!isUserEmailConfirmed) return <ConfirmEmailCTA />;
 
   return (
     <div>
@@ -29,4 +41,5 @@ const Chat = (props: TProps) => {
 };
 
 export type { TProps };
-export default Chat;
+export const UnconnectedChat = Chat;
+export default connector(Chat);

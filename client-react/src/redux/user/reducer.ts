@@ -34,3 +34,7 @@ export const getToken = createSelector(
   getUser,
   userData => userData.token || '',
 );
+export const getConfirmed = createSelector(
+  getUser,
+  userData => !!userData.confirmed,
+);
