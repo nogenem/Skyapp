@@ -7,6 +7,9 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'center',
       alignItems: 'center',
       flexGrow: 1,
+      [theme.breakpoints.down('xs')]: {
+        padding: theme.spacing(1),
+      },
     },
     container: {
       maxWidth: '500px',

@@ -1,11 +1,10 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 
-import { Grid, Avatar, Typography, Button } from '@material-ui/core';
-import { LockOutlined as LockOutlinedIcon } from '@material-ui/icons';
+import { Button } from '@material-ui/core';
 import { RouteComponentProps, navigate } from '@reach/router';
 
-import { Alert, Spinner } from '~/components';
+import { Alert, AuthContainer, Spinner } from '~/components';
 import type { IErrors } from '~/components/Form';
 import useObjState from '~/hooks/useObjState';
 import {
@@ -14,8 +13,6 @@ import {
 } from '~/redux/user/actions';
 import type { ITokenCredentials } from '~/redux/user/types';
 import handleServerErrors from '~/utils/handleServerErrors';
-
-import useStyles from './useStyles';
 
 const STATES = {
   WAITING: 1,
@@ -55,7 +52,6 @@ const Confirmation = ({
   confirmation,
   resendConfirmationEmail,
 }: TProps) => {
-  const classes = useStyles();
   const [state, setState] = useObjState<TState>(initialState);
   const isMounted = React.useRef(false);
 
@@ -112,54 +108,44 @@ const Confirmation = ({
 
   return (
     <>
-      <Grid container className={classes.root}>
-        <Grid item xs={12} className={classes.container}>
-          <div className={classes.paper}>
-            <Avatar className={classes.avatar}>
-              <LockOutlinedIcon />
-            </Avatar>
-            <Typography component="h1" variant="h5">
-              Token Confirmation
-            </Typography>
-
-            {!state.errors.global && (
-              <>
-                {state.validatingToken === STATES.SENDING && (
-                  <Alert bgcolor="primary.main" color="primary.contrastText">
-                    Validating your email...
-                  </Alert>
-                )}
-                {state.resendingEmail === STATES.SENDING && (
-                  <Alert bgcolor="primary.main" color="primary.contrastText">
-                    Resending confirmation email...
-                  </Alert>
-                )}
-                {state.resendingEmail === STATES.COMPLETED && (
-                  <Alert bgcolor="primary.main" color="primary.contrastText">
-                    The confirmation email was resend! Please check your email.
-                  </Alert>
-                )}
-              </>
+      <AuthContainer title="Token Confirmation">
+        {!state.errors.global && (
+          <>
+            {state.validatingToken === STATES.SENDING && (
+              <Alert bgcolor="primary.main" color="primary.contrastText">
+                Validating your email...
+              </Alert>
             )}
-
-            {state.errors.global && (
-              <>
-                <Alert>{state.errors.global}</Alert>
-                {state.resendingEmail === STATES.WAITING && (
-                  <Button
-                    fullWidth
-                    variant="contained"
-                    color="primary"
-                    onClick={handleResendEmail}
-                  >
-                    Resend Confirmation Email
-                  </Button>
-                )}
-              </>
+            {state.resendingEmail === STATES.SENDING && (
+              <Alert bgcolor="primary.main" color="primary.contrastText">
+                Resending confirmation email...
+              </Alert>
             )}
-          </div>
-        </Grid>
-      </Grid>
+            {state.resendingEmail === STATES.COMPLETED && (
+              <Alert bgcolor="primary.main" color="primary.contrastText">
+                The confirmation email was resend! Please check your email.
+              </Alert>
+            )}
+          </>
+        )}
+
+        {state.errors.global && (
+          <>
+            <Alert>{state.errors.global}</Alert>
+            {state.resendingEmail === STATES.WAITING && (
+              <Button
+                fullWidth
+                variant="contained"
+                color="primary"
+                onClick={handleResendEmail}
+              >
+                Resend Confirmation Email
+              </Button>
+            )}
+          </>
+        )}
+      </AuthContainer>
+
       <Spinner show={isLoading} color="secondary" />
     </>
   );

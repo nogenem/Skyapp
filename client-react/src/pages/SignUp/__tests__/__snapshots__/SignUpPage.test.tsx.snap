@@ -28,7 +28,7 @@ exports[`SignUpPage renders correctly 1`] = `
         <h1
           class="MuiTypography-root MuiTypography-h5"
         >
-          Sign up
+          Sign Up
         </h1>
         <form
           id="sign-up-form"
