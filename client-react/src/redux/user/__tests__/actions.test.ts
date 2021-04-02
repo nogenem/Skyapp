@@ -6,6 +6,8 @@ import api from '~/services/api';
 
 import {
   userSignedIn,
+  userSignedOut,
+  //
   signUp,
   signIn,
   confirmation,
@@ -55,6 +57,26 @@ describe('auth actions', () => {
 
     expect(store.getActions()).toEqual(expectedActions);
     expect(localStorage.getItem(LOCAL_STORAGE_TOKEN)).toBe(user.token);
+  });
+
+  it('userSignedOut', async () => {
+    const user: IUser = {
+      _id: '1',
+      nickname: 'test',
+      email: 'test@test.com',
+      confirmed: false,
+      token: VALID_TOKEN,
+    };
+    const expectedActions = [{ type: EUserActions.SIGNED_OUT } as TUserAction];
+    const store = mockStore({
+      user,
+    });
+    localStorage.setItem(LOCAL_STORAGE_TOKEN, VALID_TOKEN);
+
+    store.dispatch(userSignedOut());
+
+    expect(store.getActions()).toEqual(expectedActions);
+    expect(localStorage.getItem(LOCAL_STORAGE_TOKEN)).toBe(null);
   });
 
   it('signUp', async () => {

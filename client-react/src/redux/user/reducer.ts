@@ -21,7 +21,7 @@ export default function user(
       const { _id, nickname, email, confirmed, token } = action.payload;
       return { _id, nickname, email, confirmed, token };
     case EUserActions.SIGNED_OUT:
-      return state;
+      return initialState;
     default:
       return state;
   }
@@ -29,6 +29,7 @@ export default function user(
 
 // Selectors
 export const getUser = (state: IAppState) => state.user || initialState;
+
 export const getId = createSelector(getUser, userData => userData._id || '');
 export const getToken = createSelector(
   getUser,
@@ -37,4 +38,8 @@ export const getToken = createSelector(
 export const getConfirmed = createSelector(
   getUser,
   userData => !!userData.confirmed,
+);
+export const getNickname = createSelector(
+  getUser,
+  userData => userData.nickname || '',
 );

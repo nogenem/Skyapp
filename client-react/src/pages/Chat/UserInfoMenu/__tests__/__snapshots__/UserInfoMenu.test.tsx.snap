@@ -1,0 +1,47 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Connected UserInfoMenu renders correctly 1`] = `
+<div>
+  <div
+    class="makeStyles-container-1"
+  >
+    <span
+      class="MuiBadge-root makeStyles-badge-4"
+    >
+      <div
+        class="MuiAvatar-root MuiAvatar-circle MuiAvatar-colorDefault"
+      >
+        <svg
+          aria-hidden="true"
+          class="MuiSvgIcon-root"
+          focusable="false"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"
+          />
+        </svg>
+      </div>
+      <span
+        class="MuiBadge-badge MuiBadge-anchorOriginBottomRightCircle makeStyles-anchorOriginBottomRightCircle-8 MuiBadge-colorSecondary makeStyles-dotBadge_online-6 MuiBadge-dot makeStyles-dotBadge-5"
+      />
+    </span>
+    <div
+      class="makeStyles-textContainer-2"
+    >
+      <span
+        class="MuiTypography-root MuiTypography-subtitle1 MuiTypography-colorInherit MuiTypography-noWrap"
+        title="Test User"
+      >
+        Test User
+      </span>
+      <span
+        class="MuiTypography-root MuiTypography-caption MuiTypography-colorTextSecondary MuiTypography-noWrap"
+        title="Some status message..."
+      >
+        Some status message...
+      </span>
+    </div>
+  </div>
+</div>
+`;

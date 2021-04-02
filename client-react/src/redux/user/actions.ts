@@ -27,6 +27,15 @@ export const userSignedIn = (user: IUser) => (dispatch: Dispatch) => {
   });
 };
 
+export const userSignedOut = () => {
+  localStorage.removeItem(LOCAL_STORAGE_TOKEN);
+  setAuthorizationHeader();
+
+  return {
+    type: EUserActions.SIGNED_OUT,
+  };
+};
+
 export const signUp = (credentials: ISignUpCredentials) => (
   dispatch: Dispatch,
 ) =>

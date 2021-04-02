@@ -1,2 +1,2 @@
-export { default as Chat } from './Chat';
+export { default as Chat, UnconnectedChat } from './Chat';
 export type { TProps } from './Chat';
