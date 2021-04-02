@@ -1,5 +1,4 @@
 import React from 'react';
-import { Provider } from 'react-redux';
 
 import * as router from '@reach/router';
 import {
@@ -7,15 +6,13 @@ import {
   waitForElementToBeRemoved,
   fireEvent,
 } from '@testing-library/react';
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
 
-import type { IAppState } from '~/redux/store';
 import { ITokenCredentials } from '~/redux/user/types';
 import type {
   IServerErrorsObject,
   IPartialAxiosError,
 } from '~/utils/handleServerErrors';
+import { getRenderWithRedux } from '~/utils/testUtils';
 
 import {
   Confirmation as ConfirmationPage,
@@ -39,19 +36,7 @@ const mockServerResponse = (
   },
 });
 
-const middlewares = [thunk];
-const mockStore = configureStore(middlewares);
-
-const emptyState: Partial<IAppState> = {};
-const renderWithRedux = (
-  ui: React.ReactNode,
-  initialState: Partial<IAppState> = emptyState,
-) => {
-  const store = mockStore(initialState);
-  return {
-    ...render(<Provider store={store}>{ui}</Provider>),
-  };
-};
+const renderWithRedux = getRenderWithRedux();
 
 // TODO: Add better tests for this !?
 describe('Connected ConfirmationPage', () => {

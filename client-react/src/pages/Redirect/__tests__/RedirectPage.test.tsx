@@ -1,31 +1,16 @@
 import React from 'react';
-import { Provider } from 'react-redux';
 
 import * as router from '@reach/router';
 import { render, waitFor } from '@testing-library/react';
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
 
-import type { IAppState } from '~/redux/store';
+import { getRenderWithRedux } from '~/utils/testUtils';
 
 import {
   Redirect as RedirectPage,
   UnconnectedRedirect as UnconnectedRedirectPage,
 } from '../index';
 
-const middlewares = [thunk];
-const mockStore = configureStore(middlewares);
-
-const emptyState: Partial<IAppState> = {};
-const renderWithRedux = (
-  ui: React.ReactNode,
-  initialState: Partial<IAppState> = emptyState,
-) => {
-  const store = mockStore(initialState);
-  return {
-    ...render(<Provider store={store}>{ui}</Provider>),
-  };
-};
+const renderWithRedux = getRenderWithRedux();
 
 // TODO: Add better tests for this !?
 describe('Connected RedirectPage', () => {

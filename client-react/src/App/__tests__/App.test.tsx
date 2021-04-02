@@ -1,13 +1,10 @@
 import React from 'react';
-import { Provider } from 'react-redux';
 
-import { render, waitForElementToBeRemoved } from '@testing-library/react';
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import { waitForElementToBeRemoved } from '@testing-library/react';
 
 import { LOCAL_STORAGE_TOKEN } from '~/constants/localStorageKeys';
-import type { IAppState } from '~/redux/store';
 import { ITokenCredentials } from '~/redux/user/types';
+import { getRenderWithRedux } from '~/utils/testUtils';
 
 import { App, UnconnectedApp } from '../index';
 
@@ -17,19 +14,7 @@ jest.mock('../../redux/user/actions', () => ({
 
 const VALID_TOKEN = '123456789';
 
-const middlewares = [thunk];
-const mockStore = configureStore(middlewares);
-
-const emptyState: Partial<IAppState> = {};
-const renderWithRedux = (
-  ui: React.ReactNode,
-  initialState: Partial<IAppState> = emptyState,
-) => {
-  const store = mockStore(initialState);
-  return {
-    ...render(<Provider store={store}>{ui}</Provider>),
-  };
-};
+const renderWithRedux = getRenderWithRedux();
 
 describe('Connected App', () => {
   afterEach(() => {

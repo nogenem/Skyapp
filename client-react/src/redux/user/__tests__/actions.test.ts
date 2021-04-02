@@ -1,8 +1,6 @@
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
-
 import { LOCAL_STORAGE_TOKEN } from '~/constants/localStorageKeys';
 import api from '~/services/api';
+import { getMockStore } from '~/utils/testUtils';
 
 import {
   userSignedIn,
@@ -34,8 +32,7 @@ jest.mock('../../../utils/setAuthorizationHeader', () => ({
   default: () => {},
 }));
 
-const middlewares = [thunk];
-const mockStore = configureStore(middlewares);
+const mockStore = getMockStore();
 
 const VALID_TOKEN = '123456789';
 

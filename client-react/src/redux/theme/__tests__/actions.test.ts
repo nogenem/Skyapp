@@ -1,14 +1,11 @@
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
-
 import { LOCAL_STORAGE_THEME_MODE } from '~/constants/localStorageKeys';
+import { getMockStore } from '~/utils/testUtils';
 
 import { switchMode } from '../actions';
 import { EThemeActions } from '../types';
 import type { TThemeAction, TThemeMode } from '../types';
 
-const middlewares = [thunk];
-const mockStore = configureStore(middlewares);
+const mockStore = getMockStore();
 
 describe('auth actions', () => {
   it('switchMode', async () => {
