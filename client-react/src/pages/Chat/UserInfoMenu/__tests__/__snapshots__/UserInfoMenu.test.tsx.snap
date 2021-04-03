@@ -6,7 +6,7 @@ exports[`Connected UserInfoMenu renders correctly 1`] = `
     class="makeStyles-container-1"
   >
     <span
-      class="MuiBadge-root makeStyles-badge-4"
+      class="MuiBadge-root makeStyles-badge-7"
     >
       <div
         class="MuiAvatar-root MuiAvatar-circle MuiAvatar-colorDefault"
@@ -23,7 +23,7 @@ exports[`Connected UserInfoMenu renders correctly 1`] = `
         </svg>
       </div>
       <span
-        class="MuiBadge-badge MuiBadge-anchorOriginBottomRightCircle makeStyles-anchorOriginBottomRightCircle-8 MuiBadge-colorSecondary makeStyles-dotBadge_online-6 MuiBadge-dot makeStyles-dotBadge-5"
+        class="MuiBadge-badge MuiBadge-anchorOriginBottomRightCircle makeStyles-anchorOriginBottomRightCircle-11 MuiBadge-colorSecondary makeStyles-dotBadge_online-9 MuiBadge-dot makeStyles-dotBadge-8"
       />
     </span>
     <div

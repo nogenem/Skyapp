@@ -13,7 +13,7 @@ const Sidebar = (props: TProps) => {
   const classes = useStyles();
 
   return (
-    <Paper square className={classes.container}>
+    <Paper square className={classes.container} elevation={8}>
       <UserInfoMenu />
     </Paper>
   );

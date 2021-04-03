@@ -51,6 +51,10 @@ const ThemeProvider = ({ children, themeMode, switchMode }: TProps) => {
     () =>
       createMuiTheme({
         palette: {
+          primary: {
+            main: '#3f51b5',
+            light: '#9cacff', // melhor contraste com background dark
+          },
           type: _themeMode,
         },
       }),

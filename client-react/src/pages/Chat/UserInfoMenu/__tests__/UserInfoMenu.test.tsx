@@ -6,6 +6,7 @@ import type { IUser } from '~/redux/user/types';
 import { getRenderWithRedux } from '~/utils/testUtils';
 
 import { UserInfoMenu, UnconnectedUserInfoMenu } from '../index';
+import type { TProps } from '../index';
 
 const renderWithRedux = getRenderWithRedux();
 
@@ -30,19 +31,40 @@ describe('Connected UserInfoMenu', () => {
 
 describe('Unconnected UserInfoMenu', () => {
   it('calls `userSignedOut` when clicking on `Sign Out` menu item', () => {
-    const NICKNAME = 'Test User';
-    const userSignedOut = jest.fn();
+    const props: TProps = {
+      userNickname: 'Test User',
+      themeMode: 'dark',
+      userSignedOut: jest.fn(),
+      switchMode: jest.fn(),
+    };
 
-    const { getByText } = render(
-      <UnconnectedUserInfoMenu
-        userNickname={NICKNAME}
-        userSignedOut={userSignedOut}
-      />,
-    );
+    const { getByText } = render(<UnconnectedUserInfoMenu {...props} />);
 
-    fireEvent.click(getByText(NICKNAME));
+    fireEvent.click(getByText(props.userNickname));
     fireEvent.click(getByText(/sign out/i));
 
-    expect(userSignedOut).toHaveBeenCalledTimes(1);
+    expect(props.userSignedOut).toHaveBeenCalledTimes(1);
+  });
+
+  it('calls `switchMode` when clicking on `Theme Toggler` component', () => {
+    const props: TProps = {
+      userNickname: 'Test User',
+      themeMode: 'dark',
+      userSignedOut: jest.fn(),
+      switchMode: jest.fn(),
+    };
+
+    const { getByText, getByTestId } = render(
+      <UnconnectedUserInfoMenu {...props} />,
+    );
+
+    fireEvent.click(getByText(props.userNickname));
+    fireEvent.click(
+      // @ts-ignore
+      getByTestId(/theme_toggler/i).querySelector('input[type="checkbox"]'),
+    );
+
+    expect(props.switchMode).toHaveBeenCalledTimes(1);
+    expect(props.switchMode).toHaveBeenCalledWith('light');
   });
 });
