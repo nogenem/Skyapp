@@ -66,18 +66,17 @@ exports[`Connected ChatPage renders correctly 1`] = `
               <span
                 class="MuiTypography-root MuiCardHeader-title MuiTypography-h5 MuiTypography-displayBlock"
               >
-                Confirm your email
+                Messages:Confirm your email
               </span>
             </div>
           </div>
           <div
-            class="MuiCardContent-root"
+            class="MuiCardContent-root makeStyles-cardContent-16"
           >
             <p
               class="MuiTypography-root MuiTypography-body1"
             >
               Please, follow the instructions in the email that we sent to you.
-               
               <br />
               That is a necessary step for you to be able to use our chat system.
             </p>

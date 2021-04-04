@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { TextField, Button } from '@material-ui/core';
 import isEmail from 'validator/lib/isEmail';
@@ -24,6 +25,7 @@ interface IOwnProps {
 type TProps = IOwnProps;
 
 function Form({ submit }: TProps) {
+  const { t: trans } = useTranslation(['Common', 'Errors']);
   const classes = useStyles();
 
   const getData = (
@@ -35,7 +37,7 @@ function Form({ submit }: TProps) {
   const validate = (data: IForgotPasswordCredentials) => {
     const errors = {} as IErrors;
 
-    if (!isEmail(data.email)) errors.email = INVALID_EMAIL;
+    if (!isEmail(data.email)) errors.email = trans(INVALID_EMAIL);
 
     return errors;
   };
@@ -46,7 +48,7 @@ function Form({ submit }: TProps) {
       <TextField
         id={`${FORM_ID}-email`}
         name="email"
-        label="Email"
+        label={trans('Common:Email')}
         autoComplete="email"
         type="email"
         fullWidth
@@ -64,7 +66,7 @@ function Form({ submit }: TProps) {
         variant="contained"
         color="primary"
       >
-        Send Email
+        {trans('Common:Send email')}
       </Button>
     </>
   );

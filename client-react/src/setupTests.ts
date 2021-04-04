@@ -3,6 +3,22 @@
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom/extend-expect';
+import { ReactNode } from 'react';
+import * as reactI18next from 'react-i18next';
+
+// this mock makes sure any components using the translate hook can use it without a warning being shown
+jest.doMock('react-i18next', () => ({
+  ...reactI18next,
+  Trans: ({ children }: { children: ReactNode }) => children,
+  useTranslation: () => {
+    return {
+      t: (str: string) => str,
+      i18n: {
+        changeLanguage: () => new Promise(() => {}),
+      },
+    };
+  },
+}));
 
 class LocalStorageMock {
   store: Record<string, string | null>;

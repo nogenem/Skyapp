@@ -16,6 +16,7 @@ interface IPartialAxiosError {
   };
 }
 
+// TODO: Think a way to translate the errors coming from the server
 export default (err: IPartialAxiosError): IErrors => {
   if (
     !err ||

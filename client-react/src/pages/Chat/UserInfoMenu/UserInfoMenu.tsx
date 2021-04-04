@@ -1,4 +1,5 @@
 import React, { MouseEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 import { connect, ConnectedProps } from 'react-redux';
 
 import {
@@ -47,6 +48,7 @@ const UserInfoMenu = ({
   switchMode,
 }: TProps) => {
   const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
+  const { t: trans /*, i18n*/ } = useTranslation(['Common']);
   const classes = useStyles();
 
   const handleClick = (event: MouseEvent) => {
@@ -66,6 +68,7 @@ const UserInfoMenu = ({
     switchMode(themeMode === 'light' ? 'dark' : 'light');
   };
 
+  const USER_THOUGHTS = 'Some status message...';
   return (
     <>
       <div className={classes.container} onClick={handleClick}>
@@ -85,9 +88,9 @@ const UserInfoMenu = ({
             variant="caption"
             noWrap
             color="textSecondary"
-            title="Some status message..."
+            title={USER_THOUGHTS}
           >
-            Some status message...
+            {USER_THOUGHTS}
           </Typography>
         </div>
       </div>
@@ -112,7 +115,7 @@ const UserInfoMenu = ({
         <MenuItem classes={{ root: classes.nonInteractiveMenuItem }}>
           <div className={classes.menuHeaderContainer}>
             <Typography classes={{ root: classes.logo }}>Skyapp</Typography>
-            <Button onClick={handleSignOut}>Sign Out</Button>
+            <Button onClick={handleSignOut}>{trans('Common:Sign Out')}</Button>
           </div>
         </MenuItem>
         <Divider />
@@ -122,8 +125,10 @@ const UserInfoMenu = ({
             {themeMode === 'light' && <Brightness7Icon fontSize="small" />}
             {themeMode === 'dark' && <Brightness4Icon fontSize="small" />}
           </ListItemIcon>
-          <ListItemText primary="Theme" />
-          <ListItemSecondaryAction>
+          <ListItemText primary={trans('Common:Theme')} />
+          <ListItemSecondaryAction
+            title={trans('Messages:Toggle dark/light theme')}
+          >
             <Switch
               data-testid="theme_toggler"
               edge="end"

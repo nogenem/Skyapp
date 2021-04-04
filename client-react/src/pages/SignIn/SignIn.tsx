@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { connect, ConnectedProps } from 'react-redux';
 
 import { Grid, Link } from '@material-ui/core';
@@ -24,13 +25,15 @@ type TPropsFromRedux = ConnectedProps<typeof connector>;
 type TProps = RouteComponentProps & TPropsFromRedux;
 
 const SignIn = ({ signIn }: TProps) => {
+  const { t: trans } = useTranslation(['Common', 'Messages']);
+
   const submit = async (credentials: ISignInCredentials) => {
     await signIn(credentials);
     navigate('/chat');
   };
 
   return (
-    <AuthContainer title="Sign In">
+    <AuthContainer title={trans('Messages:Sign In')}>
       <Form submit={submit} />
 
       <Grid container>
@@ -43,7 +46,7 @@ const SignIn = ({ signIn }: TProps) => {
             component={ReachLink}
             to="/forgot_password"
           >
-            Forgot password?
+            {trans('Common:Forgot password?')}
           </Link>
         </Grid>
         <Grid item>
@@ -55,7 +58,7 @@ const SignIn = ({ signIn }: TProps) => {
             component={ReachLink}
             to="/signup"
           >
-            {"Don't have an account? Sign Up"}
+            {trans("Common:Don't have an account? Sign Up")}
           </Link>
         </Grid>
       </Grid>

@@ -28,7 +28,7 @@ exports[`SignUpPage renders correctly 1`] = `
         <h1
           class="MuiTypography-root MuiTypography-h5"
         >
-          Sign Up
+          Messages:Sign Up
         </h1>
         <form
           id="sign-up-form"
@@ -43,7 +43,7 @@ exports[`SignUpPage renders correctly 1`] = `
               for="sign-up-form-nickname"
               id="sign-up-form-nickname-label"
             >
-              Nickname
+              Common:Nickname
               <span
                 aria-hidden="true"
                 class="MuiFormLabel-asterisk MuiInputLabel-asterisk"
@@ -73,7 +73,7 @@ exports[`SignUpPage renders correctly 1`] = `
                   class="PrivateNotchedOutline-legendLabelled-8"
                 >
                   <span>
-                    Nickname
+                    Common:Nickname
                      *
                   </span>
                 </legend>
@@ -89,7 +89,7 @@ exports[`SignUpPage renders correctly 1`] = `
               for="sign-up-form-email"
               id="sign-up-form-email-label"
             >
-              Email
+              Common:Email
               <span
                 aria-hidden="true"
                 class="MuiFormLabel-asterisk MuiInputLabel-asterisk"
@@ -119,7 +119,7 @@ exports[`SignUpPage renders correctly 1`] = `
                   class="PrivateNotchedOutline-legendLabelled-8"
                 >
                   <span>
-                    Email
+                    Common:Email
                      *
                   </span>
                 </legend>
@@ -135,7 +135,7 @@ exports[`SignUpPage renders correctly 1`] = `
               for="sign-up-form-password"
               id="sign-up-form-password-label"
             >
-              Password
+              Common:Password
               <span
                 aria-hidden="true"
                 class="MuiFormLabel-asterisk MuiInputLabel-asterisk"
@@ -165,7 +165,7 @@ exports[`SignUpPage renders correctly 1`] = `
                   class="PrivateNotchedOutline-legendLabelled-8"
                 >
                   <span>
-                    Password
+                    Common:Password
                      *
                   </span>
                 </legend>
@@ -181,7 +181,7 @@ exports[`SignUpPage renders correctly 1`] = `
               for="sign-up-form-passwordConfirmation"
               id="sign-up-form-passwordConfirmation-label"
             >
-              Password Confirmation
+              Common:Password Confirmation
               <span
                 aria-hidden="true"
                 class="MuiFormLabel-asterisk MuiInputLabel-asterisk"
@@ -211,7 +211,7 @@ exports[`SignUpPage renders correctly 1`] = `
                   class="PrivateNotchedOutline-legendLabelled-8"
                 >
                   <span>
-                    Password Confirmation
+                    Common:Password Confirmation
                      *
                   </span>
                 </legend>
@@ -226,7 +226,7 @@ exports[`SignUpPage renders correctly 1`] = `
             <span
               class="MuiButton-label"
             >
-              Sign Up
+              Common:Sign up
             </span>
             <span
               class="MuiTouchRipple-root"
@@ -243,7 +243,7 @@ exports[`SignUpPage renders correctly 1`] = `
               class="MuiTypography-root MuiLink-root MuiLink-underlineAlways MuiTypography-body2 MuiTypography-colorTextPrimary"
               href="/forgot_password"
             >
-              Forgot password?
+              Common:Forgot password?
             </a>
           </div>
           <div
@@ -253,7 +253,7 @@ exports[`SignUpPage renders correctly 1`] = `
               class="MuiTypography-root MuiLink-root MuiLink-underlineAlways MuiTypography-body2 MuiTypography-colorTextPrimary"
               href="/signin"
             >
-              Sign In
+              Common:Sign In
             </a>
           </div>
         </div>

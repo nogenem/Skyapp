@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { TextField, Button } from '@material-ui/core';
 import isEmail from 'validator/lib/isEmail';
@@ -14,7 +15,7 @@ import {
   INVALID_EMAIL,
   CANT_BE_BLANK,
   PASSWORDS_MUST_MATCH,
-  fieldIsTooShort,
+  FIELD_IS_TOO_SHORT,
 } from '~/constants/errors';
 import { MIN_PASSWORD_LEN } from '~/constants/validation_limits';
 import type { ISignUpCredentials } from '~/redux/user/types';
@@ -30,6 +31,7 @@ interface IOwnProps {
 type TProps = IOwnProps;
 
 function Form({ submit }: TProps) {
+  const { t: trans } = useTranslation(['Common', 'Errors']);
   const classes = useStyles();
 
   const getData = (getInputByName: IGetInputByName): ISignUpCredentials => ({
@@ -42,20 +44,23 @@ function Form({ submit }: TProps) {
   const validate = (data: ISignUpCredentials) => {
     const errors = {} as IErrors;
 
-    if (!data.nickname) errors.nickname = CANT_BE_BLANK;
+    if (!data.nickname) errors.nickname = trans(CANT_BE_BLANK);
 
-    if (!isEmail(data.email)) errors.email = INVALID_EMAIL;
+    if (!isEmail(data.email)) errors.email = trans(INVALID_EMAIL);
 
-    if (!data.password) errors.password = CANT_BE_BLANK;
+    if (!data.password) errors.password = trans(CANT_BE_BLANK);
     else if (data.password.length < MIN_PASSWORD_LEN)
-      errors.password = fieldIsTooShort(MIN_PASSWORD_LEN);
+      errors.password = trans(FIELD_IS_TOO_SHORT, { count: MIN_PASSWORD_LEN });
 
-    if (!data.passwordConfirmation) errors.passwordConfirmation = CANT_BE_BLANK;
+    if (!data.passwordConfirmation)
+      errors.passwordConfirmation = trans(CANT_BE_BLANK);
     else if (data.passwordConfirmation.length < MIN_PASSWORD_LEN)
-      errors.passwordConfirmation = fieldIsTooShort(MIN_PASSWORD_LEN);
+      errors.passwordConfirmation = trans(FIELD_IS_TOO_SHORT, {
+        count: MIN_PASSWORD_LEN,
+      });
 
     if (data.password !== data.passwordConfirmation)
-      errors.passwordConfirmation = PASSWORDS_MUST_MATCH;
+      errors.passwordConfirmation = trans(PASSWORDS_MUST_MATCH);
     return errors;
   };
 
@@ -65,7 +70,7 @@ function Form({ submit }: TProps) {
       <TextField
         id={`${FORM_ID}-nickname`}
         name="nickname"
-        label="Nickname"
+        label={trans('Common:Nickname')}
         autoComplete="nickname"
         fullWidth
         required
@@ -77,7 +82,7 @@ function Form({ submit }: TProps) {
       <TextField
         id={`${FORM_ID}-email`}
         name="email"
-        label="Email"
+        label={trans('Common:Email')}
         autoComplete="email"
         type="email"
         fullWidth
@@ -90,7 +95,7 @@ function Form({ submit }: TProps) {
       <TextField
         id={`${FORM_ID}-password`}
         name="password"
-        label="Password"
+        label={trans('Common:Password')}
         autoComplete="password"
         type="password"
         fullWidth
@@ -103,7 +108,7 @@ function Form({ submit }: TProps) {
       <TextField
         id={`${FORM_ID}-passwordConfirmation`}
         name="passwordConfirmation"
-        label="Password Confirmation"
+        label={trans('Common:Password Confirmation')}
         autoComplete="passwordConfirmation"
         type="password"
         fullWidth
@@ -121,7 +126,7 @@ function Form({ submit }: TProps) {
         variant="contained"
         color="primary"
       >
-        Sign Up
+        {trans('Common:Sign up')}
       </Button>
     </>
   );

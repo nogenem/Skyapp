@@ -1,0 +1,7 @@
+{
+  "Invalid email": "Invalid email",
+  "Can't be blank": "Can't be blank",
+  "Passwords must match": "Passwords must match",
+  "This field must have at least {{count}} characters": "This field must have at least {{count}} character",
+  "This field must have at least {{count}} characters_plural": "This field must have at least {{count}} characters"
+}

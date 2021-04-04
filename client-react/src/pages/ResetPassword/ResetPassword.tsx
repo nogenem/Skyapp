@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { connect, ConnectedProps } from 'react-redux';
 
 import { Grid, Link } from '@material-ui/core';
@@ -32,13 +33,15 @@ interface OwnProps extends RouteComponentProps {
 type TProps = TPropsFromRedux & OwnProps;
 
 const ResetPassword = ({ token, resetPassword }: TProps) => {
+  const { t: trans } = useTranslation(['Common', 'Messages']);
+
   const submit = async (credentials: IResetPasswordCredentials) => {
     await resetPassword({ ...credentials, token: token as string });
     navigate('/chat');
   };
 
   return (
-    <AuthContainer title="Reset Password">
+    <AuthContainer title={trans('Messages:Reset Password')}>
       <Form submit={submit} />
 
       <Grid container>
@@ -51,7 +54,7 @@ const ResetPassword = ({ token, resetPassword }: TProps) => {
             component={ReachLink}
             to="/signup"
           >
-            Sign Up
+            {trans('Common:Sign Up')}
           </Link>
         </Grid>
         <Grid item>
@@ -63,7 +66,7 @@ const ResetPassword = ({ token, resetPassword }: TProps) => {
             component={ReachLink}
             to="/signin"
           >
-            Sign In
+            {trans('Common:Sign In')}
           </Link>
         </Grid>
       </Grid>

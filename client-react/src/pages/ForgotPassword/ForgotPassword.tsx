@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { connect, ConnectedProps } from 'react-redux';
 
 import { Grid, Link } from '@material-ui/core';
@@ -21,6 +22,7 @@ type TProps = RouteComponentProps & TPropsFromRedux;
 
 const ForgotPassword = ({ forgotPassword }: TProps) => {
   const [success, setSuccess] = React.useState(false);
+  const { t: trans } = useTranslation(['Common', 'Messages']);
 
   const submit = async (credentials: IForgotPasswordCredentials) => {
     try {
@@ -33,10 +35,10 @@ const ForgotPassword = ({ forgotPassword }: TProps) => {
   };
 
   return (
-    <AuthContainer title="Forgot Password">
+    <AuthContainer title={trans('Messages:Forgot Password')}>
       {success && (
         <Alert bgcolor="secondary.main" color="secondary.contrastText">
-          Email sent, please check your email account
+          {trans('Messages:Email sent, please check your email account')}
         </Alert>
       )}
       <Form submit={submit} />
@@ -51,7 +53,7 @@ const ForgotPassword = ({ forgotPassword }: TProps) => {
             component={ReachLink}
             to="/signup"
           >
-            Sign Up
+            {trans('Common:Sign Up')}
           </Link>
         </Grid>
         <Grid item>
@@ -63,7 +65,7 @@ const ForgotPassword = ({ forgotPassword }: TProps) => {
             component={ReachLink}
             to="/signin"
           >
-            Sign In
+            {trans('Sign In')}
           </Link>
         </Grid>
       </Grid>

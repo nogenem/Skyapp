@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { TextField, Button } from '@material-ui/core';
 
@@ -12,7 +13,7 @@ import type {
 import {
   CANT_BE_BLANK,
   PASSWORDS_MUST_MATCH,
-  fieldIsTooShort,
+  FIELD_IS_TOO_SHORT,
 } from '~/constants/errors';
 import { MIN_PASSWORD_LEN } from '~/constants/validation_limits';
 import type { IResetPasswordCredentials } from '~/redux/user/types';
@@ -28,6 +29,7 @@ interface IOwnProps {
 type TProps = IOwnProps;
 
 function Form({ submit }: TProps) {
+  const { t: trans } = useTranslation(['Common', 'Errors']);
   const classes = useStyles();
 
   const getData = (
@@ -43,17 +45,21 @@ function Form({ submit }: TProps) {
   const validate = (data: IResetPasswordCredentials) => {
     const errors = {} as IErrors;
 
-    if (!data.newPassword) errors.newPassword = CANT_BE_BLANK;
+    if (!data.newPassword) errors.newPassword = trans(CANT_BE_BLANK);
     else if (data.newPassword.length < MIN_PASSWORD_LEN)
-      errors.newPassword = fieldIsTooShort(MIN_PASSWORD_LEN);
+      errors.newPassword = trans(FIELD_IS_TOO_SHORT, {
+        count: MIN_PASSWORD_LEN,
+      });
 
     if (!data.newPasswordConfirmation)
-      errors.newPasswordConfirmation = CANT_BE_BLANK;
+      errors.newPasswordConfirmation = trans(CANT_BE_BLANK);
     else if (data.newPasswordConfirmation.length < MIN_PASSWORD_LEN)
-      errors.newPasswordConfirmation = fieldIsTooShort(MIN_PASSWORD_LEN);
+      errors.newPasswordConfirmation = trans(FIELD_IS_TOO_SHORT, {
+        count: MIN_PASSWORD_LEN,
+      });
 
     if (data.newPassword !== data.newPasswordConfirmation)
-      errors.newPasswordConfirmation = PASSWORDS_MUST_MATCH;
+      errors.newPasswordConfirmation = trans(PASSWORDS_MUST_MATCH);
     return errors;
   };
 
@@ -63,7 +69,7 @@ function Form({ submit }: TProps) {
       <TextField
         id={`${FORM_ID}-newPassword`}
         name="newPassword"
-        label="New Password"
+        label={trans('Common:New password')}
         autoComplete="newPassword"
         type="password"
         fullWidth
@@ -76,7 +82,7 @@ function Form({ submit }: TProps) {
       <TextField
         id={`${FORM_ID}-newPasswordConfirmation`}
         name="newPasswordConfirmation"
-        label="New Password Confirmation"
+        label={trans('Common:New password confirmation')}
         autoComplete="newPasswordConfirmation"
         type="password"
         fullWidth
@@ -94,7 +100,7 @@ function Form({ submit }: TProps) {
         variant="contained"
         color="primary"
       >
-        Reset Password
+        {trans('Common:Reset password')}
       </Button>
     </>
   );

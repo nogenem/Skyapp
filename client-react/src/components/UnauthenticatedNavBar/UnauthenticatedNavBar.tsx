@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { connect, ConnectedProps } from 'react-redux';
 
 import {
@@ -38,6 +39,7 @@ const UnauthenticatedNavBar = ({
   theme,
   switchMode,
 }: TProps) => {
+  const { t: trans } = useTranslation('Messages');
   const classes = useStyles();
 
   const handleToggleTheme = () => {
@@ -46,17 +48,18 @@ const UnauthenticatedNavBar = ({
 
   if (isAuthenticated) return null;
 
+  const toggleThemeTitle = trans('Messages:Toggle dark/light theme') as string;
   return (
     <MuiAppBar position="fixed">
       <Toolbar>
         <Typography variant="h6" noWrap className={classes.title}>
           SkyApp
         </Typography>
-        <Tooltip title="Toggle Dark/Light Theme" enterDelay={300}>
+        <Tooltip title={toggleThemeTitle} enterDelay={300}>
           <IconButton
             color="inherit"
             onClick={handleToggleTheme}
-            aria-label="Toggle Dark/Light Theme"
+            aria-label={toggleThemeTitle}
             data-testid="toggle_theme_btn"
           >
             {theme === undefined && <SyncIcon />}

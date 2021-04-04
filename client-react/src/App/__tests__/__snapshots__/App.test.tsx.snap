@@ -14,11 +14,11 @@ exports[`Connected App renders correctly 1`] = `
         SkyApp
       </h6>
       <button
-        aria-label="Toggle Dark/Light Theme"
+        aria-label="Messages:Toggle dark/light theme"
         class="MuiButtonBase-root MuiIconButton-root MuiIconButton-colorInherit"
         data-testid="toggle_theme_btn"
         tabindex="0"
-        title="Toggle Dark/Light Theme"
+        title="Messages:Toggle dark/light theme"
         type="button"
       >
         <span

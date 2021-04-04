@@ -8,6 +8,9 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'center',
       alignItems: 'center',
     },
+    cardContent: {
+      paddingTop: 0,
+    },
   }),
 );
 

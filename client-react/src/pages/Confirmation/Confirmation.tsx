@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { connect, ConnectedProps } from 'react-redux';
 
 import { Button } from '@material-ui/core';
@@ -53,6 +54,7 @@ const Confirmation = ({
   resendConfirmationEmail,
 }: TProps) => {
   const [state, setState] = useObjState<TState>(initialState);
+  const { t: trans } = useTranslation(['Common', 'Messages']);
   const isMounted = React.useRef(false);
 
   const handleResendEmail = async () => {
@@ -108,22 +110,24 @@ const Confirmation = ({
 
   return (
     <>
-      <AuthContainer title="Token Confirmation">
+      <AuthContainer title={trans('Messages:Token Confirmation')}>
         {!state.errors.global && (
           <>
             {state.validatingToken === STATES.SENDING && (
               <Alert bgcolor="primary.main" color="primary.contrastText">
-                Validating your email...
+                {trans('Messages:Validating your email...')}
               </Alert>
             )}
             {state.resendingEmail === STATES.SENDING && (
               <Alert bgcolor="primary.main" color="primary.contrastText">
-                Resending confirmation email...
+                {trans('Messages:Resending confirmation email...')}
               </Alert>
             )}
             {state.resendingEmail === STATES.COMPLETED && (
               <Alert bgcolor="primary.main" color="primary.contrastText">
-                The confirmation email was resend! Please check your email.
+                {trans(
+                  'Messages:The confirmation email was resend! Please check your email.',
+                )}
               </Alert>
             )}
           </>
@@ -139,7 +143,7 @@ const Confirmation = ({
                 color="primary"
                 onClick={handleResendEmail}
               >
-                Resend Confirmation Email
+                {trans('Common:Resend confirmation email')}
               </Button>
             )}
           </>

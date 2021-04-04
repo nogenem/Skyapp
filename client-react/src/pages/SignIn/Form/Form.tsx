@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import {
   TextField,
@@ -18,7 +19,7 @@ import type {
 import {
   INVALID_EMAIL,
   CANT_BE_BLANK,
-  fieldIsTooShort,
+  FIELD_IS_TOO_SHORT,
 } from '~/constants/errors';
 import { MIN_PASSWORD_LEN } from '~/constants/validation_limits';
 import type { ISignInCredentials } from '~/redux/user/types';
@@ -34,6 +35,7 @@ interface IOwnProps {
 type TProps = IOwnProps;
 
 function Form({ submit }: TProps) {
+  const { t: trans } = useTranslation(['Common', 'Errors']);
   const classes = useStyles();
 
   const getData = (getInputByName: IGetInputByName): ISignInCredentials => ({
@@ -45,11 +47,14 @@ function Form({ submit }: TProps) {
   const validate = (data: ISignInCredentials) => {
     const errors = {} as IErrors;
 
-    if (!isEmail(data.email)) errors.email = INVALID_EMAIL;
+    if (!isEmail(data.email)) errors.email = trans(INVALID_EMAIL);
 
-    if (!data.password) errors.password = CANT_BE_BLANK;
+    // TODO: Think a better way to translate these errors...
+    //  If i leave it like this, they wouldn't be updated if the user
+    //  changes the language...
+    if (!data.password) errors.password = trans(CANT_BE_BLANK);
     else if (data.password.length < MIN_PASSWORD_LEN)
-      errors.password = fieldIsTooShort(MIN_PASSWORD_LEN);
+      errors.password = trans(FIELD_IS_TOO_SHORT, { count: MIN_PASSWORD_LEN });
 
     return errors;
   };
@@ -60,7 +65,7 @@ function Form({ submit }: TProps) {
       <TextField
         id={`${FORM_ID}-email`}
         name="email"
-        label="Email"
+        label={trans('Common:Email')}
         autoComplete="email"
         type="email"
         fullWidth
@@ -73,7 +78,7 @@ function Form({ submit }: TProps) {
       <TextField
         id={`${FORM_ID}-password`}
         name="password"
-        label="Password"
+        label={trans('Common:Password')}
         autoComplete="password"
         type="password"
         fullWidth
@@ -85,7 +90,7 @@ function Form({ submit }: TProps) {
       />
       <FormControlLabel
         control={<Checkbox name="remember_me" color="primary" />}
-        label="Remember me"
+        label={trans('Common:Remember me')}
       />
 
       <Button
@@ -95,7 +100,7 @@ function Form({ submit }: TProps) {
         variant="contained"
         color="primary"
       >
-        Sign In
+        {trans('Common:Sign in')}
       </Button>
     </>
   );
