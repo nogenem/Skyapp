@@ -5,12 +5,18 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 
 import resources from './locales';
 
+const languageDetector = new LanguageDetector(null, {
+  caches: ['localStorage', 'cookie'],
+});
+
 i18n
-  .use(LanguageDetector)
+  .use(languageDetector)
   .use(initReactI18next) // passes i18n down to react-i18next
   .init({
     resources,
     fallbackLng: 'en-US',
+    supportedLngs: Object.keys(resources),
+    defaultNS: 'Common',
 
     keySeparator: false,
     interpolation: {
