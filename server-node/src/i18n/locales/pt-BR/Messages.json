@@ -1,0 +1,9 @@
+{
+  "User created with success": "Usuário criado com sucesso",
+  "Sign in effectuated with success": "Login efetuado com sucesso",
+  "User account confirmed with success": "Conta de usuário confirmada com sucesso",
+  "The confirmation email was resend": "O email de confirmação foi reenviado",
+  "The token is valid": "O token é válido",
+  "The reset password email was sent with success": "O email de redefinição de senha foi enviado com sucesso",
+  "Password changed with success": "Senha alterada com sucesso"
+}

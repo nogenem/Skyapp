@@ -1,0 +1,15 @@
+{
+  "Invalid email": "Invalid email",
+  "Passwords must match": "Passwords must match",
+  "This field must have at least {{count}} characters": "This field must have at least {{count}} character",
+  "This field must have at least {{count}} characters_plural": "This field must have at least {{count}} characters",
+  "Internal server error": "Internal server error",
+  "This email is already taken": "This email is already taken",
+  "Invalid id": "Invalid id",
+  "Route not found": "Route not found",
+  "Invalid credentials": "Invalid credentials",
+  "Invalid or expired token": "Invalid or expired token",
+  "The last email sent is still valid. Please, check your email account": "The last email sent is still valid. Please, check your email account",
+  "There is no user with such email": "There is no user with such email",
+  "Token not provided": "Token not provided"
+}

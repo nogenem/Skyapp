@@ -2,6 +2,8 @@ import { Response } from 'express';
 import { Result, ValidationError } from 'express-validator';
 import mongoose from 'mongoose';
 
+import i18n from '~/i18n';
+
 import {
   CustomError,
   validatorErrors,
@@ -24,9 +26,36 @@ const isMongooseObjectIdError = (err: mongoose.Error.CastError) =>
   err.message ===
     'Argument passed in must be a single String of 12 bytes or a string of 24 hex characters';
 
+const translateErrors = (err: CustomError) => {
+  return Object.entries(err.msgObj).reduce((acc, cur) => {
+    let ret;
+    if (Array.isArray(cur[1])) {
+      // (string | TTranslatableError)[]
+      ret = cur[1].map(c => {
+        if (typeof c === 'object' && c.msg)
+          return i18n.t(`Errors:${c.msg}`, c.params);
+        return i18n.t(`Errors:${c}`);
+      });
+    } else if (typeof cur[1] === 'object' && cur[1].msg) {
+      // TTranslatableError
+      ret = i18n.t(`Errors:${cur[1].msg}`, cur[1].params);
+    } else {
+      // string
+      ret = i18n.t(`Errors:${cur[1]}`);
+    }
+    return {
+      ...acc,
+      ...{
+        [cur[0]]: ret,
+      },
+    };
+  }, {});
+};
+
 const handleErrors = (err: TError, res: Response): Response<unknown> => {
   if (err instanceof CustomError) {
-    return res.status(err.status).json({ errors: err.msgObj });
+    const errors = translateErrors(err);
+    return res.status(err.status).json({ errors });
   }
 
   // Erros vindos do express-validator

@@ -1,0 +1,15 @@
+{
+  "Invalid email": "Email inválido",
+  "Passwords must match": "As senhas devem corresponder",
+  "This field must have at least {{count}} characters": "Este campo deve ter pelo menos {{count}} caractere",
+  "This field must have at least {{count}} characters_plural": "Este campo deve ter pelo menos {{count}} caracteres",
+  "Internal server error": "Erro interno do servidor",
+  "This email is already taken": "Este email ja esta sendo utilizado",
+  "Invalid id": "Id inválido",
+  "Route not found": "Rota não encontrada",
+  "Invalid credentials": "Credenciais inválidas",
+  "Invalid or expired token": "Token inválido ou expirado",
+  "The last email sent is still valid. Please, check your email account": "O último email enviado ainda é válido. Por favor, verifique sua conta de email",
+  "There is no user with such email": "Não há nenhum usuário com esse email",
+  "Token not provided": "Token não fornecido"
+}

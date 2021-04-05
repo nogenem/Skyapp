@@ -1,7 +1,9 @@
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import express, { Express, Request, Response, NextFunction } from 'express';
+import i18nextMiddleware from 'i18next-http-middleware';
 
+import i18n from './i18n';
 import auth from './middlewares/auth';
 import { publicRoutes, privateRoutes } from './routes';
 import { routeNotFoundError } from './utils/errors';
@@ -24,6 +26,11 @@ class AppController {
   generalMiddlewares(): void {
     this.app.use(cors());
     this.app.use(bodyParser.json());
+    this.app.use(i18nextMiddleware.handle(i18n));
+    this.app.use((req, res, next) => {
+      i18n.changeLanguage(req.language);
+      next();
+    });
   }
 
   publicRoutes(): void {

@@ -61,7 +61,7 @@ export default {
       const userRecord = await user.save();
       sendConfirmationEmail(userRecord, host);
       return res.status(201).json({
-        message: USER_CREATED,
+        message: req.t(USER_CREATED),
         user: userRecord.toAuthJSON(),
       });
     } catch (err) {
@@ -75,7 +75,7 @@ export default {
       const user = await User.findOne({ email });
       if (user && user.isValidPassword(password)) {
         return res.status(200).json({
-          message: SIGNIN_SUCCESS,
+          message: req.t(SIGNIN_SUCCESS),
           user: user.toAuthJSON(!rememberMe),
         });
       }
@@ -103,7 +103,7 @@ export default {
 
       if (user) {
         return res.json({
-          message: ACC_CONFIRMED,
+          message: req.t(ACC_CONFIRMED),
           user: user.toAuthJSON(),
         });
       }
@@ -139,7 +139,7 @@ export default {
         const userRecord = await user.save();
         sendConfirmationEmail(userRecord, host);
         return res.status(200).json({
-          message: CONFIRMATION_EMAIL_WAS_RESEND,
+          message: req.t(CONFIRMATION_EMAIL_WAS_RESEND),
         });
       }
 
@@ -159,7 +159,7 @@ export default {
       delete decodedData.iat;
 
       return res.status(200).json({
-        message: TOKEN_IS_VALID,
+        message: req.t(TOKEN_IS_VALID),
         decodedData,
       });
     } catch (err) {
@@ -194,7 +194,7 @@ export default {
         const userRecord = await user.save();
         sendResetPasswordEmail(userRecord, host);
         return res.status(200).json({
-          message: RESET_PASSWORD_EMAIL_SENT,
+          message: req.t(RESET_PASSWORD_EMAIL_SENT),
         });
       }
 
@@ -221,7 +221,7 @@ export default {
         const userRecord = await user.save();
 
         return res.status(200).json({
-          message: PASSWORD_CHANGED,
+          message: req.t(PASSWORD_CHANGED),
           user: userRecord.toAuthJSON(),
         });
       }

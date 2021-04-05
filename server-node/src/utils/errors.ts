@@ -7,12 +7,17 @@ import {
   NO_USER_WITH_SUCH_EMAIL,
   LAST_EMAIL_SENT_IS_STILL_VALID,
   NO_TOKEN,
-} from '../constants/error_messages';
+} from '~/constants/error_messages';
+import type { TTranslatableError } from '~/constants/error_messages';
 
 interface IMsgObj<T> {
   [x: string]: T;
 }
-type TMsgObjTypes = string[] | string;
+type TMsgObjTypes =
+  | (string | TTranslatableError)[]
+  | string
+  | TTranslatableError;
+
 export type { IMsgObj, TMsgObjTypes };
 
 export class CustomError extends Error {

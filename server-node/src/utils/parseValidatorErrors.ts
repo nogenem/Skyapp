@@ -1,13 +1,15 @@
 import { Result, ValidationError } from 'express-validator';
 import forEach from 'lodash.foreach';
 
+import type { TTranslatableError } from '~/constants/error_messages';
+
 import { CustomError } from './errors';
 import type { IMsgObj } from './errors';
 
 export default (
   validatorResult: Result<ValidationError>,
-): IMsgObj<string[]> => {
-  const result: IMsgObj<string[]> = {};
+): IMsgObj<(string | TTranslatableError)[]> => {
+  const result: IMsgObj<(string | TTranslatableError)[]> = {};
   const errors = validatorResult.array();
   forEach(errors, (err: ValidationError) => {
     if (err.msg instanceof CustomError) {
