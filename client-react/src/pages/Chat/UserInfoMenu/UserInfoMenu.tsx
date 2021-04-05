@@ -2,30 +2,18 @@ import React, { MouseEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { connect, ConnectedProps } from 'react-redux';
 
-import {
-  Button,
-  Divider,
-  ListItemIcon,
-  ListItemSecondaryAction,
-  ListItemText,
-  Menu,
-  MenuItem,
-  Switch,
-  Typography,
-} from '@material-ui/core';
-import {
-  Brightness4 as Brightness4Icon,
-  Brightness7 as Brightness7Icon,
-  Sync as SyncIcon,
-} from '@material-ui/icons';
+import { Typography } from '@material-ui/core';
 
 import { ChatAvatar } from '~/components';
+import { MENU_STATES } from '~/constants/chat_menu_states';
+import type { TMenuStates } from '~/constants/chat_menu_states';
 import { IAppState } from '~/redux/store';
 import { switchMode as switchModeAction } from '~/redux/theme/actions';
 import { getThemeMode } from '~/redux/theme/reducer';
 import { userSignedOut as userSignedOutAction } from '~/redux/user/actions';
 import { getNickname } from '~/redux/user/reducer';
 
+import { MainMenu, ChangeLanguageMenu } from './Menus';
 import useStyles from './useStyles';
 
 const mapStateToProps = (state: IAppState) => ({
@@ -47,8 +35,11 @@ const UserInfoMenu = ({
   userSignedOut,
   switchMode,
 }: TProps) => {
+  const { i18n } = useTranslation();
+  const [menuState, setMenuState] = React.useState<TMenuStates>(
+    MENU_STATES.MAIN,
+  );
   const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
-  const { t: trans /*, i18n*/ } = useTranslation(['Common']);
   const classes = useStyles();
 
   const handleClick = (event: MouseEvent) => {
@@ -56,6 +47,9 @@ const UserInfoMenu = ({
   };
 
   const handleClose = () => {
+    if (menuState !== MENU_STATES.MAIN) {
+      setMenuState(MENU_STATES.MAIN);
+    }
     setAnchorEl(null);
   };
 
@@ -66,6 +60,11 @@ const UserInfoMenu = ({
 
   const handleSwitchThemeMode = () => {
     switchMode(themeMode === 'light' ? 'dark' : 'light');
+  };
+
+  const handleLanguageChange = (lang: string) => {
+    i18n.changeLanguage(lang);
+    window.location.reload();
   };
 
   const USER_THOUGHTS = 'Some status message...';
@@ -94,51 +93,25 @@ const UserInfoMenu = ({
           </Typography>
         </div>
       </div>
-      <Menu
-        elevation={0}
-        getContentAnchorEl={null}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'center',
-        }}
-        id="user-info-menu"
-        anchorEl={anchorEl}
-        keepMounted
-        open={Boolean(anchorEl)}
-        onClose={handleClose}
-        classes={{ paper: classes.menu }}
-      >
-        <MenuItem classes={{ root: classes.nonInteractiveMenuItem }}>
-          <div className={classes.menuHeaderContainer}>
-            <Typography classes={{ root: classes.logo }}>Skyapp</Typography>
-            <Button onClick={handleSignOut}>{trans('Common:Sign Out')}</Button>
-          </div>
-        </MenuItem>
-        <Divider />
-        <MenuItem classes={{ root: classes.nonInteractiveMenuItem }}>
-          <ListItemIcon>
-            {themeMode === undefined && <SyncIcon fontSize="small" />}
-            {themeMode === 'light' && <Brightness7Icon fontSize="small" />}
-            {themeMode === 'dark' && <Brightness4Icon fontSize="small" />}
-          </ListItemIcon>
-          <ListItemText primary={trans('Common:Theme')} />
-          <ListItemSecondaryAction
-            title={trans('Messages:Toggle dark/light theme')}
-          >
-            <Switch
-              data-testid="theme_toggler"
-              edge="end"
-              onChange={handleSwitchThemeMode}
-              checked={themeMode === 'light'}
-              inputProps={{ 'aria-labelledby': 'switch-list-label-theme' }}
-            />
-          </ListItemSecondaryAction>
-        </MenuItem>
-      </Menu>
+
+      {menuState === MENU_STATES.MAIN && (
+        <MainMenu
+          anchorEl={anchorEl}
+          themeMode={themeMode}
+          handleSignOut={handleSignOut}
+          handleSwitchThemeMode={handleSwitchThemeMode}
+          handleClose={handleClose}
+          setMenuState={setMenuState}
+        />
+      )}
+      {menuState === MENU_STATES.CHANGING_LANGUAGE && (
+        <ChangeLanguageMenu
+          anchorEl={anchorEl}
+          handleLanguageChange={handleLanguageChange}
+          handleClose={handleClose}
+          setMenuState={setMenuState}
+        />
+      )}
     </>
   );
 };

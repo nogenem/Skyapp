@@ -9,13 +9,15 @@ const languageDetector = new LanguageDetector(null, {
   caches: ['localStorage', 'cookie'],
 });
 
+export const SUPPORTED_LANGUAGES = Object.keys(resources);
+
 i18n
   .use(languageDetector)
   .use(initReactI18next) // passes i18n down to react-i18next
   .init({
     resources,
     fallbackLng: 'en-US',
-    supportedLngs: Object.keys(resources),
+    supportedLngs: SUPPORTED_LANGUAGES,
     defaultNS: 'Common',
 
     keySeparator: false,

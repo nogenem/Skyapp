@@ -12,7 +12,7 @@ exports[`Connected ChatPage renders correctly 1`] = `
         class="makeStyles-container-4"
       >
         <span
-          class="MuiBadge-root makeStyles-badge-10"
+          class="MuiBadge-root makeStyles-badge-6"
         >
           <div
             class="MuiAvatar-root MuiAvatar-circle MuiAvatar-colorDefault"
@@ -29,7 +29,7 @@ exports[`Connected ChatPage renders correctly 1`] = `
             </svg>
           </div>
           <span
-            class="MuiBadge-badge MuiBadge-anchorOriginBottomRightCircle makeStyles-anchorOriginBottomRightCircle-14 MuiBadge-colorSecondary makeStyles-dotBadge_online-12 MuiBadge-dot makeStyles-dotBadge-11"
+            class="MuiBadge-badge MuiBadge-anchorOriginBottomRightCircle makeStyles-anchorOriginBottomRightCircle-10 MuiBadge-colorSecondary makeStyles-dotBadge_online-8 MuiBadge-dot makeStyles-dotBadge-7"
           />
         </span>
         <div
@@ -52,7 +52,7 @@ exports[`Connected ChatPage renders correctly 1`] = `
       class="makeStyles-rightContainer-2"
     >
       <div
-        class="makeStyles-content-15"
+        class="makeStyles-content-16"
       >
         <div
           class="MuiPaper-root MuiCard-root MuiPaper-elevation8 MuiPaper-rounded"
@@ -71,7 +71,7 @@ exports[`Connected ChatPage renders correctly 1`] = `
             </div>
           </div>
           <div
-            class="MuiCardContent-root makeStyles-cardContent-16"
+            class="MuiCardContent-root makeStyles-cardContent-17"
           >
             <p
               class="MuiTypography-root MuiTypography-body1"
