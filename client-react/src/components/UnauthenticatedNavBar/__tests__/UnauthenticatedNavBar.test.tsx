@@ -9,6 +9,7 @@ import {
   UnauthenticatedNavBar,
   UnconnectedUnauthenticatedNavBar,
 } from '../index';
+import type { TProps } from '../index';
 
 const renderWithRedux = getRenderWithRedux();
 
@@ -36,7 +37,7 @@ describe('UnauthenticatedNavBar', () => {
   });
 
   it('can switch themes', () => {
-    const props = {
+    const props: TProps = {
       isAuthenticated: false,
       theme: 'light' as TThemeMode,
       switchMode: jest.fn(),
@@ -50,4 +51,7 @@ describe('UnauthenticatedNavBar', () => {
     expect(props.switchMode).toHaveBeenCalledTimes(1);
     expect(props.switchMode).toHaveBeenCalledWith('dark');
   });
+
+  // TODO: Add test !? I dunno how to do it ;/
+  // it('can change language', () => {});
 });

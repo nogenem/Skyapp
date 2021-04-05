@@ -21,6 +21,10 @@ jest.doMock('react-i18next', () => ({
   },
 }));
 
+const oldLocation = window.location;
+delete (window as Partial<Window>).location;
+window.location = { ...oldLocation, reload: jest.fn() };
+
 class LocalStorageMock {
   store: Record<string, string | null>;
   length: number;

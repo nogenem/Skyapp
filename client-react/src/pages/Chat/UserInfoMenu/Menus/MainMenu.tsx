@@ -92,7 +92,6 @@ const MainMenu = ({
             edge="end"
             onChange={handleSwitchThemeMode}
             checked={themeMode === 'light'}
-            inputProps={{ 'aria-labelledby': 'switch-list-label-theme' }}
           />
         </ListItemSecondaryAction>
       </MenuItem>
