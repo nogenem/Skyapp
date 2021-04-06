@@ -34,11 +34,15 @@ interface IAuthUser {
   token?: string;
 }
 
+interface ITokenData {
+  _id: string;
+}
+
 interface IUserDoc extends IUser, Document {
   // My methods
   isValidPassword: (password: string) => boolean;
   updatePasswordHash: (password?: string) => void;
-  toAuthJSON: (tokenExpires?: boolean) => Partial<IUser>;
+  toAuthJSON: (token?: string, tokenExpires?: boolean) => IAuthUser;
   setConfirmationToken: () => void;
   generateJWT: (tokenExpires?: boolean) => string;
   generateConfirmationUrl: (host: string) => string;
@@ -98,13 +102,13 @@ schema.method(
 
 schema.method(
   'toAuthJSON',
-  function toAuthJSON(tokenExpires = true): IAuthUser {
+  function toAuthJSON(token = undefined, tokenExpires = true) {
     return {
       _id: this._id,
       nickname: this.nickname,
       email: this.email,
       confirmed: !!this.confirmed,
-      token: this.generateJWT(tokenExpires),
+      token: token || this.generateJWT(tokenExpires),
     };
   },
 );
@@ -112,11 +116,8 @@ schema.method(
 schema.method('generateJWT', function generateJWT(tokenExpires = true) {
   return jwt.sign(
     {
-      _id: this._id,
-      nickname: this.nickname,
-      email: this.email,
-      confirmed: this.confirmed,
-    },
+      _id: this._id.toString(),
+    } as ITokenData,
     process.env.JWT_SECRET,
     tokenExpires
       ? {
@@ -150,5 +151,5 @@ schema.method(
 
 schema.plugin(uniqueValidator, { message: EMAIL_ALREADY_TAKEN });
 
-export type { IUser, IUserDoc, IAuthUser };
+export type { IUser, IUserDoc, IAuthUser, ITokenData };
 export default mongoose.model<IUserDoc>('User', schema);

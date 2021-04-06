@@ -12,6 +12,7 @@ import {
 } from '~/constants/return_messages';
 import { sendConfirmationEmail, sendResetPasswordEmail } from '~/mailer';
 import { User } from '~/models';
+import { ITokenData } from '~/models/User';
 import {
   invalidCredentialsError,
   invalidOrExpiredTokenError,
@@ -76,7 +77,7 @@ export default {
       if (user && user.isValidPassword(password)) {
         return res.status(200).json({
           message: req.t(SIGNIN_SUCCESS),
-          user: user.toAuthJSON(!rememberMe),
+          user: user.toAuthJSON(undefined, !rememberMe),
         });
       }
 
@@ -152,16 +153,17 @@ export default {
     const { token } = req.body as ITokenCredentials;
 
     try {
-      const decodedData = jwt.verify(token, process.env.JWT_SECRET) as Record<
-        string,
-        unknown
-      >;
-      delete decodedData.iat;
+      const { _id } = jwt.verify(token, process.env.JWT_SECRET) as ITokenData;
+      const user = await User.findOne({ _id });
 
-      return res.status(200).json({
-        message: req.t(TOKEN_IS_VALID),
-        decodedData,
-      });
+      if (user) {
+        return res.status(200).json({
+          message: req.t(TOKEN_IS_VALID),
+          user: user.toAuthJSON(token),
+        });
+      }
+
+      return handleErrors(invalidOrExpiredTokenError(), res);
     } catch (err) {
       return handleErrors(invalidOrExpiredTokenError(), res);
     }
