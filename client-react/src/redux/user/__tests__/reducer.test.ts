@@ -1,27 +1,19 @@
+import { FACTORIES } from '~/utils/testUtils';
+
 import userReducer, { initialState } from '../reducer';
 import { EUserActions } from '../types';
-import type { IUser, TUserAction } from '../types';
+import type { TUserAction, TUserState } from '../types';
 
 describe('user reducer', () => {
   it('should handle SIGNED_IN', () => {
-    const user: IUser = {
-      _id: '1',
-      nickname: 'test',
-      email: 'test@test.com',
-      confirmed: false,
-    };
+    const user: TUserState = FACTORIES.userState();
     const action: TUserAction = { type: EUserActions.SIGNED_IN, payload: user };
 
     expect(userReducer(undefined, action)).toEqual(user);
   });
 
   it('should handle SIGNED_OUT', () => {
-    const user: IUser = {
-      _id: '1',
-      nickname: 'test',
-      email: 'test@test.com',
-      confirmed: false,
-    };
+    const user: TUserState = FACTORIES.userState();
 
     const action: TUserAction = {
       type: EUserActions.SIGNED_OUT,

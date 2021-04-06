@@ -1,7 +1,7 @@
 import React from 'react';
 
 import type { IUser } from '~/redux/user/types';
-import { getRenderWithRedux } from '~/utils/testUtils';
+import { FACTORIES, getRenderWithRedux } from '~/utils/testUtils';
 
 import { UserInfoMenu } from '../index';
 
@@ -11,19 +11,15 @@ const renderWithRedux = getRenderWithRedux();
 // ./Menus is already testing the interactions
 describe('Connected UserInfoMenu', () => {
   it('renders correctly', () => {
-    const user: IUser = {
-      _id: '1',
-      nickname: 'Test User',
-      email: 'test@test.com',
-      confirmed: false,
-      token: '123456789',
-    };
+    const initialUser: IUser = FACTORIES.userState();
+    const initialState = { user: initialUser };
 
-    const { container, getByText } = renderWithRedux(<UserInfoMenu />, {
-      user,
-    });
+    const { container, getByText } = renderWithRedux(
+      <UserInfoMenu />,
+      initialState,
+    );
 
     expect(container).toMatchSnapshot();
-    expect(getByText(user.nickname)).toBeInTheDocument();
+    expect(getByText(initialUser.nickname)).toBeInTheDocument();
   });
 });

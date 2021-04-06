@@ -1,6 +1,6 @@
 import { LOCAL_STORAGE_TOKEN } from '~/constants/localStorageKeys';
 import api from '~/services/api';
-import { getMockStore } from '~/utils/testUtils';
+import { FACTORIES, getMockStore } from '~/utils/testUtils';
 
 import {
   userSignedIn,
@@ -14,17 +14,15 @@ import {
   forgotPassword,
   resetPassword,
 } from '../actions';
-import {
-  EUserActions,
-  IForgotPasswordCredentials,
-  IResetPasswordCredentials,
-} from '../types';
+import { EUserActions } from '../types';
 import type {
-  IUser,
   TUserAction,
   ISignUpCredentials,
   ISignInCredentials,
   ITokenCredentials,
+  IForgotPasswordCredentials,
+  IResetPasswordCredentials,
+  TUserState,
 } from '../types';
 
 jest.mock('../../../utils/setAuthorizationHeader', () => ({
@@ -38,13 +36,9 @@ const VALID_TOKEN = '123456789';
 
 describe('auth actions', () => {
   it('userSignedIn', async () => {
-    const user: IUser = {
-      _id: '1',
-      nickname: 'test',
-      email: 'test@test.com',
-      confirmed: false,
+    const user: TUserState = FACTORIES.userState({
       token: VALID_TOKEN,
-    };
+    });
     const expectedActions = [
       { type: EUserActions.SIGNED_IN, payload: user } as TUserAction,
     ];
@@ -57,13 +51,9 @@ describe('auth actions', () => {
   });
 
   it('userSignedOut', async () => {
-    const user: IUser = {
-      _id: '1',
-      nickname: 'test',
-      email: 'test@test.com',
-      confirmed: false,
+    const user: TUserState = FACTORIES.userState({
       token: VALID_TOKEN,
-    };
+    });
     const expectedActions = [{ type: EUserActions.SIGNED_OUT } as TUserAction];
     const store = mockStore({
       user,
@@ -77,13 +67,9 @@ describe('auth actions', () => {
   });
 
   it('signUp', async () => {
-    const user: IUser = {
-      _id: '1',
-      nickname: 'test',
-      email: 'test@test.com',
-      confirmed: false,
+    const user: TUserState = FACTORIES.userState({
       token: VALID_TOKEN,
-    };
+    });
     const credentials: ISignUpCredentials = {
       nickname: 'test',
       email: 'test@test.com',
@@ -106,13 +92,9 @@ describe('auth actions', () => {
   });
 
   it('signIn', async () => {
-    const user: IUser = {
-      _id: '1',
-      nickname: 'test',
-      email: 'test@test.com',
-      confirmed: false,
+    const user: TUserState = FACTORIES.userState({
       token: VALID_TOKEN,
-    };
+    });
     const credentials: ISignInCredentials = {
       email: 'test@test.com',
       password: '123456',
@@ -134,13 +116,9 @@ describe('auth actions', () => {
   });
 
   it('confirmation', async () => {
-    const user: IUser = {
-      _id: '1',
-      nickname: 'test',
-      email: 'test@test.com',
-      confirmed: false,
+    const user: TUserState = FACTORIES.userState({
       token: VALID_TOKEN,
-    };
+    });
     const credentials: ITokenCredentials = {
       token: VALID_TOKEN,
     };
@@ -178,13 +156,9 @@ describe('auth actions', () => {
   });
 
   it('validateToken', async () => {
-    const user: IUser = {
-      _id: '1',
-      nickname: 'test',
-      email: 'test@test.com',
-      confirmed: false,
+    const user: TUserState = FACTORIES.userState({
       token: VALID_TOKEN,
-    };
+    });
     const credentials: ITokenCredentials = {
       token: VALID_TOKEN,
     };
@@ -222,13 +196,9 @@ describe('auth actions', () => {
   });
 
   it('resetPassword', async () => {
-    const user: IUser = {
-      _id: '1',
-      nickname: 'test',
-      email: 'test@test.com',
-      confirmed: false,
+    const user: TUserState = FACTORIES.userState({
       token: VALID_TOKEN,
-    };
+    });
     const credentials: IResetPasswordCredentials = {
       newPassword: '123456',
       newPasswordConfirmation: '123456',

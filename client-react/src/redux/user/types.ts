@@ -30,6 +30,8 @@ interface IUser {
   nickname: string;
   email: string;
   confirmed: boolean;
+  status: number;
+  thoughts: string;
   token?: string;
 }
 

@@ -2,7 +2,8 @@ import React from 'react';
 
 import { RouteComponentProps } from '@reach/router';
 
-import { getRenderWithRedux } from '~/utils/testUtils';
+import { TUserState } from '~/redux/user/types';
+import { FACTORIES, getRenderWithRedux } from '~/utils/testUtils';
 
 import { Router } from '../index';
 
@@ -11,13 +12,7 @@ const renderWithRedux = getRenderWithRedux();
 type TProps = RouteComponentProps;
 const HelloWorld = (props: TProps) => <span>Hello World</span>;
 
-const initialUser = {
-  _id: '',
-  nickname: '',
-  email: '',
-  confirmed: false,
-  token: '123456789',
-};
+const initialUser: TUserState = FACTORIES.userState();
 
 describe('Router', () => {
   it('renders `children` when `isPrivate` is false and `isAuthenticated` is false', () => {

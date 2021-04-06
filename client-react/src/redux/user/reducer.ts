@@ -1,5 +1,7 @@
 import { createSelector } from 'reselect';
 
+import { USER_STATUS } from '~/constants/user_status';
+
 import type { IAppState } from '../store';
 import { EUserActions } from './types';
 import type { TUserAction, TUserState } from './types';
@@ -9,6 +11,8 @@ export const initialState: TUserState = {
   nickname: '',
   email: '',
   confirmed: false,
+  status: USER_STATUS.ACTIVE,
+  thoughts: '',
   token: '',
 };
 
@@ -18,8 +22,16 @@ export default function user(
 ): TUserState {
   switch (action.type) {
     case EUserActions.SIGNED_IN:
-      const { _id, nickname, email, confirmed, token } = action.payload;
-      return { _id, nickname, email, confirmed, token };
+      const {
+        _id,
+        nickname,
+        email,
+        confirmed,
+        status,
+        thoughts,
+        token,
+      } = action.payload;
+      return { _id, nickname, email, confirmed, status, thoughts, token };
     case EUserActions.SIGNED_OUT:
       return initialState;
     default:
@@ -42,4 +54,9 @@ export const getConfirmed = createSelector(
 export const getNickname = createSelector(
   getUser,
   userData => userData.nickname || '',
+);
+export const getStatus = createSelector(getUser, userData => userData.status);
+export const getThoughts = createSelector(
+  getUser,
+  userData => userData.thoughts || '',
 );
