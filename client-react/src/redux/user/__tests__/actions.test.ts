@@ -194,7 +194,7 @@ describe('auth actions', () => {
     const spy = jest
       .spyOn(api.auth, 'validateToken')
       .mockImplementationOnce(() => {
-        return Promise.resolve({ decodedData: user });
+        return Promise.resolve({ user });
       });
 
     const store = mockStore({});

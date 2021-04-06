@@ -63,8 +63,8 @@ export const resendConfirmationEmail = (credentials: ITokenCredentials) => () =>
 export const validateToken = (credentials: ITokenCredentials) => (
   dispatch: Dispatch,
 ) =>
-  api.auth.validateToken(credentials).then(({ decodedData }) => {
-    userSignedIn({ ...decodedData, token: credentials.token })(dispatch);
+  api.auth.validateToken(credentials).then(({ user }) => {
+    userSignedIn(user)(dispatch);
   });
 
 export const forgotPassword = (credentials: IForgotPasswordCredentials) => () =>
