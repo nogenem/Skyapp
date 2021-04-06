@@ -4,9 +4,11 @@ import mongoose, { Document } from 'mongoose';
 import uniqueValidator from 'mongoose-unique-validator';
 
 import { EMAIL_ALREADY_TAKEN } from '~/constants/error_messages';
+import { USER_STATUS } from '~/constants/user_status';
 
 const SALT = 10;
 const TOKEN_EXPIRES_IN = '2 hours';
+const USER_STATUS_VALUES = Object.values(USER_STATUS);
 
 // https://hackernoon.com/how-to-link-mongoose-and-typescript-for-a-single-source-of-truth-94o3uqc
 // https://stackoverflow.com/questions/50614345/property-virtual-does-not-exist-on-type-typeof-schema
@@ -15,9 +17,11 @@ interface IUser {
   email: string;
   passwordHash: string;
 
-  confirmed?: boolean;
-  confirmationToken?: string;
-  resetPasswordToken?: string;
+  status: number;
+  thoughts: string;
+  confirmed: boolean;
+  confirmationToken: string;
+  resetPasswordToken: string;
 
   // virtual
   password?: string;
@@ -30,8 +34,12 @@ interface IAuthUser {
   _id: string;
   nickname: string;
   email: string;
+
   confirmed: boolean;
-  token?: string;
+  status: number;
+  thoughts: string;
+
+  token: string;
 }
 
 interface ITokenData {
@@ -60,9 +68,16 @@ const schema = new mongoose.Schema<IUserDoc>(
       unique: true,
     },
     passwordHash: { type: String, required: true, toJSON: false },
+
     confirmed: { type: Boolean, default: false },
     confirmationToken: { type: String, default: '' },
     resetPasswordToken: { type: String, default: '' },
+    status: {
+      type: Number,
+      default: USER_STATUS.ACTIVE,
+      enum: USER_STATUS_VALUES,
+    },
+    thoughts: { type: String, default: '' },
   },
   { timestamps: true },
 );
@@ -108,6 +123,8 @@ schema.method(
       nickname: this.nickname,
       email: this.email,
       confirmed: !!this.confirmed,
+      status: this.status,
+      thoughts: this.thoughts,
       token: token || this.generateJWT(tokenExpires),
     };
   },

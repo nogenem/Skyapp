@@ -1,6 +1,7 @@
 import { factory } from 'factory-girl';
 import faker from 'faker';
 
+import { USER_STATUS } from '~/constants/user_status';
 import { User } from '~/models';
 import type { IUser } from '~/models';
 
@@ -12,11 +13,17 @@ factory.define(
     return {
       nickname: faker.internet.userName(),
       email: faker.internet.email(),
-      password: pass, // virtual
-      passwordConfirmation: pass, // virtual
       passwordHash: pass,
-      confirmationToken: '',
+
       confirmed: false,
+      status: USER_STATUS.ACTIVE,
+      thoughts: '',
+      confirmationToken: '',
+      resetPasswordToken: '',
+
+      // virtual
+      password: pass,
+      passwordConfirmation: pass,
     };
   },
 );
