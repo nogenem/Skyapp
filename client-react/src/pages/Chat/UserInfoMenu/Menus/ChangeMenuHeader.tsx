@@ -15,21 +15,21 @@ import {
 
 import useStyles from './useStyles';
 
-const defaultProps = {
-  message: '',
-};
-
 interface IOwnProps {
-  isDisabled: boolean;
+  message?: string;
+  canSave?: boolean;
   handleGoBack: () => void;
   handleSave: () => void;
 }
 
-type TProps = IOwnProps & Partial<typeof defaultProps>;
+type TProps = IOwnProps;
 type Ref = HTMLLIElement;
 
 const ChangeMenuHeader = React.forwardRef<Ref, TProps>(
-  ({ message, isDisabled, handleGoBack, handleSave }: TProps, ref) => {
+  (
+    { message = '', canSave = false, handleGoBack, handleSave }: TProps,
+    ref,
+  ) => {
     const { t: trans } = useTranslation(['Common']);
     const classes = useStyles();
 
@@ -43,8 +43,8 @@ const ChangeMenuHeader = React.forwardRef<Ref, TProps>(
         <ListItemText primary={message} />
         <ListItemSecondaryAction title={trans('Common:Done')}>
           <IconButton
-            color={isDisabled ? 'inherit' : 'secondary'}
-            disabled={isDisabled}
+            color={!canSave ? 'inherit' : 'secondary'}
+            disabled={!canSave}
             onClick={handleSave}
             classes={{ root: classes.checkIcon }}
             data-testid="change_menu_header_action"
@@ -56,8 +56,6 @@ const ChangeMenuHeader = React.forwardRef<Ref, TProps>(
     );
   },
 );
-
-ChangeMenuHeader.defaultProps = defaultProps;
 
 export type { TProps };
 export default ChangeMenuHeader;

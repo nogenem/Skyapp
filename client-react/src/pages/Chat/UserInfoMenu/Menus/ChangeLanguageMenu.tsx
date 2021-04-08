@@ -64,7 +64,8 @@ const ChangeLanguageMenu = ({
       classes={{ paper: classes.menu }}
     >
       <ChangeMenuHeader
-        isDisabled={selectedLang === i18n.language}
+        message={trans(`Messages:Choose a language`)}
+        canSave={selectedLang !== i18n.language}
         handleGoBack={handleGoBack}
         handleSave={handleSave}
       />
