@@ -29,6 +29,18 @@ const useStyles = makeStyles((theme: Theme) =>
     logo: {
       color: theme.palette.primary[inverseMode(theme.palette.type)],
     },
+    checkIcon: {
+      '&:not(:disabled)': {
+        color: theme.palette.secondary[inverseMode(theme.palette.type)],
+      },
+      '& svg': {
+        transition: 'font-size 0.3s',
+        willChange: 'font-size',
+      },
+      '&:not(:disabled) svg': {
+        fontSize: '1.7rem',
+      },
+    },
     chevronRightContainer: {
       justifyContent: 'flex-end',
     },

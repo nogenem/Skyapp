@@ -84,9 +84,10 @@ const ChangeLanguageMenu = ({
         <ListItemText primary={trans(`Messages:Choose a language`)} />
         <ListItemSecondaryAction title={trans('Common:Done')}>
           <IconButton
-            size="small"
+            color={selectedLang === i18n.language ? 'inherit' : 'secondary'}
             disabled={selectedLang === i18n.language}
             onClick={handleSave}
+            classes={{ root: classes.checkIcon }}
             data-testid="save_lang_change"
           >
             <CheckIcon />

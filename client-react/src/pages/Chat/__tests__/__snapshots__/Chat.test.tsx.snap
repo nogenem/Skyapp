@@ -52,7 +52,7 @@ exports[`Connected ChatPage renders correctly 1`] = `
       class="makeStyles-rightContainer-2"
     >
       <div
-        class="makeStyles-content-16"
+        class="makeStyles-content-17"
       >
         <div
           class="MuiPaper-root MuiCard-root MuiPaper-elevation8 MuiPaper-rounded"
@@ -71,7 +71,7 @@ exports[`Connected ChatPage renders correctly 1`] = `
             </div>
           </div>
           <div
-            class="MuiCardContent-root makeStyles-cardContent-17"
+            class="MuiCardContent-root makeStyles-cardContent-18"
           >
             <p
               class="MuiTypography-root MuiTypography-body1"
