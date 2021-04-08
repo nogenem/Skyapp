@@ -11,13 +11,13 @@ import { IAppState } from '~/redux/store';
 import { switchMode as switchModeAction } from '~/redux/theme/actions';
 import { getThemeMode } from '~/redux/theme/reducer';
 import { userSignedOut as userSignedOutAction } from '~/redux/user/actions';
-import { getNickname } from '~/redux/user/reducer';
+import { getUser } from '~/redux/user/reducer';
 
 import { MainMenu, ChangeLanguageMenu } from './Menus';
 import useStyles from './useStyles';
 
 const mapStateToProps = (state: IAppState) => ({
-  userNickname: getNickname(state),
+  user: getUser(state),
   themeMode: getThemeMode(state),
 });
 const mapDispatchToProps = {
@@ -30,7 +30,7 @@ type TPropsFromRedux = ConnectedProps<typeof connector>;
 type TProps = TPropsFromRedux;
 
 const UserInfoMenu = ({
-  userNickname,
+  user,
   themeMode,
   userSignedOut,
   switchMode,
@@ -67,30 +67,31 @@ const UserInfoMenu = ({
     window.location.reload();
   };
 
-  const USER_THOUGHTS = 'Some status message...';
   return (
     <>
       <div className={classes.container} onClick={handleClick}>
-        <ChatAvatar online />
+        <ChatAvatar online status={user.status} />
         <div className={classes.textContainer}>
           <Typography
             component="span"
             variant="subtitle1"
             noWrap
             color="inherit"
-            title={userNickname}
+            title={user.nickname}
           >
-            {userNickname}
+            {user.nickname}
           </Typography>
-          <Typography
-            component="span"
-            variant="caption"
-            noWrap
-            color="textSecondary"
-            title={USER_THOUGHTS}
-          >
-            {USER_THOUGHTS}
-          </Typography>
+          {!!user.thoughts && (
+            <Typography
+              component="span"
+              variant="caption"
+              noWrap
+              color="textSecondary"
+              title={user.thoughts}
+            >
+              {user.thoughts}
+            </Typography>
+          )}
         </div>
       </div>
 

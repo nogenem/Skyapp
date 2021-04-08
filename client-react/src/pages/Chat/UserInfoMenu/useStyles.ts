@@ -9,6 +9,7 @@ const useStyles = makeStyles((theme: Theme) =>
     textContainer: {
       display: 'flex',
       flexDirection: 'column',
+      justifyContent: 'center',
       marginLeft: theme.spacing(1),
     },
   }),

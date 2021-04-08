@@ -7,6 +7,7 @@ exports[`Connected UserInfoMenu renders correctly 1`] = `
   >
     <span
       class="MuiBadge-root makeStyles-badge-3"
+      title="Common:Active"
     >
       <div
         class="MuiAvatar-root MuiAvatar-circle MuiAvatar-colorDefault"
@@ -23,7 +24,7 @@ exports[`Connected UserInfoMenu renders correctly 1`] = `
         </svg>
       </div>
       <span
-        class="MuiBadge-badge MuiBadge-anchorOriginBottomRightCircle makeStyles-anchorOriginBottomRightCircle-7 MuiBadge-colorSecondary makeStyles-dotBadge_online-5 MuiBadge-dot makeStyles-dotBadge-4"
+        class="MuiBadge-badge MuiBadge-anchorOriginBottomRightCircle makeStyles-anchorOriginBottomRightCircle-10 MuiBadge-colorSecondary makeStyles-dotBadge_active-5 MuiBadge-dot makeStyles-dotBadge-4"
       />
     </span>
     <div
@@ -37,9 +38,9 @@ exports[`Connected UserInfoMenu renders correctly 1`] = `
       </span>
       <span
         class="MuiTypography-root MuiTypography-caption MuiTypography-colorTextSecondary MuiTypography-noWrap"
-        title="Some status message..."
+        title="Some thoughts..."
       >
-        Some status message...
+        Some thoughts...
       </span>
     </div>
   </div>

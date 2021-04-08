@@ -11,7 +11,9 @@ const renderWithRedux = getRenderWithRedux();
 // ./Menus is already testing the interactions
 describe('Connected UserInfoMenu', () => {
   it('renders correctly', () => {
-    const initialUser: IUser = FACTORIES.userState();
+    const initialUser: IUser = FACTORIES.userState({
+      thoughts: 'Some thoughts...',
+    });
     const initialState = { user: initialUser };
 
     const { container, getByText } = renderWithRedux(
@@ -21,5 +23,6 @@ describe('Connected UserInfoMenu', () => {
 
     expect(container).toMatchSnapshot();
     expect(getByText(initialUser.nickname)).toBeInTheDocument();
+    expect(getByText(initialUser.thoughts)).toBeInTheDocument();
   });
 });
