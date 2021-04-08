@@ -2,19 +2,18 @@ import React, { Reducer } from 'react';
 
 type TNewStateFunc<S> = (oldState: Partial<S>) => Partial<S>;
 type TNewState<S> = Partial<S> | TNewStateFunc<Partial<S>>;
-
-const noop = <S>(oldState: S) => oldState;
+type TInitState<S> = (initArg: S) => S;
 
 const useObjState = <S extends object>(
   initialState: S,
-  initFunc = undefined,
+  initFunc: TInitState<S> = initialState => initialState,
 ) => {
-  const [state, setState] = React.useReducer<Reducer<S, TNewState<S>>>(
+  const [state, setState] = React.useReducer<Reducer<S, TNewState<S>>, S>(
     (oldState, newState) => {
       const newStateFunc =
-        typeof newState === 'function' ? (newState as TNewStateFunc<S>) : noop;
+        typeof newState === 'function' ? (newState as TNewStateFunc<S>) : null;
 
-      if (newStateFunc === noop) {
+      if (newStateFunc === null) {
         return { ...oldState, ...newState };
       } else {
         return { ...oldState, ...newStateFunc(oldState) };
@@ -26,4 +25,5 @@ const useObjState = <S extends object>(
   return [state, setState] as const;
 };
 
+export type { TNewStateFunc, TNewState, TInitState };
 export default useObjState;
