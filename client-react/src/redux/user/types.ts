@@ -1,3 +1,5 @@
+import type { TUserStatus } from '~/constants/user_status';
+
 interface ISignUpCredentials {
   nickname: string;
   email: string;
@@ -30,7 +32,7 @@ interface IUser {
   nickname: string;
   email: string;
   confirmed: boolean;
-  status: number;
+  status: TUserStatus;
   thoughts: string;
   token?: string;
 }
