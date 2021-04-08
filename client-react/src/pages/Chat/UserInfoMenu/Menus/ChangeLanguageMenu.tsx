@@ -1,24 +1,12 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import {
-  Divider,
-  IconButton,
-  ListItemIcon,
-  ListItemSecondaryAction,
-  ListItemText,
-  Menu,
-  MenuItem,
-  Typography,
-} from '@material-ui/core';
-import {
-  ArrowBack as ArrowBackIcon,
-  Check as CheckIcon,
-} from '@material-ui/icons';
+import { Divider, Menu, MenuItem, Typography } from '@material-ui/core';
 
 import { MENU_STATES, TMenuStates } from '~/constants/chat_menu_states';
 import { SUPPORTED_LANGUAGES } from '~/i18n';
 
+import ChangeMenuHeader from './ChangeMenuHeader';
 import useStyles from './useStyles';
 
 interface IOwnProps {
@@ -75,25 +63,11 @@ const ChangeLanguageMenu = ({
       onClose={handleClose}
       classes={{ paper: classes.menu }}
     >
-      <MenuItem classes={{ root: classes.nonInteractiveMenuItem }}>
-        <ListItemIcon title={trans('Common:Go back')}>
-          <IconButton size="small" onClick={handleGoBack}>
-            <ArrowBackIcon />
-          </IconButton>
-        </ListItemIcon>
-        <ListItemText primary={trans(`Messages:Choose a language`)} />
-        <ListItemSecondaryAction title={trans('Common:Done')}>
-          <IconButton
-            color={selectedLang === i18n.language ? 'inherit' : 'secondary'}
-            disabled={selectedLang === i18n.language}
-            onClick={handleSave}
-            classes={{ root: classes.checkIcon }}
-            data-testid="save_lang_change"
-          >
-            <CheckIcon />
-          </IconButton>
-        </ListItemSecondaryAction>
-      </MenuItem>
+      <ChangeMenuHeader
+        isDisabled={selectedLang === i18n.language}
+        handleGoBack={handleGoBack}
+        handleSave={handleSave}
+      />
       <Divider />
       {SUPPORTED_LANGUAGES.map(lang => (
         <MenuItem

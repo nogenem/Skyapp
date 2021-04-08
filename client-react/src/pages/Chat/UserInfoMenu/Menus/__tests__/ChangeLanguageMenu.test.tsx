@@ -19,7 +19,7 @@ describe('ChangeLanguageMenu', () => {
     );
 
     fireEvent.click(getByText(/.+pt-br$/i));
-    fireEvent.click(getByTestId(/save_lang_change/i));
+    fireEvent.click(getByTestId(/change_menu_header_action/i));
 
     expect(props.handleLanguageChange).toHaveBeenCalledTimes(1);
     expect(props.handleLanguageChange).toHaveBeenCalledWith('pt-BR');
