@@ -8,3 +8,4 @@ export const TOKEN_IS_VALID = 'Messages:The token is valid';
 export const RESET_PASSWORD_EMAIL_SENT =
   'Messages:The reset password email was sent with success';
 export const PASSWORD_CHANGED = 'Messages:Password changed with success';
+export const USER_STATUS_CHANGED = 'Messages:User status changed with success';

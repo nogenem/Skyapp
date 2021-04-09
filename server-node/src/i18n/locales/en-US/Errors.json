@@ -11,5 +11,6 @@
   "Invalid or expired token": "Invalid or expired token",
   "The last email sent is still valid. Please, check your email account": "The last email sent is still valid. Please, check your email account",
   "There is no user with such email": "There is no user with such email",
-  "Token not provided": "Token not provided"
+  "Token not provided": "Token not provided",
+  "Invalid user status": "Invalid user status"
 }

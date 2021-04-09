@@ -24,10 +24,7 @@ const auth: RequestHandler = async (
   if (token) {
     try {
       const { _id } = jwt.verify(token, process.env.JWT_SECRET) as ITokenData;
-      const user = await User.findOne(
-        { _id },
-        { nickname: 1, email: 1, confirmed: 1 },
-      );
+      const user = await User.findOne({ _id });
       if (!user) return handleErrors(invalidOrExpiredTokenError(), res);
 
       req.currentUser = user;

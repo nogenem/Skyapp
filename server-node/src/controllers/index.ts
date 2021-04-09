@@ -8,3 +8,6 @@ export type {
 } from './AuthController';
 
 export { default as ChatController } from './ChatController';
+
+export { default as UserController } from './UserController';
+export type { IChangeStatusCredentials } from './UserController';

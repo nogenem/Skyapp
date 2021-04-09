@@ -1,12 +1,18 @@
 import { Router } from 'express';
 
-import { ChatController } from '~/controllers';
+import { ChatController, UserController } from '~/controllers';
 import { validate } from '~/middlewares';
-import { chat } from '~/validators';
+import { chat, user } from '~/validators';
 
 const routes = Router();
 
 // TODO: Remove later
 routes.post('/chat/test', validate(chat.test), ChatController.test);
+
+routes.post(
+  '/user/change_status',
+  validate(user.changeStatus),
+  UserController.changeStatus,
+);
 
 export default routes;

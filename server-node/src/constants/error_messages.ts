@@ -16,5 +16,6 @@ export const LAST_EMAIL_SENT_IS_STILL_VALID =
   'The last email sent is still valid. Please, check your email account';
 export const NO_USER_WITH_SUCH_EMAIL = 'There is no user with such email';
 export const NO_TOKEN = 'Token not provided';
+export const INVALID_USER_STATUS = 'Invalid user status';
 
 export type { TTranslatableError };
