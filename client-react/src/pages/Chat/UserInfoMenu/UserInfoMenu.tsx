@@ -7,13 +7,17 @@ import { Typography } from '@material-ui/core';
 import { ChatAvatar } from '~/components';
 import { MENU_STATES } from '~/constants/chat_menu_states';
 import type { TMenuStates } from '~/constants/chat_menu_states';
-import { IAppState } from '~/redux/store';
+import type { TUserStatus } from '~/constants/user_status';
+import type { IAppState } from '~/redux/store';
 import { switchMode as switchModeAction } from '~/redux/theme/actions';
 import { getThemeMode } from '~/redux/theme/reducer';
-import { userSignedOut as userSignedOutAction } from '~/redux/user/actions';
+import {
+  userSignedOut as userSignedOutAction,
+  changeStatus as changeStatusAction,
+} from '~/redux/user/actions';
 import { getUser } from '~/redux/user/reducer';
 
-import { MainMenu, ChangeLanguageMenu } from './Menus';
+import { MainMenu, ChangeLanguageMenu, ChangeUserStatusMenu } from './Menus';
 import useStyles from './useStyles';
 
 const mapStateToProps = (state: IAppState) => ({
@@ -23,6 +27,7 @@ const mapStateToProps = (state: IAppState) => ({
 const mapDispatchToProps = {
   userSignedOut: userSignedOutAction,
   switchMode: switchModeAction,
+  changeStatus: changeStatusAction,
 };
 const connector = connect(mapStateToProps, mapDispatchToProps);
 type TPropsFromRedux = ConnectedProps<typeof connector>;
@@ -34,6 +39,7 @@ const UserInfoMenu = ({
   themeMode,
   userSignedOut,
   switchMode,
+  changeStatus,
 }: TProps) => {
   const { i18n } = useTranslation();
   const [menuState, setMenuState] = React.useState<TMenuStates>(
@@ -67,6 +73,11 @@ const UserInfoMenu = ({
     window.location.reload();
   };
 
+  const handleUserStatusChange = async (status: TUserStatus) => {
+    await changeStatus({ newStatus: status });
+    setMenuState(MENU_STATES.MAIN);
+  };
+
   return (
     <>
       <div className={classes.container} onClick={handleClick}>
@@ -97,6 +108,7 @@ const UserInfoMenu = ({
 
       {menuState === MENU_STATES.MAIN && (
         <MainMenu
+          user={user}
           anchorEl={anchorEl}
           themeMode={themeMode}
           handleSignOut={handleSignOut}
@@ -109,6 +121,15 @@ const UserInfoMenu = ({
         <ChangeLanguageMenu
           anchorEl={anchorEl}
           handleLanguageChange={handleLanguageChange}
+          handleClose={handleClose}
+          setMenuState={setMenuState}
+        />
+      )}
+      {menuState === MENU_STATES.CHANGING_USER_STATUS && (
+        <ChangeUserStatusMenu
+          userStatus={user.status}
+          handleUserStatusChange={handleUserStatusChange}
+          anchorEl={anchorEl}
           handleClose={handleClose}
           setMenuState={setMenuState}
         />

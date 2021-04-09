@@ -27,6 +27,10 @@ interface IResetPasswordCredentials {
   token: string;
 }
 
+interface IChangeStatusCredentials {
+  newStatus: TUserStatus;
+}
+
 interface IUser {
   _id: string;
   nickname: string;
@@ -42,6 +46,7 @@ type TUserState = IUser;
 enum EUserActions {
   SIGNED_IN = '@user/SIGNED_IN',
   SIGNED_OUT = '@user/SIGNED_OUT',
+  CHANGED_STATUS = '@user/CHANGED_STATUS',
 }
 
 interface IUserActionType<T, P> {
@@ -51,7 +56,8 @@ interface IUserActionType<T, P> {
 
 type TUserAction =
   | IUserActionType<typeof EUserActions.SIGNED_IN, IUser>
-  | IUserActionType<typeof EUserActions.SIGNED_OUT, null>;
+  | IUserActionType<typeof EUserActions.SIGNED_OUT, null>
+  | IUserActionType<typeof EUserActions.CHANGED_STATUS, TUserStatus>;
 
 export type {
   ISignUpCredentials,
@@ -59,6 +65,7 @@ export type {
   ITokenCredentials,
   IForgotPasswordCredentials,
   IResetPasswordCredentials,
+  IChangeStatusCredentials,
   IUser,
   TUserState,
   TUserAction,

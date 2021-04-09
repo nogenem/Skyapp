@@ -22,6 +22,7 @@ const ChatAvatar = ({ online, status }: TProps) => {
 
   const title = getDotTitle(online, status);
 
+  // TODO: Use `UserStatusDot`
   return (
     <Badge
       overlap="circle"

@@ -7,3 +7,4 @@ export { ThemeProvider } from './ThemeProvider';
 export { ConfirmEmailCTA } from './ConfirmEmailCTA';
 export { AuthContainer } from './AuthContainer';
 export { ChatAvatar } from './ChatAvatar';
+export { UserStatusDot } from './UserStatusDot';

@@ -34,6 +34,8 @@ export default function user(
       return { _id, nickname, email, confirmed, status, thoughts, token };
     case EUserActions.SIGNED_OUT:
       return initialState;
+    case EUserActions.CHANGED_STATUS:
+      return { ...state, status: action.payload };
     default:
       return state;
   }

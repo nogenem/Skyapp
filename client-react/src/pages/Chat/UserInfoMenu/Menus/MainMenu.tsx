@@ -20,12 +20,16 @@ import {
   ChevronRight as ChevronRightIcon,
 } from '@material-ui/icons';
 
+import { UserStatusDot } from '~/components';
 import { MENU_STATES, TMenuStates } from '~/constants/chat_menu_states';
+import { USER_STATUS_2_TEXT } from '~/constants/user_status';
 import { TThemeMode } from '~/redux/theme/types';
+import type { IUser } from '~/redux/user/types';
 
 import useStyles from './useStyles';
 
 interface IOwnProps {
+  user: IUser;
   anchorEl: Element | null;
   themeMode?: TThemeMode;
   handleSignOut: () => void;
@@ -37,6 +41,7 @@ interface IOwnProps {
 type TProps = IOwnProps;
 
 const MainMenu = ({
+  user,
   anchorEl,
   themeMode,
   handleSignOut,
@@ -49,6 +54,10 @@ const MainMenu = ({
 
   const handleChangingLanguage = () => {
     setMenuState(MENU_STATES.CHANGING_LANGUAGE);
+  };
+
+  const handleChangingUserStatus = () => {
+    setMenuState(MENU_STATES.CHANGING_USER_STATUS);
   };
 
   return (
@@ -100,6 +109,20 @@ const MainMenu = ({
           <TranslateIcon fontSize="small" />
         </ListItemIcon>
         <ListItemText primary={trans(`Languages:${i18n.language}`)} />
+        <ListItemIcon classes={{ root: classes.chevronRightContainer }}>
+          <ChevronRightIcon />
+        </ListItemIcon>
+      </MenuItem>
+      <MenuItem
+        onClick={handleChangingUserStatus}
+        data-testid="user_status_changer"
+      >
+        <ListItemIcon>
+          <UserStatusDot online status={user.status} />
+        </ListItemIcon>
+        <ListItemText
+          primary={trans(`Common:${USER_STATUS_2_TEXT[user.status]}`)}
+        />
         <ListItemIcon classes={{ root: classes.chevronRightContainer }}>
           <ChevronRightIcon />
         </ListItemIcon>

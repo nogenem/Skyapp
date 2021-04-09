@@ -1,0 +1,46 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`UserStatusDot renders all status correctly 1`] = `
+<div>
+  <span
+    class="makeStyles-dot-1 makeStyles-dot_offline-6 "
+    title="Common:Offline"
+  />
+</div>
+`;
+
+exports[`UserStatusDot renders all status correctly 2`] = `
+<div>
+  <span
+    class="makeStyles-dot-1 makeStyles-dot_active-2 "
+    title="Common:Active"
+  />
+</div>
+`;
+
+exports[`UserStatusDot renders all status correctly 3`] = `
+<div>
+  <span
+    class="makeStyles-dot-1 makeStyles-dot_away-3 "
+    title="Common:Away"
+  />
+</div>
+`;
+
+exports[`UserStatusDot renders all status correctly 4`] = `
+<div>
+  <span
+    class="makeStyles-dot-1 makeStyles-dot_do_not_disturb-4 "
+    title="Common:Do not disturb"
+  />
+</div>
+`;
+
+exports[`UserStatusDot renders all status correctly 5`] = `
+<div>
+  <span
+    class="makeStyles-dot-1 makeStyles-dot_invisible-5 "
+    title="Common:Invisible"
+  />
+</div>
+`;

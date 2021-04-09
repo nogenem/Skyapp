@@ -6,6 +6,7 @@ import type {
   ITokenCredentials,
   IForgotPasswordCredentials,
   IResetPasswordCredentials,
+  IChangeStatusCredentials,
 } from '~/redux/user/types';
 
 export const END_POINTS = {
@@ -17,6 +18,9 @@ export const END_POINTS = {
     validateToken: 'api/auth/validate_token',
     forgotPassword: 'api/auth/forgot_password',
     resetPassword: 'api/auth/reset_password',
+  },
+  user: {
+    changeStatus: 'api/user/change_status',
   },
   chat: {
     // TODO: Remove later
@@ -57,6 +61,12 @@ export default {
     resetPassword: (credentials: IResetPasswordCredentials) =>
       axiosInstance
         .post(END_POINTS.auth.resetPassword, { ...credentials })
+        .then(res => res.data),
+  },
+  user: {
+    changeStatus: (credentials: IChangeStatusCredentials) =>
+      axiosInstance
+        .post(END_POINTS.user.changeStatus, { ...credentials })
         .then(res => res.data),
   },
   chat: {
