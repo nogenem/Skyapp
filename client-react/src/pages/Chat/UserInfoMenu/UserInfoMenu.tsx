@@ -14,10 +14,12 @@ import { getThemeMode } from '~/redux/theme/reducer';
 import {
   userSignedOut as userSignedOutAction,
   changeStatus as changeStatusAction,
+  changeThoughts as changeThoughtsAction,
 } from '~/redux/user/actions';
 import { getUser } from '~/redux/user/reducer';
 
 import { MainMenu, ChangeLanguageMenu, ChangeUserStatusMenu } from './Menus';
+import ChangeUserThoughtsMenu from './Menus/ChangeUserThoughtsMenu';
 import useStyles from './useStyles';
 
 const mapStateToProps = (state: IAppState) => ({
@@ -28,6 +30,7 @@ const mapDispatchToProps = {
   userSignedOut: userSignedOutAction,
   switchMode: switchModeAction,
   changeStatus: changeStatusAction,
+  changeThoughts: changeThoughtsAction,
 };
 const connector = connect(mapStateToProps, mapDispatchToProps);
 type TPropsFromRedux = ConnectedProps<typeof connector>;
@@ -40,6 +43,7 @@ const UserInfoMenu = ({
   userSignedOut,
   switchMode,
   changeStatus,
+  changeThoughts,
 }: TProps) => {
   const { i18n } = useTranslation();
   const [menuState, setMenuState] = React.useState<TMenuStates>(
@@ -75,6 +79,11 @@ const UserInfoMenu = ({
 
   const handleUserStatusChange = async (status: TUserStatus) => {
     await changeStatus({ newStatus: status });
+    setMenuState(MENU_STATES.MAIN);
+  };
+
+  const handleUserThoughtsChange = async (newThoughts: string) => {
+    await changeThoughts({ newThoughts });
     setMenuState(MENU_STATES.MAIN);
   };
 
@@ -129,6 +138,16 @@ const UserInfoMenu = ({
         <ChangeUserStatusMenu
           userStatus={user.status}
           handleUserStatusChange={handleUserStatusChange}
+          anchorEl={anchorEl}
+          handleClose={handleClose}
+          setMenuState={setMenuState}
+        />
+      )}
+
+      {menuState === MENU_STATES.CHANGING_USER_THOUGHTS && (
+        <ChangeUserThoughtsMenu
+          userThoughts={user.thoughts}
+          handleUserThoughtsChange={handleUserThoughtsChange}
           anchorEl={anchorEl}
           handleClose={handleClose}
           setMenuState={setMenuState}

@@ -1,11 +1,14 @@
 import MockAdapter from 'axios-mock-adapter';
 
+import { USER_STATUS } from '~/constants/user_status';
 import type {
   ISignUpCredentials,
   ISignInCredentials,
   ITokenCredentials,
   IForgotPasswordCredentials,
   IResetPasswordCredentials,
+  IChangeStatusCredentials,
+  IChangeThoughtsCredentials,
 } from '~/redux/user/types';
 
 import api, { axiosInstance, END_POINTS } from '../api';
@@ -145,6 +148,42 @@ describe('api', () => {
       });
 
       const ret = await api.auth.resetPassword(resetPasswordCredentials);
+      expect(ret).toEqual(expectedRet);
+    });
+  });
+
+  describe('.user', () => {
+    it('.changeStatus', async () => {
+      expect.assertions(2);
+
+      const credentials: IChangeStatusCredentials = {
+        newStatus: USER_STATUS.AWAY,
+      };
+      const expectedRet = { message: 'success' };
+      adapter.onPost(END_POINTS.user.changeStatus).reply(configs => {
+        // axios-mock-adapter uses stringify on the data ;/
+        expect(JSON.stringify(credentials)).toBe(configs.data);
+        return [200, expectedRet];
+      });
+
+      const ret = await api.user.changeStatus(credentials);
+      expect(ret).toEqual(expectedRet);
+    });
+
+    it('.changeThoughts', async () => {
+      expect.assertions(2);
+
+      const credentials: IChangeThoughtsCredentials = {
+        newThoughts: 'hello world',
+      };
+      const expectedRet = { message: 'success' };
+      adapter.onPost(END_POINTS.user.changeThoughts).reply(configs => {
+        // axios-mock-adapter uses stringify on the data ;/
+        expect(JSON.stringify(credentials)).toBe(configs.data);
+        return [200, expectedRet];
+      });
+
+      const ret = await api.user.changeThoughts(credentials);
       expect(ret).toEqual(expectedRet);
     });
   });

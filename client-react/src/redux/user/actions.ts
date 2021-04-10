@@ -13,6 +13,7 @@ import type {
   IForgotPasswordCredentials,
   IResetPasswordCredentials,
   IChangeStatusCredentials,
+  IChangeThoughtsCredentials,
   IUser,
   TUserAction,
 } from './types';
@@ -30,6 +31,11 @@ export const userSignedIn = (user: IUser) => (dispatch: Dispatch) => {
 const userChangedStatus = (newStatus: TUserStatus) => ({
   type: EUserActions.CHANGED_STATUS,
   payload: newStatus,
+});
+
+const userChangedThoughts = (newThoughts: string) => ({
+  type: EUserActions.CHANGED_THOUGHTS,
+  payload: newThoughts,
 });
 
 export const userSignedOut = () => {
@@ -87,4 +93,11 @@ export const changeStatus = (credentials: IChangeStatusCredentials) => (
 ) =>
   api.user.changeStatus(credentials).then(() => {
     dispatch(userChangedStatus(credentials.newStatus));
+  });
+
+export const changeThoughts = (credentials: IChangeThoughtsCredentials) => (
+  dispatch: Dispatch,
+) =>
+  api.user.changeThoughts(credentials).then(() => {
+    dispatch(userChangedThoughts(credentials.newThoughts));
   });

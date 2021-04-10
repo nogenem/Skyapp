@@ -56,7 +56,6 @@ const ChangeLanguageMenu = ({
         vertical: 'top',
         horizontal: 'center',
       }}
-      id="user-info-change-lang-menu"
       anchorEl={anchorEl}
       keepMounted
       open={Boolean(anchorEl)}

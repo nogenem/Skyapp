@@ -44,6 +44,16 @@ const useStyles = makeStyles((theme: Theme) =>
     chevronRightContainer: {
       justifyContent: 'flex-end',
     },
+    changeThoughtsInput: {
+      '& label.Mui-focused': {
+        color: theme.palette.primary[inverseMode(theme.palette.type)],
+      },
+      '& .MuiOutlinedInput-root': {
+        '&.Mui-focused fieldset': {
+          borderColor: theme.palette.primary[inverseMode(theme.palette.type)],
+        },
+      },
+    },
   }),
 );
 

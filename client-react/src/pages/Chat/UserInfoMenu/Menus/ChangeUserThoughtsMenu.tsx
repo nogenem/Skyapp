@@ -1,19 +1,11 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import {
-  Divider,
-  ListItemIcon,
-  ListItemText,
-  Menu,
-  MenuItem,
-} from '@material-ui/core';
+import { Divider, Menu, MenuItem, TextField } from '@material-ui/core';
 
-import { Alert, UserStatusDot } from '~/components';
+import { Alert } from '~/components';
 import type { IErrors } from '~/components/Form';
 import { MENU_STATES, TMenuStates } from '~/constants/chat_menu_states';
-import { USER_STATUS, USER_STATUS_2_TEXT } from '~/constants/user_status';
-import type { TUserStatus } from '~/constants/user_status';
 import useObjState from '~/hooks/useObjState';
 import handleServerErrors from '~/utils/handleServerErrors';
 
@@ -21,51 +13,50 @@ import ChangeMenuHeader from './ChangeMenuHeader';
 import useStyles from './useStyles';
 
 interface IOwnState {
-  selectedStatus: TUserStatus;
+  newThoughts: string;
   loading: boolean;
   errors: IErrors;
 }
 type TState = IOwnState;
 
 const initialState: TState = {
-  selectedStatus: USER_STATUS.ACTIVE,
+  newThoughts: '',
   loading: false,
   errors: {},
 };
 
 interface IOwnProps {
-  userStatus: TUserStatus;
+  userThoughts: string;
   anchorEl: Element | null;
-  handleUserStatusChange: (status: TUserStatus) => Promise<void>;
+  handleUserThoughtsChange: (newThoughts: string) => Promise<void>;
   handleClose: () => void;
   setMenuState: (newState: TMenuStates) => void;
 }
 
 type TProps = IOwnProps;
 
-const STATUS = Object.values(USER_STATUS);
-const ChangeUserStatusMenu = ({
-  userStatus,
+const ChangeUserThoughtsMenu = ({
+  userThoughts,
   anchorEl,
-  handleUserStatusChange,
+  handleUserThoughtsChange,
   handleClose,
   setMenuState,
 }: TProps) => {
   const { t: trans } = useTranslation(['Common', 'Messages']);
   const [state, setState] = useObjState({
     ...initialState,
-    selectedStatus: userStatus,
+    newThoughts: userThoughts,
   });
   const classes = useStyles();
 
-  const handleSelectedLangChange = (status: TUserStatus) => () => {
-    setState({ selectedStatus: status });
+  const handleThoughtsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setState({ newThoughts: event.target.value });
   };
 
   const handleSave = async () => {
     try {
       setState({ loading: true });
-      await handleUserStatusChange(state.selectedStatus);
+      await handleUserThoughtsChange(state.newThoughts);
     } catch (err) {
       console.error(err);
       setState({ loading: false });
@@ -96,36 +87,37 @@ const ChangeUserStatusMenu = ({
       classes={{ paper: classes.menu }}
     >
       <ChangeMenuHeader
-        message={trans(`Messages:Change status`)}
-        canSave={state.selectedStatus !== userStatus && !state.loading}
+        message={trans(`Messages:Change your thoughts`)}
+        canSave={state.newThoughts !== userThoughts && !state.loading}
         handleGoBack={handleGoBack}
         handleSave={handleSave}
       />
       <Divider />
-      {(!!state.errors.global || !!state.errors.newStatus) && (
+      {!!state.errors.global && (
         <MenuItem classes={{ root: classes.nonInteractiveMenuItem }}>
-          <Alert style={{ margin: 0 }}>
-            {state.errors.global || state.errors.newStatus}
-          </Alert>
+          <Alert style={{ margin: 0 }}>{state.errors.global}</Alert>
         </MenuItem>
       )}
-      {STATUS.map(status => (
-        <MenuItem
-          key={status}
-          onClick={handleSelectedLangChange(status)}
-          selected={state.selectedStatus === status}
-        >
-          <ListItemIcon>
-            <UserStatusDot online status={status} />
-          </ListItemIcon>
-          <ListItemText
-            primary={trans(`Common:${USER_STATUS_2_TEXT[status]}`)}
-          />
-        </MenuItem>
-      ))}
+      <MenuItem>
+        <TextField
+          id="change-user-thoughts"
+          name="newThoughts"
+          label={trans('Common:Share your thoughts')}
+          autoComplete="newThoughts"
+          type="text"
+          fullWidth
+          error={!!state.errors.newThoughts}
+          helperText={state.errors.newThoughts}
+          variant="outlined"
+          margin="normal"
+          value={state.newThoughts}
+          onChange={handleThoughtsChange}
+          classes={{ root: classes.changeThoughtsInput }}
+        />
+      </MenuItem>
     </Menu>
   );
 };
 
 export type { TProps };
-export default ChangeUserStatusMenu;
+export default ChangeUserThoughtsMenu;

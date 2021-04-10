@@ -43,6 +43,7 @@ const ChangeMenuHeader = React.forwardRef<Ref, TProps>(
         <ListItemText primary={message} />
         <ListItemSecondaryAction title={trans('Common:Done')}>
           <IconButton
+            edge="end"
             color={!canSave ? 'inherit' : 'secondary'}
             disabled={!canSave}
             onClick={handleSave}

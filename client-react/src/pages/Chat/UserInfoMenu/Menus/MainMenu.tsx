@@ -18,6 +18,7 @@ import {
   Sync as SyncIcon,
   Translate as TranslateIcon,
   ChevronRight as ChevronRightIcon,
+  Textsms as TextsmsIcon,
 } from '@material-ui/icons';
 
 import { UserStatusDot } from '~/components';
@@ -60,6 +61,10 @@ const MainMenu = ({
     setMenuState(MENU_STATES.CHANGING_USER_STATUS);
   };
 
+  const handleChangingUserThoughts = () => {
+    setMenuState(MENU_STATES.CHANGING_USER_THOUGHTS);
+  };
+
   return (
     <Menu
       elevation={0}
@@ -72,7 +77,6 @@ const MainMenu = ({
         vertical: 'top',
         horizontal: 'center',
       }}
-      id="user-info-main-menu"
       anchorEl={anchorEl}
       keepMounted
       open={Boolean(anchorEl)}
@@ -123,6 +127,18 @@ const MainMenu = ({
         <ListItemText
           primary={trans(`Common:${USER_STATUS_2_TEXT[user.status]}`)}
         />
+        <ListItemIcon classes={{ root: classes.chevronRightContainer }}>
+          <ChevronRightIcon />
+        </ListItemIcon>
+      </MenuItem>
+      <MenuItem
+        onClick={handleChangingUserThoughts}
+        data-testid="user_thoughts_changer"
+      >
+        <ListItemIcon>
+          <TextsmsIcon />
+        </ListItemIcon>
+        <ListItemText primary={trans(`Common:Thoughts`)} />
         <ListItemIcon classes={{ root: classes.chevronRightContainer }}>
           <ChevronRightIcon />
         </ListItemIcon>

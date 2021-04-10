@@ -31,6 +31,10 @@ interface IChangeStatusCredentials {
   newStatus: TUserStatus;
 }
 
+interface IChangeThoughtsCredentials {
+  newThoughts: string;
+}
+
 interface IUser {
   _id: string;
   nickname: string;
@@ -47,6 +51,7 @@ enum EUserActions {
   SIGNED_IN = '@user/SIGNED_IN',
   SIGNED_OUT = '@user/SIGNED_OUT',
   CHANGED_STATUS = '@user/CHANGED_STATUS',
+  CHANGED_THOUGHTS = '@user/CHANGED_THOUGHTS',
 }
 
 interface IUserActionType<T, P> {
@@ -57,7 +62,8 @@ interface IUserActionType<T, P> {
 type TUserAction =
   | IUserActionType<typeof EUserActions.SIGNED_IN, IUser>
   | IUserActionType<typeof EUserActions.SIGNED_OUT, null>
-  | IUserActionType<typeof EUserActions.CHANGED_STATUS, TUserStatus>;
+  | IUserActionType<typeof EUserActions.CHANGED_STATUS, TUserStatus>
+  | IUserActionType<typeof EUserActions.CHANGED_THOUGHTS, string>;
 
 export type {
   ISignUpCredentials,
@@ -66,6 +72,7 @@ export type {
   IForgotPasswordCredentials,
   IResetPasswordCredentials,
   IChangeStatusCredentials,
+  IChangeThoughtsCredentials,
   IUser,
   TUserState,
   TUserAction,

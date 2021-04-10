@@ -36,6 +36,8 @@ export default function user(
       return initialState;
     case EUserActions.CHANGED_STATUS:
       return { ...state, status: action.payload };
+    case EUserActions.CHANGED_THOUGHTS:
+      return { ...state, thoughts: action.payload };
     default:
       return state;
   }

@@ -1,4 +1,5 @@
 import { LOCAL_STORAGE_TOKEN } from '~/constants/localStorageKeys';
+import { USER_STATUS } from '~/constants/user_status';
 import api from '~/services/api';
 import { FACTORIES, getMockStore } from '~/utils/testUtils';
 
@@ -13,6 +14,8 @@ import {
   validateToken,
   forgotPassword,
   resetPassword,
+  changeStatus,
+  changeThoughts,
 } from '../actions';
 import { EUserActions } from '../types';
 import type {
@@ -22,6 +25,8 @@ import type {
   ITokenCredentials,
   IForgotPasswordCredentials,
   IResetPasswordCredentials,
+  IChangeStatusCredentials,
+  IChangeThoughtsCredentials,
   TUserState,
 } from '../types';
 
@@ -217,6 +222,56 @@ describe('auth actions', () => {
     const store = mockStore({});
 
     await resetPassword(credentials)(store.dispatch);
+
+    expect(spy).toHaveBeenCalledWith(credentials);
+    expect(store.getActions()).toEqual(expectedActions);
+  });
+
+  it('changeStatus', async () => {
+    const credentials: IChangeStatusCredentials = {
+      newStatus: USER_STATUS.AWAY,
+    };
+    const expectedActions = [
+      {
+        type: EUserActions.CHANGED_STATUS,
+        payload: credentials.newStatus,
+      } as TUserAction,
+    ];
+
+    const spy = jest
+      .spyOn(api.user, 'changeStatus')
+      .mockImplementationOnce(() => {
+        return Promise.resolve({ message: 'success' });
+      });
+
+    const store = mockStore({});
+
+    await changeStatus(credentials)(store.dispatch);
+
+    expect(spy).toHaveBeenCalledWith(credentials);
+    expect(store.getActions()).toEqual(expectedActions);
+  });
+
+  it('changeThoughts', async () => {
+    const credentials: IChangeThoughtsCredentials = {
+      newThoughts: 'hello world',
+    };
+    const expectedActions = [
+      {
+        type: EUserActions.CHANGED_THOUGHTS,
+        payload: credentials.newThoughts,
+      } as TUserAction,
+    ];
+
+    const spy = jest
+      .spyOn(api.user, 'changeThoughts')
+      .mockImplementationOnce(() => {
+        return Promise.resolve({ message: 'success' });
+      });
+
+    const store = mockStore({});
+
+    await changeThoughts(credentials)(store.dispatch);
 
     expect(spy).toHaveBeenCalledWith(credentials);
     expect(store.getActions()).toEqual(expectedActions);
