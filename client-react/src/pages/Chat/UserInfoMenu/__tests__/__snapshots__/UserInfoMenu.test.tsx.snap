@@ -5,16 +5,15 @@ exports[`Connected UserInfoMenu renders correctly 1`] = `
   <div
     class="makeStyles-container-1"
   >
-    <span
-      class="MuiBadge-root makeStyles-badge-3"
-      title="Common:Active"
+    <div
+      style="position: relative;"
     >
       <div
         class="MuiAvatar-root MuiAvatar-circle MuiAvatar-colorDefault"
       >
         <svg
           aria-hidden="true"
-          class="MuiSvgIcon-root"
+          class="MuiSvgIcon-root makeStyles-icon-4"
           focusable="false"
           viewBox="0 0 24 24"
         >
@@ -24,9 +23,14 @@ exports[`Connected UserInfoMenu renders correctly 1`] = `
         </svg>
       </div>
       <span
-        class="MuiBadge-badge MuiBadge-anchorOriginBottomRightCircle makeStyles-anchorOriginBottomRightCircle-10 MuiBadge-colorSecondary makeStyles-dotBadge_active-5 MuiBadge-dot makeStyles-dotBadge-4"
-      />
-    </span>
+        class="makeStyles-dotContainer-5"
+      >
+        <span
+          class="makeStyles-dot-6 makeStyles-dot_active-7 "
+          title="Common:Active"
+        />
+      </span>
+    </div>
     <div
       class="makeStyles-textContainer-2"
     >
