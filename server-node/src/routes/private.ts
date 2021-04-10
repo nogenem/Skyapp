@@ -14,5 +14,10 @@ routes.post(
   validate(user.changeStatus),
   UserController.changeStatus,
 );
+routes.post(
+  '/user/change_thoughts',
+  validate(user.changeThoughts),
+  UserController.changeThoughts,
+);
 
 export default routes;

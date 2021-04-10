@@ -10,4 +10,7 @@ export type {
 export { default as ChatController } from './ChatController';
 
 export { default as UserController } from './UserController';
-export type { IChangeStatusCredentials } from './UserController';
+export type {
+  IChangeStatusCredentials,
+  IChangeThoughtsCredentials,
+} from './UserController';

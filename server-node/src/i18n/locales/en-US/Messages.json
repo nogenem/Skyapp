@@ -6,5 +6,6 @@
   "The token is valid": "The token is valid",
   "The reset password email was sent with success": "The reset password email was sent with success",
   "Password changed with success": "Password changed with success",
-  "User status changed with success": "User status changed with success"
+  "User status changed with success": "User status changed with success",
+  "User thoughts changed with success": "User thoughts changed with success"
 }

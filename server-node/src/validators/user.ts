@@ -17,6 +17,7 @@ const user = {
       .isIn(USER_STATUS_VALUES)
       .withMessage(INVALID_USER_STATUS),
   ],
+  changeThoughts: [body('newThoughts').trim()],
 };
 
 export default user;
