@@ -17,6 +17,7 @@ import killPort from 'kill-port';
 
 import app from './app';
 import db from './db';
+import IoController from './IoController';
 
 db.openConnection();
 
@@ -37,5 +38,8 @@ process
 const port = process.env.PORT || 5000;
 killPort(port, 'tcp').then(() => {
   const server = http.createServer(app);
+  const io = IoController.instance();
+
+  io.init({ httpServer: server });
   server.listen(port, () => console.log(`Server running on port ${port}`));
 });

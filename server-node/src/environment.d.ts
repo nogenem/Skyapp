@@ -3,6 +3,7 @@ declare global {
     interface ProcessEnv {
       NODE_ENV: 'development' | 'production' | 'test';
       PORT?: number;
+      PORT_FOR_TESTS?: number;
 
       MONGO_URI: string;
       JWT_SECRET: string;
@@ -11,6 +12,8 @@ declare global {
       EMAIL_PORT?: number;
       EMAIL_USER: string;
       EMAIL_PASS: string;
+
+      IO_NAMESPACE: string;
     }
   }
 }
