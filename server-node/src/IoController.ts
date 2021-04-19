@@ -37,10 +37,16 @@ class IoController {
     port?: number;
     socketServer?: SocketServer;
   }): void {
+    const configs = {
+      cors: {
+        origin: '*',
+        methods: 'OPTIONS,GET,HEAD,PUT,PATCH,POST,DELETE',
+      },
+    };
     if (httpServer) {
-      this._io = new SocketServer(httpServer);
+      this._io = new SocketServer(httpServer, configs);
     } else if (port) {
-      this._io = new SocketServer(port);
+      this._io = new SocketServer(port, configs);
     } else if (socketServer) {
       this._io = socketServer;
     } else {

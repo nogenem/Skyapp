@@ -1,4 +1,3 @@
-import bodyParser from 'body-parser';
 import cors from 'cors';
 import express, { Express, Request, Response, NextFunction } from 'express';
 import i18nextMiddleware from 'i18next-http-middleware';
@@ -24,8 +23,12 @@ class AppController {
   }
 
   generalMiddlewares(): void {
-    this.app.use(cors());
-    this.app.use(bodyParser.json());
+    this.app.use(
+      cors({
+        origin: '*',
+      }),
+    );
+    this.app.use(express.json());
     this.app.use(i18nextMiddleware.handle(i18n));
     this.app.use((req, res, next) => {
       i18n.changeLanguage(req.language);
