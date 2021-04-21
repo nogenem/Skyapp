@@ -5,6 +5,7 @@ import { TUserStatus } from '~/constants/user_status';
 import api from '~/services/api';
 import setAuthorizationHeader from '~/utils/setAuthorizationHeader';
 
+import { connectIo, disconnectIo } from '../chat/actions';
 import { EUserActions } from './types';
 import type {
   ISignUpCredentials,
@@ -22,6 +23,8 @@ export const userSignedIn = (user: IUser) => (dispatch: Dispatch) => {
   localStorage.setItem(LOCAL_STORAGE_TOKEN, user.token as string);
   setAuthorizationHeader(user.token);
 
+  connectIo(user)(dispatch);
+
   dispatch<TUserAction>({
     type: EUserActions.SIGNED_IN,
     payload: user,
@@ -38,13 +41,16 @@ const userChangedThoughts = (newThoughts: string) => ({
   payload: newThoughts,
 });
 
-export const userSignedOut = () => {
+export const userSignedOut = () => (dispatch: Dispatch) => {
   localStorage.removeItem(LOCAL_STORAGE_TOKEN);
   setAuthorizationHeader();
 
-  return {
+  disconnectIo()(dispatch);
+
+  dispatch<TUserAction>({
     type: EUserActions.SIGNED_OUT,
-  };
+    payload: null,
+  });
 };
 
 export const signUp = (credentials: ISignUpCredentials) => (

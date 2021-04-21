@@ -1,7 +1,8 @@
 import { LOCAL_STORAGE_TOKEN } from '~/constants/localStorageKeys';
 import { USER_STATUS } from '~/constants/user_status';
 import api from '~/services/api';
-import { FACTORIES, getMockStore } from '~/utils/testUtils';
+import io from '~/services/io';
+import { FACTORIES, getMockStore, setupFakeSocket } from '~/utils/testUtils';
 
 import {
   userSignedIn,
@@ -34,12 +35,19 @@ jest.mock('../../../utils/setAuthorizationHeader', () => ({
   __esModule: true,
   default: () => {},
 }));
+jest.mock('socket.io-client');
 
 const mockStore = getMockStore();
 
 const VALID_TOKEN = '123456789';
 
 describe('auth actions', () => {
+  setupFakeSocket();
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   it('userSignedIn', async () => {
     const user: TUserState = FACTORIES.userState({
       token: VALID_TOKEN,
@@ -53,22 +61,30 @@ describe('auth actions', () => {
 
     expect(store.getActions()).toEqual(expectedActions);
     expect(localStorage.getItem(LOCAL_STORAGE_TOKEN)).toBe(user.token);
+
+    const instance = io.instance();
+    expect(instance!.socket!.connected).toBe(true);
   });
 
   it('userSignedOut', async () => {
     const user: TUserState = FACTORIES.userState({
       token: VALID_TOKEN,
     });
-    const expectedActions = [{ type: EUserActions.SIGNED_OUT } as TUserAction];
+    const expectedActions = [
+      { type: EUserActions.SIGNED_OUT, payload: null } as TUserAction,
+    ];
     const store = mockStore({
       user,
     });
     localStorage.setItem(LOCAL_STORAGE_TOKEN, VALID_TOKEN);
 
-    store.dispatch(userSignedOut());
+    userSignedOut()(store.dispatch);
 
     expect(store.getActions()).toEqual(expectedActions);
     expect(localStorage.getItem(LOCAL_STORAGE_TOKEN)).toBe(null);
+
+    const instance = io.instance();
+    expect(instance!.socket!.connected).toBe(false);
   });
 
   it('signUp', async () => {

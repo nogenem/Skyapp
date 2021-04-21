@@ -5,11 +5,17 @@ import { render } from '@testing-library/react';
 import merge from 'deepmerge';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { io as ioClient } from 'socket.io-client';
+import MockedServerSocket from 'socket.io-mock';
 
 import { USER_STATUS } from '~/constants/user_status';
 import type { IAppState } from '~/redux/store';
 import { initialState as userInitialState } from '~/redux/user/reducer';
 import type { TUserState } from '~/redux/user/types';
+import {
+  SocketMock,
+  SocketClient,
+} from '~/typescript-declarations/socketio-mock';
 
 export const getMockStore = () => {
   const middlewares = [thunk];
@@ -50,4 +56,29 @@ export const FACTORIES = {
           },
       override,
     ),
+};
+
+// https://github.com/SupremeTechnopriest/socket.io-mock/issues/14
+interface IFakeSocketReturn {
+  server: SocketMock | null;
+  socket: SocketClient | null;
+  mockedIoClient: jest.MockedFunction<() => SocketClient>;
+}
+export const setupFakeSocket = () => {
+  const ret: IFakeSocketReturn = {
+    server: null,
+    socket: null,
+    mockedIoClient: (ioClient as unknown) as jest.MockedFunction<
+      () => SocketClient
+    >,
+  };
+
+  beforeEach(() => {
+    ret.server = new MockedServerSocket();
+    ret.socket = ret.server!.socketClient;
+
+    ret.mockedIoClient.mockReturnValue(ret.socket);
+  });
+
+  return ret;
 };
