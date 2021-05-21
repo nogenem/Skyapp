@@ -1,9 +1,9 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { TextField, Button } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 
-import { Alert } from '~/components';
+import { Alert, TextInput } from '~/components';
 import { Form as BaseForm } from '~/components/Form';
 import type {
   IErrors,
@@ -66,7 +66,7 @@ function Form({ submit }: TProps) {
   const renderForm = ({ errors }: TBaseFormState) => (
     <>
       {errors.global && <Alert>{errors.global}</Alert>}
-      <TextField
+      <TextInput
         id={`${FORM_ID}-newPassword`}
         name="newPassword"
         label={trans('Common:New password')}
@@ -79,7 +79,7 @@ function Form({ submit }: TProps) {
         variant="outlined"
         margin="normal"
       />
-      <TextField
+      <TextInput
         id={`${FORM_ID}-newPasswordConfirmation`}
         name="newPasswordConfirmation"
         label={trans('Common:New password confirmation')}

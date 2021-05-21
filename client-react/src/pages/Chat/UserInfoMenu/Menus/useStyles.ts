@@ -1,9 +1,6 @@
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
-import { TThemeMode } from '~/redux/theme/types';
-
-// PS: This should be done automatically by the lib... ;/
-const inverseMode = (mode: TThemeMode) => (mode === 'dark' ? 'light' : 'dark');
+import getInverseThemeMode from '~/utils/getInverseThemeMode';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -27,11 +24,11 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
     },
     logo: {
-      color: theme.palette.primary[inverseMode(theme.palette.type)],
+      color: theme.palette.primary[getInverseThemeMode(theme.palette.type)],
     },
     checkIcon: {
       '&:not(:disabled)': {
-        color: theme.palette.secondary[inverseMode(theme.palette.type)],
+        color: theme.palette.secondary[getInverseThemeMode(theme.palette.type)],
       },
       '& svg': {
         transition: 'font-size 0.3s',
@@ -43,16 +40,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     chevronRightContainer: {
       justifyContent: 'flex-end',
-    },
-    changeThoughtsInput: {
-      '& label.Mui-focused': {
-        color: theme.palette.primary[inverseMode(theme.palette.type)],
-      },
-      '& .MuiOutlinedInput-root': {
-        '&.Mui-focused fieldset': {
-          borderColor: theme.palette.primary[inverseMode(theme.palette.type)],
-        },
-      },
     },
   }),
 );

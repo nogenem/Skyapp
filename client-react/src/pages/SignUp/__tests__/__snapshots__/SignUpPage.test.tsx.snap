@@ -35,7 +35,7 @@ exports[`SignUpPage renders correctly 1`] = `
           style="width: 100%;"
         >
           <div
-            class="MuiFormControl-root MuiTextField-root MuiFormControl-marginNormal MuiFormControl-fullWidth"
+            class="MuiFormControl-root MuiTextField-root makeStyles-textInput-6 MuiFormControl-marginNormal MuiFormControl-fullWidth"
           >
             <label
               class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined Mui-required Mui-required"
@@ -67,10 +67,10 @@ exports[`SignUpPage renders correctly 1`] = `
               />
               <fieldset
                 aria-hidden="true"
-                class="PrivateNotchedOutline-root-6 MuiOutlinedInput-notchedOutline"
+                class="PrivateNotchedOutline-root-7 MuiOutlinedInput-notchedOutline"
               >
                 <legend
-                  class="PrivateNotchedOutline-legendLabelled-8"
+                  class="PrivateNotchedOutline-legendLabelled-9"
                 >
                   <span>
                     Common:Nickname
@@ -81,7 +81,7 @@ exports[`SignUpPage renders correctly 1`] = `
             </div>
           </div>
           <div
-            class="MuiFormControl-root MuiTextField-root MuiFormControl-marginNormal MuiFormControl-fullWidth"
+            class="MuiFormControl-root MuiTextField-root makeStyles-textInput-6 MuiFormControl-marginNormal MuiFormControl-fullWidth"
           >
             <label
               class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined Mui-required Mui-required"
@@ -113,10 +113,10 @@ exports[`SignUpPage renders correctly 1`] = `
               />
               <fieldset
                 aria-hidden="true"
-                class="PrivateNotchedOutline-root-6 MuiOutlinedInput-notchedOutline"
+                class="PrivateNotchedOutline-root-7 MuiOutlinedInput-notchedOutline"
               >
                 <legend
-                  class="PrivateNotchedOutline-legendLabelled-8"
+                  class="PrivateNotchedOutline-legendLabelled-9"
                 >
                   <span>
                     Common:Email
@@ -127,7 +127,7 @@ exports[`SignUpPage renders correctly 1`] = `
             </div>
           </div>
           <div
-            class="MuiFormControl-root MuiTextField-root MuiFormControl-marginNormal MuiFormControl-fullWidth"
+            class="MuiFormControl-root MuiTextField-root makeStyles-textInput-6 MuiFormControl-marginNormal MuiFormControl-fullWidth"
           >
             <label
               class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined Mui-required Mui-required"
@@ -159,10 +159,10 @@ exports[`SignUpPage renders correctly 1`] = `
               />
               <fieldset
                 aria-hidden="true"
-                class="PrivateNotchedOutline-root-6 MuiOutlinedInput-notchedOutline"
+                class="PrivateNotchedOutline-root-7 MuiOutlinedInput-notchedOutline"
               >
                 <legend
-                  class="PrivateNotchedOutline-legendLabelled-8"
+                  class="PrivateNotchedOutline-legendLabelled-9"
                 >
                   <span>
                     Common:Password
@@ -173,7 +173,7 @@ exports[`SignUpPage renders correctly 1`] = `
             </div>
           </div>
           <div
-            class="MuiFormControl-root MuiTextField-root MuiFormControl-marginNormal MuiFormControl-fullWidth"
+            class="MuiFormControl-root MuiTextField-root makeStyles-textInput-6 MuiFormControl-marginNormal MuiFormControl-fullWidth"
           >
             <label
               class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined Mui-required Mui-required"
@@ -205,10 +205,10 @@ exports[`SignUpPage renders correctly 1`] = `
               />
               <fieldset
                 aria-hidden="true"
-                class="PrivateNotchedOutline-root-6 MuiOutlinedInput-notchedOutline"
+                class="PrivateNotchedOutline-root-7 MuiOutlinedInput-notchedOutline"
               >
                 <legend
-                  class="PrivateNotchedOutline-legendLabelled-8"
+                  class="PrivateNotchedOutline-legendLabelled-9"
                 >
                   <span>
                     Common:Password Confirmation

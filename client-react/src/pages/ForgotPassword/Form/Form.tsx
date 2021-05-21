@@ -1,10 +1,10 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { TextField, Button } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import isEmail from 'validator/lib/isEmail';
 
-import { Alert } from '~/components';
+import { Alert, TextInput } from '~/components';
 import { Form as BaseForm } from '~/components/Form';
 import type {
   IErrors,
@@ -45,7 +45,7 @@ function Form({ submit }: TProps) {
   const renderForm = ({ errors }: TBaseFormState) => (
     <>
       {errors.global && <Alert>{errors.global}</Alert>}
-      <TextField
+      <TextInput
         id={`${FORM_ID}-email`}
         name="email"
         label={trans('Common:Email')}

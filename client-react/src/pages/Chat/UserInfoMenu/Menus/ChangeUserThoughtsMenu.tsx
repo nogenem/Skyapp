@@ -1,9 +1,9 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Divider, Menu, MenuItem, TextField } from '@material-ui/core';
+import { Divider, Menu, MenuItem } from '@material-ui/core';
 
-import { Alert } from '~/components';
+import { Alert, TextInput } from '~/components';
 import type { IErrors } from '~/components/Form';
 import { MENU_STATES, TMenuStates } from '~/constants/chat_menu_states';
 import useObjState from '~/hooks/useObjState';
@@ -99,7 +99,7 @@ const ChangeUserThoughtsMenu = ({
         </MenuItem>
       )}
       <MenuItem>
-        <TextField
+        <TextInput
           id="change-user-thoughts"
           name="newThoughts"
           label={trans('Common:Share your thoughts')}
@@ -112,7 +112,6 @@ const ChangeUserThoughtsMenu = ({
           margin="normal"
           value={state.newThoughts}
           onChange={handleThoughtsChange}
-          classes={{ root: classes.changeThoughtsInput }}
         />
       </MenuItem>
     </Menu>
