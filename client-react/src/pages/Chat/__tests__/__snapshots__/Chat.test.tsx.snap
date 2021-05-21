@@ -9,7 +9,7 @@ exports[`Connected ChatPage renders correctly 1`] = `
       class="MuiPaper-root makeStyles-container-3 MuiPaper-elevation8"
     >
       <div
-        class="makeStyles-container-4"
+        class="makeStyles-container-5"
       >
         <div
           style="position: relative;"
@@ -19,7 +19,7 @@ exports[`Connected ChatPage renders correctly 1`] = `
           >
             <svg
               aria-hidden="true"
-              class="MuiSvgIcon-root makeStyles-icon-7"
+              class="MuiSvgIcon-root makeStyles-icon-8"
               focusable="false"
               viewBox="0 0 24 24"
             >
@@ -29,16 +29,16 @@ exports[`Connected ChatPage renders correctly 1`] = `
             </svg>
           </div>
           <span
-            class="makeStyles-dotContainer-8"
+            class="makeStyles-dotContainer-9"
           >
             <span
-              class="makeStyles-dot-9 makeStyles-dot_active-10 "
+              class="makeStyles-dot-10 makeStyles-dot_active-11 "
               title="Common:Active"
             />
           </span>
         </div>
         <div
-          class="makeStyles-textContainer-5"
+          class="makeStyles-textContainer-6"
         >
           <span
             class="MuiTypography-root MuiTypography-subtitle1 MuiTypography-colorInherit MuiTypography-noWrap"
@@ -46,12 +46,103 @@ exports[`Connected ChatPage renders correctly 1`] = `
           />
         </div>
       </div>
+      <div
+        class="MuiFormControl-root MuiTextField-root makeStyles-textInput-22 MuiFormControl-marginDense MuiFormControl-fullWidth"
+      >
+        <label
+          class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-marginDense MuiInputLabel-outlined"
+          data-shrink="false"
+          for="chat-sidebar-search"
+          id="chat-sidebar-search-label"
+        >
+          Common:Search
+        </label>
+        <div
+          class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-marginDense MuiOutlinedInput-marginDense"
+        >
+          <input
+            aria-invalid="false"
+            autocomplete="search"
+            class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputMarginDense MuiOutlinedInput-inputMarginDense"
+            id="chat-sidebar-search"
+            name="search"
+            type="text"
+            value=""
+          />
+          <fieldset
+            aria-hidden="true"
+            class="PrivateNotchedOutline-root-23 MuiOutlinedInput-notchedOutline"
+          >
+            <legend
+              class="PrivateNotchedOutline-legendLabelled-25"
+            >
+              <span>
+                Common:Search
+              </span>
+            </legend>
+          </fieldset>
+        </div>
+      </div>
+      <div
+        class="makeStyles-btnsContainer-4"
+      >
+        <button
+          aria-label="Common:New Chat"
+          class="MuiButtonBase-root MuiIconButton-root"
+          tabindex="0"
+          title="Common:New Chat"
+          type="button"
+        >
+          <span
+            class="MuiIconButton-label"
+          >
+            <svg
+              aria-hidden="true"
+              class="MuiSvgIcon-root"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+              />
+            </svg>
+          </span>
+          <span
+            class="MuiTouchRipple-root"
+          />
+        </button>
+        <button
+          aria-label="Common:New Group"
+          class="MuiButtonBase-root MuiIconButton-root"
+          tabindex="0"
+          title="Common:New Group"
+          type="button"
+        >
+          <span
+            class="MuiIconButton-label"
+          >
+            <svg
+              aria-hidden="true"
+              class="MuiSvgIcon-root"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M8 10H5V7H3v3H0v2h3v3h2v-3h3v-2zm10 1c1.66 0 2.99-1.34 2.99-3S19.66 5 18 5c-.32 0-.63.05-.91.14.57.81.9 1.79.9 2.86s-.34 2.04-.9 2.86c.28.09.59.14.91.14zm-5 0c1.66 0 2.99-1.34 2.99-3S14.66 5 13 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm6.62 2.16c.83.73 1.38 1.66 1.38 2.84v2h3v-2c0-1.54-2.37-2.49-4.38-2.84zM13 13c-2 0-6 1-6 3v2h12v-2c0-2-4-3-6-3z"
+              />
+            </svg>
+          </span>
+          <span
+            class="MuiTouchRipple-root"
+          />
+        </button>
+      </div>
     </div>
     <div
       class="makeStyles-rightContainer-2"
     >
       <div
-        class="makeStyles-content-21"
+        class="makeStyles-content-27"
       >
         <div
           class="MuiPaper-root MuiCard-root MuiPaper-elevation8 MuiPaper-rounded"
@@ -70,7 +161,7 @@ exports[`Connected ChatPage renders correctly 1`] = `
             </div>
           </div>
           <div
-            class="MuiCardContent-root makeStyles-cardContent-22"
+            class="MuiCardContent-root makeStyles-cardContent-28"
           >
             <p
               class="MuiTypography-root MuiTypography-body1"

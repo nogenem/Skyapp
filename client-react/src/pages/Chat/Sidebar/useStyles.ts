@@ -10,6 +10,12 @@ const useStyles = makeStyles((theme: Theme) =>
       //   width: '100%',
       // },
     },
+    btnsContainer: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'flex-end',
+      marginTop: theme.spacing(1),
+    },
   }),
 );
 

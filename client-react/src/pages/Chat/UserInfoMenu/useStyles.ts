@@ -5,6 +5,7 @@ const useStyles = makeStyles((theme: Theme) =>
     container: {
       display: 'flex',
       cursor: 'pointer',
+      marginBottom: theme.spacing(1),
     },
     textContainer: {
       display: 'flex',
