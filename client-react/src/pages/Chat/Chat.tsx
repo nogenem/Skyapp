@@ -23,7 +23,7 @@ const Chat = ({ isUserEmailConfirmed }: TProps) => {
 
   return (
     <div className={classes.container}>
-      <Sidebar />
+      <Sidebar isUserEmailConfirmed={isUserEmailConfirmed} />
       <div className={classes.rightContainer}>
         {!isUserEmailConfirmed && <ConfirmEmailCTA />}
       </div>

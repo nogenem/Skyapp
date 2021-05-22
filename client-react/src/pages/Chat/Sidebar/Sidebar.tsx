@@ -14,11 +14,13 @@ import { NewGroupModal } from '../NewGroupModal';
 import { UserInfoMenu } from '../UserInfoMenu';
 import useStyles from './useStyles';
 
-interface IOwnProps {}
+interface IOwnProps {
+  isUserEmailConfirmed: boolean;
+}
 
 type TProps = IOwnProps;
 
-const Sidebar = (props: TProps) => {
+const Sidebar = ({ isUserEmailConfirmed }: TProps) => {
   const [isNewChatModalOpen, setIsNewChatModalOpen] = React.useState(false);
   const [isNewGroupModalOpen, setIsNewGroupModalOpen] = React.useState(false);
   const { t: trans } = useTranslation(['Common']);
@@ -45,33 +47,37 @@ const Sidebar = (props: TProps) => {
       <Paper square className={classes.container} elevation={8}>
         <UserInfoMenu />
 
-        <TextInput
-          id="chat-sidebar-search"
-          name="search"
-          label={trans('Common:Search')}
-          autoComplete="search"
-          type="text"
-          fullWidth
-          variant="outlined"
-          margin="dense"
-        />
+        {isUserEmailConfirmed && (
+          <>
+            <TextInput
+              id="chat-sidebar-search"
+              name="search"
+              label={trans('Common:Search')}
+              autoComplete="search"
+              type="text"
+              fullWidth
+              variant="outlined"
+              margin="dense"
+            />
 
-        <div className={classes.btnsContainer}>
-          <IconButton
-            aria-label={trans('Common:New Chat')}
-            title={trans('Common:New Chat')}
-            onClick={handleNewChatModalOpen}
-          >
-            <PersonAddIcon />
-          </IconButton>
-          <IconButton
-            aria-label={trans('Common:New Group')}
-            title={trans('Common:New Group')}
-            onClick={handleNewGroupModalOpen}
-          >
-            <GroupAddIcon />
-          </IconButton>
-        </div>
+            <div className={classes.btnsContainer}>
+              <IconButton
+                aria-label={trans('Common:New Chat')}
+                title={trans('Common:New Chat')}
+                onClick={handleNewChatModalOpen}
+              >
+                <PersonAddIcon />
+              </IconButton>
+              <IconButton
+                aria-label={trans('Common:New Group')}
+                title={trans('Common:New Group')}
+                onClick={handleNewGroupModalOpen}
+              >
+                <GroupAddIcon />
+              </IconButton>
+            </div>
+          </>
+        )}
       </Paper>
       <NewChatModal
         isOpen={isNewChatModalOpen}
