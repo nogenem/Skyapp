@@ -11,6 +11,14 @@ const setInitialData = (data: IInitialData) => ({
   payload: data,
 });
 
+const setUserOnline = (_id: string, value: boolean) => ({
+  type: EChatActions.SET_USER_ONLINE,
+  payload: {
+    _id,
+    value,
+  },
+});
+
 export const connectIo = (user: IUser) => (dispatch: Dispatch) => {
   const instance = io.instance();
   instance.connect({ _id: user._id });
@@ -23,8 +31,12 @@ export const connectIo = (user: IUser) => (dispatch: Dispatch) => {
       },
     );
 
-    instance.socket!.on(SOCKET_EVENTS.IO_SIGNIN, (_id: string) => {});
-    instance.socket!.on(SOCKET_EVENTS.IO_SIGNOUT, (_id: string) => {});
+    instance.socket!.on(SOCKET_EVENTS.IO_SIGNIN, (_id: string) => {
+      dispatch(setUserOnline(_id, true));
+    });
+    instance.socket!.on(SOCKET_EVENTS.IO_SIGNOUT, (_id: string) => {
+      dispatch(setUserOnline(_id, false));
+    });
   });
 };
 
