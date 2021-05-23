@@ -1,8 +1,10 @@
+import { TUserStatus } from '~/constants/user_status';
+
 interface IOtherUser {
   _id: string;
   nickname: string;
   thoughts: string;
-  status: number;
+  status: TUserStatus;
   online: boolean;
 }
 
@@ -45,5 +47,5 @@ type TChatAction =
       { _id: string; value: boolean }
     >;
 
-export type { TChatState, TChatAction, IInitialData };
+export type { TChatState, TChatAction, IInitialData, IOtherUser };
 export { EChatActions };
