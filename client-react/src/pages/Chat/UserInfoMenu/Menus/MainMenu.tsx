@@ -122,7 +122,7 @@ const MainMenu = ({
         data-testid="user_status_changer"
       >
         <ListItemIcon>
-          <UserStatusDot online status={user.status} />
+          <UserStatusDot online status={user.status} showInvisible />
         </ListItemIcon>
         <ListItemText
           primary={trans(`Common:${USER_STATUS_2_TEXT[user.status]}`)}

@@ -90,7 +90,7 @@ const UserInfoMenu = ({
   return (
     <>
       <div className={classes.container} onClick={handleClick}>
-        <ChatAvatar online status={user.status} />
+        <ChatAvatar online status={user.status} showInvisible />
         <div className={classes.textContainer}>
           <Typography
             component="span"

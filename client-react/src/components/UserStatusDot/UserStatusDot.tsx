@@ -8,6 +8,7 @@ import useStyles from './useStyles';
 
 const defaultProps = {
   className: '',
+  showInvisible: false,
 };
 
 interface IOwnProps {
@@ -17,16 +18,20 @@ interface IOwnProps {
 
 type TProps = IOwnProps & typeof defaultProps;
 
-const UserStatusDot = ({ online, status, className }: TProps) => {
+const UserStatusDot = ({
+  online,
+  status,
+  showInvisible,
+  className,
+}: TProps) => {
   const { t: trans } = useTranslation(['Common']);
   const classes = useStyles();
 
-  const dotClass = React.useMemo(() => getDotStyle(classes, status, online), [
-    classes,
-    online,
-    status,
-  ]);
-  const title = getDotTitle(status, online);
+  const dotClass = React.useMemo(
+    () => getDotStyle(classes, status, showInvisible, online),
+    [classes, online, showInvisible, status],
+  );
+  const title = getDotTitle(status, showInvisible, online);
 
   return (
     <span
@@ -38,17 +43,24 @@ const UserStatusDot = ({ online, status, className }: TProps) => {
 
 UserStatusDot.defaultProps = defaultProps;
 
-const getDotTitle = (status: TUserStatus, online?: boolean): string => {
-  if (!online) return 'Offline';
+const getDotTitle = (
+  status: TUserStatus,
+  showInvisible: boolean,
+  online?: boolean,
+): string => {
+  if (!online || (!showInvisible && status === USER_STATUS.INVISIBLE))
+    return 'Offline';
   return USER_STATUS_2_TEXT[status];
 };
 
 const getDotStyle = (
   classes: ReturnType<typeof useStyles>,
   status: TUserStatus,
+  showInvisible: boolean,
   online?: boolean,
 ): string => {
-  if (!online) return classes.dot_offline;
+  if (!online || (!showInvisible && status === USER_STATUS.INVISIBLE))
+    return classes.dot_offline;
   switch (status) {
     case USER_STATUS.ACTIVE:
       return classes.dot_active;

@@ -116,7 +116,7 @@ const ChangeUserStatusMenu = ({
           selected={state.selectedStatus === status}
         >
           <ListItemIcon>
-            <UserStatusDot online status={status} />
+            <UserStatusDot online status={status} showInvisible />
           </ListItemIcon>
           <ListItemText
             primary={trans(`Common:${USER_STATUS_2_TEXT[status]}`)}

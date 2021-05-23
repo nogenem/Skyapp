@@ -8,14 +8,18 @@ import type { TUserStatus } from '~/constants/user_status';
 import { UserStatusDot } from '../UserStatusDot';
 import useStyles from './useStyles';
 
+const defaultProps = {
+  showInvisible: false,
+};
+
 interface IOwnProps {
   online: boolean;
   status: TUserStatus;
 }
 
-type TProps = IOwnProps;
+type TProps = IOwnProps & typeof defaultProps;
 
-const ChatAvatar = ({ online, status }: TProps) => {
+const ChatAvatar = ({ online, status, showInvisible }: TProps) => {
   const classes = useStyles();
 
   return (
@@ -24,11 +28,17 @@ const ChatAvatar = ({ online, status }: TProps) => {
         <AccountCircleIcon className={classes.icon} />
       </MuiAvatar>
       <span className={classes.dotContainer}>
-        <UserStatusDot online={online} status={status} />
+        <UserStatusDot
+          online={online}
+          status={status}
+          showInvisible={showInvisible}
+        />
       </span>
     </div>
   );
 };
+
+ChatAvatar.defaultProps = defaultProps;
 
 export type { TProps };
 export default ChatAvatar;

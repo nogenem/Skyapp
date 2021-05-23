@@ -44,3 +44,12 @@ exports[`UserStatusDot renders all status correctly 5`] = `
   />
 </div>
 `;
+
+exports[`UserStatusDot renders correctly when \`showInvisible\` = false, \`online\` = true and \`status\` = INVISIBLE 1`] = `
+<div>
+  <span
+    class="makeStyles-dot-7 makeStyles-dot_offline-12 "
+    title="Common:Offline"
+  />
+</div>
+`;
