@@ -2,13 +2,8 @@ import { Server as HttpServer } from 'http';
 import { Server as SocketServer, Namespace } from 'socket.io';
 
 import * as SOCKET_EVENTS from '~/constants/socket_events';
-
-interface IClientInfo {
-  socketId: string;
-}
-interface IClientMap {
-  [userId: string]: IClientInfo;
-}
+import { IClientInfo, IClientMap } from '~/typescript-declarations/io.d';
+import getUsersAndChannelsData from '~/utils/getUsersAndChannelsData';
 
 class IoController {
   _io: SocketServer | null;
@@ -83,6 +78,14 @@ class IoController {
         socket.join(currentUserId);
         socket.broadcast.emit(SOCKET_EVENTS.IO_SIGNIN, currentUserId);
       }
+
+      socket.on(SOCKET_EVENTS.IO_GET_INITIAL_DATA, async fn => {
+        const data = await getUsersAndChannelsData(
+          currentUserId,
+          this._clients,
+        );
+        fn(data);
+      });
 
       socket.on(SOCKET_EVENTS.SOCKET_DISCONNECT, () => {
         socket.broadcast.emit(SOCKET_EVENTS.IO_SIGNOUT, currentUserId);
