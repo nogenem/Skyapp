@@ -4,9 +4,9 @@ import type { IAppState } from '../store';
 import { EChatActions } from './types';
 import type { TChatAction, TChatState } from './types';
 
-// TODO
 export const initialState: TChatState = {
-  channels: null,
+  users: {},
+  channels: {},
 };
 
 export default function chat(
@@ -14,9 +14,12 @@ export default function chat(
   action: TChatAction,
 ): TChatState {
   switch (action.type) {
-    // TODO
     case EChatActions.SET_INITIAL_DATA:
-      return state;
+      return {
+        ...state,
+        users: action.payload.users,
+        channels: action.payload.channels,
+      };
     default:
       return state;
   }
@@ -24,4 +27,5 @@ export default function chat(
 
 // SELECTORS
 export const getChat = (state: IAppState) => state.chat || initialState;
+export const getUsers = createSelector(getChat, data => data.users);
 export const getChannels = createSelector(getChat, data => data.channels);

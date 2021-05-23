@@ -1,6 +1,31 @@
-// TODO
+interface IOtherUser {
+  _id: string;
+  nickname: string;
+  thoughts: string;
+  status: number;
+  online: boolean;
+}
+
+interface IOtherUsers {
+  [_id: string]: IOtherUser;
+}
+
+interface IChannel {
+  _id: string;
+}
+
+interface IChannels {
+  [_id: string]: IChannel;
+}
+
+interface IInitialData {
+  users: IOtherUsers;
+  channels: IChannels;
+}
+
 type TChatState = {
-  channels: null;
+  users: IOtherUsers;
+  channels: IChannels;
 };
 
 enum EChatActions {
@@ -12,8 +37,10 @@ interface IChatActionType<T, P> {
   payload: P;
 }
 
-// TODO
-type TChatAction = IChatActionType<typeof EChatActions.SET_INITIAL_DATA, null>;
+type TChatAction = IChatActionType<
+  typeof EChatActions.SET_INITIAL_DATA,
+  IInitialData
+>;
 
-export type { TChatState, TChatAction };
+export type { TChatState, TChatAction, IInitialData };
 export { EChatActions };
