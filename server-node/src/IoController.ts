@@ -5,6 +5,11 @@ import * as SOCKET_EVENTS from '~/constants/socket_events';
 import { IClientInfo, IClientMap } from '~/typescript-declarations/io.d';
 import getUsersAndChannelsData from '~/utils/getUsersAndChannelsData';
 
+import { IChannelDoc } from './models';
+
+type TSocketEvent = typeof SOCKET_EVENTS[keyof typeof SOCKET_EVENTS];
+type TSocketEventData = IChannelDoc;
+
 class IoController {
   _io: SocketServer | null;
 
@@ -57,6 +62,30 @@ class IoController {
 
   getClient(userId: string): IClientInfo {
     return this._clients[userId];
+  }
+
+  emit(event: TSocketEvent, eventData: TSocketEventData): void {
+    const io = this.getIo();
+
+    if (!io) return;
+
+    switch (event) {
+      case SOCKET_EVENTS.IO_PRIVATE_CHANNEL_CREATED: {
+        const channel = eventData as IChannelDoc;
+        const channelJson = channel.toAuthJSON();
+
+        channelJson.members.forEach(member => {
+          io.to(member.user_id).emit(event, {
+            ...channelJson,
+            online: !!this._clients[member.user_id],
+          });
+        });
+        break;
+      }
+      default: {
+        break;
+      }
+    }
   }
 
   _initEvents(): boolean {

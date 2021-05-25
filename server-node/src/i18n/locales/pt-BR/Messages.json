@@ -7,5 +7,6 @@
   "The reset password email was sent with success": "O email de redefinição de senha foi enviado com sucesso",
   "Password changed with success": "Senha alterada com sucesso",
   "User status changed with success": "Status do usuário foi alterado com sucesso",
-  "User thoughts changed with success": "Os pensamentos do usuário foram mudados com sucesso"
+  "User thoughts changed with success": "Os pensamentos do usuário foram mudados com sucesso",
+  "Channel created with success": "Canal criado com sucesso"
 }

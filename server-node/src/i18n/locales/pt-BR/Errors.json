@@ -12,5 +12,6 @@
   "The last email sent is still valid. Please, check your email account": "O último email enviado ainda é válido. Por favor, verifique sua conta de email",
   "There is no user with such email": "Não há nenhum usuário com esse email",
   "Token not provided": "Token não fornecido",
-  "Invalid user status": "Status de usuário inválido"
+  "Invalid user status": "Status de usuário inválido",
+  "Channel already exists": "Canal já existe"
 }

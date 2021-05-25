@@ -17,5 +17,6 @@ export const LAST_EMAIL_SENT_IS_STILL_VALID =
 export const NO_USER_WITH_SUCH_EMAIL = 'There is no user with such email';
 export const NO_TOKEN = 'Token not provided';
 export const INVALID_USER_STATUS = 'Invalid user status';
+export const CHANNEL_ALREADY_EXISTS = 'Channel already exists';
 
 export type { TTranslatableError };

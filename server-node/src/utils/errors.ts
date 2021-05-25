@@ -7,6 +7,7 @@ import {
   NO_USER_WITH_SUCH_EMAIL,
   LAST_EMAIL_SENT_IS_STILL_VALID,
   NO_TOKEN,
+  CHANNEL_ALREADY_EXISTS,
 } from '~/constants/error_messages';
 import type { TTranslatableError } from '~/constants/error_messages';
 
@@ -69,3 +70,6 @@ export const lastEmailSentIsStillValidError = (): CustomError =>
 
 export const noTokenError = (): CustomError =>
   new CustomError({ global: NO_TOKEN });
+
+export const channelAlreadyExistsError = (): CustomError =>
+  new CustomError({ global: CHANNEL_ALREADY_EXISTS });

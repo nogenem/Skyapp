@@ -1,6 +1,11 @@
+import { body } from 'express-validator';
+
+import { invalidIdError } from '~/utils/errors';
+
 const chat = {
-  // TODO: Remove later
-  test: [],
+  createPrivateChannel: [
+    body('_id').trim().not().isEmpty().withMessage(invalidIdError()),
+  ],
 };
 
 export default chat;

@@ -11,3 +11,4 @@ export const PASSWORD_CHANGED = 'Messages:Password changed with success';
 export const USER_STATUS_CHANGED = 'Messages:User status changed with success';
 export const USER_THOUGHTS_CHANGED =
   'Messages:User thoughts changed with success';
+export const CHANNEL_CREATED = 'Messages:Channel created with success';
