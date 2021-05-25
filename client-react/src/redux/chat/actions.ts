@@ -1,10 +1,12 @@
 import { Dispatch } from 'redux';
 
 import * as SOCKET_EVENTS from '~/constants/socket_events';
+import type { IUser } from '~/redux/user/types';
+import api from '~/services/api';
 import io from '~/services/io';
 
-import { IUser } from '../user/types';
-import { EChatActions, IInitialData } from './types';
+import type { IInitialData, IOtherUser } from './types';
+import { EChatActions } from './types';
 
 const setInitialData = (data: IInitialData) => ({
   type: EChatActions.SET_INITIAL_DATA,
@@ -43,3 +45,11 @@ export const connectIo = (user: IUser) => (dispatch: Dispatch) => {
 export const disconnectIo = () => (dispatch: Dispatch) => {
   io.instance().disconnect();
 };
+
+export const startChattingWith = (otherUser: IOtherUser) => (
+  dispatch: Dispatch,
+) =>
+  api.chat.createChannelWith(otherUser).then(() => {
+    // TODO: Add new created channel to the state
+    // TODO: Test this
+  });

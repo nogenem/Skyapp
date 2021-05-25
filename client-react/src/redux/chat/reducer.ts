@@ -35,3 +35,7 @@ export default function chat(
 export const getChat = (state: IAppState) => state.chat || initialState;
 export const getUsers = createSelector(getChat, data => data.users);
 export const getChannels = createSelector(getChat, data => data.channels);
+
+export const getUsersArray = createSelector(getChat, data =>
+  Object.values(data.users),
+);

@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+import type { IOtherUser } from '~/redux/chat/types';
 import type {
   ISignUpCredentials,
   ISignInCredentials,
@@ -25,8 +26,7 @@ export const END_POINTS = {
     changeThoughts: 'api/user/change_thoughts',
   },
   chat: {
-    // TODO: Remove later
-    test: 'api/chat/test',
+    createChannelWith: 'api/chat/channels',
   },
 };
 
@@ -76,8 +76,9 @@ export default {
         .then(res => res.data),
   },
   chat: {
-    // TODO: Remove later
-    test: () =>
-      axiosInstance.post(END_POINTS.chat.test, {}).then(res => res.data),
+    createChannelWith: (otherUser: IOtherUser) =>
+      axiosInstance
+        .post(END_POINTS.chat.createChannelWith, { _id: otherUser._id })
+        .then(res => res.data),
   },
 };

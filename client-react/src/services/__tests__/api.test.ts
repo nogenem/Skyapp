@@ -1,6 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 
 import { USER_STATUS } from '~/constants/user_status';
+import type { IOtherUser } from '~/redux/chat/types';
 import type {
   ISignUpCredentials,
   ISignInCredentials,
@@ -184,6 +185,29 @@ describe('api', () => {
       });
 
       const ret = await api.user.changeThoughts(credentials);
+      expect(ret).toEqual(expectedRet);
+    });
+  });
+
+  describe('.chat', () => {
+    it('.createChannelWith', async () => {
+      expect.assertions(2);
+
+      const otherUser: IOtherUser = {
+        _id: '123456',
+        nickname: 'Test',
+        thoughts: '',
+        status: USER_STATUS.ACTIVE,
+        online: true,
+      };
+      const expectedRet = { message: 'success' };
+      adapter.onPost(END_POINTS.chat.createChannelWith).reply(configs => {
+        // axios-mock-adapter uses stringify on the data ;/
+        expect(JSON.stringify({ _id: otherUser._id })).toBe(configs.data);
+        return [200, expectedRet];
+      });
+
+      const ret = await api.chat.createChannelWith(otherUser);
       expect(ret).toEqual(expectedRet);
     });
   });

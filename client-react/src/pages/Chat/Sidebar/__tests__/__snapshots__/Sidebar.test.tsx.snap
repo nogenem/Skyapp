@@ -3,10 +3,10 @@
 exports[`Sidebar renders correctly when \`isUserEmailConfirmed\` is false 1`] = `
 <div>
   <div
-    class="MuiPaper-root makeStyles-container-29 MuiPaper-elevation8"
+    class="MuiPaper-root makeStyles-container-30 MuiPaper-elevation8"
   >
     <div
-      class="makeStyles-container-31"
+      class="makeStyles-container-32"
     >
       <div
         style="position: relative;"
@@ -16,7 +16,7 @@ exports[`Sidebar renders correctly when \`isUserEmailConfirmed\` is false 1`] = 
         >
           <svg
             aria-hidden="true"
-            class="MuiSvgIcon-root makeStyles-icon-34"
+            class="MuiSvgIcon-root makeStyles-icon-35"
             focusable="false"
             viewBox="0 0 24 24"
           >
@@ -26,16 +26,16 @@ exports[`Sidebar renders correctly when \`isUserEmailConfirmed\` is false 1`] = 
           </svg>
         </div>
         <span
-          class="makeStyles-dotContainer-35"
+          class="makeStyles-dotContainer-36"
         >
           <span
-            class="makeStyles-dot-36 makeStyles-dot_active-37 "
+            class="makeStyles-dot-37 makeStyles-dot_active-38 "
             title="Common:Active"
           />
         </span>
       </div>
       <div
-        class="makeStyles-textContainer-32"
+        class="makeStyles-textContainer-33"
       >
         <span
           class="MuiTypography-root MuiTypography-subtitle1 MuiTypography-colorInherit MuiTypography-noWrap"
