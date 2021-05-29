@@ -5,7 +5,7 @@ import type { IUser } from '~/redux/user/types';
 import api from '~/services/api';
 import io from '~/services/io';
 
-import type { IInitialData, IOtherUser } from './types';
+import type { IChannel, IInitialData, IOtherUser } from './types';
 import { EChatActions } from './types';
 
 const setInitialData = (data: IInitialData) => ({
@@ -19,6 +19,16 @@ const setUserOnline = (_id: string, value: boolean) => ({
     _id,
     value,
   },
+});
+
+const addNewChannel = (channel: IChannel) => ({
+  type: EChatActions.ADD_NEW_CHANNEL,
+  payload: channel,
+});
+
+const setActiveChannel = (channel_id: string) => ({
+  type: EChatActions.SET_ACTIVE_CHANNEL,
+  payload: { _id: channel_id },
 });
 
 export const connectIo = (user: IUser) => (dispatch: Dispatch) => {
@@ -39,6 +49,12 @@ export const connectIo = (user: IUser) => (dispatch: Dispatch) => {
     instance.socket!.on(SOCKET_EVENTS.IO_SIGNOUT, (_id: string) => {
       dispatch(setUserOnline(_id, false));
     });
+    instance.socket!.on(
+      SOCKET_EVENTS.IO_PRIVATE_CHANNEL_CREATED,
+      (channel: IChannel) => {
+        dispatch(addNewChannel(channel));
+      },
+    );
   });
 };
 
@@ -49,7 +65,6 @@ export const disconnectIo = () => (dispatch: Dispatch) => {
 export const startChattingWith = (otherUser: IOtherUser) => (
   dispatch: Dispatch,
 ) =>
-  api.chat.createChannelWith(otherUser).then(() => {
-    // TODO: Add new created channel to the state
-    // TODO: Test this
+  api.chat.createChannelWith(otherUser).then(({ channel_id }) => {
+    dispatch(setActiveChannel(channel_id));
   });

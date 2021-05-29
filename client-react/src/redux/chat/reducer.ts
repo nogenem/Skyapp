@@ -8,6 +8,7 @@ import type { TChatAction, TChatState } from './types';
 export const initialState: TChatState = {
   users: {},
   channels: {},
+  activeChannelInfo: undefined,
 };
 
 export default function chat(
@@ -23,6 +24,20 @@ export default function chat(
       case EChatActions.SET_USER_ONLINE:
         if (draft.users[action.payload._id]) {
           draft.users[action.payload._id].online = action.payload.value;
+        }
+        return draft;
+      case EChatActions.ADD_NEW_CHANNEL:
+        if (!draft.channels[action.payload._id]) {
+          draft.channels[action.payload._id] = action.payload;
+        }
+        return draft;
+      case EChatActions.SET_ACTIVE_CHANNEL:
+        if (draft.channels[action.payload._id]) {
+          draft.activeChannelInfo = {
+            _id: action.payload._id,
+            messages: [],
+            totalMessages: 0,
+          };
         }
         return draft;
       default:

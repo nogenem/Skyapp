@@ -26,7 +26,7 @@ export const END_POINTS = {
     changeThoughts: 'api/user/change_thoughts',
   },
   chat: {
-    createChannelWith: 'api/chat/channels',
+    createChannelWith: 'api/chat/private',
   },
 };
 
