@@ -74,11 +74,19 @@ class IoController {
         const channel = eventData as IChannelDoc;
         const channelJson = channel.toAuthJSON();
 
-        channelJson.members.forEach(member => {
-          io.to(member.user_id).emit(event, {
-            ...channelJson,
-            online: !!this._clients[member.user_id],
-          });
+        channelJson.members.forEach((member, idx) => {
+          const otherMemberIdx = idx === 0 ? 1 : 0;
+          const otherMemberId = channelJson.members[otherMemberIdx].user_id;
+          const otherMemberIsOnline = !!this._clients[otherMemberId];
+
+          const thisMemberClient = this._clients[member.user_id];
+
+          if (thisMemberClient) {
+            io.to(thisMemberClient.socketId).emit(event, {
+              ...channelJson,
+              online: otherMemberIsOnline,
+            });
+          }
         });
         break;
       }
