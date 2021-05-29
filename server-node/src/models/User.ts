@@ -1,6 +1,7 @@
+/* eslint-disable camelcase */
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import mongoose, { Document } from 'mongoose';
+import mongoose, { Document, Model } from 'mongoose';
 import uniqueValidator from 'mongoose-unique-validator';
 
 import { EMAIL_ALREADY_TAKEN } from '~/constants/error_messages';
@@ -46,6 +47,15 @@ interface ITokenData {
   _id: string;
 }
 
+interface IChatUser {
+  _id: string;
+  nickname: string;
+  thoughts: string;
+  status: number;
+  online: boolean;
+  channel_id?: string;
+}
+
 interface IUserDoc extends IUser, Document {
   // My methods
   isValidPassword: (password: string) => boolean;
@@ -56,9 +66,14 @@ interface IUserDoc extends IUser, Document {
   generateConfirmationUrl: (host: string) => string;
   setResetPasswordToken: () => void;
   generateResetPasswordUrl: (host: string) => string;
+  toChatUser: () => IChatUser;
 }
 
-const schema = new mongoose.Schema<IUserDoc>(
+interface IUserModel extends Model<IUserDoc> {
+  toChatUser: (user?: IUserDoc | IChatUser) => IChatUser | undefined;
+}
+
+const User = new mongoose.Schema<IUserDoc>(
   {
     nickname: { type: String, required: true },
     email: {
@@ -82,8 +97,7 @@ const schema = new mongoose.Schema<IUserDoc>(
   { timestamps: true },
 );
 
-schema
-  .virtual('password')
+User.virtual('password')
   .get(function getPassword(this: IUser) {
     return this.virtualPassword;
   })
@@ -91,8 +105,7 @@ schema
     this.virtualPassword = password;
   });
 
-schema
-  .virtual('passwordConfirmation')
+User.virtual('passwordConfirmation')
   .get(function getPasswordConfirmation(this: IUser) {
     return this.virtualPasswordConfirmation;
   })
@@ -103,11 +116,11 @@ schema
     this.virtualPasswordConfirmation = passwordConfirmation;
   });
 
-schema.method('isValidPassword', function isValidPassword(password: string) {
+User.method('isValidPassword', function isValidPassword(password: string) {
   return bcrypt.compareSync(password, this.passwordHash);
 });
 
-schema.method(
+User.method(
   'updatePasswordHash',
   function updatePasswordHash(password: string) {
     const pass = password || this.virtualPassword;
@@ -115,7 +128,7 @@ schema.method(
   },
 );
 
-schema.method(
+User.method(
   'toAuthJSON',
   function toAuthJSON(token = undefined, tokenExpires = true) {
     return {
@@ -130,7 +143,7 @@ schema.method(
   },
 );
 
-schema.method('generateJWT', function generateJWT(tokenExpires = true) {
+User.method('generateJWT', function generateJWT(tokenExpires = true) {
   return jwt.sign(
     {
       _id: this._id.toString(),
@@ -144,29 +157,53 @@ schema.method('generateJWT', function generateJWT(tokenExpires = true) {
   );
 });
 
-schema.method('setConfirmationToken', function setConfirmationToken() {
+User.method('setConfirmationToken', function setConfirmationToken() {
   this.confirmationToken = this.generateJWT(true);
 });
 
-schema.method(
+User.method(
   'generateConfirmationUrl',
   function generateConfirmationUrl(host: string) {
     return `${host}/confirmation/${this.confirmationToken}`;
   },
 );
 
-schema.method('setResetPasswordToken', function setResetPasswordToken() {
+User.method('setResetPasswordToken', function setResetPasswordToken() {
   this.resetPasswordToken = this.generateJWT(true);
 });
 
-schema.method(
+User.method(
   'generateResetPasswordUrl',
   function generateResetPasswordUrl(host: string) {
     return `${host}/reset_password/${this.resetPasswordToken}`;
   },
 );
 
-schema.plugin(uniqueValidator, { message: EMAIL_ALREADY_TAKEN });
+function toChatUser(user: IUserDoc | IChatUser): IChatUser {
+  const oldChatUser = user as IChatUser;
+  return {
+    _id: user._id.toString(),
+    nickname: user.nickname,
+    thoughts: user.thoughts,
+    status: user.status,
+    online: oldChatUser.online || false,
+    channel_id: oldChatUser.channel_id || undefined,
+  };
+}
 
-export type { IUser, IUserDoc, IAuthUser, ITokenData };
-export default mongoose.model<IUserDoc>('User', schema);
+User.static(
+  'toChatUser',
+  function staticToChatUser(user?: IUserDoc | IChatUser) {
+    if (!user) return undefined;
+    return toChatUser(user);
+  },
+);
+
+User.method('toChatUser', function modelToChatUser() {
+  return toChatUser(this);
+});
+
+User.plugin(uniqueValidator, { message: EMAIL_ALREADY_TAKEN });
+
+export type { IUser, IUserDoc, IAuthUser, ITokenData, IChatUser };
+export default mongoose.model<IUserDoc, IUserModel>('User', User);

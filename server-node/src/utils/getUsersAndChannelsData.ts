@@ -1,31 +1,20 @@
 import mongoose from 'mongoose';
 
-import User from '~/models/User';
+import { User, Message, Channel, IUserDoc } from '~/models';
+import type { IChatUser, IChatChannel } from '~/models';
 import { IClientMap } from '~/typescript-declarations/io.d';
 
-interface IOtherUser {
-  _id: string;
-  nickname: string;
-  thoughts: string;
-  status: number;
-  online: boolean;
+interface IChatUsers {
+  [_id: string]: IChatUser;
 }
 
-interface IOtherUsers {
-  [_id: string]: IOtherUser;
-}
-
-interface IChannel {
-  _id: string;
-}
-
-interface IChannels {
-  [_id: string]: IChannel;
+interface IChatChannels {
+  [_id: string]: IChatChannel;
 }
 
 interface IInitialData {
-  users: IOtherUsers;
-  channels: IChannels;
+  users: IChatUsers;
+  channels: IChatChannels;
 }
 
 export default async (
@@ -34,23 +23,116 @@ export default async (
 ): Promise<IInitialData> => {
   const objectId = mongoose.Types.ObjectId;
 
-  const channels = {};
+  // Pega os dados dos Channels junto com a ultima mensagem
+  // enviada nos mesmos (lastMessage)
+  const aggregate = Channel.aggregate<IChatChannel>([
+    {
+      $match: {
+        'members.user_id': objectId(currentUserId),
+      },
+    },
+    {
+      $lookup: {
+        // join
+        from: 'messages',
+        let: {
+          channels_id: '$_id', // Channel._id
+        },
+        pipeline: [
+          {
+            $match: {
+              // Message.channel_id === Channel._id
+              $expr: { $eq: ['$channel_id', '$$channels_id'] },
+            },
+          },
+          {
+            $sort: {
+              date: -1,
+            },
+          },
+          {
+            $limit: 1,
+          },
+          {
+            $project: {
+              channel_id: 1,
+              from_id: 1,
+              body: 1,
+              type: 1,
+              createdAt: 1,
+              updatedAt: 1,
+            },
+          },
+        ],
+        as: 'messages',
+      },
+    },
+    {
+      $project: {
+        name: 1,
+        is_group: 1,
+        members: 1,
+        lastMessage: { $arrayElemAt: ['$messages', 0] },
+      },
+    },
+  ]);
 
-  const tmpUsers = await User.find(
+  const p1 = aggregate.exec();
+  const p2 = User.find(
     { _id: { $ne: objectId(currentUserId) }, confirmed: true },
     '_id nickname thoughts status',
   );
 
-  const users: IOtherUsers = {};
+  const [tmpChannels, tmpUsers]: [
+    IChatChannel[],
+    IUserDoc[],
+  ] = await Promise.all([p1, p2]);
+
+  // Pega a quantidade de mensagens não lidas pelo currentUserId em cada Channel
+  const promises = tmpChannels.map(c => {
+    const member = c.members.find(m => m.user_id.toString() === currentUserId);
+
+    if (!member) return 0;
+    return Message.countDocuments({
+      channel_id: c._id,
+      updatedAt: { $gt: member.last_seen },
+    });
+  });
+
+  const tmpUnread = await Promise.all(promises);
+  const userId2channelId: { [_id: string]: string } = {};
+
+  const channels: IChatChannels = {};
+  const users: IChatUsers = {};
+
+  for (let i = 0; i < tmpChannels.length; i += 1) {
+    // Promise.all retorna os resultados em ordem
+    // const channel = { ...tmpChannels[i] };
+    const channel = Channel.toChatChannel(tmpChannels[i]);
+    if (channel) {
+      channel.unread_msgs = tmpUnread[i];
+
+      if (!channel.is_group) {
+        const otherUser = channel.members.find(
+          m => m.user_id !== currentUserId,
+        );
+
+        if (otherUser) {
+          userId2channelId[otherUser.user_id] = channel._id;
+        }
+      }
+      channels[channel._id] = channel;
+    }
+  }
+
   for (let i = 0; i < tmpUsers.length; i += 1) {
-    const tmpUser = tmpUsers[i].toJSON();
-    const user: IOtherUser = {
-      _id: tmpUser._id,
-      nickname: tmpUser.nickname,
-      thoughts: tmpUser.thoughts,
-      status: tmpUser.status,
-      online: !!currentClients[tmpUser._id],
-    };
+    const user = tmpUsers[i].toChatUser();
+    user.online = !!currentClients[user._id];
+    if (userId2channelId[user._id]) {
+      const channelId = userId2channelId[user._id];
+      user.channel_id = channelId;
+      channels[channelId].online = user.online;
+    }
     users[user._id] = user;
   }
 

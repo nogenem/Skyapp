@@ -1,5 +1,7 @@
 /* eslint-disable camelcase */
-import mongoose, { Document } from 'mongoose';
+import mongoose, { Document, Model } from 'mongoose';
+
+import Message, { IChatMessage } from './Message';
 
 interface IMember {
   user_id: string;
@@ -15,18 +17,27 @@ interface IChannel {
   members: IMemberDoc[];
 }
 
-interface IAuthChannel {
+interface IChatChannel {
   _id: string;
   name: string;
   is_group: boolean;
+  unread_msgs: number;
+  online: boolean;
   members: IMember[];
+  lastMessage?: IChatMessage;
 }
 
 interface IChannelDoc extends IChannel, Document {
   createdAt: Date;
   updatedAt: Date;
 
-  toAuthJSON: () => IAuthChannel;
+  toChatChannel: () => IChatChannel;
+}
+
+interface IChatModel extends Model<IChannelDoc> {
+  toChatChannel: (
+    channel?: IChannelDoc | IChatChannel,
+  ) => IChatChannel | undefined;
 }
 
 const Member = new mongoose.Schema<IMemberDoc>({
@@ -51,18 +62,35 @@ const Channel = new mongoose.Schema<IChannelDoc>(
   { timestamps: true },
 );
 
-Channel.method('toAuthJSON', function toAuthJSON() {
+function toChatChannel(channel: IChannelDoc | IChatChannel): IChatChannel {
+  const oldChatChannel = channel as IChatChannel;
   return {
-    _id: this._id,
-    name: this.name,
-    is_group: this.is_group,
-    members: this.members.map(member => ({
-      user_id: member.user_id,
+    _id: channel._id.toString(),
+    name: channel.name,
+    is_group: channel.is_group,
+    unread_msgs: oldChatChannel.unread_msgs || 0,
+    online: oldChatChannel.online || false,
+    // It doesn't matter if it's `IMember` or `IMemberDoc`
+    members: oldChatChannel.members.map(member => ({
+      user_id: member.user_id.toString(),
       is_adm: member.is_adm,
       last_seen: member.last_seen,
     })),
+    lastMessage: Message.toChatMessage(oldChatChannel.lastMessage),
   };
+}
+
+Channel.static(
+  'toChatChannel',
+  function staticToChatChannel(channel?: IChannelDoc | IChatChannel) {
+    if (!channel) return undefined;
+    return toChatChannel(channel);
+  },
+);
+
+Channel.method('toChatChannel', function modelToChatChannel() {
+  return toChatChannel(this);
 });
 
-export type { IMember, IMemberDoc, IChannel, IChannelDoc, IAuthChannel };
-export default mongoose.model<IChannelDoc>('Channel', Channel);
+export type { IMember, IMemberDoc, IChannel, IChannelDoc, IChatChannel };
+export default mongoose.model<IChannelDoc, IChatModel>('Channel', Channel);

@@ -72,7 +72,7 @@ class IoController {
     switch (event) {
       case SOCKET_EVENTS.IO_PRIVATE_CHANNEL_CREATED: {
         const channel = eventData as IChannelDoc;
-        const channelJson = channel.toAuthJSON();
+        const channelJson = channel.toChatChannel();
 
         channelJson.members.forEach((member, idx) => {
           const otherMemberIdx = idx === 0 ? 1 : 0;
