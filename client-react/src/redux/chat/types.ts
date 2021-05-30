@@ -24,9 +24,9 @@ interface IChannel {
   _id: string;
   name: string;
   is_group: boolean;
-  unread_msgs: number;
-  online: boolean;
   members: IMember[];
+  other_member_idx?: number;
+  unread_msgs: number;
   lastMessage?: IMessage;
 }
 
