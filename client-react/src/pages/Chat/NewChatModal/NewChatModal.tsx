@@ -5,6 +5,8 @@ import { connect, ConnectedProps } from 'react-redux';
 import {
   Dialog,
   DialogTitle,
+  DialogContent,
+  DialogContentText,
   List,
   ListItem,
   ListItemAvatar,
@@ -13,7 +15,7 @@ import {
 
 import { ChatAvatar, Alert } from '~/components';
 import { startChattingWith as startChattingWithAction } from '~/redux/chat/actions';
-import { getUsersArray } from '~/redux/chat/reducer';
+import { getUsersWithoutChannelArray } from '~/redux/chat/reducer';
 import type { IOtherUser } from '~/redux/chat/types';
 import { IAppState } from '~/redux/store';
 import handleServerErrors, { IErrors } from '~/utils/handleServerErrors';
@@ -21,8 +23,7 @@ import handleServerErrors, { IErrors } from '~/utils/handleServerErrors';
 import useStyles from './useStyles';
 
 const mapStateToProps = (state: IAppState) => ({
-  // TODO: It should be users that aren't yet chating with the logged user!
-  users: getUsersArray(state),
+  users: getUsersWithoutChannelArray(state),
 });
 const mapDispatchToProps = {
   startChattingWith: startChattingWithAction,
@@ -61,6 +62,7 @@ const NewChatModal = ({
       open={isOpen}
       onClose={onClose}
       aria-labelledby="new-chat-modal-title"
+      fullWidth
     >
       <DialogTitle id="new-chat-modal-title">
         {trans('Messages:Chat with someone')}
@@ -68,16 +70,25 @@ const NewChatModal = ({
 
       {errors && errors.global && <Alert>{errors.global}</Alert>}
 
-      <List>
-        {users.map(user => (
-          <ListItem button onClick={() => handleConfirm(user)} key={user._id}>
-            <ListItemAvatar className={classes.listAvatar}>
-              <ChatAvatar online={user.online} status={user.status} />
-            </ListItemAvatar>
-            <ListItemText primary={user.nickname} secondary={user.thoughts} />
-          </ListItem>
-        ))}
-      </List>
+      {users.length ? (
+        <List>
+          {users.map(user => (
+            <ListItem button onClick={() => handleConfirm(user)} key={user._id}>
+              <ListItemAvatar className={classes.listAvatar}>
+                <ChatAvatar online={user.online} status={user.status} />
+              </ListItemAvatar>
+              <ListItemText primary={user.nickname} secondary={user.thoughts} />
+            </ListItem>
+          ))}
+        </List>
+      ) : null}
+      {!users.length ? (
+        <DialogContent>
+          <DialogContentText>
+            {trans('Messages:You are already chatting with EVERYONE!')}
+          </DialogContentText>
+        </DialogContent>
+      ) : null}
     </Dialog>
   );
 };

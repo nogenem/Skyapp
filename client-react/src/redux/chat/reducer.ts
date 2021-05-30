@@ -61,3 +61,6 @@ export const getChannels = createSelector(getChat, data => data.channels);
 export const getUsersArray = createSelector(getChat, data =>
   Object.values(data.users),
 );
+export const getUsersWithoutChannelArray = createSelector(getChat, data =>
+  Object.values(data.users).filter(user => !user.channel_id),
+);
