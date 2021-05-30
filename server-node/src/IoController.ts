@@ -76,15 +76,12 @@ class IoController {
 
         channelJson.members.forEach((member, idx) => {
           const otherMemberIdx = idx === 0 ? 1 : 0;
-          const otherMemberId = channelJson.members[otherMemberIdx].user_id;
-          const otherMemberIsOnline = !!this._clients[otherMemberId];
-
           const thisMemberClient = this._clients[member.user_id];
 
           if (thisMemberClient) {
             io.to(thisMemberClient.socketId).emit(event, {
               ...channelJson,
-              online: otherMemberIsOnline,
+              other_member_idx: otherMemberIdx,
             });
           }
         });

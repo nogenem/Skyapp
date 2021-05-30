@@ -107,18 +107,18 @@ export default async (
 
   for (let i = 0; i < tmpChannels.length; i += 1) {
     // Promise.all retorna os resultados em ordem
-    // const channel = { ...tmpChannels[i] };
     const channel = Channel.toChatChannel(tmpChannels[i]);
     if (channel) {
       channel.unread_msgs = tmpUnread[i];
 
       if (!channel.is_group) {
-        const otherUser = channel.members.find(
+        const otherMember = channel.members.find(
           m => m.user_id !== currentUserId,
         );
+        channel.other_member_idx = channel.members[0] === otherMember ? 0 : 1;
 
-        if (otherUser) {
-          userId2channelId[otherUser.user_id] = channel._id;
+        if (otherMember) {
+          userId2channelId[otherMember.user_id] = channel._id;
         }
       }
       channels[channel._id] = channel;
@@ -131,7 +131,6 @@ export default async (
     if (userId2channelId[user._id]) {
       const channelId = userId2channelId[user._id];
       user.channel_id = channelId;
-      channels[channelId].online = user.online;
     }
     users[user._id] = user;
   }

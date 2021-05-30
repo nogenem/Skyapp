@@ -21,9 +21,9 @@ interface IChatChannel {
   _id: string;
   name: string;
   is_group: boolean;
-  unread_msgs: number;
-  online: boolean;
   members: IMember[];
+  other_member_idx?: number;
+  unread_msgs: number;
   lastMessage?: IChatMessage;
 }
 
@@ -68,14 +68,16 @@ function toChatChannel(channel: IChannelDoc | IChatChannel): IChatChannel {
     _id: channel._id.toString(),
     name: channel.name,
     is_group: channel.is_group,
-    unread_msgs: oldChatChannel.unread_msgs || 0,
-    online: oldChatChannel.online || false,
     // It doesn't matter if it's `IMember` or `IMemberDoc`
     members: oldChatChannel.members.map(member => ({
       user_id: member.user_id.toString(),
       is_adm: member.is_adm,
       last_seen: member.last_seen,
     })),
+    other_member_idx: Number.isInteger(oldChatChannel.other_member_idx)
+      ? oldChatChannel.other_member_idx
+      : undefined,
+    unread_msgs: oldChatChannel.unread_msgs || 0,
     lastMessage: Message.toChatMessage(oldChatChannel.lastMessage),
   };
 }
