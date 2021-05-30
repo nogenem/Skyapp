@@ -1,3 +1,4 @@
+import { TMessageType } from '~/constants/message_types';
 import { TUserStatus } from '~/constants/user_status';
 
 interface IOtherUser {
@@ -6,6 +7,7 @@ interface IOtherUser {
   thoughts: string;
   status: TUserStatus;
   online: boolean;
+  channel_id?: string;
 }
 
 interface IOtherUsers {
@@ -22,16 +24,31 @@ interface IChannel {
   _id: string;
   name: string;
   is_group: boolean;
+  unread_msgs: number;
   online: boolean;
   members: IMember[];
+  lastMessage?: IMessage;
 }
 
 interface IChannels {
   [_id: string]: IChannel;
 }
 
+interface IAttachment {
+  originalName: string;
+  size: number;
+  path: string;
+  mimeType: string;
+}
+
 interface IMessage {
   _id: string;
+  channel_id: string;
+  from_id: string;
+  body: string | IAttachment;
+  type: TMessageType;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 interface IInitialData {
