@@ -12,8 +12,10 @@ import {
   ListItemAvatar,
   ListItemText,
 } from '@material-ui/core';
+import debounce from 'lodash.debounce';
 
-import { ChatAvatar, Alert } from '~/components';
+import { ChatAvatar, Alert, TextInput } from '~/components';
+import useObjState from '~/hooks/useObjState';
 import { startChattingWith as startChattingWithAction } from '~/redux/chat/actions';
 import { getUsersWithoutChannelArray } from '~/redux/chat/reducer';
 import type { IOtherUser } from '~/redux/chat/types';
@@ -21,6 +23,19 @@ import { IAppState } from '~/redux/store';
 import handleServerErrors, { IErrors } from '~/utils/handleServerErrors';
 
 import useStyles from './useStyles';
+
+interface IOwnState {
+  filteredUsers: IOtherUser[];
+  search: string;
+  errors: IErrors;
+}
+type TState = IOwnState;
+
+const initialState: TState = {
+  filteredUsers: [],
+  search: '',
+  errors: {},
+};
 
 const mapStateToProps = (state: IAppState) => ({
   users: getUsersWithoutChannelArray(state),
@@ -44,18 +59,47 @@ const NewChatModal = ({
   users,
   startChattingWith,
 }: TProps) => {
-  const [errors, setErrors] = React.useState<IErrors | null>(null);
+  const [state, setState] = useObjState(initialState);
   const { t: trans } = useTranslation(['Common', 'Messages']);
   const classes = useStyles();
+
+  const updateFilteredUsers = (search: string, users: IOtherUser[]) => {
+    if (!search) {
+      setState({ filteredUsers: [...users] });
+    } else {
+      const toSeach = search.toLowerCase();
+      setState({
+        filteredUsers: users.filter(
+          user =>
+            user.nickname.toLowerCase().includes(toSeach) ||
+            user.thoughts.toLowerCase().includes(toSeach),
+        ),
+      });
+    }
+  };
+
+  const debouncedOnSearchChange = React.useCallback(
+    debounce(updateFilteredUsers, 250),
+    [],
+  );
+
+  const onSearchChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+    setState({ search: evt.target.value });
+  };
 
   const handleConfirm = async (user: IOtherUser) => {
     try {
       await startChattingWith(user);
       onClose();
     } catch (err) {
-      setErrors(handleServerErrors(err));
+      setState({ errors: handleServerErrors(err) });
     }
   };
+
+  React.useEffect(() => {
+    debouncedOnSearchChange(state.search, users);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.search, users]);
 
   return (
     <Dialog
@@ -63,32 +107,64 @@ const NewChatModal = ({
       onClose={onClose}
       aria-labelledby="new-chat-modal-title"
       fullWidth
+      classes={{
+        paper: classes.dialogPaper,
+      }}
     >
       <DialogTitle id="new-chat-modal-title">
         {trans('Messages:Chat with someone')}
       </DialogTitle>
 
-      {errors && errors.global && <Alert>{errors.global}</Alert>}
+      <DialogContent dividers>
+        {state.errors.global && (
+          <Alert className={classes.noMargin}>{state.errors.global}</Alert>
+        )}
 
-      {users.length ? (
-        <List>
-          {users.map(user => (
-            <ListItem button onClick={() => handleConfirm(user)} key={user._id}>
-              <ListItemAvatar className={classes.listAvatar}>
-                <ChatAvatar online={user.online} status={user.status} />
-              </ListItemAvatar>
-              <ListItemText primary={user.nickname} secondary={user.thoughts} />
-            </ListItem>
-          ))}
-        </List>
-      ) : null}
-      {!users.length ? (
-        <DialogContent>
-          <DialogContentText>
+        {users.length > 0 && (
+          <TextInput
+            name="search"
+            label={trans('Common:Search')}
+            type="text"
+            fullWidth
+            variant="outlined"
+            margin="normal"
+            onChange={onSearchChange}
+            value={state.search}
+          />
+        )}
+
+        {state.filteredUsers.length > 0 && (
+          <List>
+            {state.filteredUsers.map(user => (
+              <ListItem
+                button
+                onClick={() => handleConfirm(user)}
+                key={user._id}
+              >
+                <ListItemAvatar className={classes.listAvatar}>
+                  <ChatAvatar online={user.online} status={user.status} />
+                </ListItemAvatar>
+                <ListItemText
+                  primary={user.nickname}
+                  secondary={user.thoughts}
+                />
+              </ListItem>
+            ))}
+          </List>
+        )}
+
+        {state.filteredUsers.length === 0 && !!state.search && (
+          <DialogContentText className={classes.noMargin}>
+            {trans('Messages:No user found')}
+          </DialogContentText>
+        )}
+
+        {users.length === 0 && (
+          <DialogContentText className={classes.noMargin}>
             {trans('Messages:You are already chatting with EVERYONE!')}
           </DialogContentText>
-        </DialogContent>
-      ) : null}
+        )}
+      </DialogContent>
     </Dialog>
   );
 };
