@@ -131,6 +131,7 @@ export default async (
     if (userId2channelId[user._id]) {
       const channelId = userId2channelId[user._id];
       user.channel_id = channelId;
+      channels[channelId].name = user.nickname;
     }
     users[user._id] = user;
   }
