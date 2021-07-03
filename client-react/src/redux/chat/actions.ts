@@ -26,7 +26,7 @@ const addNewChannel = (channel: IChannel) => ({
   payload: channel,
 });
 
-const setActiveChannel = (channel_id: string) => ({
+export const setActiveChannel = (channel_id: string) => ({
   type: EChatActions.SET_ACTIVE_CHANNEL,
   payload: { _id: channel_id },
 });

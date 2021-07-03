@@ -9,6 +9,7 @@ import {
 
 import { TextInput } from '~/components';
 
+import { ChatList } from '../ChatList';
 import { NewChatModal } from '../NewChatModal';
 import { NewGroupModal } from '../NewGroupModal';
 import { UserInfoMenu } from '../UserInfoMenu';
@@ -23,6 +24,7 @@ type TProps = IOwnProps;
 const Sidebar = ({ isUserEmailConfirmed }: TProps) => {
   const [isNewChatModalOpen, setIsNewChatModalOpen] = React.useState(false);
   const [isNewGroupModalOpen, setIsNewGroupModalOpen] = React.useState(false);
+  const [filter, setFilter] = React.useState('');
   const { t: trans } = useTranslation(['Common']);
   const classes = useStyles();
 
@@ -42,6 +44,10 @@ const Sidebar = ({ isUserEmailConfirmed }: TProps) => {
     setIsNewGroupModalOpen(false);
   };
 
+  const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFilter(e.target.value.toLowerCase());
+  };
+
   return (
     <>
       <Paper square className={classes.container} elevation={8}>
@@ -58,6 +64,7 @@ const Sidebar = ({ isUserEmailConfirmed }: TProps) => {
               fullWidth
               variant="outlined"
               margin="dense"
+              onChange={handleFilterChange}
             />
 
             <div className={classes.btnsContainer}>
@@ -76,6 +83,8 @@ const Sidebar = ({ isUserEmailConfirmed }: TProps) => {
                 <GroupAddIcon />
               </IconButton>
             </div>
+
+            <ChatList filter={filter} />
           </>
         )}
       </Paper>

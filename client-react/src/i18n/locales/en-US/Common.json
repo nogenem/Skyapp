@@ -24,12 +24,12 @@
   "Search": "Search",
   "Cancel": "Cancel",
   "Confirm": "Confirm",
-
   "Email": "Email",
   "New password": "New password",
   "New password confirmation": "New password confirmation",
   "Password": "Password",
   "Remember me": "Remember me",
   "Nickname": "Nickname",
-  "Password Confirmation": "Password Confirmation"
+  "Password Confirmation": "Password Confirmation",
+  "CHATS": "CHATS"
 }

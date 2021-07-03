@@ -3,7 +3,7 @@ import { createSelector } from 'reselect';
 
 import type { IAppState } from '../store';
 import { EChatActions } from './types';
-import type { TChatAction, TChatState } from './types';
+import type { TChatAction, TChatState, IChannel } from './types';
 
 export const initialState: TChatState = {
   users: {},
@@ -57,10 +57,30 @@ export default function chat(
 export const getChat = (state: IAppState) => state.chat || initialState;
 export const getUsers = createSelector(getChat, data => data.users);
 export const getChannels = createSelector(getChat, data => data.channels);
+export const getChannelFromProps = (
+  state: IAppState,
+  { channel }: { channel: IChannel },
+) => channel || {};
 
 export const getUsersArray = createSelector(getChat, data =>
   Object.values(data.users),
 );
+export const getChannelsList = createSelector(getChat, data =>
+  Object.values(data.channels),
+);
 export const getUsersWithoutChannelArray = createSelector(getChat, data =>
   Object.values(data.users).filter(user => !user.channel_id),
+);
+export const getActiveChannelId = createSelector(
+  getChat,
+  data => data.activeChannelInfo?._id,
+);
+export const getOtherUserFromChannel = createSelector(
+  [getChat, getChannelFromProps],
+  (data, channel) => {
+    if (!channel.is_group) {
+      return data.users[channel.members[channel.other_member_idx || 0].user_id];
+    }
+    return undefined;
+  },
 );
