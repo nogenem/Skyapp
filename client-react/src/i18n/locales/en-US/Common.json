@@ -31,5 +31,8 @@
   "Remember me": "Remember me",
   "Nickname": "Nickname",
   "Password Confirmation": "Password Confirmation",
-  "CHATS": "CHATS"
+  "CHATS": "CHATS",
+  "Group Name": "Group Name",
+  "Filter": "Filter",
+  "Admin": "Admin"
 }

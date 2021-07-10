@@ -5,7 +5,12 @@ import type { IUser } from '~/redux/user/types';
 import api from '~/services/api';
 import io from '~/services/io';
 
-import type { IChannel, IInitialData, IOtherUser } from './types';
+import type {
+  IChannel,
+  IInitialData,
+  INewGroupCredentials,
+  IOtherUser,
+} from './types';
 import { EChatActions } from './types';
 
 const setInitialData = (data: IInitialData) => ({
@@ -67,4 +72,12 @@ export const startChattingWith = (otherUser: IOtherUser) => (
 ) =>
   api.chat.createChannelWith(otherUser).then(({ channel_id }) => {
     dispatch(setActiveChannel(channel_id));
+  });
+
+export const createGroupChannel = (credentials: INewGroupCredentials) => (
+  dispatch: Dispatch,
+) =>
+  api.chat.createGroupChannel(credentials).then(data => {
+    // TODO: Finish this
+    console.log(data);
   });

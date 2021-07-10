@@ -23,7 +23,7 @@ exports[`Connected NewChatModal renders correctly 1`] = `
   >
     <div
       aria-labelledby="new-chat-modal-title"
-      class="MuiPaper-root MuiDialog-paper MuiDialog-paperScrollPaper MuiDialog-paperWidthSm MuiPaper-elevation24 MuiPaper-rounded"
+      class="MuiPaper-root MuiDialog-paper makeStyles-dialogPaper-1 MuiDialog-paperScrollPaper MuiDialog-paperWidthSm MuiDialog-paperFullWidth MuiPaper-elevation24 MuiPaper-rounded"
       role="dialog"
     >
       <div
@@ -36,62 +36,99 @@ exports[`Connected NewChatModal renders correctly 1`] = `
           Messages:Chat with someone
         </h2>
       </div>
-      <ul
-        class="MuiList-root MuiList-padding"
+      <div
+        class="MuiDialogContent-root MuiDialogContent-dividers"
       >
         <div
-          aria-disabled="false"
-          class="MuiButtonBase-root MuiListItem-root MuiListItem-gutters MuiListItem-button"
-          role="button"
-          tabindex="0"
+          class="MuiFormControl-root MuiTextField-root makeStyles-textInput-4 MuiFormControl-marginNormal MuiFormControl-fullWidth"
+        >
+          <label
+            class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined"
+            data-shrink="false"
+          >
+            Common:Search
+          </label>
+          <div
+            class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-fullWidth MuiInputBase-formControl"
+          >
+            <input
+              aria-invalid="false"
+              class="MuiInputBase-input MuiOutlinedInput-input"
+              name="search"
+              type="text"
+              value=""
+            />
+            <fieldset
+              aria-hidden="true"
+              class="PrivateNotchedOutline-root-5 MuiOutlinedInput-notchedOutline"
+            >
+              <legend
+                class="PrivateNotchedOutline-legendLabelled-7"
+              >
+                <span>
+                  Common:Search
+                </span>
+              </legend>
+            </fieldset>
+          </div>
+        </div>
+        <ul
+          class="MuiList-root MuiList-padding"
         >
           <div
-            class="MuiListItemAvatar-root makeStyles-listAvatar-1"
+            aria-disabled="false"
+            class="MuiButtonBase-root MuiListItem-root MuiListItem-gutters MuiListItem-button"
+            role="button"
+            tabindex="0"
           >
             <div
-              style="position: relative;"
+              class="MuiListItemAvatar-root makeStyles-listAvatar-2"
             >
               <div
-                class="MuiAvatar-root MuiAvatar-circle MuiAvatar-colorDefault"
+                style="position: relative;"
               >
-                <svg
-                  aria-hidden="true"
-                  class="MuiSvgIcon-root makeStyles-icon-3"
-                  focusable="false"
-                  viewBox="0 0 24 24"
+                <div
+                  class="MuiAvatar-root MuiAvatar-circle MuiAvatar-colorDefault"
                 >
-                  <path
-                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"
-                  />
-                </svg>
-              </div>
-              <span
-                class="makeStyles-dotContainer-4"
-              >
+                  <svg
+                    aria-hidden="true"
+                    class="MuiSvgIcon-root makeStyles-icon-10"
+                    focusable="false"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"
+                    />
+                  </svg>
+                </div>
                 <span
-                  class="makeStyles-dot-5 makeStyles-dot_active-6 "
-                  title="Common:Active"
-                />
-              </span>
+                  class="makeStyles-dotContainer-11"
+                >
+                  <span
+                    class="makeStyles-dot-12 makeStyles-dot_active-13 "
+                    title="Common:Active"
+                  />
+                </span>
+              </div>
             </div>
-          </div>
-          <div
-            class="MuiListItemText-root MuiListItemText-multiline"
-          >
-            <span
-              class="MuiTypography-root MuiListItemText-primary MuiTypography-body1 MuiTypography-displayBlock"
+            <div
+              class="MuiListItemText-root MuiListItemText-multiline"
             >
-              Test
-            </span>
-            <p
-              class="MuiTypography-root MuiListItemText-secondary MuiTypography-body2 MuiTypography-colorTextSecondary MuiTypography-displayBlock"
+              <span
+                class="MuiTypography-root MuiListItemText-primary MuiTypography-body1 MuiTypography-displayBlock"
+              >
+                Test
+              </span>
+              <p
+                class="MuiTypography-root MuiListItemText-secondary MuiTypography-body2 MuiTypography-colorTextSecondary MuiTypography-displayBlock"
+              />
+            </div>
+            <span
+              class="MuiTouchRipple-root"
             />
           </div>
-          <span
-            class="MuiTouchRipple-root"
-          />
-        </div>
-      </ul>
+        </ul>
+      </div>
     </div>
   </div>
   <div

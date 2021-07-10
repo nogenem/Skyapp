@@ -3,5 +3,6 @@
   "Can't be blank": "Não pode ficar vazio",
   "Passwords must match": "As senhas devem corresponder",
   "This field must have at least {{count}} characters": "Este campo deve ter pelo menos {{count}} caractere",
-  "This field must have at least {{count}} characters_plural": "Este campo deve ter pelo menos {{count}} caracteres"
+  "This field must have at least {{count}} characters_plural": "Este campo deve ter pelo menos {{count}} caracteres",
+  "You need to select at least 2 members": "Você precisa selecionar no mínimo 2 membros"
 }

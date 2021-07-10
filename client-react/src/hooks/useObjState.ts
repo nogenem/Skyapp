@@ -1,7 +1,7 @@
 import React, { Reducer } from 'react';
 
-type TNewStateFunc<S> = (oldState: Partial<S>) => Partial<S>;
-type TNewState<S> = Partial<S> | TNewStateFunc<Partial<S>>;
+type TNewStateFunc<S> = (oldState: S) => Partial<S>;
+type TNewState<S> = Partial<S> | TNewStateFunc<S>;
 type TInitState<S> = (initArg: S) => S;
 
 const useObjState = <S extends object>(

@@ -62,6 +62,12 @@ interface IActiveChannelInfo {
   totalMessages: number;
 }
 
+interface INewGroupCredentials {
+  name: string;
+  members: string[];
+  admins: string[];
+}
+
 type TChatState = {
   users: IOtherUsers;
   channels: IChannels;
@@ -96,5 +102,6 @@ export type {
   IOtherUser,
   IChannel,
   IMember,
+  INewGroupCredentials,
 };
 export { EChatActions };

@@ -3,10 +3,10 @@
 exports[`Sidebar renders correctly when \`isUserEmailConfirmed\` is false 1`] = `
 <div>
   <div
-    class="MuiPaper-root makeStyles-container-30 MuiPaper-elevation8"
+    class="MuiPaper-root makeStyles-container-34 MuiPaper-elevation8"
   >
     <div
-      class="makeStyles-container-32"
+      class="makeStyles-container-36"
     >
       <div
         style="position: relative;"
@@ -16,7 +16,7 @@ exports[`Sidebar renders correctly when \`isUserEmailConfirmed\` is false 1`] = 
         >
           <svg
             aria-hidden="true"
-            class="MuiSvgIcon-root makeStyles-icon-35"
+            class="MuiSvgIcon-root makeStyles-icon-39"
             focusable="false"
             viewBox="0 0 24 24"
           >
@@ -26,16 +26,16 @@ exports[`Sidebar renders correctly when \`isUserEmailConfirmed\` is false 1`] = 
           </svg>
         </div>
         <span
-          class="makeStyles-dotContainer-36"
+          class="makeStyles-dotContainer-40"
         >
           <span
-            class="makeStyles-dot-37 makeStyles-dot_active-38 "
+            class="makeStyles-dot-41 makeStyles-dot_active-42 "
             title="Common:Active"
           />
         </span>
       </div>
       <div
-        class="makeStyles-textContainer-33"
+        class="makeStyles-textContainer-37"
       >
         <span
           class="MuiTypography-root MuiTypography-subtitle1 MuiTypography-colorInherit MuiTypography-noWrap"
@@ -181,6 +181,14 @@ exports[`Sidebar renders correctly when \`isUserEmailConfirmed\` is true 1`] = `
         />
       </button>
     </div>
+    <h6
+      class="MuiTypography-root makeStyles-chatsText-25 MuiTypography-subtitle2"
+    >
+      Common:CHATS
+    </h6>
+    <ul
+      class="MuiList-root MuiList-padding"
+    />
   </div>
 </div>
 `;

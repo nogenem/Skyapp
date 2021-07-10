@@ -59,22 +59,28 @@ const NewChatModal = ({
   users,
   startChattingWith,
 }: TProps) => {
-  const [state, setState] = useObjState(initialState);
+  const [state, setState] = useObjState({
+    ...initialState,
+    filteredUsers: users,
+  });
+  const isMounted = React.useRef(false);
   const { t: trans } = useTranslation(['Common', 'Messages']);
   const classes = useStyles();
 
   const updateFilteredUsers = (search: string, users: IOtherUser[]) => {
-    if (!search) {
-      setState({ filteredUsers: [...users] });
-    } else {
-      const toSeach = search.toLowerCase();
-      setState({
-        filteredUsers: users.filter(
-          user =>
-            user.nickname.toLowerCase().includes(toSeach) ||
-            user.thoughts.toLowerCase().includes(toSeach),
-        ),
-      });
+    if (isMounted.current) {
+      if (!search) {
+        setState({ filteredUsers: users });
+      } else {
+        const toSeach = search.toLowerCase();
+        setState({
+          filteredUsers: users.filter(
+            user =>
+              user.nickname.toLowerCase().includes(toSeach) ||
+              user.thoughts.toLowerCase().includes(toSeach),
+          ),
+        });
+      }
     }
   };
 
@@ -95,6 +101,14 @@ const NewChatModal = ({
       setState({ errors: handleServerErrors(err) });
     }
   };
+
+  React.useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   React.useEffect(() => {
     debouncedOnSearchChange(state.search, users);

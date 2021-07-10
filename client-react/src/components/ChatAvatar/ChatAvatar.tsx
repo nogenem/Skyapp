@@ -15,17 +15,18 @@ const defaultProps = {
 interface IOwnProps {
   online: boolean;
   status: TUserStatus;
+  color?: 'inherit' | 'primary' | 'secondary' | 'disabled' | 'action' | 'error';
 }
 
 type TProps = IOwnProps & typeof defaultProps;
 
-const ChatAvatar = ({ online, status, showInvisible }: TProps) => {
+const ChatAvatar = ({ online, status, color, showInvisible }: TProps) => {
   const classes = useStyles();
 
   return (
     <div style={{ position: 'relative' }}>
       <MuiAvatar>
-        <AccountCircleIcon className={classes.icon} />
+        <AccountCircleIcon className={classes.icon} color={color} />
       </MuiAvatar>
       <span className={classes.dotContainer}>
         <UserStatusDot

@@ -16,5 +16,8 @@
   "Create a group": "Create a group",
   "Chat with someone": "Chat with someone",
   "You are already chatting with EVERYONE!": "You are already chatting with EVERYONE!",
-  "No user found": "No user found"
+  "No user found": "No user found",
+  "Select Members": "Select Members",
+  "Click on user's image to toggle admin status": "Click on user's image to toggle admin status",
+  "Turn into Admin": "Turn into Admin"
 }
