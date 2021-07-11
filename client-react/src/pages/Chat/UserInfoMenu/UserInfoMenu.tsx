@@ -2,7 +2,7 @@ import React, { MouseEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { connect, ConnectedProps } from 'react-redux';
 
-import { Typography } from '@material-ui/core';
+import { ListItem, Typography } from '@material-ui/core';
 
 import { ChatAvatar } from '~/components';
 import { MENU_STATES } from '~/constants/chat_menu_states';
@@ -89,7 +89,12 @@ const UserInfoMenu = ({
 
   return (
     <>
-      <div className={classes.container} onClick={handleClick}>
+      <ListItem
+        className={classes.container}
+        onClick={handleClick}
+        disableGutters
+        button
+      >
         <ChatAvatar online status={user.status} showInvisible />
         <div className={classes.textContainer}>
           <Typography
@@ -113,7 +118,7 @@ const UserInfoMenu = ({
             </Typography>
           )}
         </div>
-      </div>
+      </ListItem>
 
       {menuState === MENU_STATES.MAIN && (
         <MainMenu
