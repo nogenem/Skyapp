@@ -161,6 +161,7 @@ export default {
       const latestMessage = messagesRecord[messagesRecord.length - 1];
       const channelJson = channelRecord.toChatChannel();
       channelJson.lastMessage = latestMessage.toChatMessage();
+      channelJson.unread_msgs = messages.length;
 
       io.emit(IO_GROUP_CHANNEL_CREATED, channelJson);
       return res.status(201).json({
