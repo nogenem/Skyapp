@@ -47,6 +47,7 @@ const ChatListItem = ({
         <ChatAvatar
           online={otherUser === undefined || !!otherUser?.online}
           status={otherUser?.status || USER_STATUS.ACTIVE}
+          isGroup={channel.is_group}
         />
       </div>
       <ListItemText primary={channel.name} />

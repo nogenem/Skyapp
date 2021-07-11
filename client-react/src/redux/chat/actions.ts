@@ -60,6 +60,12 @@ export const connectIo = (user: IUser) => (dispatch: Dispatch) => {
         dispatch(addNewChannel(channel));
       },
     );
+    instance.socket!.on(
+      SOCKET_EVENTS.IO_GROUP_CHANNEL_CREATED,
+      (channel: IChannel) => {
+        dispatch(addNewChannel(channel));
+      },
+    );
   });
 };
 
@@ -77,7 +83,6 @@ export const startChattingWith = (otherUser: IOtherUser) => (
 export const createGroupChannel = (credentials: INewGroupCredentials) => (
   dispatch: Dispatch,
 ) =>
-  api.chat.createGroupChannel(credentials).then(data => {
-    // TODO: Finish this
-    console.log(data);
+  api.chat.createGroupChannel(credentials).then(({ channel_id }) => {
+    dispatch(setActiveChannel(channel_id));
   });

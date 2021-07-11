@@ -1,7 +1,10 @@
 import React from 'react';
 
 import { Avatar as MuiAvatar } from '@material-ui/core';
-import { AccountCircle as AccountCircleIcon } from '@material-ui/icons';
+import {
+  AccountCircle as AccountCircleIcon,
+  SupervisedUserCircle as SupervisedUserCircleIcon,
+} from '@material-ui/icons';
 
 import type { TUserStatus } from '~/constants/user_status';
 
@@ -9,6 +12,7 @@ import { UserStatusDot } from '../UserStatusDot';
 import useStyles from './useStyles';
 
 const defaultProps = {
+  isGroup: false,
   showInvisible: false,
 };
 
@@ -20,13 +24,23 @@ interface IOwnProps {
 
 type TProps = IOwnProps & typeof defaultProps;
 
-const ChatAvatar = ({ online, status, color, showInvisible }: TProps) => {
+const ChatAvatar = ({
+  online,
+  status,
+  color,
+  isGroup,
+  showInvisible,
+}: TProps) => {
   const classes = useStyles();
 
   return (
     <div style={{ position: 'relative' }}>
       <MuiAvatar>
-        <AccountCircleIcon className={classes.icon} color={color} />
+        {!isGroup ? (
+          <AccountCircleIcon className={classes.icon} color={color} />
+        ) : (
+          <SupervisedUserCircleIcon className={classes.icon} color={color} />
+        )}
       </MuiAvatar>
       <span className={classes.dotContainer}>
         <UserStatusDot
