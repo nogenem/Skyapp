@@ -5,6 +5,24 @@ const useStyles = makeStyles((theme: Theme) =>
     avatarContainer: {
       marginRight: theme.spacing(1),
     },
+    textContainer: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      width: '100%',
+    },
+    secondaryText: {
+      width: '90%',
+    },
+    secondaryTextIcon: {
+      position: 'relative',
+      top: '1px',
+      width: theme.typography.body2.fontSize,
+      height: theme.typography.body2.fontSize,
+    },
+    unreadBadge: {
+      marginLeft: '15px',
+      marginRight: '9px',
+    },
   }),
 );
 

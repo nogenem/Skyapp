@@ -101,7 +101,10 @@ export type {
   IInitialData,
   IOtherUser,
   IChannel,
+  IChannels,
   IMember,
+  IMessage,
+  IAttachment,
   INewGroupCredentials,
 };
 export { EChatActions };
