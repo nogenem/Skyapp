@@ -18,5 +18,7 @@ export const NO_USER_WITH_SUCH_EMAIL = 'There is no user with such email';
 export const NO_TOKEN = 'Token not provided';
 export const INVALID_USER_STATUS = 'Invalid user status';
 export const CHANNEL_ALREADY_EXISTS = 'Channel already exists';
+export const NEED_AT_LEAST_2_MEMBERS_TO_CREATE_GROUP =
+  'You need at least 2 members to create a group';
 
 export type { TTranslatableError };

@@ -47,7 +47,7 @@ export default async (
           },
           {
             $sort: {
-              date: -1,
+              createdAt: -1,
             },
           },
           {

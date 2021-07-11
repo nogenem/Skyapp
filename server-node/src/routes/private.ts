@@ -22,5 +22,10 @@ routes.post(
   validate(chat.createPrivateChannel),
   ChatController.createPrivateChannel,
 );
+routes.post(
+  '/chat/group',
+  validate(chat.createGroupChannel),
+  ChatController.createGroupChannel,
+);
 
 export default routes;

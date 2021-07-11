@@ -14,15 +14,17 @@ interface IAttachment {
 
 interface IMessage {
   channel_id: string;
-  from_id: string;
+  from_id?: string;
   body: string | IAttachment;
   type: TMessageType;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 interface IChatMessage {
   _id: string;
   channel_id: string;
-  from_id: string;
+  from_id?: string;
   body: string | IAttachment;
   type: TMessageType;
   createdAt: Date;
@@ -55,15 +57,21 @@ const Message = new mongoose.Schema<IMessageDoc>(
     },
     body: { type: mongoose.Schema.Types.Mixed, required: true },
     type: { type: Number, required: true, enum: MESSAGE_TYPES_VALUES },
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now },
   },
-  { timestamps: true },
+  // { timestamps: true },
 );
+
+Message.pre('update', function preUpdate() {
+  this.update({}, { $set: { updatedAt: new Date() } });
+});
 
 function toChatMessage(message: IMessageDoc | IChatMessage): IChatMessage {
   return {
     _id: message._id.toString(),
     channel_id: message.channel_id.toString(),
-    from_id: message.from_id.toString(),
+    from_id: message.from_id ? message.from_id.toString() : message.from_id,
     body: message.body,
     type: message.type,
     createdAt: message.createdAt,

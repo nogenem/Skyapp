@@ -5,10 +5,10 @@ import * as SOCKET_EVENTS from '~/constants/socket_events';
 import { IClientInfo, IClientMap } from '~/typescript-declarations/io.d';
 import getUsersAndChannelsData from '~/utils/getUsersAndChannelsData';
 
-import { IChannelDoc } from './models';
+import { IChannelDoc, IChatChannel } from './models';
 
 type TSocketEvent = typeof SOCKET_EVENTS[keyof typeof SOCKET_EVENTS];
-type TSocketEventData = IChannelDoc;
+type TSocketEventData = IChannelDoc | IChatChannel;
 
 class IoController {
   _io: SocketServer | null;
@@ -83,6 +83,17 @@ class IoController {
               ...channelJson,
               other_member_idx: otherMemberIdx,
             });
+          }
+        });
+        break;
+      }
+      case SOCKET_EVENTS.IO_GROUP_CHANNEL_CREATED: {
+        const channelJson = eventData as IChatChannel;
+
+        channelJson.members.forEach(member => {
+          const thisMemberClient = this._clients[member.user_id];
+          if (thisMemberClient) {
+            io.to(thisMemberClient.socketId).emit(event, channelJson);
           }
         });
         break;
