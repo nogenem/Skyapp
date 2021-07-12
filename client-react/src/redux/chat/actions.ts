@@ -8,6 +8,7 @@ import io from '~/services/io';
 import type {
   IChannel,
   IInitialData,
+  IMessage,
   INewGroupCredentials,
   IOtherUser,
   IUpdateGroupCredentials,
@@ -27,9 +28,14 @@ const setUserOnline = (_id: string, value: boolean) => ({
   },
 });
 
-const addNewChannel = (channel: IChannel) => ({
-  type: EChatActions.ADD_NEW_CHANNEL,
+const addOrUpdateChannel = (channel: IChannel) => ({
+  type: EChatActions.ADD_OR_UPDATE_CHANNEL,
   payload: channel,
+});
+
+const removeChannel = (channelId: string) => ({
+  type: EChatActions.REMOVE_CHANNEL,
+  payload: { channelId },
 });
 
 export const setActiveChannel = (channel_id: string) => ({
@@ -58,13 +64,32 @@ export const connectIo = (user: IUser) => (dispatch: Dispatch) => {
     instance.socket!.on(
       SOCKET_EVENTS.IO_PRIVATE_CHANNEL_CREATED,
       (channel: IChannel) => {
-        dispatch(addNewChannel(channel));
+        dispatch(addOrUpdateChannel(channel));
       },
     );
     instance.socket!.on(
       SOCKET_EVENTS.IO_GROUP_CHANNEL_CREATED,
       (channel: IChannel) => {
-        dispatch(addNewChannel(channel));
+        dispatch(addOrUpdateChannel(channel));
+      },
+    );
+    instance.socket!.on(
+      SOCKET_EVENTS.IO_REMOVED_FROM_GROUP_CHANNEL,
+      ({ channelId }: { channelId: string }) => {
+        dispatch(removeChannel(channelId));
+      },
+    );
+    instance.socket!.on(
+      SOCKET_EVENTS.IO_GROUP_CHANNEL_UPDATED,
+      (channel: IChannel) => {
+        dispatch(addOrUpdateChannel(channel));
+      },
+    );
+    instance.socket!.on(
+      SOCKET_EVENTS.IO_MESSAGES_RECEIVED,
+      (messages: IMessage[]) => {
+        // TODO
+        console.log(messages);
       },
     );
   });

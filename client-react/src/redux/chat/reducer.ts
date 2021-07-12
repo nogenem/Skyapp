@@ -17,17 +17,19 @@ export default function chat(
 ): TChatState {
   return produce(state, draft => {
     switch (action.type) {
-      case EChatActions.SET_INITIAL_DATA:
+      case EChatActions.SET_INITIAL_DATA: {
         draft.users = action.payload.users;
-        draft.channels = wrapDates(action.payload.channels);
+        draft.channels = wrapChannelsDates(action.payload.channels);
         return draft;
-      case EChatActions.SET_USER_ONLINE:
+      }
+      case EChatActions.SET_USER_ONLINE: {
         if (draft.users[action.payload._id]) {
           draft.users[action.payload._id].online = action.payload.value;
         }
         return draft;
-      case EChatActions.ADD_NEW_CHANNEL: {
-        draft.channels[action.payload._id] = action.payload;
+      }
+      case EChatActions.ADD_OR_UPDATE_CHANNEL: {
+        draft.channels[action.payload._id] = wrapChannelDates(action.payload);
         if (!action.payload.is_group) {
           action.payload.members.forEach(member => {
             if (draft.users[member.user_id]) {
@@ -37,7 +39,7 @@ export default function chat(
         }
         return draft;
       }
-      case EChatActions.SET_ACTIVE_CHANNEL:
+      case EChatActions.SET_ACTIVE_CHANNEL: {
         if (draft.channels[action.payload._id]) {
           draft.activeChannelInfo = {
             _id: action.payload._id,
@@ -46,24 +48,42 @@ export default function chat(
           };
         }
         return draft;
+      }
+      case EChatActions.REMOVE_CHANNEL: {
+        if (!!draft.channels[action.payload.channelId]) {
+          if (
+            !!draft.activeChannelInfo &&
+            draft.activeChannelInfo._id === action.payload.channelId
+          ) {
+            draft.activeChannelInfo = undefined;
+          }
+          delete draft.channels[action.payload.channelId];
+        }
+        return draft;
+      }
       default:
         return draft;
     }
   });
 }
 
-const wrapDates = (channels: IChannels) => {
+const wrapChannelsDates = (channels: IChannels) => {
   const ret = {} as IChannels;
 
   Object.entries(channels).forEach(([id, channel]) => {
-    if (channel.lastMessage) {
-      channel.lastMessage.createdAt = new Date(channel.lastMessage.createdAt);
-      channel.lastMessage.updatedAt = new Date(channel.lastMessage.updatedAt);
-    }
+    wrapChannelDates(channel);
     ret[id] = channel;
   });
 
   return ret;
+};
+
+const wrapChannelDates = (channel: IChannel) => {
+  if (channel.lastMessage) {
+    channel.lastMessage.createdAt = new Date(channel.lastMessage.createdAt);
+    channel.lastMessage.updatedAt = new Date(channel.lastMessage.updatedAt);
+  }
+  return channel;
 };
 
 // SELECTORS
