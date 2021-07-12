@@ -26,18 +26,17 @@ export default function chat(
           draft.users[action.payload._id].online = action.payload.value;
         }
         return draft;
-      case EChatActions.ADD_NEW_CHANNEL:
-        if (!draft.channels[action.payload._id]) {
-          draft.channels[action.payload._id] = action.payload;
-          if (!action.payload.is_group) {
-            action.payload.members.forEach(member => {
-              if (draft.users[member.user_id]) {
-                draft.users[member.user_id].channel_id = action.payload._id;
-              }
-            });
-          }
+      case EChatActions.ADD_NEW_CHANNEL: {
+        draft.channels[action.payload._id] = action.payload;
+        if (!action.payload.is_group) {
+          action.payload.members.forEach(member => {
+            if (draft.users[member.user_id]) {
+              draft.users[member.user_id].channel_id = action.payload._id;
+            }
+          });
         }
         return draft;
+      }
       case EChatActions.SET_ACTIVE_CHANNEL:
         if (draft.channels[action.payload._id]) {
           draft.activeChannelInfo = {

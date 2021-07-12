@@ -19,5 +19,6 @@
   "No user found": "Nenhum usuário encontrado",
   "Select Members": "Selecione os Membros",
   "Click on user's image to toggle admin status": "Clique na imagem do usuário para alternar o status de administrador",
-  "Turn into Admin": "Transformar em administrador"
+  "Turn into Admin": "Transformar em administrador",
+  "Group Info": "Info do Grupo"
 }

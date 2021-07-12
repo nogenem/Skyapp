@@ -1,6 +1,10 @@
 import axios from 'axios';
 
-import type { INewGroupCredentials, IOtherUser } from '~/redux/chat/types';
+import type {
+  INewGroupCredentials,
+  IOtherUser,
+  IUpdateGroupCredentials,
+} from '~/redux/chat/types';
 import type {
   ISignUpCredentials,
   ISignInCredentials,
@@ -28,6 +32,7 @@ export const END_POINTS = {
   chat: {
     createChannelWith: 'api/chat/private',
     createGroupChannel: 'api/chat/group',
+    updateGroupChannel: 'api/chat/group',
   },
 };
 
@@ -84,6 +89,10 @@ export default {
     createGroupChannel: (credentials: INewGroupCredentials) =>
       axiosInstance
         .post(END_POINTS.chat.createGroupChannel, { ...credentials })
+        .then(res => res.data),
+    updateGroupChannel: (credentials: IUpdateGroupCredentials) =>
+      axiosInstance
+        .patch(END_POINTS.chat.updateGroupChannel, { ...credentials })
         .then(res => res.data),
   },
 };

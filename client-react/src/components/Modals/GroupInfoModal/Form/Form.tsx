@@ -20,7 +20,7 @@ import { IOtherUser } from '~/redux/chat/types';
 
 import useStyles from './useStyles';
 
-const FORM_ID = 'new-group-modal-form';
+const FORM_ID = 'group-info-modal-form';
 
 interface IOwnState {
   filter: string;
@@ -40,6 +40,7 @@ interface IOwnProps {
   selectedUsersObj: { [_id: string]: boolean };
   isAdminObj: { [_id: string]: boolean };
   errors: IErrors;
+  isLoggedUserAdmin: boolean;
   users: IOtherUser[];
   setGroupName: (name: string) => void;
   toggleUserSelected: (userId: string) => void;
@@ -53,6 +54,7 @@ const Form = ({
   selectedUsersObj,
   isAdminObj,
   errors,
+  isLoggedUserAdmin,
   users,
   setGroupName,
   toggleUserSelected,
@@ -93,15 +95,21 @@ const Form = ({
   };
 
   const handleNameChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
-    setGroupName(evt.target.value);
+    if (isLoggedUserAdmin) {
+      setGroupName(evt.target.value);
+    }
   };
 
   const handleCheckboxChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
-    toggleUserSelected(evt.target.name);
+    if (isLoggedUserAdmin) {
+      toggleUserSelected(evt.target.name);
+    }
   };
 
   const handleIsAdminChange = (userId: string) => () => {
-    toggleUserIsAdmin(userId);
+    if (isLoggedUserAdmin) {
+      toggleUserIsAdmin(userId);
+    }
   };
 
   const renderUsers = () =>
@@ -120,10 +128,12 @@ const Form = ({
             user={user}
             isAdmin={!!isAdminObj[user._id]}
             onClick={handleIsAdminChange(user._id)}
+            disabled={!isLoggedUserAdmin}
           />
         }
         labelPlacement="start"
         className={classes.checkboxWrapper}
+        disabled={!isLoggedUserAdmin}
       />
     ));
 
@@ -156,6 +166,7 @@ const Form = ({
         margin="normal"
         value={groupName}
         onChange={handleNameChange}
+        disabled={!isLoggedUserAdmin}
       />
 
       <FormControl
@@ -177,6 +188,7 @@ const Form = ({
           style={{ marginTop: '5px' }}
           margin="normal"
           onChange={onFilterChange}
+          disabled={!isLoggedUserAdmin}
         />
 
         <FormHelperText error={false}>
@@ -194,10 +206,11 @@ const Form = ({
 interface ILabelProps {
   user: IOtherUser;
   isAdmin: boolean;
+  disabled: boolean;
   onClick: () => void;
 }
 
-const Label = ({ user, isAdmin, onClick }: ILabelProps) => {
+const Label = ({ user, isAdmin, disabled, onClick }: ILabelProps) => {
   const { t: trans } = useTranslation(['Common', 'Messages']);
   const classes = useStyles();
 
@@ -208,7 +221,12 @@ const Label = ({ user, isAdmin, onClick }: ILabelProps) => {
     <span className={classes.checkboxLabel}>
       <Tooltip title={tooltip} classes={{ tooltip: classes.tooltip }} arrow>
         <span>
-          <IconButton aria-label={tooltip} onClick={onClick} color={color}>
+          <IconButton
+            aria-label={tooltip}
+            onClick={onClick}
+            color={color}
+            disabled={disabled}
+          >
             <ChatAvatar
               online={user.online}
               status={user.status}

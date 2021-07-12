@@ -19,8 +19,10 @@ import {
 } from '@material-ui/icons';
 
 import { ChatAvatar } from '~/components';
+import { GroupInfoModal } from '~/components/Modals';
 import { MESSAGE_TYPES } from '~/constants/message_types';
 import { USER_STATUS } from '~/constants/user_status';
+import useObjState from '~/hooks/useObjState';
 import { setActiveChannel as setActiveChannelAction } from '~/redux/chat/actions';
 import { getOtherUserFromChannel } from '~/redux/chat/reducer';
 import type { IAttachment, IChannel, IMessage } from '~/redux/chat/types';
@@ -28,6 +30,17 @@ import type { IAppState } from '~/redux/store';
 import sanitize from '~/utils/sanitize';
 
 import useStyles from './useStyles';
+
+interface IOwnState {
+  isGroupInfoModalOpen: boolean;
+  isLeaveGroupModalOpen: boolean;
+}
+type TState = IOwnState;
+
+const initialState: TState = {
+  isGroupInfoModalOpen: false,
+  isLeaveGroupModalOpen: false,
+};
 
 const mapStateToProps = (state: IAppState, props: IOwnProps) => ({
   otherUser: getOtherUserFromChannel(state, props),
@@ -52,6 +65,7 @@ const ChatListItem = ({
   otherUser,
   setActiveChannel,
 }: TProps) => {
+  const [state, setState] = useObjState(initialState);
   const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
   const { t: trans } = useTranslation(['Common']);
   const isMenuOpen = Boolean(anchorEl);
@@ -75,12 +89,20 @@ const ChatListItem = ({
 
   const handleInfoClick = (event: MouseEvent<Element>) => {
     handleMenuClose(event);
-    // TODO
+    setState({
+      isGroupInfoModalOpen: true,
+    });
   };
 
   const handleLeaveClick = (event: MouseEvent<Element>) => {
     handleMenuClose(event);
     // TODO
+  };
+
+  const onGroupInfoModalClose = () => {
+    setState({
+      isGroupInfoModalOpen: false,
+    });
   };
 
   return (
@@ -120,6 +142,11 @@ const ChatListItem = ({
               {trans('Common:Leave')}
             </MenuItem>
           </Menu>
+          <GroupInfoModal
+            isOpen={state.isGroupInfoModalOpen}
+            onClose={onGroupInfoModalClose}
+            channel={channel}
+          />
         </>
       )}
       {channel.is_group && (

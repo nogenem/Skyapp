@@ -10,6 +10,7 @@ import type {
   IInitialData,
   INewGroupCredentials,
   IOtherUser,
+  IUpdateGroupCredentials,
 } from './types';
 import { EChatActions } from './types';
 
@@ -84,5 +85,12 @@ export const createGroupChannel = (credentials: INewGroupCredentials) => (
   dispatch: Dispatch,
 ) =>
   api.chat.createGroupChannel(credentials).then(({ channel_id }) => {
+    dispatch(setActiveChannel(channel_id));
+  });
+
+export const updateGroupChannel = (credentials: IUpdateGroupCredentials) => (
+  dispatch: Dispatch,
+) =>
+  api.chat.updateGroupChannel(credentials).then(({ channel_id }) => {
     dispatch(setActiveChannel(channel_id));
   });
