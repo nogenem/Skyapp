@@ -8,6 +8,7 @@ import {
   LAST_EMAIL_SENT_IS_STILL_VALID,
   NO_TOKEN,
   CHANNEL_ALREADY_EXISTS,
+  USER_IS_NOT_GROUP_ADM,
 } from '~/constants/error_messages';
 import type { TTranslatableError } from '~/constants/error_messages';
 
@@ -73,3 +74,6 @@ export const noTokenError = (): CustomError =>
 
 export const channelAlreadyExistsError = (): CustomError =>
   new CustomError({ global: CHANNEL_ALREADY_EXISTS });
+
+export const userIsNotGroupAdmError = (): CustomError =>
+  new CustomError({ global: USER_IS_NOT_GROUP_ADM });

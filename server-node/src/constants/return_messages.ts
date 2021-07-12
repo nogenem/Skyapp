@@ -14,3 +14,4 @@ export const USER_THOUGHTS_CHANGED =
 
 // Chat
 export const CHANNEL_CREATED = 'Messages:Channel created with success';
+export const CHANNEL_UPDATED = 'Messages:Channel updated with success';

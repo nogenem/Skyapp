@@ -8,5 +8,6 @@
   "Password changed with success": "Password changed with success",
   "User status changed with success": "User status changed with success",
   "User thoughts changed with success": "User thoughts changed with success",
-  "Channel created with success": "Channel created with success"
+  "Channel created with success": "Channel created with success",
+  "Channel updated with success": "Channel updated with success"
 }

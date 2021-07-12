@@ -5,10 +5,24 @@ import * as SOCKET_EVENTS from '~/constants/socket_events';
 import { IClientInfo, IClientMap } from '~/typescript-declarations/io.d';
 import getUsersAndChannelsData from '~/utils/getUsersAndChannelsData';
 
-import { IChannelDoc, IChatChannel } from './models';
+import { IChannelDoc, IChatChannel, IChatMessage, Message } from './models';
+
+interface IMessagesReceived {
+  channel: IChatChannel;
+  messages: IChatMessage[];
+}
+
+interface IRemovedFromGroupChannel {
+  channel: IChatChannel;
+  members: string[];
+}
 
 type TSocketEvent = typeof SOCKET_EVENTS[keyof typeof SOCKET_EVENTS];
-type TSocketEventData = IChannelDoc | IChatChannel;
+type TSocketEventData =
+  | IChannelDoc
+  | IChatChannel
+  | IMessagesReceived
+  | IRemovedFromGroupChannel;
 
 class IoController {
   _io: SocketServer | null;
@@ -64,7 +78,7 @@ class IoController {
     return this._clients[userId];
   }
 
-  emit(event: TSocketEvent, eventData: TSocketEventData): void {
+  async emit(event: TSocketEvent, eventData: TSocketEventData): Promise<void> {
     const io = this.getIo();
 
     if (!io) return;
@@ -94,6 +108,45 @@ class IoController {
           const thisMemberClient = this._clients[member.user_id];
           if (thisMemberClient) {
             io.to(thisMemberClient.socketId).emit(event, channelJson);
+          }
+        });
+        break;
+      }
+      case SOCKET_EVENTS.IO_REMOVED_FROM_GROUP_CHANNEL: {
+        const { channel, members } = eventData as IRemovedFromGroupChannel;
+        members.forEach(id => {
+          const thisMemberClient = this._clients[id];
+          if (thisMemberClient) {
+            io.to(thisMemberClient.socketId).emit(event, {
+              channelId: channel._id,
+            });
+          }
+        });
+        break;
+      }
+      case SOCKET_EVENTS.IO_GROUP_CHANNEL_UPDATED: {
+        const channelJson = eventData as IChatChannel;
+
+        channelJson.members.forEach(async member => {
+          const thisMemberClient = this._clients[member.user_id];
+          if (thisMemberClient) {
+            const unreadMsgs = await Message.countDocuments({
+              channel_id: channelJson._id,
+              updatedAt: { $gt: member.last_seen },
+            });
+            channelJson.unread_msgs = unreadMsgs;
+
+            io.to(thisMemberClient.socketId).emit(event, channelJson);
+          }
+        });
+        break;
+      }
+      case SOCKET_EVENTS.IO_MESSAGES_RECEIVED: {
+        const { channel, messages } = eventData as IMessagesReceived;
+        channel.members.forEach(member => {
+          const thisMemberClient = this._clients[member.user_id];
+          if (thisMemberClient) {
+            io.to(thisMemberClient.socketId).emit(event, messages);
           }
         });
         break;

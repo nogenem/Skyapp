@@ -1,10 +1,13 @@
 import { Response } from 'express';
 
 import { MESSAGE_TYPES } from '~/constants/message_types';
-import { CHANNEL_CREATED } from '~/constants/return_messages';
+import { CHANNEL_CREATED, CHANNEL_UPDATED } from '~/constants/return_messages';
 import {
   IO_PRIVATE_CHANNEL_CREATED,
   IO_GROUP_CHANNEL_CREATED,
+  IO_REMOVED_FROM_GROUP_CHANNEL,
+  IO_GROUP_CHANNEL_UPDATED,
+  IO_MESSAGES_RECEIVED,
 } from '~/constants/socket_events';
 import IoController from '~/IoController';
 import type { IAuthRequest } from '~/middlewares/auth';
@@ -12,11 +15,16 @@ import {
   Channel,
   IChannelDoc,
   IMessage,
+  IMessageDoc,
   IUserDoc,
   Message,
   User,
 } from '~/models';
-import { channelAlreadyExistsError, invalidIdError } from '~/utils/errors';
+import {
+  channelAlreadyExistsError,
+  invalidIdError,
+  userIsNotGroupAdmError,
+} from '~/utils/errors';
 import handleErrors from '~/utils/handleErrors';
 
 interface INewGroupCredentials {
@@ -25,7 +33,15 @@ interface INewGroupCredentials {
   admins: string[];
 }
 
-const insertManyMessages = (messages: IMessage[]) => {
+interface IUpdateGroupCredentials {
+  // eslint-disable-next-line camelcase
+  channel_id: string;
+  name: string;
+  members: string[];
+  admins: string[];
+}
+
+const insertManyMessages = (messages: IMessage[]): Promise<IMessageDoc[]> => {
   // Without this, all dates would be the same...
   const baseDate = new Date().getTime();
   const messages2insert = messages.map((message, i) => {
@@ -66,26 +82,27 @@ export default {
       return handleErrors(err, res);
     }
 
-    const channel = new Channel({
-      name: 'private channel',
-      is_group: false,
-      members: [
-        {
-          user_id: currentUser._id,
-          is_adm: false,
-        },
-        {
-          user_id: user._id,
-          is_adm: false,
-        },
-      ],
-    });
-
     try {
+      const channel = new Channel({
+        name: 'private channel',
+        is_group: false,
+        members: [
+          {
+            user_id: currentUser._id,
+            is_adm: false,
+          },
+          {
+            user_id: user._id,
+            is_adm: false,
+          },
+        ],
+      });
+
       const channelRecord = (await channel.save()) as IChannelDoc;
       const io = IoController.instance();
 
-      io.emit(IO_PRIVATE_CHANNEL_CREATED, channelRecord);
+      await io.emit(IO_PRIVATE_CHANNEL_CREATED, channelRecord);
+
       return res.status(201).json({
         message: CHANNEL_CREATED,
         channel_id: channelRecord._id,
@@ -163,9 +180,167 @@ export default {
       channelJson.lastMessage = latestMessage.toChatMessage();
       channelJson.unread_msgs = messages.length;
 
-      io.emit(IO_GROUP_CHANNEL_CREATED, channelJson);
+      await io.emit(IO_GROUP_CHANNEL_CREATED, channelJson);
+
       return res.status(201).json({
         message: CHANNEL_CREATED,
+        channel_id: channelJson._id,
+      });
+    } catch (err) {
+      return handleErrors(err, res);
+    }
+  },
+  async updateGroupChannel(
+    req: IAuthRequest,
+    res: Response,
+  ): Promise<Response<unknown>> {
+    const {
+      channel_id: channelId,
+      name,
+      members: membersIds,
+      admins: adminsIds,
+    } = req.body as IUpdateGroupCredentials;
+    const currentUser = req.currentUser as IUserDoc;
+
+    let channel: IChannelDoc | null = null;
+    try {
+      channel = await Channel.findOne({ _id: channelId });
+      if (!channel) {
+        return handleErrors(invalidIdError(), res);
+      }
+
+      const membersIdsObj = {} as { [id: string]: boolean };
+      membersIds.forEach(id => {
+        membersIdsObj[id] = true;
+      });
+
+      const adminsIdsObj = {} as { [id: string]: boolean };
+      adminsIds.forEach(id => {
+        adminsIdsObj[id] = true;
+      });
+
+      const members = [];
+      const newMembers = [] as string[];
+      const removedMembers = [] as string[];
+      const newAdmins = [] as string[];
+      const removedAdmins = [] as string[];
+      let isCurrentUserAdm = false;
+      for (let i = 0; i < channel.members.length; i += 1) {
+        const member = channel.members[i];
+        if (currentUser._id.toString() === member.user_id.toString()) {
+          members.push(member);
+          isCurrentUserAdm = member.is_adm;
+
+          delete membersIdsObj[member.user_id];
+          delete adminsIdsObj[member.user_id];
+        } else if (membersIdsObj[member.user_id]) {
+          const oldIsAdm = member.is_adm;
+          const newIsAdm = !!adminsIdsObj[member.user_id];
+          if (oldIsAdm !== newIsAdm) {
+            if (!newIsAdm) removedAdmins.push(member.user_id);
+            else newAdmins.push(member.user_id);
+          }
+
+          member.is_adm = newIsAdm;
+          members.push(member);
+
+          delete membersIdsObj[member.user_id];
+          delete adminsIdsObj[member.user_id];
+        } else {
+          removedMembers.push(member.user_id);
+        }
+      }
+
+      if (!isCurrentUserAdm) {
+        return handleErrors(userIsNotGroupAdmError(), res);
+      }
+
+      Object.keys(membersIdsObj).forEach(id => {
+        members.push({
+          user_id: id,
+          is_adm: !!adminsIdsObj[id],
+        });
+        newMembers.push(id);
+        if (adminsIdsObj[id]) newAdmins.push(id);
+      });
+
+      const membersRecords = await User.find(
+        {
+          _id: {
+            $in: [
+              ...newMembers,
+              ...removedMembers,
+              ...newAdmins,
+              ...removedAdmins,
+            ],
+          },
+        },
+        { nickname: 1 },
+      );
+
+      const membersRecordsObj = {} as { [_id: string]: string };
+      membersRecords.forEach(member => {
+        membersRecordsObj[member._id.toString()] = member.nickname;
+      });
+
+      const messages = [] as IMessage[];
+      newMembers.forEach(id => {
+        messages.push({
+          channel_id: channel?._id,
+          body: `${currentUser.nickname} added ${membersRecordsObj[id]}`,
+          type: MESSAGE_TYPES.TEXT,
+        });
+      });
+      removedMembers.forEach(id => {
+        messages.push({
+          channel_id: channel?._id,
+          body: `${currentUser.nickname} removed ${membersRecordsObj[id]}`,
+          type: MESSAGE_TYPES.TEXT,
+        });
+      });
+      newAdmins.forEach(id => {
+        messages.push({
+          channel_id: channel?._id,
+          body: `${membersRecordsObj[id]} is now an Admin`,
+          type: MESSAGE_TYPES.TEXT,
+        });
+      });
+      removedAdmins.forEach(id => {
+        messages.push({
+          channel_id: channel?._id,
+          body: `${membersRecordsObj[id]} is no longer an Admin`,
+          type: MESSAGE_TYPES.TEXT,
+        });
+      });
+
+      channel.name = name;
+      channel.members = members;
+
+      const channelRecord = (await channel.save()) as IChannelDoc;
+      const messagesRecord = await insertManyMessages(messages);
+      const messagesJson = messagesRecord.map(message =>
+        message.toChatMessage(),
+      );
+
+      const latestMessage = messagesJson[messagesJson.length - 1];
+      const channelJson = channelRecord.toChatChannel();
+      channelJson.lastMessage = latestMessage;
+
+      const io = IoController.instance();
+
+      await Promise.all([
+        io.emit(IO_REMOVED_FROM_GROUP_CHANNEL, {
+          channel: channelJson,
+          members: removedMembers,
+        }),
+        io.emit(IO_GROUP_CHANNEL_UPDATED, channelJson),
+        io.emit(IO_MESSAGES_RECEIVED, {
+          channel: channelJson,
+          messages: messagesJson,
+        }),
+      ]);
+      return res.status(200).json({
+        message: CHANNEL_UPDATED,
         channel_id: channelJson._id,
       });
     } catch (err) {

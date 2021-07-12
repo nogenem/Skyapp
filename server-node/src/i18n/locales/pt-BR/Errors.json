@@ -13,5 +13,7 @@
   "There is no user with such email": "Não há nenhum usuário com esse email",
   "Token not provided": "Token não fornecido",
   "Invalid user status": "Status de usuário inválido",
-  "Channel already exists": "Canal já existe"
+  "Channel already exists": "Canal já existe",
+  "You need at least 2 members to create a group": "Você precisa de no mínimo 2 membros para criar um grupo",
+  "You are not an administrator of this group": "Você não é um administrador deste grupo"
 }
