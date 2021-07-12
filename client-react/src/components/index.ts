@@ -9,3 +9,4 @@ export { AuthContainer } from './AuthContainer';
 export { ChatAvatar } from './ChatAvatar';
 export { UserStatusDot } from './UserStatusDot';
 export { TextInput } from './TextInput';
+export { NewChatModal, NewGroupModal } from './Modals';

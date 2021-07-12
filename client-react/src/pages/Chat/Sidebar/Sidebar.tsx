@@ -7,11 +7,9 @@ import {
   GroupAdd as GroupAddIcon,
 } from '@material-ui/icons';
 
-import { TextInput } from '~/components';
+import { TextInput, NewChatModal, NewGroupModal } from '~/components';
 
 import { ChatList } from '../ChatList';
-import { NewChatModal } from '../NewChatModal';
-import { NewGroupModal } from '../NewGroupModal';
 import { UserInfoMenu } from '../UserInfoMenu';
 import useStyles from './useStyles';
 
