@@ -99,9 +99,12 @@ export default {
       });
 
       const channelRecord = (await channel.save()) as IChannelDoc;
+      const channelJson = channel.toChatChannel();
+      channelJson.name = user.nickname;
+
       const io = IoController.instance();
 
-      await io.emit(IO_PRIVATE_CHANNEL_CREATED, channelRecord);
+      await io.emit(IO_PRIVATE_CHANNEL_CREATED, channelJson);
 
       return res.status(201).json({
         message: CHANNEL_CREATED,
