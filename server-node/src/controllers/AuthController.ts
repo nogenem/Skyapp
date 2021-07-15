@@ -10,6 +10,8 @@ import {
   RESET_PASSWORD_EMAIL_SENT,
   PASSWORD_CHANGED,
 } from '~/constants/return_messages';
+import { IO_NEW_USER } from '~/constants/socket_events';
+import IoController from '~/IoController';
 import { sendConfirmationEmail, sendResetPasswordEmail } from '~/mailer';
 import { User } from '~/models';
 import { ITokenData } from '~/models/User';
@@ -103,6 +105,12 @@ export default {
       );
 
       if (user) {
+        const io = IoController.instance();
+        const newUser = user.toChatUser();
+        newUser.online = true;
+
+        await io.emit(IO_NEW_USER, newUser);
+
         return res.json({
           message: req.t(ACC_CONFIRMED),
           user: user.toAuthJSON(),

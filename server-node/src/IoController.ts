@@ -5,7 +5,13 @@ import * as SOCKET_EVENTS from '~/constants/socket_events';
 import { IClientInfo, IClientMap } from '~/typescript-declarations/io.d';
 import getUsersAndChannelsData from '~/utils/getUsersAndChannelsData';
 
-import { IChannelDoc, IChatChannel, IChatMessage, Message } from './models';
+import {
+  IChannelDoc,
+  IChatChannel,
+  IChatMessage,
+  IChatUser,
+  Message,
+} from './models';
 
 interface IMessagesReceived {
   channel: IChatChannel;
@@ -22,7 +28,8 @@ type TSocketEventData =
   | IChannelDoc
   | IChatChannel
   | IMessagesReceived
-  | IRemovedFromGroupChannel;
+  | IRemovedFromGroupChannel
+  | IChatUser;
 
 class IoController {
   _io: SocketServer | null;
@@ -148,6 +155,13 @@ class IoController {
           if (thisMemberClient) {
             io.to(thisMemberClient.socketId).emit(event, messages);
           }
+        });
+        break;
+      }
+      case SOCKET_EVENTS.IO_NEW_USER: {
+        const newUser = eventData as IChatUser;
+        Object.values(this._clients).forEach(({ socketId }) => {
+          io.to(socketId).emit(event, newUser);
         });
         break;
       }
