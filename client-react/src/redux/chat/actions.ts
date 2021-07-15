@@ -43,6 +43,11 @@ export const setActiveChannel = (channel_id: string) => ({
   payload: { _id: channel_id },
 });
 
+const addNewUser = (newUser: IOtherUser) => ({
+  type: EChatActions.ADD_NEW_USER,
+  payload: newUser,
+});
+
 export const connectIo = (user: IUser) => (dispatch: Dispatch) => {
   const instance = io.instance();
   instance.connect({ _id: user._id });
@@ -60,6 +65,9 @@ export const connectIo = (user: IUser) => (dispatch: Dispatch) => {
     });
     instance.socket!.on(SOCKET_EVENTS.IO_SIGNOUT, (_id: string) => {
       dispatch(setUserOnline(_id, false));
+    });
+    instance.socket!.on(SOCKET_EVENTS.IO_NEW_USER, (newUser: IOtherUser) => {
+      dispatch(addNewUser(newUser));
     });
     instance.socket!.on(
       SOCKET_EVENTS.IO_PRIVATE_CHANNEL_CREATED,

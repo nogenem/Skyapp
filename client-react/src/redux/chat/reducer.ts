@@ -61,6 +61,10 @@ export default function chat(
         }
         return draft;
       }
+      case EChatActions.ADD_NEW_USER: {
+        draft.users[action.payload._id] = action.payload;
+        return draft;
+      }
       default:
         return draft;
     }

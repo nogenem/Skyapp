@@ -23,7 +23,9 @@ export const userSignedIn = (user: IUser) => (dispatch: Dispatch) => {
   localStorage.setItem(LOCAL_STORAGE_TOKEN, user.token as string);
   setAuthorizationHeader(user.token);
 
-  connectIo(user)(dispatch);
+  if (user.confirmed) {
+    connectIo(user)(dispatch);
+  }
 
   dispatch<TUserAction>({
     type: EUserActions.SIGNED_IN,

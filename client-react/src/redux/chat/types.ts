@@ -87,6 +87,7 @@ enum EChatActions {
   ADD_OR_UPDATE_CHANNEL = '@chat/ADD_OR_UPDATE_CHANNEL',
   SET_ACTIVE_CHANNEL = '@chat/SET_ACTIVE_CHANNEL',
   REMOVE_CHANNEL = '@chat/REMOVE_CHANNEL',
+  ADD_NEW_USER = '@chat/ADD_NEW_USER',
 }
 
 interface IChatActionType<T, P> {
@@ -102,7 +103,8 @@ type TChatAction =
     >
   | IChatActionType<typeof EChatActions.ADD_OR_UPDATE_CHANNEL, IChannel>
   | IChatActionType<typeof EChatActions.SET_ACTIVE_CHANNEL, { _id: string }>
-  | IChatActionType<typeof EChatActions.REMOVE_CHANNEL, { channelId: string }>;
+  | IChatActionType<typeof EChatActions.REMOVE_CHANNEL, { channelId: string }>
+  | IChatActionType<typeof EChatActions.ADD_NEW_USER, IOtherUser>;
 
 export type {
   TChatState,
