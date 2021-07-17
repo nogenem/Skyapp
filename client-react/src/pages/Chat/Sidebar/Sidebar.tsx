@@ -9,8 +9,8 @@ import {
 
 import { TextInput, NewChatModal, NewGroupModal } from '~/components';
 
-import { ChatList } from '../ChatList';
-import { UserInfoMenu } from '../UserInfoMenu';
+import { ChatList } from './ChatList';
+import { UserInfoMenu } from './UserInfoMenu';
 import useStyles from './useStyles';
 
 interface IOwnProps {
