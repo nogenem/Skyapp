@@ -22,5 +22,6 @@ export const NEED_AT_LEAST_2_MEMBERS_TO_CREATE_GROUP =
   'You need at least 2 members to create a group';
 export const USER_IS_NOT_GROUP_ADM =
   'You are not an administrator of this group';
+export const NOT_MEMBER_OF_GROUP = 'You are not a member of this group';
 
 export type { TTranslatableError };

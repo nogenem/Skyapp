@@ -22,6 +22,9 @@ const chat = {
       .withMessage(NEED_AT_LEAST_2_MEMBERS_TO_CREATE_GROUP),
     body('admins').isArray(),
   ],
+  leaveGroupChannel: [
+    body('channel_id').trim().not().isEmpty().withMessage(invalidIdError()),
+  ],
 };
 
 export default chat;

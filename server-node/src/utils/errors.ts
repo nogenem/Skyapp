@@ -9,6 +9,7 @@ import {
   NO_TOKEN,
   CHANNEL_ALREADY_EXISTS,
   USER_IS_NOT_GROUP_ADM,
+  NOT_MEMBER_OF_GROUP,
 } from '~/constants/error_messages';
 import type { TTranslatableError } from '~/constants/error_messages';
 
@@ -77,3 +78,6 @@ export const channelAlreadyExistsError = (): CustomError =>
 
 export const userIsNotGroupAdmError = (): CustomError =>
   new CustomError({ global: USER_IS_NOT_GROUP_ADM });
+
+export const notMemberOfGroupError = (): CustomError =>
+  new CustomError({ global: NOT_MEMBER_OF_GROUP });

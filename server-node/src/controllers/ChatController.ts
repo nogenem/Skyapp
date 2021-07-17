@@ -1,7 +1,12 @@
 import { Response } from 'express';
+import { Types as MongooseTypes } from 'mongoose';
 
 import { MESSAGE_TYPES } from '~/constants/message_types';
-import { CHANNEL_CREATED, CHANNEL_UPDATED } from '~/constants/return_messages';
+import {
+  CHANNEL_CREATED,
+  CHANNEL_UPDATED,
+  REMOVED_FROM_GROUP,
+} from '~/constants/return_messages';
 import {
   IO_PRIVATE_CHANNEL_CREATED,
   IO_GROUP_CHANNEL_CREATED,
@@ -14,6 +19,7 @@ import type { IAuthRequest } from '~/middlewares/auth';
 import {
   Channel,
   IChannelDoc,
+  IMemberDoc,
   IMessage,
   IMessageDoc,
   IUserDoc,
@@ -23,6 +29,7 @@ import {
 import {
   channelAlreadyExistsError,
   invalidIdError,
+  notMemberOfGroupError,
   userIsNotGroupAdmError,
 } from '~/utils/errors';
 import handleErrors from '~/utils/handleErrors';
@@ -39,6 +46,11 @@ interface IUpdateGroupCredentials {
   name: string;
   members: string[];
   admins: string[];
+}
+
+interface ILeaveGroupCredentials {
+  // eslint-disable-next-line camelcase
+  channel_id: string;
 }
 
 const insertManyMessages = (messages: IMessage[]): Promise<IMessageDoc[]> => {
@@ -222,7 +234,7 @@ export default {
         adminsIdsObj[id] = true;
       });
 
-      const members = [];
+      const members = new MongooseTypes.DocumentArray<IMemberDoc>([]);
       const newMembers = [] as string[];
       const removedMembers = [] as string[];
       const newAdmins = [] as string[];
@@ -331,20 +343,109 @@ export default {
 
       const io = IoController.instance();
 
-      await Promise.all([
-        io.emit(IO_REMOVED_FROM_GROUP_CHANNEL, {
-          channel: channelJson,
-          members: removedMembers,
-        }),
-        io.emit(IO_GROUP_CHANNEL_UPDATED, channelJson),
-        io.emit(IO_MESSAGES_RECEIVED, {
-          channel: channelJson,
-          messages: messagesJson,
-        }),
-      ]);
+      await io.emit(IO_REMOVED_FROM_GROUP_CHANNEL, {
+        channel: channelJson,
+        members: removedMembers,
+      });
+      await io.emit(IO_GROUP_CHANNEL_UPDATED, channelJson);
+      await io.emit(IO_MESSAGES_RECEIVED, {
+        channel: channelJson,
+        messages: messagesJson,
+      });
+
       return res.status(200).json({
         message: CHANNEL_UPDATED,
         channel_id: channelJson._id,
+      });
+    } catch (err) {
+      return handleErrors(err, res);
+    }
+  },
+  async leaveGroupChannel(
+    req: IAuthRequest,
+    res: Response,
+  ): Promise<Response<unknown>> {
+    const { channel_id: channelId } = req.body as ILeaveGroupCredentials;
+    const currentUser = req.currentUser as IUserDoc;
+    const userId = currentUser._id.toString();
+
+    let channel: IChannelDoc | null = null;
+    try {
+      channel = await Channel.findOne({ _id: channelId });
+
+      if (!channel || !channel.is_group) {
+        return handleErrors(invalidIdError(), res);
+      }
+
+      let hasOtherAdm = false;
+      let memberId = '';
+      let memberIsAdm = false;
+      channel.members.forEach(m => {
+        if (!memberId && m.user_id.toString() === userId) {
+          memberIsAdm = m.is_adm;
+          memberId = m._id;
+        } else if (m.is_adm) {
+          hasOtherAdm = true;
+        }
+      });
+
+      if (!memberId) {
+        return handleErrors(notMemberOfGroupError(), res);
+      }
+
+      if (channel.members.length === 1) {
+        const channelJson = channel.toChatChannel();
+
+        await channel.delete();
+
+        const io = IoController.instance();
+        await io.emit(IO_REMOVED_FROM_GROUP_CHANNEL, {
+          channel: channelJson,
+          members: [userId],
+        });
+      } else {
+        channel.members.pull(memberId);
+
+        const newAdmins: IMemberDoc[] = [];
+        if (memberIsAdm && !hasOtherAdm) {
+          channel.members.forEach(m => {
+            /* eslint-disable no-param-reassign */
+            m.is_adm = true;
+            newAdmins.push(m._id);
+          });
+        }
+
+        const message = new Message({
+          channel_id: channelId,
+          body: `${currentUser.nickname} left the group`,
+          type: MESSAGE_TYPES.TEXT,
+        });
+
+        const promises = [channel.save(), message.save()] as [
+          Promise<IChannelDoc>,
+          Promise<IMessageDoc>,
+        ];
+
+        const [channelRecord, messageRecord] = await Promise.all(promises);
+        const messageJson = messageRecord.toChatMessage();
+        const channelJson = channelRecord.toChatChannel();
+        channelJson.lastMessage = messageJson;
+
+        const io = IoController.instance();
+
+        await io.emit(IO_REMOVED_FROM_GROUP_CHANNEL, {
+          channel: channelJson,
+          members: [userId],
+        });
+        await io.emit(IO_GROUP_CHANNEL_UPDATED, channelJson);
+        await io.emit(IO_MESSAGES_RECEIVED, {
+          channel: channelJson,
+          messages: [messageJson],
+        });
+      }
+
+      return res.status(200).json({
+        message: REMOVED_FROM_GROUP,
       });
     } catch (err) {
       return handleErrors(err, res);

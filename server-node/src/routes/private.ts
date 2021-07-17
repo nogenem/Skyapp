@@ -32,5 +32,10 @@ routes.patch(
   validate(chat.updateGroupChannel),
   ChatController.updateGroupChannel,
 );
+routes.post(
+  '/chat/group/leave',
+  validate(chat.leaveGroupChannel),
+  ChatController.leaveGroupChannel,
+);
 
 export default routes;

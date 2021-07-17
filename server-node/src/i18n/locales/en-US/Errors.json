@@ -15,5 +15,6 @@
   "Invalid user status": "Invalid user status",
   "Channel already exists": "Channel already exists",
   "You need at least 2 members to create a group": "You need at least 2 members to create a group",
-  "You are not an administrator of this group": "You are not an administrator of this group"
+  "You are not an administrator of this group": "You are not an administrator of this group",
+  "You are not a member of this group": "You are not a member of this group"
 }

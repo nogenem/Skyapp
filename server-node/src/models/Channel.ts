@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import mongoose, { Document, Model } from 'mongoose';
+import mongoose, { Document, Model, Types } from 'mongoose';
 
 import Message, { IChatMessage } from './Message';
 
@@ -9,12 +9,12 @@ interface IMember {
   last_seen: Date;
 }
 
-interface IMemberDoc extends IMember, Document {}
+interface IMemberDoc extends IMember, Types.EmbeddedDocument {}
 
 interface IChannel {
   name: string;
   is_group: boolean;
-  members: IMemberDoc[];
+  members: Types.DocumentArray<IMemberDoc>;
 }
 
 interface IChatChannel {
@@ -81,6 +81,10 @@ function toChatChannel(channel: IChannelDoc | IChatChannel): IChatChannel {
     lastMessage: Message.toChatMessage(oldChatChannel.lastMessage),
   };
 }
+
+Channel.pre('remove', async function beforeRemove() {
+  await Message.deleteMany({ channel_id: this._id });
+});
 
 Channel.static(
   'toChatChannel',
