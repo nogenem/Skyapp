@@ -99,15 +99,34 @@ export const getChannelFromProps = (
   { channel }: { channel: IChannel },
 ) => channel || {};
 
-export const getUsersArray = createSelector(getChat, data =>
-  Object.values(data.users),
-);
-export const getChannelsList = createSelector(getChat, data =>
-  Object.values(data.channels),
-);
-export const getUsersWithoutChannelArray = createSelector(getChat, data =>
-  Object.values(data.users).filter(user => !user.channel_id),
-);
+export const getUsersArray = createSelector(getChat, data => {
+  const users = Object.values(data.users);
+  users.sort((a, b) => a.nickname.localeCompare(b.nickname));
+  return users;
+});
+export const getChannelsList = createSelector(getChat, data => {
+  const channels = Object.values(data.channels);
+  channels.sort((a, b) => a.name.localeCompare(b.name));
+  channels.sort((a, b) => {
+    if (!!a.lastMessage && !!b.lastMessage) {
+      return (
+        b.lastMessage.updatedAt.getTime() - a.lastMessage.updatedAt.getTime()
+      );
+    } else if (!!a.lastMessage && !b.lastMessage) {
+      return -1;
+    } else if (!!b.lastMessage && !a.lastMessage) {
+      return 1;
+    } else {
+      return 0;
+    }
+  });
+  return channels;
+});
+export const getUsersWithoutChannelArray = createSelector(getChat, data => {
+  const users = Object.values(data.users).filter(user => !user.channel_id);
+  users.sort((a, b) => a.nickname.localeCompare(b.nickname));
+  return users;
+});
 export const getActiveChannelId = createSelector(
   getChat,
   data => data.activeChannelInfo?._id,
