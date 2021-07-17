@@ -8,6 +8,7 @@ import io from '~/services/io';
 import type {
   IChannel,
   IInitialData,
+  ILeaveGroupCredentials,
   IMessage,
   INewGroupCredentials,
   IOtherUser,
@@ -126,4 +127,11 @@ export const updateGroupChannel = (credentials: IUpdateGroupCredentials) => (
 ) =>
   api.chat.updateGroupChannel(credentials).then(({ channel_id }) => {
     dispatch(setActiveChannel(channel_id));
+  });
+
+export const leaveGroupChannel = (credentials: ILeaveGroupCredentials) => (
+  dispatch: Dispatch,
+) =>
+  api.chat.leaveGroupChannel(credentials).then(() => {
+    dispatch(removeChannel(credentials.channel_id));
   });

@@ -75,6 +75,10 @@ interface IUpdateGroupCredentials {
   admins: string[];
 }
 
+interface ILeaveGroupCredentials {
+  channel_id: string;
+}
+
 type TChatState = {
   users: IOtherUsers;
   channels: IChannels;
@@ -118,5 +122,6 @@ export type {
   IAttachment,
   INewGroupCredentials,
   IUpdateGroupCredentials,
+  ILeaveGroupCredentials,
 };
 export { EChatActions };

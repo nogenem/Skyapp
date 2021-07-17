@@ -18,15 +18,18 @@ import {
   MoreVert as MoreVertIcon,
 } from '@material-ui/icons';
 
-import { ChatAvatar } from '~/components';
-import { GroupInfoModal } from '~/components/Modals';
+import { ChatAvatar, GroupInfoModal, AreYouSureModal } from '~/components';
 import { MESSAGE_TYPES } from '~/constants/message_types';
 import { USER_STATUS } from '~/constants/user_status';
 import useObjState from '~/hooks/useObjState';
-import { setActiveChannel as setActiveChannelAction } from '~/redux/chat/actions';
+import {
+  setActiveChannel as setActiveChannelAction,
+  leaveGroupChannel as leaveGroupChannelAction,
+} from '~/redux/chat/actions';
 import { getOtherUserFromChannel } from '~/redux/chat/reducer';
 import type { IAttachment, IChannel, IMessage } from '~/redux/chat/types';
 import type { IAppState } from '~/redux/store';
+import handleServerErrors, { IErrors } from '~/utils/handleServerErrors';
 import sanitize from '~/utils/sanitize';
 
 import useStyles from './useStyles';
@@ -34,12 +37,14 @@ import useStyles from './useStyles';
 interface IOwnState {
   isGroupInfoModalOpen: boolean;
   isLeaveGroupModalOpen: boolean;
+  leaveGroupModalErrors: IErrors;
 }
 type TState = IOwnState;
 
 const initialState: TState = {
   isGroupInfoModalOpen: false,
   isLeaveGroupModalOpen: false,
+  leaveGroupModalErrors: {},
 };
 
 const mapStateToProps = (state: IAppState, props: IOwnProps) => ({
@@ -47,6 +52,7 @@ const mapStateToProps = (state: IAppState, props: IOwnProps) => ({
 });
 const mapDispatchToProps = {
   setActiveChannel: setActiveChannelAction,
+  leaveGroupChannel: leaveGroupChannelAction,
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
@@ -64,6 +70,7 @@ const ChatListItem = ({
   selected,
   otherUser,
   setActiveChannel,
+  leaveGroupChannel,
 }: TProps) => {
   const [state, setState] = useObjState(initialState);
   const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
@@ -96,13 +103,32 @@ const ChatListItem = ({
 
   const handleLeaveClick = (event: MouseEvent<Element>) => {
     handleMenuClose(event);
-    // TODO
+    setState({
+      isLeaveGroupModalOpen: true,
+    });
   };
 
   const onGroupInfoModalClose = () => {
     setState({
       isGroupInfoModalOpen: false,
     });
+  };
+
+  const onLeaveGroupModalClose = () => {
+    setState({
+      isLeaveGroupModalOpen: false,
+    });
+  };
+
+  const onLeaveGroupModalConfirm = async () => {
+    try {
+      await leaveGroupChannel({ channel_id: channel._id });
+      onLeaveGroupModalClose();
+    } catch (err) {
+      setState({
+        leaveGroupModalErrors: handleServerErrors(err),
+      });
+    }
   };
 
   return (
@@ -146,6 +172,13 @@ const ChatListItem = ({
             isOpen={state.isGroupInfoModalOpen}
             onClose={onGroupInfoModalClose}
             channel={channel}
+          />
+          <AreYouSureModal
+            isOpen={state.isLeaveGroupModalOpen}
+            body="Messages:Are you sure you want to leave this group?"
+            errors={state.leaveGroupModalErrors}
+            onConfirm={onLeaveGroupModalConfirm}
+            onClose={onLeaveGroupModalClose}
           />
         </>
       )}
