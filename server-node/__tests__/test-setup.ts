@@ -1,12 +1,12 @@
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 
-import db from '~/db';
+import { DbService } from '~/services';
 
 const mongod = new MongoMemoryServer();
 
 async function removeAllCollections(): Promise<void> {
-  const conn = db.getConnection();
+  const conn = DbService.getConnection();
   const collections = Object.keys(conn.collections);
   const promises: Promise<unknown>[] = [];
 
@@ -23,7 +23,7 @@ async function removeAllCollections(): Promise<void> {
 }
 
 async function dropAllCollections(): Promise<void> {
-  const conn = db.getConnection();
+  const conn = DbService.getConnection();
   const collections = Object.keys(conn.collections);
   const promises: Promise<unknown>[] = [];
 
@@ -47,15 +47,15 @@ async function dropAllCollections(): Promise<void> {
 
 export async function openConnection(): Promise<mongoose.Connection> {
   const uri = await mongod.getUri();
-  return db.openConnection(uri);
+  return DbService.openConnection(uri);
 }
 
 export function getConnection(): mongoose.Connection {
-  return db.getConnection();
+  return DbService.getConnection();
 }
 
 export async function closeConnection(): Promise<mongoose.Connection> {
-  const connection = await db.closeConnection();
+  const connection = await DbService.closeConnection();
   await mongod.stop();
   return connection;
 }

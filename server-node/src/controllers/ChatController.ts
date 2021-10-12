@@ -14,7 +14,6 @@ import {
   IO_GROUP_CHANNEL_UPDATED,
   IO_MESSAGES_RECEIVED,
 } from '~/constants/socket_events';
-import IoController from '~/IoController';
 import type { IAuthRequest } from '~/middlewares/auth';
 import {
   Channel,
@@ -26,6 +25,7 @@ import {
   Message,
   User,
 } from '~/models';
+import { IoService } from '~/services';
 import {
   channelAlreadyExistsError,
   invalidIdError,
@@ -114,7 +114,7 @@ export default {
       const channelJson = channel.toChatChannel();
       channelJson.name = user.nickname;
 
-      const io = IoController.instance();
+      const io = IoService.instance();
 
       await io.emit(IO_PRIVATE_CHANNEL_CREATED, channelJson);
 
@@ -166,7 +166,7 @@ export default {
       });
 
       const channelRecord = (await channel.save()) as IChannelDoc;
-      const io = IoController.instance();
+      const io = IoService.instance();
 
       const newMembersMessages = [] as IMessage[];
       const newAdminsMessages = [] as IMessage[];
@@ -341,7 +341,7 @@ export default {
       const channelJson = channelRecord.toChatChannel();
       channelJson.lastMessage = latestMessage;
 
-      const io = IoController.instance();
+      const io = IoService.instance();
 
       await io.emit(IO_REMOVED_FROM_GROUP_CHANNEL, {
         channel: channelJson,
@@ -398,7 +398,7 @@ export default {
 
         await channel.delete();
 
-        const io = IoController.instance();
+        const io = IoService.instance();
         await io.emit(IO_REMOVED_FROM_GROUP_CHANNEL, {
           channel: channelJson,
           members: [userId],
@@ -431,7 +431,7 @@ export default {
         const channelJson = channelRecord.toChatChannel();
         channelJson.lastMessage = messageJson;
 
-        const io = IoController.instance();
+        const io = IoService.instance();
 
         await io.emit(IO_REMOVED_FROM_GROUP_CHANNEL, {
           channel: channelJson,

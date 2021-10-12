@@ -11,7 +11,7 @@ import {
   IChatMessage,
   IChatUser,
   Message,
-} from './models';
+} from '../models';
 
 interface IMessagesReceived {
   channel: IChatChannel;
@@ -31,22 +31,21 @@ type TSocketEventData =
   | IRemovedFromGroupChannel
   | IChatUser;
 
-class IoController {
+class IoService {
   _io: SocketServer | null;
 
   _clients: IClientMap;
 
-  static _instance: IoController;
+  static _instance: IoService;
 
   private constructor() {
     this._io = null;
     this._clients = {};
   }
 
-  static instance(reset = false): IoController {
-    if (reset || !IoController._instance)
-      IoController._instance = new IoController();
-    return IoController._instance;
+  static instance(reset = false): IoService {
+    if (reset || !IoService._instance) IoService._instance = new IoService();
+    return IoService._instance;
   }
 
   init({
@@ -216,4 +215,4 @@ class IoController {
   }
 }
 
-export default IoController;
+export default IoService;

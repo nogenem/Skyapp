@@ -3,22 +3,22 @@ import { Socket as ServerSocket, Namespace } from 'socket.io';
 import { io as ioClient, Socket as SocketClient } from 'socket.io-client';
 
 import * as SOCKET_EVENTS from '~/constants/socket_events';
-import IoController from '~/IoController';
 import { IUserDoc } from '~/models';
+import { IoService } from '~/services';
 
-import factory from '../factories';
-import { setupDB } from '../test-setup';
+import factory from '../../factories';
+import { setupDB } from '../../test-setup';
 
 const PORT = process.env.PORT_FOR_TESTS || 5010;
-describe('IoController', () => {
+describe('IoService', () => {
   setupDB();
 
   let userIds: string[];
   let sockets: SocketClient[];
-  let ioServer: IoController;
+  let ioServer: IoService;
 
   beforeAll(() => {
-    ioServer = IoController.instance(true);
+    ioServer = IoService.instance(true);
     ioServer.init({ port: PORT });
   });
 

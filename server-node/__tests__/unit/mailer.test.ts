@@ -1,7 +1,7 @@
 import nodemailer, { Transporter, SendMailOptions } from 'nodemailer';
 
-import { sendConfirmationEmail, sendResetPasswordEmail } from '~/mailer';
 import type { IUserDoc } from '~/models';
+import { MailService } from '~/services';
 
 import factory from '../factories';
 import { setupDB } from '../test-setup';
@@ -35,7 +35,7 @@ describe('mailer', () => {
       'generateConfirmationUrl',
     );
 
-    sendConfirmationEmail(user, host);
+    MailService.sendConfirmationEmail(user, host);
 
     expect(spyGenerateConfirmationUrl).toHaveBeenCalled();
     expect(mockFn).toHaveBeenCalled();
@@ -68,7 +68,7 @@ describe('mailer', () => {
       'generateResetPasswordUrl',
     );
 
-    sendResetPasswordEmail(user, host);
+    MailService.sendResetPasswordEmail(user, host);
 
     expect(spyGenerateResetPasswordUrl).toHaveBeenCalled();
     expect(mockFn).toHaveBeenCalled();

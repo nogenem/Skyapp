@@ -11,10 +11,9 @@ import {
   PASSWORD_CHANGED,
 } from '~/constants/return_messages';
 import { IO_NEW_USER } from '~/constants/socket_events';
-import IoController from '~/IoController';
-import { sendConfirmationEmail, sendResetPasswordEmail } from '~/mailer';
 import { User } from '~/models';
 import { ITokenData } from '~/models/User';
+import { IoService, MailService } from '~/services';
 import {
   invalidCredentialsError,
   invalidOrExpiredTokenError,
@@ -62,7 +61,7 @@ export default {
 
     try {
       const userRecord = await user.save();
-      sendConfirmationEmail(userRecord, host);
+      MailService.sendConfirmationEmail(userRecord, host);
       return res.status(201).json({
         message: req.t(USER_CREATED),
         user: userRecord.toAuthJSON(),
@@ -105,7 +104,7 @@ export default {
       );
 
       if (user) {
-        const io = IoController.instance();
+        const io = IoService.instance();
         const newUser = user.toChatUser();
         newUser.online = true;
 
@@ -146,7 +145,7 @@ export default {
         user.setConfirmationToken();
 
         const userRecord = await user.save();
-        sendConfirmationEmail(userRecord, host);
+        MailService.sendConfirmationEmail(userRecord, host);
         return res.status(200).json({
           message: req.t(CONFIRMATION_EMAIL_WAS_RESEND),
         });
@@ -202,7 +201,7 @@ export default {
         user.setResetPasswordToken();
 
         const userRecord = await user.save();
-        sendResetPasswordEmail(userRecord, host);
+        MailService.sendResetPasswordEmail(userRecord, host);
         return res.status(200).json({
           message: req.t(RESET_PASSWORD_EMAIL_SENT),
         });

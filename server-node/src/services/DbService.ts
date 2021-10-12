@@ -4,8 +4,8 @@ mongoose.set('useCreateIndex', true);
 mongoose.set('useFindAndModify', false);
 mongoose.Promise = global.Promise;
 
-export default {
-  openConnection: async (uri?: string): Promise<mongoose.Connection> => {
+class DbService {
+  static async openConnection(uri?: string): Promise<mongoose.Connection> {
     const { MONGO_URI } = process.env;
     const dbUri = uri || MONGO_URI;
 
@@ -14,12 +14,18 @@ export default {
       useUnifiedTopology: true,
     });
     return mongoose.connection;
-  },
-  getConnection: (): mongoose.Connection => mongoose.connection,
-  closeConnection: async (): Promise<mongoose.Connection> => {
+  }
+
+  static getConnection(): mongoose.Connection {
+    return mongoose.connection;
+  }
+
+  static async closeConnection(): Promise<mongoose.Connection> {
     if (mongoose.connection && mongoose.connection.readyState === 1) {
       await mongoose.connection.close();
     }
     return mongoose.connection;
-  },
-};
+  }
+}
+
+export default DbService;
