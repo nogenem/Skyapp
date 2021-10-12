@@ -2,6 +2,8 @@ import produce from 'immer';
 import { createSelector } from 'reselect';
 
 import type { IAppState } from '../store';
+import { EUserActions } from '../user/types';
+import type { TUserAction } from '../user/types';
 import { EChatActions } from './types';
 import type { TChatAction, TChatState, IChannel, IChannels } from './types';
 
@@ -13,10 +15,13 @@ export const initialState: TChatState = {
 
 export default function chat(
   state = initialState,
-  action: TChatAction,
+  action: TChatAction | TUserAction,
 ): TChatState {
   return produce(state, draft => {
     switch (action.type) {
+      case EUserActions.SIGNED_OUT: {
+        return initialState;
+      }
       case EChatActions.SET_INITIAL_DATA: {
         draft.users = action.payload.users;
         draft.channels = wrapChannelsDates(action.payload.channels);
