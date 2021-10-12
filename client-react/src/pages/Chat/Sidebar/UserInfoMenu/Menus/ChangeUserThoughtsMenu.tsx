@@ -2,6 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Divider, Menu, MenuItem } from '@material-ui/core';
+import { AxiosError } from 'axios';
 
 import { Alert, TextInput } from '~/components';
 import type { IErrors } from '~/components/Form';
@@ -60,7 +61,7 @@ const ChangeUserThoughtsMenu = ({
     } catch (err) {
       console.error(err);
       setState({ loading: false });
-      setState({ errors: handleServerErrors(err) });
+      setState({ errors: handleServerErrors(err as AxiosError) });
     }
   };
 

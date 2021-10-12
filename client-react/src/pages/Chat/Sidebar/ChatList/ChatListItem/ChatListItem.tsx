@@ -17,6 +17,7 @@ import {
   InsertDriveFile as InsertDriveFileIcon,
   MoreVert as MoreVertIcon,
 } from '@material-ui/icons';
+import { AxiosError } from 'axios';
 
 import { ChatAvatar, GroupInfoModal, AreYouSureModal } from '~/components';
 import { MESSAGE_TYPES } from '~/constants/message_types';
@@ -126,7 +127,7 @@ const ChatListItem = ({
       onLeaveGroupModalClose();
     } catch (err) {
       setState({
-        leaveGroupModalErrors: handleServerErrors(err),
+        leaveGroupModalErrors: handleServerErrors(err as AxiosError),
       });
     }
   };

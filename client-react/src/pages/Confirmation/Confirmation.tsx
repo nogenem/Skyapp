@@ -4,6 +4,7 @@ import { connect, ConnectedProps } from 'react-redux';
 
 import { Button } from '@material-ui/core';
 import { RouteComponentProps, navigate } from '@reach/router';
+import { AxiosError } from 'axios';
 
 import { Alert, AuthContainer, Spinner } from '~/components';
 import type { IErrors } from '~/components/Form';
@@ -68,7 +69,7 @@ const Confirmation = ({
     } catch (err) {
       setState({
         resendingEmail: STATES.COMPLETED,
-        errors: handleServerErrors(err),
+        errors: handleServerErrors(err as AxiosError),
       });
     }
   };
@@ -96,7 +97,7 @@ const Confirmation = ({
       } catch (err) {
         setState({
           validatingToken: STATES.COMPLETED,
-          errors: handleServerErrors(err),
+          errors: handleServerErrors(err as AxiosError),
         });
       }
     }

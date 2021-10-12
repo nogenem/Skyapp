@@ -12,6 +12,7 @@ import {
   ListItemAvatar,
   ListItemText,
 } from '@material-ui/core';
+import { AxiosError } from 'axios';
 import debounce from 'lodash.debounce';
 
 import { ChatAvatar, Alert, TextInput } from '~/components';
@@ -98,7 +99,7 @@ const NewChatModal = ({
       await startChattingWith(user);
       onClose();
     } catch (err) {
-      setState({ errors: handleServerErrors(err) });
+      setState({ errors: handleServerErrors(err as AxiosError) });
     }
   };
 

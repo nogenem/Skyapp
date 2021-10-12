@@ -8,6 +8,7 @@ import {
   Menu,
   MenuItem,
 } from '@material-ui/core';
+import { AxiosError } from 'axios';
 
 import { Alert, UserStatusDot } from '~/components';
 import type { IErrors } from '~/components/Form';
@@ -69,7 +70,7 @@ const ChangeUserStatusMenu = ({
     } catch (err) {
       console.error(err);
       setState({ loading: false });
-      setState({ errors: handleServerErrors(err) });
+      setState({ errors: handleServerErrors(err as AxiosError) });
     }
   };
 

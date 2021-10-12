@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { AxiosError } from 'axios';
+
 import handleServerErrors from '~/utils/handleServerErrors';
 
 import { Spinner } from '../Spinner';
@@ -89,7 +91,7 @@ function Form<D>({
         }
       } catch (err) {
         if (isMounted.current) {
-          const serverErrors = handleServerErrors(err);
+          const serverErrors = handleServerErrors(err as AxiosError);
           setState({
             loading: false,
             errors: serverErrors,

@@ -9,6 +9,7 @@ import {
   DialogActions,
   Button,
 } from '@material-ui/core';
+import { AxiosError } from 'axios';
 
 import { IErrors } from '~/components/Form';
 import { CANT_BE_BLANK, NEED_ATLEAST_2_MEMBERS } from '~/constants/errors';
@@ -107,7 +108,7 @@ const NewGroupModal = ({
         setState(initialState);
         onClose();
       } catch (err) {
-        setState({ errors: handleServerErrors(err) });
+        setState({ errors: handleServerErrors(err as AxiosError) });
       }
     }
   };
