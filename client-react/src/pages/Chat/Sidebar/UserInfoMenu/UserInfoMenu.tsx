@@ -18,8 +18,12 @@ import {
 } from '~/redux/user/actions';
 import { getUser } from '~/redux/user/reducer';
 
-import { MainMenu, ChangeLanguageMenu, ChangeUserStatusMenu } from './Menus';
-import ChangeUserThoughtsMenu from './Menus/ChangeUserThoughtsMenu';
+import {
+  MainMenu,
+  ChangeLanguageMenu,
+  ChangeUserStatusMenu,
+  ChangeUserThoughtsMenu,
+} from './Menus';
 import useStyles from './useStyles';
 
 const mapStateToProps = (state: IAppState) => ({
