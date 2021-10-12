@@ -34,7 +34,8 @@ async function dropAllCollections(): Promise<void> {
 
   try {
     await Promise.all(promises);
-  } catch (error) {
+  } catch (err) {
+    const error = err as Error;
     // Sometimes this error happens, but you can safely ignore it
     if (error.message === 'ns not found') return;
     // You can safely ignore this error too

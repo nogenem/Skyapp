@@ -1,3 +1,5 @@
+import mongoose from 'mongoose';
+
 import { User } from '~/models';
 import type { IMsgObj } from '~/utils/errors';
 import parseMongooseErrors from '~/utils/parseMongooseErrors';
@@ -12,7 +14,7 @@ describe('parseMongooseErrors', () => {
     try {
       await User.create({});
     } catch (err) {
-      errors = parseMongooseErrors(err);
+      errors = parseMongooseErrors(err as mongoose.Error.ValidationError);
     }
     expect(errors.nickname).toBeTruthy();
     expect(errors.email).toBeTruthy();

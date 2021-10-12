@@ -61,7 +61,7 @@ describe('handleErrors', () => {
     try {
       await User.findOne({ _id: '1234' });
     } catch (err) {
-      handleErrors(err, resMock);
+      handleErrors(err as Error, resMock);
     }
 
     expect(resMock.json.mock.calls.length).toBe(1);
@@ -81,7 +81,7 @@ describe('handleErrors', () => {
     try {
       await User.create({});
     } catch (err) {
-      handleErrors(err, resMock);
+      handleErrors(err as Error, resMock);
     }
 
     expect(resMock.json.mock.calls.length).toBe(1);
