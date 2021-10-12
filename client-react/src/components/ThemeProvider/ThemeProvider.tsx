@@ -53,7 +53,7 @@ const ThemeProvider = ({ children, themeMode, switchMode }: TProps) => {
         palette: {
           primary: {
             main: '#3f51b5',
-            light: '#9cacff', // melhor contraste com background dark
+            light: '#9cacff', // better contrast with dark background
           },
           type: _themeMode,
         },

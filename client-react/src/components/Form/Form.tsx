@@ -59,7 +59,7 @@ function Form<D>({
       isMounted.current = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // quero que seja apenas 'componentDidMount'
+  }, []);
 
   React.useEffect(() => {
     setFormId(getId(id));

@@ -30,7 +30,7 @@ const ForgotPassword = ({ forgotPassword }: TProps) => {
       setSuccess(true);
     } catch (err) {
       setSuccess(false);
-      throw err; // propaga o erro pro Form
+      throw err; // propagate the error to the Form
     }
   };
 

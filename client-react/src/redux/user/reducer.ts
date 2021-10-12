@@ -22,15 +22,8 @@ export default function user(
 ): TUserState {
   switch (action.type) {
     case EUserActions.SIGNED_IN:
-      const {
-        _id,
-        nickname,
-        email,
-        confirmed,
-        status,
-        thoughts,
-        token,
-      } = action.payload;
+      const { _id, nickname, email, confirmed, status, thoughts, token } =
+        action.payload;
       return { _id, nickname, email, confirmed, status, thoughts, token };
     case EUserActions.SIGNED_OUT:
       return initialState;
@@ -43,7 +36,7 @@ export default function user(
   }
 }
 
-// Selectors
+// SELECTORS
 export const getUser = (state: IAppState) => state.user || initialState;
 
 export const getId = createSelector(getUser, userData => userData._id || '');
