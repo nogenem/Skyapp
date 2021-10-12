@@ -38,9 +38,9 @@ describe('Signup', () => {
       passwordConfirmation: user.passwordConfirmation as string,
     };
 
-    const mockedReturn = ({
+    const mockedReturn = {
       sendMail: jest.fn(() => Promise.resolve()),
-    } as unknown) as Transporter;
+    } as unknown as Transporter;
     mockedNodemailer.createTransport.mockReturnValueOnce(mockedReturn);
 
     const res = await request.post('/api/auth/signup').send(credentials);

@@ -83,10 +83,8 @@ export default async (
     '_id nickname thoughts status',
   );
 
-  const [tmpChannels, tmpUsers]: [
-    IChatChannel[],
-    IUserDoc[],
-  ] = await Promise.all([p1, p2]);
+  const [tmpChannels, tmpUsers]: [IChatChannel[], IUserDoc[]] =
+    await Promise.all([p1, p2]);
 
   // Get the amount of unread messages by the currentUserId in each Channel
   const promises = tmpChannels.map(c => {

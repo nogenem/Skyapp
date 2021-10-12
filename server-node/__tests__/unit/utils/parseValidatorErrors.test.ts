@@ -9,9 +9,10 @@ describe('parseValidatorErrors', () => {
   setupDB();
 
   it('should return an object with the errors from the Validator', async () => {
-    const errors = new Result(err => err, [
-      { param: 'foo', msg: 'bar', location: 'body', value: 'foo' },
-    ]);
+    const errors = new Result(
+      err => err,
+      [{ param: 'foo', msg: 'bar', location: 'body', value: 'foo' }],
+    );
 
     const ret = parseValidatorErrors(errors);
 
@@ -19,14 +20,17 @@ describe('parseValidatorErrors', () => {
   });
 
   it('should return an object with the errors from the Validator when using a CustomError', async () => {
-    const errors = new Result(err => err, [
-      {
-        param: 'foo',
-        msg: new CustomError({ global: 'test' }),
-        location: 'body',
-        value: 'foo',
-      },
-    ]);
+    const errors = new Result(
+      err => err,
+      [
+        {
+          param: 'foo',
+          msg: new CustomError({ global: 'test' }),
+          location: 'body',
+          value: 'foo',
+        },
+      ],
+    );
 
     const ret = parseValidatorErrors(errors);
 

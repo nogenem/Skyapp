@@ -203,7 +203,13 @@ User.method('toChatUser', function modelToChatUser() {
   return toChatUser(this);
 });
 
-User.plugin(uniqueValidator, { message: EMAIL_ALREADY_TAKEN });
+User.plugin(
+  (schema, options) => {
+    const convertedSchema = schema as unknown as mongoose.Schema;
+    return uniqueValidator(convertedSchema, options);
+  },
+  { message: EMAIL_ALREADY_TAKEN },
+);
 
 export type { IUser, IUserDoc, IAuthUser, ITokenData, IChatUser };
 export default mongoose.model<IUserDoc, IUserModel>('User', User);

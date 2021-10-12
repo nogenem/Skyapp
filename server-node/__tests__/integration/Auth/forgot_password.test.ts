@@ -37,9 +37,9 @@ describe('Forgot_Password', () => {
       email: VALID_EMAIL,
     };
 
-    const mockedReturn = ({
+    const mockedReturn = {
       sendMail: jest.fn(() => Promise.resolve()),
-    } as unknown) as Transporter;
+    } as unknown as Transporter;
     mockedNodemailer.createTransport.mockReturnValueOnce(mockedReturn);
 
     const res = await request
@@ -62,9 +62,9 @@ describe('Forgot_Password', () => {
       email: INVALID_EMAIL,
     };
 
-    const mockedReturn = ({
+    const mockedReturn = {
       sendMail: jest.fn(() => Promise.resolve()),
-    } as unknown) as Transporter;
+    } as unknown as Transporter;
     mockedNodemailer.createTransport.mockReturnValueOnce(mockedReturn);
 
     const res = await request
@@ -86,9 +86,9 @@ describe('Forgot_Password', () => {
       email: VALID_EMAIL,
     };
 
-    const mockedReturn = ({
+    const mockedReturn = {
       sendMail: jest.fn(() => Promise.resolve()),
-    } as unknown) as Transporter;
+    } as unknown as Transporter;
     mockedNodemailer.createTransport.mockReturnValueOnce(mockedReturn);
 
     const res = await request

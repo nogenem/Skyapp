@@ -39,9 +39,9 @@ describe('Resend_Confirmation_Email', () => {
       token: INVALID_TOKEN,
     };
 
-    const mockedReturn = ({
+    const mockedReturn = {
       sendMail: jest.fn(() => Promise.resolve()),
-    } as unknown) as Transporter;
+    } as unknown as Transporter;
     mockedNodemailer.createTransport.mockReturnValueOnce(mockedReturn);
 
     const res = await request
@@ -68,9 +68,9 @@ describe('Resend_Confirmation_Email', () => {
       token: VALID_TOKEN,
     };
 
-    const mockedReturn = ({
+    const mockedReturn = {
       sendMail: jest.fn(() => Promise.resolve()),
-    } as unknown) as Transporter;
+    } as unknown as Transporter;
     mockedNodemailer.createTransport.mockReturnValueOnce(mockedReturn);
 
     const res = await request
@@ -93,9 +93,9 @@ describe('Resend_Confirmation_Email', () => {
       token: VALID_TOKEN,
     };
 
-    const mockedReturn = ({
+    const mockedReturn = {
       sendMail: jest.fn(() => Promise.resolve()),
-    } as unknown) as Transporter;
+    } as unknown as Transporter;
     mockedNodemailer.createTransport.mockReturnValueOnce(mockedReturn);
 
     const res = await request

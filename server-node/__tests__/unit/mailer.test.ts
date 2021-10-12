@@ -25,9 +25,9 @@ describe('mailer', () => {
     const mockFn: jest.Mock<Promise<void>, any> = jest.fn(() =>
       Promise.resolve(),
     );
-    const mockedReturn = ({
+    const mockedReturn = {
       sendMail: mockFn,
-    } as unknown) as Transporter;
+    } as unknown as Transporter;
     mockedNodemailer.createTransport.mockReturnValueOnce(mockedReturn);
 
     const spyGenerateConfirmationUrl = jest.spyOn(
@@ -40,7 +40,7 @@ describe('mailer', () => {
     expect(spyGenerateConfirmationUrl).toHaveBeenCalled();
     expect(mockFn).toHaveBeenCalled();
 
-    const email = (mockFn.mock.calls[0][0] as unknown) as SendMailOptions;
+    const email = mockFn.mock.calls[0][0] as unknown as SendMailOptions;
     expect(email.from).toBeTruthy();
     expect(email.to).toBeTruthy();
     expect(email.subject).toBeTruthy();
@@ -58,9 +58,9 @@ describe('mailer', () => {
     const mockFn: jest.Mock<Promise<void>, any> = jest.fn(() =>
       Promise.resolve(),
     );
-    const mockedReturn = ({
+    const mockedReturn = {
       sendMail: mockFn,
-    } as unknown) as Transporter;
+    } as unknown as Transporter;
     mockedNodemailer.createTransport.mockReturnValueOnce(mockedReturn);
 
     const spyGenerateResetPasswordUrl = jest.spyOn(
@@ -73,7 +73,7 @@ describe('mailer', () => {
     expect(spyGenerateResetPasswordUrl).toHaveBeenCalled();
     expect(mockFn).toHaveBeenCalled();
 
-    const email = (mockFn.mock.calls[0][0] as unknown) as SendMailOptions;
+    const email = mockFn.mock.calls[0][0] as unknown as SendMailOptions;
     expect(email.from).toBeTruthy();
     expect(email.to).toBeTruthy();
     expect(email.subject).toBeTruthy();

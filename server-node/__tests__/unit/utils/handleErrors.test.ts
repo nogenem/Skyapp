@@ -15,12 +15,12 @@ describe('handleErrors', () => {
   setupDB();
 
   it('should send an object with errors when passed a CustomError', () => {
-    const resMock: IMockResponse = ({
+    const resMock: IMockResponse = {
       status: function status() {
         return this;
       },
       json: jest.fn(),
-    } as unknown) as IMockResponse;
+    } as unknown as IMockResponse;
     const error = new CustomError({ global: 'test' });
 
     handleErrors(error, resMock);
@@ -32,15 +32,16 @@ describe('handleErrors', () => {
   });
 
   it("should send an object with errors when passed a validator's Result", () => {
-    const resMock: IMockResponse = ({
+    const resMock: IMockResponse = {
       status: function status() {
         return this;
       },
       json: jest.fn(),
-    } as unknown) as IMockResponse;
-    const error = new Result(err => err, [
-      { param: 'foo', msg: 'bar', location: 'body', value: 'foo' },
-    ]);
+    } as unknown as IMockResponse;
+    const error = new Result(
+      err => err,
+      [{ param: 'foo', msg: 'bar', location: 'body', value: 'foo' }],
+    );
 
     handleErrors(error, resMock);
 
@@ -51,12 +52,12 @@ describe('handleErrors', () => {
   });
 
   it('should send an object with errors when an invalid _id is used', async () => {
-    const resMock: IMockResponse = ({
+    const resMock: IMockResponse = {
       status: function status() {
         return this;
       },
       json: jest.fn(),
-    } as unknown) as IMockResponse;
+    } as unknown as IMockResponse;
 
     try {
       await User.findOne({ _id: '1234' });
@@ -71,12 +72,12 @@ describe('handleErrors', () => {
   });
 
   it('should send an object with errors when an error occurs on Mongoose', async () => {
-    const resMock: IMockResponse = ({
+    const resMock: IMockResponse = {
       status: function status() {
         return this;
       },
       json: jest.fn(),
-    } as unknown) as IMockResponse;
+    } as unknown as IMockResponse;
 
     try {
       await User.create({});
@@ -91,12 +92,12 @@ describe('handleErrors', () => {
   });
 
   it('should send an object with errors in other cases', async () => {
-    const resMock: IMockResponse = ({
+    const resMock: IMockResponse = {
       status: function status() {
         return this;
       },
       json: jest.fn(),
-    } as unknown) as IMockResponse;
+    } as unknown as IMockResponse;
     const error = new Error('test');
 
     handleErrors(error, resMock);
