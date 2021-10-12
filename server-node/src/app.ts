@@ -3,7 +3,7 @@ import express, { Express, Request, Response, NextFunction } from 'express';
 import i18nextMiddleware from 'i18next-http-middleware';
 
 import i18n from './i18n';
-import auth from './middlewares/auth';
+import { auth } from './middlewares';
 import { publicRoutes, privateRoutes } from './routes';
 import { routeNotFoundError } from './utils/errors';
 import handleErrors from './utils/handleErrors';
