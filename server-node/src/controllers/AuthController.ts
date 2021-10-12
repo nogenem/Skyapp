@@ -68,7 +68,7 @@ export default {
         user: userRecord.toAuthJSON(),
       });
     } catch (err) {
-      return handleErrors(err, res);
+      return handleErrors(err as Error, res);
     }
   },
   async signIn(req: Request, res: Response): Promise<Response<unknown>> {
@@ -85,7 +85,7 @@ export default {
 
       return handleErrors(invalidCredentialsError(), res);
     } catch (err) {
-      return handleErrors(err, res);
+      return handleErrors(err as Error, res);
     }
   },
   async confirmation(req: Request, res: Response): Promise<Response<unknown>> {
@@ -119,7 +119,7 @@ export default {
 
       return handleErrors(invalidOrExpiredTokenError(), res);
     } catch (err) {
-      return handleErrors(err, res);
+      return handleErrors(err as Error, res);
     }
   },
   async resendConfirmationEmail(
@@ -154,7 +154,7 @@ export default {
 
       return handleErrors(invalidOrExpiredTokenError(), res);
     } catch (err) {
-      return handleErrors(err, res);
+      return handleErrors(err as Error, res);
     }
   },
   async validateToken(req: Request, res: Response): Promise<Response<unknown>> {
@@ -210,7 +210,7 @@ export default {
 
       return handleErrors(noUserWithSuchEmailError(), res);
     } catch (err) {
-      return handleErrors(err, res);
+      return handleErrors(err as Error, res);
     }
   },
   async resetPassword(req: Request, res: Response): Promise<Response<unknown>> {
@@ -238,7 +238,7 @@ export default {
 
       return handleErrors(invalidOrExpiredTokenError(), res);
     } catch (err) {
-      return handleErrors(err, res);
+      return handleErrors(err as Error, res);
     }
   },
 };

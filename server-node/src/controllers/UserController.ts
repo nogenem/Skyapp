@@ -37,7 +37,7 @@ export default {
 
       return res.status(304).json({});
     } catch (err) {
-      return handleErrors(err, res);
+      return handleErrors(err as Error, res);
     }
   },
   async changeThoughts(
@@ -59,7 +59,7 @@ export default {
 
       return res.status(304).json({});
     } catch (err) {
-      return handleErrors(err, res);
+      return handleErrors(err as Error, res);
     }
   },
 };

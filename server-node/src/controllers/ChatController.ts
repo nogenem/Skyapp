@@ -91,7 +91,7 @@ export default {
         return handleErrors(channelAlreadyExistsError(), res);
       }
     } catch (err) {
-      return handleErrors(err, res);
+      return handleErrors(err as Error, res);
     }
 
     try {
@@ -123,7 +123,7 @@ export default {
         channel_id: channelRecord._id,
       });
     } catch (err) {
-      return handleErrors(err, res);
+      return handleErrors(err as Error, res);
     }
   },
   async createGroupChannel(
@@ -202,7 +202,7 @@ export default {
         channel_id: channelJson._id,
       });
     } catch (err) {
-      return handleErrors(err, res);
+      return handleErrors(err as Error, res);
     }
   },
   async updateGroupChannel(
@@ -358,7 +358,7 @@ export default {
         channel_id: channelJson._id,
       });
     } catch (err) {
-      return handleErrors(err, res);
+      return handleErrors(err as Error, res);
     }
   },
   async leaveGroupChannel(
@@ -448,7 +448,7 @@ export default {
         message: REMOVED_FROM_GROUP,
       });
     } catch (err) {
-      return handleErrors(err, res);
+      return handleErrors(err as Error, res);
     }
   },
 };
