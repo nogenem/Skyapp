@@ -58,16 +58,16 @@ const handleErrors = (err: TError, res: Response): Response<unknown> => {
     return res.status(err.status).json({ errors });
   }
 
-  // Erros vindos do express-validator
+  // Errors coming from `express-validator`
   if (err instanceof Result) {
     return handleErrors(validatorErrors(parseValidatorErrors(err)), res);
   }
 
-  // Erro de cast de object id lançado pelo mongoose
+  // Cast error coming from mongoose
   if (err instanceof mongoose.Error.CastError && isMongooseObjectIdError(err))
     return handleErrors(invalidIdError(), res);
 
-  // Erros vindos do mongoose e referentes a campos de alguma collection
+  // Errors coming from mongoose, referring to fields in some collection
   if (err instanceof mongoose.Error.ValidationError)
     return handleErrors(mongooseErrors(parseMongooseErrors(err)), res);
 

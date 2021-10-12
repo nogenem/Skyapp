@@ -23,8 +23,8 @@ export default async (
 ): Promise<IInitialData> => {
   const objectId = mongoose.Types.ObjectId;
 
-  // Pega os dados dos Channels junto com a ultima mensagem
-  // enviada nos mesmos (lastMessage)
+  // Get Channels data together with the last message
+  // sent in them (lastMessage)
   const aggregate = Channel.aggregate<IChatChannel>([
     {
       $match: {
@@ -88,7 +88,7 @@ export default async (
     IUserDoc[],
   ] = await Promise.all([p1, p2]);
 
-  // Pega a quantidade de mensagens não lidas pelo currentUserId em cada Channel
+  // Get the amount of unread messages by the currentUserId in each Channel
   const promises = tmpChannels.map(c => {
     const member = c.members.find(m => m.user_id.toString() === currentUserId);
 
@@ -106,7 +106,7 @@ export default async (
   const users: IChatUsers = {};
 
   for (let i = 0; i < tmpChannels.length; i += 1) {
-    // Promise.all retorna os resultados em ordem
+    // Promise.all returns the results in order
     const channel = Channel.toChatChannel(tmpChannels[i]);
     if (channel) {
       channel.unread_msgs = tmpUnread[i];
