@@ -108,30 +108,26 @@ export const disconnectIo = () => (dispatch: Dispatch) => {
   io.instance().disconnect();
 };
 
-export const startChattingWith = (otherUser: IOtherUser) => (
-  dispatch: Dispatch,
-) =>
-  api.chat.createChannelWith(otherUser).then(({ channel_id }) => {
-    dispatch(setActiveChannel(channel_id));
-  });
+export const startChattingWith =
+  (otherUser: IOtherUser) => (dispatch: Dispatch) =>
+    api.chat.createChannelWith(otherUser).then(({ channel_id }) => {
+      dispatch(setActiveChannel(channel_id));
+    });
 
-export const createGroupChannel = (credentials: INewGroupCredentials) => (
-  dispatch: Dispatch,
-) =>
-  api.chat.createGroupChannel(credentials).then(({ channel_id }) => {
-    dispatch(setActiveChannel(channel_id));
-  });
+export const createGroupChannel =
+  (credentials: INewGroupCredentials) => (dispatch: Dispatch) =>
+    api.chat.createGroupChannel(credentials).then(({ channel_id }) => {
+      dispatch(setActiveChannel(channel_id));
+    });
 
-export const updateGroupChannel = (credentials: IUpdateGroupCredentials) => (
-  dispatch: Dispatch,
-) =>
-  api.chat.updateGroupChannel(credentials).then(({ channel_id }) => {
-    dispatch(setActiveChannel(channel_id));
-  });
+export const updateGroupChannel =
+  (credentials: IUpdateGroupCredentials) => (dispatch: Dispatch) =>
+    api.chat.updateGroupChannel(credentials).then(({ channel_id }) => {
+      dispatch(setActiveChannel(channel_id));
+    });
 
-export const leaveGroupChannel = (credentials: ILeaveGroupCredentials) => (
-  dispatch: Dispatch,
-) =>
-  api.chat.leaveGroupChannel(credentials).then(() => {
-    dispatch(removeChannel(credentials.channel_id));
-  });
+export const leaveGroupChannel =
+  (credentials: ILeaveGroupCredentials) => (dispatch: Dispatch) =>
+    api.chat.leaveGroupChannel(credentials).then(() => {
+      dispatch(removeChannel(credentials.channel_id));
+    });

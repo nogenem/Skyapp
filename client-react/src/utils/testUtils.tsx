@@ -68,7 +68,7 @@ export const setupFakeSocket = () => {
   const ret: IFakeSocketReturn = {
     server: null,
     socket: null,
-    mockedIoClient: (ioClient as unknown) as jest.MockedFunction<
+    mockedIoClient: ioClient as unknown as jest.MockedFunction<
       () => SocketClient
     >,
   };

@@ -23,6 +23,8 @@
     "@types/node": "^14.14.20",
     "@types/react": "^16.9.0",
     "@types/react-dom": "^17.0.0",
+    "@typescript-eslint/eslint-plugin": "^4.1.1",
+    "@typescript-eslint/parser": "^4.1.1",
     "axios": "^0.21.1",
     "deepmerge": "^4.2.2",
     "i18next": "^20.1.0",
@@ -55,14 +57,21 @@
     "babel-plugin-transform-imports": "^2.0.0",
     "cross-env": "^7.0.3",
     "customize-cra": "^0.9.1",
+    "eslint-config-prettier": "^7.2.0",
     "eslint-plugin-import-helpers": "^1.1.0",
+    "eslint-plugin-prettier": "^3.3.1",
     "jest-environment-jsdom-sixteen": "^1.0.3",
+    "prettier": "^2.2.1",
     "react-app-rewire-alias": "^0.1.9",
     "react-app-rewired": "^2.1.8",
     "redux-mock-store": "^1.5.4"
   },
   "eslintConfig": {
-    "extends": "react-app",
+    "extends": [
+      "react-app",
+      "prettier",
+      "plugin:prettier/recommended"
+    ],
     "plugins": [
       "import-helpers"
     ],

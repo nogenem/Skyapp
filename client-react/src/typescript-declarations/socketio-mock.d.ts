@@ -33,9 +33,7 @@ export type SocketMock = Emitter & {
   rooms: string[];
   socketClient: SocketClient;
   broadcast: {
-    to: (
-      roomKey: string,
-    ) => {
+    to: (roomKey: string) => {
       emit: (eventKey: string, payload?: unknown) => void;
     };
   };

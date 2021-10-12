@@ -55,57 +55,50 @@ export const userSignedOut = () => (dispatch: Dispatch) => {
   });
 };
 
-export const signUp = (credentials: ISignUpCredentials) => (
-  dispatch: Dispatch,
-) =>
-  api.auth.signUp(credentials).then(({ user }) => {
-    userSignedIn(user)(dispatch);
-  });
+export const signUp =
+  (credentials: ISignUpCredentials) => (dispatch: Dispatch) =>
+    api.auth.signUp(credentials).then(({ user }) => {
+      userSignedIn(user)(dispatch);
+    });
 
-export const signIn = (credentials: ISignInCredentials) => (
-  dispatch: Dispatch,
-) =>
-  api.auth.signIn(credentials).then(({ user }) => {
-    userSignedIn(user)(dispatch);
-  });
+export const signIn =
+  (credentials: ISignInCredentials) => (dispatch: Dispatch) =>
+    api.auth.signIn(credentials).then(({ user }) => {
+      userSignedIn(user)(dispatch);
+    });
 
-export const confirmation = (credentials: ITokenCredentials) => (
-  dispatch: Dispatch,
-) =>
-  api.auth.confirmation(credentials).then(({ user }) => {
-    userSignedIn(user)(dispatch);
-  });
+export const confirmation =
+  (credentials: ITokenCredentials) => (dispatch: Dispatch) =>
+    api.auth.confirmation(credentials).then(({ user }) => {
+      userSignedIn(user)(dispatch);
+    });
 
 export const resendConfirmationEmail = (credentials: ITokenCredentials) => () =>
   api.auth.resendConfirmationEmail(credentials);
 
-export const validateToken = (credentials: ITokenCredentials) => (
-  dispatch: Dispatch,
-) =>
-  api.auth.validateToken(credentials).then(({ user }) => {
-    userSignedIn(user)(dispatch);
-  });
+export const validateToken =
+  (credentials: ITokenCredentials) => (dispatch: Dispatch) =>
+    api.auth.validateToken(credentials).then(({ user }) => {
+      userSignedIn(user)(dispatch);
+    });
 
 export const forgotPassword = (credentials: IForgotPasswordCredentials) => () =>
   api.auth.forgotPassword(credentials);
 
-export const resetPassword = (credentials: IResetPasswordCredentials) => (
-  dispatch: Dispatch,
-) =>
-  api.auth.resetPassword(credentials).then(({ user }) => {
-    userSignedIn(user)(dispatch);
-  });
+export const resetPassword =
+  (credentials: IResetPasswordCredentials) => (dispatch: Dispatch) =>
+    api.auth.resetPassword(credentials).then(({ user }) => {
+      userSignedIn(user)(dispatch);
+    });
 
-export const changeStatus = (credentials: IChangeStatusCredentials) => (
-  dispatch: Dispatch,
-) =>
-  api.user.changeStatus(credentials).then(() => {
-    dispatch(userChangedStatus(credentials.newStatus));
-  });
+export const changeStatus =
+  (credentials: IChangeStatusCredentials) => (dispatch: Dispatch) =>
+    api.user.changeStatus(credentials).then(() => {
+      dispatch(userChangedStatus(credentials.newStatus));
+    });
 
-export const changeThoughts = (credentials: IChangeThoughtsCredentials) => (
-  dispatch: Dispatch,
-) =>
-  api.user.changeThoughts(credentials).then(() => {
-    dispatch(userChangedThoughts(credentials.newThoughts));
-  });
+export const changeThoughts =
+  (credentials: IChangeThoughtsCredentials) => (dispatch: Dispatch) =>
+    api.user.changeThoughts(credentials).then(() => {
+      dispatch(userChangedThoughts(credentials.newThoughts));
+    });

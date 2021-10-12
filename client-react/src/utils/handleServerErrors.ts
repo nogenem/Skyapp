@@ -32,9 +32,9 @@ export default (err: IPartialAxiosError): IErrors => {
   const ret = {} as IErrors;
 
   Object.keys(errors).forEach((key: string) => {
-    const error: string = (Array.isArray(errors[key])
-      ? errors[key][0]
-      : errors[key]) as string;
+    const error: string = (
+      Array.isArray(errors[key]) ? errors[key][0] : errors[key]
+    ) as string;
     ret[key] = error;
   });
   return ret;
