@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 
 import { DbService } from '~/services';
 
-const mongod = new MongoMemoryServer();
+let mongod: MongoMemoryServer | null = null;
 
 async function removeAllCollections(): Promise<void> {
   const conn = DbService.getConnection();
@@ -46,7 +46,8 @@ async function dropAllCollections(): Promise<void> {
 }
 
 export async function openConnection(): Promise<mongoose.Connection> {
-  const uri = await mongod.getUri();
+  mongod = await MongoMemoryServer.create();
+  const uri = mongod.getUri();
   return DbService.openConnection(uri);
 }
 
@@ -56,7 +57,9 @@ export function getConnection(): mongoose.Connection {
 
 export async function closeConnection(): Promise<mongoose.Connection> {
   const connection = await DbService.closeConnection();
-  await mongod.stop();
+  if (mongod) {
+    await mongod.stop();
+  }
   return connection;
 }
 
