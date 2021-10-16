@@ -112,7 +112,6 @@ export default {
 
       const channelRecord = (await channel.save()) as IChannelDoc;
       const channelJson = channel.toChatChannel();
-      channelJson.name = user.nickname;
 
       const io = IoService.instance();
 
