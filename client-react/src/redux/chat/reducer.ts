@@ -36,6 +36,12 @@ export default function chat(
       case EChatActions.ADD_OR_UPDATE_CHANNEL: {
         draft.channels[action.payload._id] = wrapChannelDates(action.payload);
         if (!action.payload.is_group) {
+          const otherMemberIdx = action.payload.other_member_idx as number;
+          const otherMember =
+            draft.users[action.payload.members[otherMemberIdx].user_id];
+
+          draft.channels[action.payload._id].name = otherMember.nickname;
+
           action.payload.members.forEach(member => {
             if (draft.users[member.user_id]) {
               draft.users[member.user_id].channel_id = action.payload._id;
