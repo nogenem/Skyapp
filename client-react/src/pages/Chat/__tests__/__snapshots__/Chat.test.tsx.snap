@@ -9,13 +9,16 @@ exports[`Connected ChatPage renders correctly 1`] = `
       class="MuiPaper-root makeStyles-container-3 MuiPaper-elevation8"
     >
       <div
-        class="makeStyles-container-5"
+        aria-disabled="false"
+        class="MuiButtonBase-root MuiListItem-root makeStyles-container-5 MuiListItem-button"
+        role="button"
+        tabindex="0"
       >
         <div
           style="position: relative;"
         >
           <div
-            class="MuiAvatar-root MuiAvatar-circle MuiAvatar-colorDefault"
+            class="MuiAvatar-root MuiAvatar-circular MuiAvatar-colorDefault"
           >
             <svg
               aria-hidden="true"
@@ -45,13 +48,16 @@ exports[`Connected ChatPage renders correctly 1`] = `
             title=""
           />
         </div>
+        <span
+          class="MuiTouchRipple-root"
+        />
       </div>
     </div>
     <div
       class="makeStyles-rightContainer-2"
     >
       <div
-        class="makeStyles-content-26"
+        class="makeStyles-content-25"
       >
         <div
           class="MuiPaper-root MuiCard-root MuiPaper-elevation8 MuiPaper-rounded"
@@ -70,7 +76,7 @@ exports[`Connected ChatPage renders correctly 1`] = `
             </div>
           </div>
           <div
-            class="MuiCardContent-root makeStyles-cardContent-27"
+            class="MuiCardContent-root makeStyles-cardContent-26"
           >
             <p
               class="MuiTypography-root MuiTypography-body1"

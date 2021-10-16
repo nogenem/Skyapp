@@ -3,20 +3,23 @@
 exports[`Sidebar renders correctly when \`isUserEmailConfirmed\` is false 1`] = `
 <div>
   <div
-    class="MuiPaper-root makeStyles-container-34 MuiPaper-elevation8"
+    class="MuiPaper-root makeStyles-container-33 MuiPaper-elevation8"
   >
     <div
-      class="makeStyles-container-36"
+      aria-disabled="false"
+      class="MuiButtonBase-root MuiListItem-root makeStyles-container-35 MuiListItem-button"
+      role="button"
+      tabindex="0"
     >
       <div
         style="position: relative;"
       >
         <div
-          class="MuiAvatar-root MuiAvatar-circle MuiAvatar-colorDefault"
+          class="MuiAvatar-root MuiAvatar-circular MuiAvatar-colorDefault"
         >
           <svg
             aria-hidden="true"
-            class="MuiSvgIcon-root makeStyles-icon-39"
+            class="MuiSvgIcon-root makeStyles-icon-38"
             focusable="false"
             viewBox="0 0 24 24"
           >
@@ -26,22 +29,25 @@ exports[`Sidebar renders correctly when \`isUserEmailConfirmed\` is false 1`] = 
           </svg>
         </div>
         <span
-          class="makeStyles-dotContainer-40"
+          class="makeStyles-dotContainer-39"
         >
           <span
-            class="makeStyles-dot-41 makeStyles-dot_active-42 "
+            class="makeStyles-dot-40 makeStyles-dot_active-41 "
             title="Common:Active"
           />
         </span>
       </div>
       <div
-        class="makeStyles-textContainer-37"
+        class="makeStyles-textContainer-36"
       >
         <span
           class="MuiTypography-root MuiTypography-subtitle1 MuiTypography-colorInherit MuiTypography-noWrap"
           title=""
         />
       </div>
+      <span
+        class="MuiTouchRipple-root"
+      />
     </div>
   </div>
 </div>
@@ -53,13 +59,16 @@ exports[`Sidebar renders correctly when \`isUserEmailConfirmed\` is true 1`] = `
     class="MuiPaper-root makeStyles-container-1 MuiPaper-elevation8"
   >
     <div
-      class="makeStyles-container-3"
+      aria-disabled="false"
+      class="MuiButtonBase-root MuiListItem-root makeStyles-container-3 MuiListItem-button"
+      role="button"
+      tabindex="0"
     >
       <div
         style="position: relative;"
       >
         <div
-          class="MuiAvatar-root MuiAvatar-circle MuiAvatar-colorDefault"
+          class="MuiAvatar-root MuiAvatar-circular MuiAvatar-colorDefault"
         >
           <svg
             aria-hidden="true"
@@ -89,6 +98,9 @@ exports[`Sidebar renders correctly when \`isUserEmailConfirmed\` is true 1`] = `
           title=""
         />
       </div>
+      <span
+        class="MuiTouchRipple-root"
+      />
     </div>
     <div
       class="MuiFormControl-root MuiTextField-root makeStyles-textInput-20 MuiFormControl-marginDense MuiFormControl-fullWidth"

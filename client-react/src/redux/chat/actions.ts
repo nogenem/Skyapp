@@ -2,8 +2,7 @@ import { Dispatch } from 'redux';
 
 import * as SOCKET_EVENTS from '~/constants/socket_events';
 import type { IUser } from '~/redux/user/types';
-import api from '~/services/api';
-import io from '~/services/io';
+import { ApiService, IoService } from '~/services';
 
 import type {
   IChannel,
@@ -50,7 +49,7 @@ const addNewUser = (newUser: IOtherUser) => ({
 });
 
 export const connectIo = (user: IUser) => (dispatch: Dispatch) => {
-  const instance = io.instance();
+  const instance = IoService.instance();
   instance.connect({ _id: user._id });
 
   instance.socket!.on(SOCKET_EVENTS.SOCKET_CONNECT, () => {
@@ -105,29 +104,29 @@ export const connectIo = (user: IUser) => (dispatch: Dispatch) => {
 };
 
 export const disconnectIo = () => (dispatch: Dispatch) => {
-  io.instance().disconnect();
+  IoService.instance().disconnect();
 };
 
 export const startChattingWith =
   (otherUser: IOtherUser) => (dispatch: Dispatch) =>
-    api.chat.createChannelWith(otherUser).then(({ channel_id }) => {
+    ApiService.chat.createChannelWith(otherUser).then(({ channel_id }) => {
       dispatch(setActiveChannel(channel_id));
     });
 
 export const createGroupChannel =
   (credentials: INewGroupCredentials) => (dispatch: Dispatch) =>
-    api.chat.createGroupChannel(credentials).then(({ channel_id }) => {
+    ApiService.chat.createGroupChannel(credentials).then(({ channel_id }) => {
       dispatch(setActiveChannel(channel_id));
     });
 
 export const updateGroupChannel =
   (credentials: IUpdateGroupCredentials) => (dispatch: Dispatch) =>
-    api.chat.updateGroupChannel(credentials).then(({ channel_id }) => {
+    ApiService.chat.updateGroupChannel(credentials).then(({ channel_id }) => {
       dispatch(setActiveChannel(channel_id));
     });
 
 export const leaveGroupChannel =
   (credentials: ILeaveGroupCredentials) => (dispatch: Dispatch) =>
-    api.chat.leaveGroupChannel(credentials).then(() => {
+    ApiService.chat.leaveGroupChannel(credentials).then(() => {
       dispatch(removeChannel(credentials.channel_id));
     });

@@ -3,13 +3,16 @@
 exports[`Connected UserInfoMenu renders correctly 1`] = `
 <div>
   <div
-    class="makeStyles-container-1"
+    aria-disabled="false"
+    class="MuiButtonBase-root MuiListItem-root makeStyles-container-1 MuiListItem-button"
+    role="button"
+    tabindex="0"
   >
     <div
       style="position: relative;"
     >
       <div
-        class="MuiAvatar-root MuiAvatar-circle MuiAvatar-colorDefault"
+        class="MuiAvatar-root MuiAvatar-circular MuiAvatar-colorDefault"
       >
         <svg
           aria-hidden="true"
@@ -47,6 +50,9 @@ exports[`Connected UserInfoMenu renders correctly 1`] = `
         Some thoughts...
       </span>
     </div>
+    <span
+      class="MuiTouchRipple-root"
+    />
   </div>
 </div>
 `;

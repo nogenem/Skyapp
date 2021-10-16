@@ -1,7 +1,6 @@
 import { LOCAL_STORAGE_TOKEN } from '~/constants/localStorageKeys';
 import { USER_STATUS } from '~/constants/user_status';
-import api from '~/services/api';
-import io from '~/services/io';
+import { ApiService, IoService } from '~/services';
 import { FACTORIES, getMockStore, setupFakeSocket } from '~/utils/testUtils';
 
 import {
@@ -44,13 +43,22 @@ const VALID_TOKEN = '123456789';
 describe('auth actions', () => {
   setupFakeSocket();
 
+  let ioServer: IoService;
+
+  beforeEach(() => {
+    ioServer = IoService.instance(true);
+  });
+
   afterEach(() => {
+    ioServer.disconnect();
+
     jest.restoreAllMocks();
   });
 
-  it('userSignedIn', async () => {
+  it('userSignedIn__not confirmed', async () => {
     const user: TUserState = FACTORIES.userState({
       token: VALID_TOKEN,
+      confirmed: false,
     });
     const expectedActions = [
       { type: EUserActions.SIGNED_IN, payload: user } as TUserAction,
@@ -62,29 +70,45 @@ describe('auth actions', () => {
     expect(store.getActions()).toEqual(expectedActions);
     expect(localStorage.getItem(LOCAL_STORAGE_TOKEN)).toBe(user.token);
 
-    const instance = io.instance();
-    expect(instance!.socket!.connected).toBe(true);
+    expect(ioServer.socket).toBeFalsy();
   });
 
-  it('userSignedOut', async () => {
+  it('userSignedIn__confirmed', async () => {
     const user: TUserState = FACTORIES.userState({
       token: VALID_TOKEN,
+      confirmed: true,
     });
     const expectedActions = [
+      { type: EUserActions.SIGNED_IN, payload: user } as TUserAction,
+    ];
+    const store = mockStore({});
+
+    userSignedIn(user)(store.dispatch);
+
+    expect(store.getActions()).toEqual(expectedActions);
+    expect(localStorage.getItem(LOCAL_STORAGE_TOKEN)).toBe(user.token);
+
+    expect(ioServer.socket!.connected).toBe(true);
+  });
+
+  it('userSignedOut__confirmed', async () => {
+    const user: TUserState = FACTORIES.userState({
+      token: VALID_TOKEN,
+      confirmed: true,
+    });
+    const expectedActions = [
+      { type: EUserActions.SIGNED_IN, payload: user } as TUserAction,
       { type: EUserActions.SIGNED_OUT, payload: null } as TUserAction,
     ];
-    const store = mockStore({
-      user,
-    });
-    localStorage.setItem(LOCAL_STORAGE_TOKEN, VALID_TOKEN);
+    const store = mockStore({});
 
+    userSignedIn(user)(store.dispatch);
     userSignedOut()(store.dispatch);
 
     expect(store.getActions()).toEqual(expectedActions);
     expect(localStorage.getItem(LOCAL_STORAGE_TOKEN)).toBe(null);
 
-    const instance = io.instance();
-    expect(instance!.socket!.connected).toBe(false);
+    expect(ioServer.socket!.connected).toBe(false);
   });
 
   it('signUp', async () => {
@@ -101,9 +125,11 @@ describe('auth actions', () => {
     const expectedActions = [
       { type: EUserActions.SIGNED_IN, payload: user } as TUserAction,
     ];
-    const spy = jest.spyOn(api.auth, 'signUp').mockImplementationOnce(() => {
-      return Promise.resolve({ user });
-    });
+    const spy = jest
+      .spyOn(ApiService.auth, 'signUp')
+      .mockImplementationOnce(() => {
+        return Promise.resolve({ user });
+      });
     const store = mockStore({});
 
     await signUp(credentials)(store.dispatch);
@@ -124,9 +150,11 @@ describe('auth actions', () => {
     const expectedActions = [
       { type: EUserActions.SIGNED_IN, payload: user } as TUserAction,
     ];
-    const spy = jest.spyOn(api.auth, 'signIn').mockImplementationOnce(() => {
-      return Promise.resolve({ user });
-    });
+    const spy = jest
+      .spyOn(ApiService.auth, 'signIn')
+      .mockImplementationOnce(() => {
+        return Promise.resolve({ user });
+      });
 
     const store = mockStore({});
 
@@ -147,7 +175,7 @@ describe('auth actions', () => {
       { type: EUserActions.SIGNED_IN, payload: user } as TUserAction,
     ];
     const spy = jest
-      .spyOn(api.auth, 'confirmation')
+      .spyOn(ApiService.auth, 'confirmation')
       .mockImplementationOnce(() => {
         return Promise.resolve({ user });
       });
@@ -166,7 +194,7 @@ describe('auth actions', () => {
       token: VALID_TOKEN,
     };
     const spy = jest
-      .spyOn(api.auth, 'resendConfirmationEmail')
+      .spyOn(ApiService.auth, 'resendConfirmationEmail')
       .mockImplementationOnce(() => {
         return Promise.resolve({ message });
       });
@@ -187,7 +215,7 @@ describe('auth actions', () => {
       { type: EUserActions.SIGNED_IN, payload: user } as TUserAction,
     ];
     const spy = jest
-      .spyOn(api.auth, 'validateToken')
+      .spyOn(ApiService.auth, 'validateToken')
       .mockImplementationOnce(() => {
         return Promise.resolve({ user });
       });
@@ -206,7 +234,7 @@ describe('auth actions', () => {
       email: 'test@test.com',
     };
     const spy = jest
-      .spyOn(api.auth, 'forgotPassword')
+      .spyOn(ApiService.auth, 'forgotPassword')
       .mockImplementationOnce(() => {
         return Promise.resolve({ message });
       });
@@ -230,7 +258,7 @@ describe('auth actions', () => {
     ];
 
     const spy = jest
-      .spyOn(api.auth, 'resetPassword')
+      .spyOn(ApiService.auth, 'resetPassword')
       .mockImplementationOnce(() => {
         return Promise.resolve({ user });
       });
@@ -255,7 +283,7 @@ describe('auth actions', () => {
     ];
 
     const spy = jest
-      .spyOn(api.user, 'changeStatus')
+      .spyOn(ApiService.user, 'changeStatus')
       .mockImplementationOnce(() => {
         return Promise.resolve({ message: 'success' });
       });
@@ -280,7 +308,7 @@ describe('auth actions', () => {
     ];
 
     const spy = jest
-      .spyOn(api.user, 'changeThoughts')
+      .spyOn(ApiService.user, 'changeThoughts')
       .mockImplementationOnce(() => {
         return Promise.resolve({ message: 'success' });
       });

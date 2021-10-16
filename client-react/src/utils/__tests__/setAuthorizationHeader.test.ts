@@ -1,4 +1,4 @@
-import { axiosInstance } from '~/services/api';
+import { axiosInstance } from '~/services/ApiService';
 
 import setAuthorizationHeader from '../setAuthorizationHeader';
 

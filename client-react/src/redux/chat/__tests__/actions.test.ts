@@ -1,6 +1,6 @@
 import * as SOCKET_EVENTS from '~/constants/socket_events';
 import { TUserState } from '~/redux/user/types';
-import io from '~/services/io';
+import { IoService } from '~/services';
 import { setupFakeSocket, getMockStore, FACTORIES } from '~/utils/testUtils';
 
 import { connectIo, disconnectIo } from '../actions';
@@ -26,7 +26,7 @@ describe('chat actions', () => {
     // Since fakeSocket does not automatically emit a connect message as socketio io() does, simulate it here.
     fakeSocket.server!.emit(SOCKET_EVENTS.SOCKET_CONNECT);
 
-    const instance = io.instance();
+    const instance = IoService.instance();
     expect(instance!.socket!.connected).toBe(true);
   });
 
@@ -35,7 +35,7 @@ describe('chat actions', () => {
 
     disconnectIo()(store.dispatch);
 
-    const instance = io.instance();
+    const instance = IoService.instance();
     expect(instance!.socket!.connected).toBe(false);
   });
 });

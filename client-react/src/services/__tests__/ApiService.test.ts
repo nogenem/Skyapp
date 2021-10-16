@@ -12,11 +12,11 @@ import type {
   IChangeThoughtsCredentials,
 } from '~/redux/user/types';
 
-import api, { axiosInstance, END_POINTS } from '../api';
+import ApiService, { axiosInstance, END_POINTS } from '../ApiService';
 
 const VALID_TOKEN = '123456789';
 
-describe('api', () => {
+describe('ApiService', () => {
   const adapter = new MockAdapter(axiosInstance);
 
   beforeEach(() => {
@@ -40,7 +40,7 @@ describe('api', () => {
         return [200, expectedRet];
       });
 
-      const ret = await api.auth.signUp(credentials);
+      const ret = await ApiService.auth.signUp(credentials);
       expect(ret).toEqual(expectedRet);
     });
 
@@ -59,7 +59,7 @@ describe('api', () => {
         return [200, expectedRet];
       });
 
-      const ret = await api.auth.signIn(signInCredentials);
+      const ret = await ApiService.auth.signIn(signInCredentials);
       expect(ret).toEqual(expectedRet);
     });
 
@@ -76,7 +76,7 @@ describe('api', () => {
         return [200, expectedRet];
       });
 
-      const ret = await api.auth.confirmation(confirmationCredentials);
+      const ret = await ApiService.auth.confirmation(confirmationCredentials);
       expect(ret).toEqual(expectedRet);
     });
 
@@ -93,7 +93,7 @@ describe('api', () => {
         return [200, expectedRet];
       });
 
-      const ret = await api.auth.resendConfirmationEmail(
+      const ret = await ApiService.auth.resendConfirmationEmail(
         resendEmailCredentials,
       );
       expect(ret).toEqual(expectedRet);
@@ -112,7 +112,7 @@ describe('api', () => {
         return [200, expectedRet];
       });
 
-      const ret = await api.auth.validateToken(validateTokenCredentials);
+      const ret = await ApiService.auth.validateToken(validateTokenCredentials);
       expect(ret).toEqual(expectedRet);
     });
 
@@ -129,7 +129,9 @@ describe('api', () => {
         return [200, expectedRet];
       });
 
-      const ret = await api.auth.forgotPassword(forgotPasswordCredentials);
+      const ret = await ApiService.auth.forgotPassword(
+        forgotPasswordCredentials,
+      );
       expect(ret).toEqual(expectedRet);
     });
 
@@ -148,7 +150,7 @@ describe('api', () => {
         return [200, expectedRet];
       });
 
-      const ret = await api.auth.resetPassword(resetPasswordCredentials);
+      const ret = await ApiService.auth.resetPassword(resetPasswordCredentials);
       expect(ret).toEqual(expectedRet);
     });
   });
@@ -167,7 +169,7 @@ describe('api', () => {
         return [200, expectedRet];
       });
 
-      const ret = await api.user.changeStatus(credentials);
+      const ret = await ApiService.user.changeStatus(credentials);
       expect(ret).toEqual(expectedRet);
     });
 
@@ -184,7 +186,7 @@ describe('api', () => {
         return [200, expectedRet];
       });
 
-      const ret = await api.user.changeThoughts(credentials);
+      const ret = await ApiService.user.changeThoughts(credentials);
       expect(ret).toEqual(expectedRet);
     });
   });
@@ -207,7 +209,7 @@ describe('api', () => {
         return [200, expectedRet];
       });
 
-      const ret = await api.chat.createChannelWith(otherUser);
+      const ret = await ApiService.chat.createChannelWith(otherUser);
       expect(ret).toEqual(expectedRet);
     });
   });

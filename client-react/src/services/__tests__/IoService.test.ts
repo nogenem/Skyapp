@@ -1,34 +1,40 @@
 import { setupFakeSocket } from '~/utils/testUtils';
 
-import io from '../io';
+import IoService from '../IoService';
 
 jest.mock('socket.io-client');
 
-describe('io', () => {
+describe('IoService', () => {
   const fakeSocket = setupFakeSocket();
 
+  let ioServer: IoService;
+
+  beforeEach(() => {
+    ioServer = IoService.instance(true);
+  });
+
   afterEach(() => {
+    ioServer.disconnect();
+
     jest.restoreAllMocks();
   });
 
   it('should be able to connect', () => {
-    const instance = io.instance();
-    instance.connect();
+    ioServer.connect();
 
     expect(fakeSocket.mockedIoClient).toHaveBeenCalledTimes(1);
     expect(fakeSocket.mockedIoClient).toHaveBeenCalledWith(
       process.env.REACT_APP_SOCKET_URL,
       expect.any(Object),
     );
-    expect(instance!.socket!.connected).toBe(true);
+    expect(ioServer.socket!.connected).toBe(true);
   });
 
   it('should be able to disconnect', () => {
-    const instance = io.instance();
-    instance.connect();
+    ioServer.connect();
 
-    instance.disconnect();
+    ioServer.disconnect();
 
-    expect(instance!.socket!.connected).toBe(false);
+    expect(ioServer.socket!.connected).toBe(false);
   });
 });

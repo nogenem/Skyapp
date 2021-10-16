@@ -88,7 +88,7 @@ exports[`Connected NewChatModal renders correctly 1`] = `
                 style="position: relative;"
               >
                 <div
-                  class="MuiAvatar-root MuiAvatar-circle MuiAvatar-colorDefault"
+                  class="MuiAvatar-root MuiAvatar-circular MuiAvatar-colorDefault"
                 >
                   <svg
                     aria-hidden="true"
