@@ -142,6 +142,15 @@ export const getActiveChannelId = createSelector(
   getChat,
   data => data.activeChannelInfo?._id,
 );
+export const getActiveChannel = createSelector(
+  getChat,
+  data =>
+    data.channels[data.activeChannelInfo?._id || ''] as IChannel | undefined,
+);
+export const getActiveChannelMessages = createSelector(
+  getChat,
+  data => data.activeChannelInfo?.messages,
+);
 export const getOtherUserFromChannel = createSelector(
   [getChat, getChannelFromProps],
   (data, channel) => {

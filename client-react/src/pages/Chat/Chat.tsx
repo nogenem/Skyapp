@@ -7,6 +7,7 @@ import { ConfirmEmailCTA } from '~/components';
 import { IAppState } from '~/redux/store';
 import { getConfirmed } from '~/redux/user/reducer';
 
+import { ChatContainer } from './ChatContainer';
 import { Sidebar } from './Sidebar';
 import useStyles from './useStyles';
 
@@ -26,6 +27,7 @@ const Chat = ({ isUserEmailConfirmed }: TProps) => {
       <Sidebar isUserEmailConfirmed={isUserEmailConfirmed} />
       <div className={classes.rightContainer}>
         {!isUserEmailConfirmed && <ConfirmEmailCTA />}
+        {isUserEmailConfirmed && <ChatContainer />}
       </div>
     </div>
   );

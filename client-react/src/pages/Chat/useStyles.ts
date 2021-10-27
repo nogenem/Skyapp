@@ -7,6 +7,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     rightContainer: {
       display: 'flex',
+      flexDirection: 'column',
       width: '100%',
       paddingLeft: theme.spacing(1),
       paddingRight: theme.spacing(1),
