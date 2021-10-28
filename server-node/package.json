@@ -13,6 +13,7 @@
     "test:watch": "cross-env NODE_ENV=test jest --watch --no-watchman"
   },
   "dependencies": {
+    "@types/mongoose-paginate-v2": "^1.4.0",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
@@ -24,6 +25,7 @@
     "kill-port": "^1.6.1",
     "lodash.foreach": "^4.5.0",
     "mongoose": "^5.11.15",
+    "mongoose-paginate-v2": "^1.4.2",
     "mongoose-unique-validator": "^2.0.3",
     "nodemailer": "^6.5.0",
     "socket.io": "^4.0.1",

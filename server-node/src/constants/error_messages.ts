@@ -23,5 +23,7 @@ export const NEED_AT_LEAST_2_MEMBERS_TO_CREATE_GROUP =
 export const USER_IS_NOT_GROUP_ADM =
   'You are not an administrator of this group';
 export const NOT_MEMBER_OF_GROUP = 'You are not a member of this group';
+export const OFFSET_HAS_TO_BE_A_NUMBER_GREATER_OR_EQUAL_TO_0 =
+  '`Offset` query param has to be a number greater or equal to 0';
 
 export type { TTranslatableError };

@@ -53,6 +53,14 @@ interface ILeaveGroupCredentials {
   channel_id: string;
 }
 
+interface IFetchMessagesCredentials {
+  // eslint-disable-next-line camelcase
+  channel_id: string;
+  offset: number;
+  limit?: number;
+  sort?: string;
+}
+
 const insertManyMessages = (messages: IMessage[]): Promise<IMessageDoc[]> => {
   // Without this, all dates would be the same...
   const baseDate = new Date().getTime();
@@ -446,6 +454,35 @@ export default {
       return res.status(200).json({
         message: REMOVED_FROM_GROUP,
       });
+    } catch (err) {
+      return handleErrors(err as Error, res);
+    }
+  },
+  async getMessages(
+    req: IAuthRequest,
+    res: Response,
+  ): Promise<Response<unknown>> {
+    const {
+      channel_id: channelId,
+      offset,
+      limit = 30,
+      sort = '-date',
+    } = req.query as unknown as IFetchMessagesCredentials;
+
+    try {
+      const messages = await Message.paginate(
+        { channel_id: channelId },
+        {
+          offset,
+          limit,
+          sort,
+          select: '_id channel_id from_id body type createdAt updatedAt',
+        },
+      );
+      if (!messages) {
+        return handleErrors(invalidIdError(), res);
+      }
+      return res.status(200).json(messages);
     } catch (err) {
       return handleErrors(err as Error, res);
     }

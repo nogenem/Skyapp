@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
-import mongoose, { Document, Model } from 'mongoose';
+import mongoose, { Document, Model, PaginateModel } from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate-v2';
 
 import { MESSAGE_TYPES, TMessageType } from '~/constants/message_types';
 
@@ -38,7 +39,7 @@ interface IMessageDoc extends IMessage, Document {
   toChatMessage: () => IChatMessage;
 }
 
-interface IMessageModel extends Model<IMessageDoc> {
+interface IMessageModel extends Model<IMessageDoc>, PaginateModel<IMessageDoc> {
   toChatMessage: (
     channel?: IMessageDoc | IChatMessage,
   ) => IChatMessage | undefined;
@@ -89,6 +90,11 @@ Message.static(
 
 Message.method('toChatMessage', function ModelToChatMessage() {
   return toChatMessage(this);
+});
+
+Message.plugin(schema => {
+  const convertedSchema = schema as unknown as mongoose.Schema;
+  return mongoosePaginate(convertedSchema);
 });
 
 export type { IAttachment, IMessage, IMessageDoc, IChatMessage };

@@ -37,5 +37,10 @@ routes.post(
   validate(chat.leaveGroupChannel),
   ChatController.leaveGroupChannel,
 );
+routes.get(
+  '/chat/messages',
+  validate(chat.getMessages),
+  ChatController.getMessages,
+);
 
 export default routes;

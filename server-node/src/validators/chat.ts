@@ -1,6 +1,9 @@
-import { body } from 'express-validator';
+import { body, query } from 'express-validator';
 
-import { NEED_AT_LEAST_2_MEMBERS_TO_CREATE_GROUP } from '~/constants/error_messages';
+import {
+  NEED_AT_LEAST_2_MEMBERS_TO_CREATE_GROUP,
+  OFFSET_HAS_TO_BE_A_NUMBER_GREATER_OR_EQUAL_TO_0,
+} from '~/constants/error_messages';
 import { invalidIdError } from '~/utils/errors';
 
 const chat = {
@@ -24,6 +27,13 @@ const chat = {
   ],
   leaveGroupChannel: [
     body('channel_id').trim().not().isEmpty().withMessage(invalidIdError()),
+  ],
+  getMessages: [
+    query('channel_id').trim().not().isEmpty().withMessage(invalidIdError()),
+    query('offset')
+      .isInt({ min: 0 })
+      .withMessage(OFFSET_HAS_TO_BE_A_NUMBER_GREATER_OR_EQUAL_TO_0)
+      .toInt(),
   ],
 };
 
