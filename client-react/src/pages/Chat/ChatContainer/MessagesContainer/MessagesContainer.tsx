@@ -13,7 +13,15 @@ type TProps = IOwnProps;
 const MessagesContainer = ({ messages }: TProps) => {
   const classes = useStyles();
 
-  return <div className={classes.container}>MessagesContainer</div>;
+  const renderMessages = () => {
+    const ret = [];
+    for (let i = 0; i < messages.length; i++) {
+      ret.push(<div key={messages[i]._id}>{messages[i].body}</div>);
+    }
+    return ret;
+  };
+
+  return <div className={classes.container}>{renderMessages()}</div>;
 };
 
 export type { TProps };

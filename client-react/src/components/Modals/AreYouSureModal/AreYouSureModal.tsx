@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { MouseEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -20,8 +20,8 @@ const defaultProps = {
 interface IOwnProps {
   isOpen: boolean;
   errors: IErrors;
-  onConfirm: () => void;
-  onClose: () => void;
+  onConfirm: (event: MouseEvent<Element>) => void;
+  onClose: (event: MouseEvent<Element>) => void;
 }
 
 type TProps = IOwnProps & typeof defaultProps;

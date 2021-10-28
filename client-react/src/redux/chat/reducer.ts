@@ -51,7 +51,10 @@ export default function chat(
         return draft;
       }
       case EChatActions.SET_ACTIVE_CHANNEL: {
-        if (draft.channels[action.payload._id]) {
+        if (
+          draft.channels[action.payload._id] &&
+          draft.activeChannelInfo?._id !== action.payload._id
+        ) {
           draft.activeChannelInfo = {
             _id: action.payload._id,
             messages: [],
@@ -74,6 +77,36 @@ export default function chat(
       }
       case EChatActions.ADD_NEW_USER: {
         draft.users[action.payload._id] = action.payload;
+        return draft;
+      }
+      case EChatActions.ADD_MESSAGES: {
+        const { messages, totalMessages, atTop } = action.payload;
+        for (let i = 0; i < messages.length; i++) {
+          messages[i].createdAt = new Date(messages[i].createdAt);
+          messages[i].updatedAt = new Date(messages[i].updatedAt);
+        }
+
+        const channelId = !!messages.length ? messages[0].channel_id : '';
+        if (
+          !!channelId &&
+          !!draft.activeChannelInfo &&
+          draft.activeChannelInfo._id === channelId
+        ) {
+          if (atTop) {
+            draft.activeChannelInfo.messages = [
+              ...messages,
+              ...draft.activeChannelInfo.messages,
+            ];
+          } else {
+            draft.activeChannelInfo.messages = [
+              ...draft.activeChannelInfo.messages,
+              ...messages,
+            ];
+          }
+          if (totalMessages >= 0)
+            draft.activeChannelInfo.totalMessages = totalMessages;
+          else draft.activeChannelInfo.totalMessages += messages.length;
+        }
         return draft;
       }
       default:

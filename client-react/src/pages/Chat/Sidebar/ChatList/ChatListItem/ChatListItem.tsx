@@ -115,16 +115,18 @@ const ChatListItem = ({
     });
   };
 
-  const onLeaveGroupModalClose = () => {
+  const onLeaveGroupModalClose = (event: MouseEvent<Element>) => {
+    handleMenuClose(event);
     setState({
       isLeaveGroupModalOpen: false,
     });
   };
 
-  const onLeaveGroupModalConfirm = async () => {
+  const onLeaveGroupModalConfirm = async (event: MouseEvent<Element>) => {
+    handleMenuClose(event);
     try {
       await leaveGroupChannel({ channel_id: channel._id });
-      onLeaveGroupModalClose();
+      onLeaveGroupModalClose(event);
     } catch (err) {
       setState({
         leaveGroupModalErrors: handleServerErrors(err as AxiosError),

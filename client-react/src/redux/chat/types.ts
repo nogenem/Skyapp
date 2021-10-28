@@ -44,7 +44,7 @@ interface IAttachment {
 interface IMessage {
   _id: string;
   channel_id: string;
-  from_id: string;
+  from_id?: string;
   body: string | IAttachment;
   type: TMessageType;
   createdAt: Date;
@@ -79,6 +79,13 @@ interface ILeaveGroupCredentials {
   channel_id: string;
 }
 
+interface IFetchMessagesCredentials {
+  channel_id: string;
+  offset: number;
+  limit?: number;
+  sort?: string;
+}
+
 type TChatState = {
   users: IOtherUsers;
   channels: IChannels;
@@ -92,6 +99,7 @@ enum EChatActions {
   SET_ACTIVE_CHANNEL = '@chat/SET_ACTIVE_CHANNEL',
   REMOVE_CHANNEL = '@chat/REMOVE_CHANNEL',
   ADD_NEW_USER = '@chat/ADD_NEW_USER',
+  ADD_MESSAGES = '@chat/ADD_MESSAGES',
 }
 
 interface IChatActionType<T, P> {
@@ -108,7 +116,11 @@ type TChatAction =
   | IChatActionType<typeof EChatActions.ADD_OR_UPDATE_CHANNEL, IChannel>
   | IChatActionType<typeof EChatActions.SET_ACTIVE_CHANNEL, { _id: string }>
   | IChatActionType<typeof EChatActions.REMOVE_CHANNEL, { channelId: string }>
-  | IChatActionType<typeof EChatActions.ADD_NEW_USER, IOtherUser>;
+  | IChatActionType<typeof EChatActions.ADD_NEW_USER, IOtherUser>
+  | IChatActionType<
+      typeof EChatActions.ADD_MESSAGES,
+      { messages: IMessage[]; totalMessages: number; atTop: boolean }
+    >;
 
 export type {
   TChatState,
@@ -123,5 +135,6 @@ export type {
   INewGroupCredentials,
   IUpdateGroupCredentials,
   ILeaveGroupCredentials,
+  IFetchMessagesCredentials,
 };
 export { EChatActions };

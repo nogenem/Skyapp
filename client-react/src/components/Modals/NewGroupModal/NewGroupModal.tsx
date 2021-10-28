@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { MouseEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { connect, ConnectedProps } from 'react-redux';
 
@@ -75,12 +75,18 @@ const NewGroupModal = ({
     return errors;
   };
 
-  const handleClose = () => {
+  const handleClose = (event: MouseEvent<Element>) => {
+    event.preventDefault();
+    event.stopPropagation();
+
     setState(initialState);
     onClose();
   };
 
-  const handleConfirm = async () => {
+  const handleConfirm = async (event: MouseEvent<Element>) => {
+    event.preventDefault();
+    event.stopPropagation();
+
     const errors = validate();
 
     if (Object.keys(errors).length >= 1) {

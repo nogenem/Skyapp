@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import type {
+  IFetchMessagesCredentials,
   ILeaveGroupCredentials,
   INewGroupCredentials,
   IOtherUser,
@@ -35,6 +36,7 @@ export const END_POINTS = {
     createGroupChannel: 'api/chat/group',
     updateGroupChannel: 'api/chat/group',
     leaveGroupChannel: 'api/chat/group/leave',
+    getMessages: 'api/chat/messages',
   },
 };
 
@@ -99,6 +101,10 @@ export default {
     leaveGroupChannel: (credentials: ILeaveGroupCredentials) =>
       axiosInstance
         .post(END_POINTS.chat.leaveGroupChannel, { ...credentials })
+        .then(res => res.data),
+    getMessages: (credentials: IFetchMessagesCredentials) =>
+      axiosInstance
+        .get(END_POINTS.chat.getMessages, { params: credentials })
         .then(res => res.data),
   },
 };

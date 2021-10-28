@@ -6,6 +6,7 @@ import { ApiService, IoService } from '~/services';
 
 import type {
   IChannel,
+  IFetchMessagesCredentials,
   IInitialData,
   ILeaveGroupCredentials,
   IMessage,
@@ -46,6 +47,19 @@ export const setActiveChannel = (channel_id: string) => ({
 const addNewUser = (newUser: IOtherUser) => ({
   type: EChatActions.ADD_NEW_USER,
   payload: newUser,
+});
+
+const addMessages = (
+  messages: IMessage[],
+  totalMessages: number = -1,
+  atTop: boolean = false,
+) => ({
+  type: EChatActions.ADD_MESSAGES,
+  payload: {
+    messages,
+    totalMessages,
+    atTop,
+  },
 });
 
 export const connectIo = (user: IUser) => (dispatch: Dispatch) => {
@@ -129,4 +143,10 @@ export const leaveGroupChannel =
   (credentials: ILeaveGroupCredentials) => (dispatch: Dispatch) =>
     ApiService.chat.leaveGroupChannel(credentials).then(() => {
       dispatch(removeChannel(credentials.channel_id));
+    });
+
+export const fetchMessages =
+  (credentials: IFetchMessagesCredentials) => (dispatch: Dispatch) =>
+    ApiService.chat.getMessages(credentials).then(({ docs, totalDocs }) => {
+      dispatch(addMessages(docs, totalDocs, true));
     });
