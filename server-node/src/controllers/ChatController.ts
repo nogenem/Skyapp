@@ -5,6 +5,7 @@ import { MESSAGE_TYPES } from '~/constants/message_types';
 import {
   CHANNEL_CREATED,
   CHANNEL_UPDATED,
+  MESSAGE_SENT,
   REMOVED_FROM_GROUP,
 } from '~/constants/return_messages';
 import {
@@ -59,6 +60,12 @@ interface IFetchMessagesCredentials {
   offset: number;
   limit?: number;
   sort?: string;
+}
+
+interface ISendMessageCredentials {
+  // eslint-disable-next-line camelcase
+  channel_id: string;
+  body: string;
 }
 
 const insertManyMessages = (messages: IMessage[]): Promise<IMessageDoc[]> => {
@@ -466,7 +473,7 @@ export default {
       channel_id: channelId,
       offset,
       limit = 30,
-      sort = '-date',
+      sort = '-createdAt',
     } = req.query as unknown as IFetchMessagesCredentials;
 
     try {
@@ -483,6 +490,50 @@ export default {
         return handleErrors(invalidIdError(), res);
       }
       return res.status(200).json(messages);
+    } catch (err) {
+      return handleErrors(err as Error, res);
+    }
+  },
+  async sendMessage(
+    req: IAuthRequest,
+    res: Response,
+  ): Promise<Response<unknown>> {
+    const { channel_id: channelId, body } =
+      req.body as unknown as ISendMessageCredentials;
+    const currentUser = req.currentUser as IUserDoc;
+    let channel: IChannelDoc | null = null;
+
+    try {
+      channel = await Channel.findOne({ _id: channelId });
+      if (!channel) {
+        return handleErrors(invalidIdError(), res);
+      }
+    } catch (err) {
+      return handleErrors(err as Error, res);
+    }
+
+    const msgObj = new Message({
+      channel_id: channelId,
+      from_id: currentUser._id,
+      body,
+      type: MESSAGE_TYPES.TEXT,
+    });
+
+    try {
+      const channelJson = channel.toChatChannel();
+      const messageRecord = (await msgObj.save()) as IMessageDoc;
+      const messageJson = messageRecord.toChatMessage();
+
+      const io = IoService.instance();
+
+      await io.emit(IO_MESSAGES_RECEIVED, {
+        channel: channelJson,
+        messages: [messageJson],
+      });
+      return res.status(200).json({
+        message: MESSAGE_SENT,
+        messageObj: messageJson,
+      });
     } catch (err) {
       return handleErrors(err as Error, res);
     }

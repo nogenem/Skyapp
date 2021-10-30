@@ -1,6 +1,8 @@
 import { body, query } from 'express-validator';
+import sanitizeHtml from 'sanitize-html';
 
 import {
+  FIELD_CANT_BE_EMPY,
   NEED_AT_LEAST_2_MEMBERS_TO_CREATE_GROUP,
   OFFSET_HAS_TO_BE_A_NUMBER_GREATER_OR_EQUAL_TO_0,
 } from '~/constants/error_messages';
@@ -34,6 +36,17 @@ const chat = {
       .isInt({ min: 0 })
       .withMessage(OFFSET_HAS_TO_BE_A_NUMBER_GREATER_OR_EQUAL_TO_0)
       .toInt(),
+  ],
+  sendMessage: [
+    body('channel_id').trim().not().isEmpty().withMessage(invalidIdError()),
+    body('body')
+      .trim()
+      .customSanitizer(value =>
+        sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} }),
+      )
+      .not()
+      .isEmpty()
+      .withMessage(FIELD_CANT_BE_EMPY),
   ],
 };
 

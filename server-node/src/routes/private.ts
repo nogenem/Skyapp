@@ -42,5 +42,10 @@ routes.get(
   validate(chat.getMessages),
   ChatController.getMessages,
 );
+routes.post(
+  '/chat/messages',
+  validate(chat.sendMessage),
+  ChatController.sendMessage,
+);
 
 export default routes;

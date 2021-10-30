@@ -16,3 +16,4 @@ export const USER_THOUGHTS_CHANGED =
 export const CHANNEL_CREATED = 'Messages:Channel created with success';
 export const CHANNEL_UPDATED = 'Messages:Channel updated with success';
 export const REMOVED_FROM_GROUP = 'Messages:You were removed from the group';
+export const MESSAGE_SENT = 'Messages:Message sent with success';

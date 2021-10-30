@@ -25,5 +25,6 @@ export const USER_IS_NOT_GROUP_ADM =
 export const NOT_MEMBER_OF_GROUP = 'You are not a member of this group';
 export const OFFSET_HAS_TO_BE_A_NUMBER_GREATER_OR_EQUAL_TO_0 =
   '`Offset` query param has to be a number greater or equal to 0';
+export const FIELD_CANT_BE_EMPY = 'Field cant be empty';
 
 export type { TTranslatableError };

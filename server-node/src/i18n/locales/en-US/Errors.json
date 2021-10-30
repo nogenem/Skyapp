@@ -17,5 +17,6 @@
   "You need at least 2 members to create a group": "You need at least 2 members to create a group",
   "You are not an administrator of this group": "You are not an administrator of this group",
   "You are not a member of this group": "You are not a member of this group",
-  "`Offset` query param has to be a number greater or equal to 0": "`Offset` query param has to be a number greater or equal to 0"
+  "`Offset` query param has to be a number greater or equal to 0": "`Offset` query param has to be a number greater or equal to 0",
+  "Field cant be empty": "Field cant be empty"
 }
