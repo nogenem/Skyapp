@@ -109,6 +109,22 @@ export default function chat(
         }
         return draft;
       }
+      case EChatActions.SET_LATEST_MESSAGE: {
+        const message = { ...action.payload };
+        message.createdAt = new Date(message.createdAt);
+        message.updatedAt = new Date(message.updatedAt);
+
+        const channelId = message.channel_id;
+        draft.channels[channelId].lastMessage = message;
+        if (
+          !draft.activeChannelInfo ||
+          draft.activeChannelInfo._id !== channelId
+        ) {
+          draft.channels[channelId].unread_msgs += 1;
+        }
+
+        return draft;
+      }
       default:
         return draft;
     }

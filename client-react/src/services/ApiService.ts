@@ -5,6 +5,7 @@ import type {
   ILeaveGroupCredentials,
   INewGroupCredentials,
   IOtherUser,
+  ISendMessageCredentials,
   IUpdateGroupCredentials,
 } from '~/redux/chat/types';
 import type {
@@ -37,6 +38,7 @@ export const END_POINTS = {
     updateGroupChannel: 'api/chat/group',
     leaveGroupChannel: 'api/chat/group/leave',
     getMessages: 'api/chat/messages',
+    sendMessage: 'api/chat/messages',
   },
 };
 
@@ -105,6 +107,10 @@ export default {
     getMessages: (credentials: IFetchMessagesCredentials) =>
       axiosInstance
         .get(END_POINTS.chat.getMessages, { params: credentials })
+        .then(res => res.data),
+    sendMessage: (credentials: ISendMessageCredentials) =>
+      axiosInstance
+        .post(END_POINTS.chat.sendMessage, { ...credentials })
         .then(res => res.data),
   },
 };

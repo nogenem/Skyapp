@@ -12,6 +12,7 @@ import type {
   IMessage,
   INewGroupCredentials,
   IOtherUser,
+  ISendMessageCredentials,
   IUpdateGroupCredentials,
 } from './types';
 import { EChatActions } from './types';
@@ -62,6 +63,11 @@ const addMessages = (
   },
 });
 
+const setLatestMessage = (message: IMessage) => ({
+  type: EChatActions.SET_LATEST_MESSAGE,
+  payload: message,
+});
+
 export const connectIo = (user: IUser) => (dispatch: Dispatch) => {
   const instance = IoService.instance();
   instance.connect({ _id: user._id });
@@ -110,8 +116,8 @@ export const connectIo = (user: IUser) => (dispatch: Dispatch) => {
     instance.socket!.on(
       SOCKET_EVENTS.IO_MESSAGES_RECEIVED,
       (messages: IMessage[]) => {
-        // TODO
-        console.log(messages);
+        dispatch(addMessages(messages));
+        dispatch(setLatestMessage(messages[messages.length - 1]));
       },
     );
   });
@@ -148,5 +154,15 @@ export const leaveGroupChannel =
 export const fetchMessages =
   (credentials: IFetchMessagesCredentials) => (dispatch: Dispatch) =>
     ApiService.chat.getMessages(credentials).then(({ docs, totalDocs }) => {
+      docs.reverse();
       dispatch(addMessages(docs, totalDocs, true));
     });
+
+export const sendMessage =
+  (channel_id: string, message: string) => (dispatch: Dispatch) => {
+    const credentials: ISendMessageCredentials = {
+      channel_id,
+      body: message,
+    };
+    return ApiService.chat.sendMessage(credentials);
+  };

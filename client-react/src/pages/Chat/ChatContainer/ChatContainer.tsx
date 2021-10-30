@@ -3,7 +3,10 @@ import { connect, ConnectedProps } from 'react-redux';
 
 import { RouteComponentProps } from '@reach/router';
 
-import { fetchMessages as fetchMessagesAction } from '~/redux/chat/actions';
+import {
+  fetchMessages as fetchMessagesAction,
+  sendMessage as sendMessageAction,
+} from '~/redux/chat/actions';
 import {
   getActiveChannel,
   getActiveChannelMessages,
@@ -13,6 +16,7 @@ import { getUser } from '~/redux/user/reducer';
 
 import { ChatInput } from './ChatInput';
 import { MessagesContainer } from './MessagesContainer';
+import useStyles from './useStyles';
 
 const mapStateToProps = (state: IAppState) => ({
   activeChannel: getActiveChannel(state),
@@ -21,6 +25,7 @@ const mapStateToProps = (state: IAppState) => ({
 });
 const mapDispatchToProps = {
   fetchMessages: fetchMessagesAction,
+  sendMessage: sendMessageAction,
 };
 const connector = connect(mapStateToProps, mapDispatchToProps);
 type TPropsFromRedux = ConnectedProps<typeof connector>;
@@ -32,7 +37,18 @@ const ChatContainer = ({
   activeChannelMessages,
   loggedUser,
   fetchMessages,
+  sendMessage,
 }: TProps) => {
+  const classes = useStyles();
+
+  const handleSubmit = (message: string) => {
+    try {
+      sendMessage(activeChannel?._id as string, message);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   React.useEffect(() => {
     async function fetchData() {
       if (!!activeChannel) {
@@ -46,13 +62,13 @@ const ChatContainer = ({
 
   if (!activeChannel || !activeChannelMessages) return null;
   return (
-    <>
+    <div className={classes.content}>
       <MessagesContainer
         messages={activeChannelMessages}
         loggedUser={loggedUser}
       />
-      <ChatInput />
-    </>
+      <ChatInput handleSubmit={handleSubmit} />
+    </div>
   );
 };
 

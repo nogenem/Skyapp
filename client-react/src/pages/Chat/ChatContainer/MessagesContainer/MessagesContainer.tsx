@@ -17,6 +17,7 @@ interface IOwnProps {
 type TProps = IOwnProps;
 
 const MessagesContainer = ({ messages, loggedUser }: TProps) => {
+  const ref = React.useRef<HTMLDivElement>(null);
   const classes = useStyles();
 
   const renderMessage = (message: IMessage) => {
@@ -45,7 +46,17 @@ const MessagesContainer = ({ messages, loggedUser }: TProps) => {
     return ret;
   };
 
-  return <div className={classes.container}>{renderMessages()}</div>;
+  React.useEffect(() => {
+    if (!!messages && messages.length) {
+      scrollToBottom(ref);
+    }
+  }, [messages]);
+
+  return (
+    <div className={classes.container} ref={ref}>
+      {renderMessages()}
+    </div>
+  );
 };
 
 const getMessageByType = (message: IMessage) => {
@@ -58,6 +69,15 @@ const getMessageByType = (message: IMessage) => {
       return <div>{message.body}</div>;
     default:
       return null;
+  }
+};
+
+const scrollToBottom = (ref: React.RefObject<HTMLDivElement>) => {
+  if (ref.current) {
+    const scrollHeight = ref.current.scrollHeight;
+    const height = ref.current.clientHeight;
+    const maxScrollTop = scrollHeight - height;
+    ref.current.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
   }
 };
 

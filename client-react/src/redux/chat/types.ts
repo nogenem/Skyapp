@@ -86,6 +86,11 @@ interface IFetchMessagesCredentials {
   sort?: string;
 }
 
+interface ISendMessageCredentials {
+  channel_id: string;
+  body: string;
+}
+
 type TChatState = {
   users: IOtherUsers;
   channels: IChannels;
@@ -100,6 +105,7 @@ enum EChatActions {
   REMOVE_CHANNEL = '@chat/REMOVE_CHANNEL',
   ADD_NEW_USER = '@chat/ADD_NEW_USER',
   ADD_MESSAGES = '@chat/ADD_MESSAGES',
+  SET_LATEST_MESSAGE = '@chat/SET_LATEST_MESSAGE',
 }
 
 interface IChatActionType<T, P> {
@@ -120,7 +126,8 @@ type TChatAction =
   | IChatActionType<
       typeof EChatActions.ADD_MESSAGES,
       { messages: IMessage[]; totalMessages: number; atTop: boolean }
-    >;
+    >
+  | IChatActionType<typeof EChatActions.SET_LATEST_MESSAGE, IMessage>;
 
 export type {
   TChatState,
@@ -136,5 +143,6 @@ export type {
   IUpdateGroupCredentials,
   ILeaveGroupCredentials,
   IFetchMessagesCredentials,
+  ISendMessageCredentials,
 };
 export { EChatActions };
