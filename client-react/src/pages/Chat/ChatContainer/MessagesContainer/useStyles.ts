@@ -11,6 +11,24 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingRight: '0.5em',
       overflowY: 'auto',
     },
+    messageFromMe: {
+      alignSelf: 'flex-end',
+      padding: '10px',
+      margin: '1px 0',
+      maxWidth: '70%',
+      borderRadius: '10px 0px 0px 10px',
+      position: 'relative',
+    },
+    messageFromThem: {
+      alignSelf: 'flex-start',
+      padding: '10px',
+      margin: '1px 0',
+      maxWidth: '70%',
+      borderRadius: '0px 10px 10px 0px',
+      position: 'relative',
+      backgroundColor: theme.palette.primary.main,
+      color: theme.palette.primary.contrastText,
+    },
   }),
 );
 
