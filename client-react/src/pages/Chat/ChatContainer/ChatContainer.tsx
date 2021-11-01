@@ -2,10 +2,12 @@ import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 
 import { RouteComponentProps } from '@reach/router';
+import { AxiosError } from 'axios';
 
 import {
   fetchMessages as fetchMessagesAction,
   sendMessage as sendMessageAction,
+  sendFiles as sendFilesAction,
 } from '~/redux/chat/actions';
 import {
   getActiveChannel,
@@ -13,6 +15,8 @@ import {
 } from '~/redux/chat/reducer';
 import { IAppState } from '~/redux/store';
 import { getUser } from '~/redux/user/reducer';
+import handleServerErrors from '~/utils/handleServerErrors';
+import { Toast } from '~/utils/Toast';
 
 import { ChatInput } from './ChatInput';
 import { MessagesContainer } from './MessagesContainer';
@@ -26,6 +30,7 @@ const mapStateToProps = (state: IAppState) => ({
 const mapDispatchToProps = {
   fetchMessages: fetchMessagesAction,
   sendMessage: sendMessageAction,
+  sendFiles: sendFilesAction,
 };
 const connector = connect(mapStateToProps, mapDispatchToProps);
 type TPropsFromRedux = ConnectedProps<typeof connector>;
@@ -38,6 +43,7 @@ const ChatContainer = ({
   loggedUser,
   fetchMessages,
   sendMessage,
+  sendFiles,
 }: TProps) => {
   const classes = useStyles();
 
@@ -46,6 +52,20 @@ const ChatContainer = ({
       sendMessage(activeChannel?._id as string, message);
     } catch (err) {
       console.error(err);
+    }
+  };
+
+  const handleSendingFiles = async (filesData: FormData) => {
+    try {
+      filesData.append('channel_id', activeChannel?._id as string);
+      await sendFiles(filesData);
+    } catch (err) {
+      const errors = handleServerErrors(err as AxiosError);
+      if (errors.global) {
+        Toast.error({
+          html: errors.global,
+        });
+      }
     }
   };
 
@@ -67,7 +87,10 @@ const ChatContainer = ({
         messages={activeChannelMessages}
         loggedUser={loggedUser}
       />
-      <ChatInput handleSubmit={handleSubmit} />
+      <ChatInput
+        handleSubmit={handleSubmit}
+        handleSendingFiles={handleSendingFiles}
+      />
     </div>
   );
 };

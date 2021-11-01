@@ -166,3 +166,6 @@ export const sendMessage =
     };
     return ApiService.chat.sendMessage(credentials);
   };
+
+export const sendFiles = (filesData: FormData) => (dispatch: Dispatch) =>
+  ApiService.chat.sendFiles(filesData);

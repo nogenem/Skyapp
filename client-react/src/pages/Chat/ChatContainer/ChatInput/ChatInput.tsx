@@ -1,21 +1,26 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { IconButton } from '@material-ui/core';
 import { Send as SendIcon } from '@material-ui/icons';
 
 import { TextInput } from '~/components';
 
+import { ChatMoreOptsMenu } from '../ChatMoreOptsMenu';
 import useStyles from './useStyles';
 
 interface IOwnProps {
   handleSubmit: (message: string) => void;
+  handleSendingFiles: (filesData: FormData) => void;
 }
 
 type TProps = IOwnProps;
 
-const ChatInput = ({ handleSubmit }: TProps) => {
+const ChatInput = ({ handleSubmit, handleSendingFiles }: TProps) => {
   const [currentMessage, setCurrentMessage] = React.useState('');
   const [isDisabled, setIsDisabled] = React.useState(true);
+  const { t: trans } = useTranslation(['Messages']);
+
   const classes = useStyles();
 
   const onSubmit = () => {
@@ -47,7 +52,7 @@ const ChatInput = ({ handleSubmit }: TProps) => {
     <form className={classes.container} onSubmit={onSubmit}>
       <TextInput
         id="chat-send-input"
-        label="Type here"
+        label={trans('Messages:Type here')}
         className={classes.sendInput}
         multiline
         maxRows="3"
@@ -55,19 +60,24 @@ const ChatInput = ({ handleSubmit }: TProps) => {
         onChange={handleChange}
         onKeyDown={handleKeyDown}
         margin="normal"
-        variant="filled"
+        variant="outlined"
       />
-      <IconButton
-        type="submit"
-        className={classes.icon}
-        classes={{
-          root: classes.iconRoot,
-        }}
-        aria-label="send"
-        disabled={isDisabled}
-      >
-        <SendIcon />
-      </IconButton>
+      {currentMessage !== '' && (
+        <IconButton
+          type="submit"
+          className={classes.icon}
+          classes={{
+            root: classes.iconRoot,
+          }}
+          aria-label="send"
+          disabled={isDisabled}
+        >
+          <SendIcon />
+        </IconButton>
+      )}
+      {currentMessage === '' && (
+        <ChatMoreOptsMenu handleSendingFiles={handleSendingFiles} />
+      )}
     </form>
   );
 };

@@ -3,10 +3,15 @@ import React from 'react';
 import { Paper } from '@material-ui/core';
 
 import { MESSAGE_TYPES } from '~/constants/message_types';
-import { IMessage } from '~/redux/chat/types';
+import { IAttachment, IMessage } from '~/redux/chat/types';
 import { IUser } from '~/redux/user/types';
 
-import { SystemMessage, TextMessage } from './Messages';
+import {
+  SystemMessage,
+  TextMessage,
+  UploadedFileMessage,
+  UploadedImageMessage,
+} from './Messages';
 import useStyles from './useStyles';
 
 interface IOwnProps {
@@ -48,7 +53,7 @@ const MessagesContainer = ({ messages, loggedUser }: TProps) => {
 
   React.useEffect(() => {
     if (!!messages && messages.length) {
-      scrollToBottom(ref);
+      setTimeout(() => scrollToBottom(ref), 50);
     }
   }, [messages]);
 
@@ -63,8 +68,12 @@ const getMessageByType = (message: IMessage) => {
   switch (message.type) {
     case MESSAGE_TYPES.TEXT:
       return <TextMessage message={message} />;
-    case MESSAGE_TYPES.UPLOADED_FILE:
-      return <div>{message.body}</div>;
+    case MESSAGE_TYPES.UPLOADED_FILE: {
+      const body = message.body as IAttachment;
+      if (body.mimeType.startsWith('image/'))
+        return <UploadedImageMessage message={message} />;
+      else return <UploadedFileMessage message={message} />;
+    }
     case MESSAGE_TYPES.UPLOADED_AUDIO:
       return <div>{message.body}</div>;
     default:
@@ -77,7 +86,13 @@ const scrollToBottom = (ref: React.RefObject<HTMLDivElement>) => {
     const scrollHeight = ref.current.scrollHeight;
     const height = ref.current.clientHeight;
     const maxScrollTop = scrollHeight - height;
-    ref.current.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
+    if (ref.current.scroll) {
+      ref.current.scroll({ top: scrollHeight - height, behavior: 'smooth' });
+    } else if (ref.current.scrollTo) {
+      ref.current.scrollTo({ top: scrollHeight - height, behavior: 'smooth' });
+    } else {
+      ref.current.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
+    }
   }
 };
 

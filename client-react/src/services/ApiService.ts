@@ -39,6 +39,7 @@ export const END_POINTS = {
     leaveGroupChannel: 'api/chat/group/leave',
     getMessages: 'api/chat/messages',
     sendMessage: 'api/chat/messages',
+    sendFiles: 'api/chat/files',
   },
 };
 
@@ -111,6 +112,10 @@ export default {
     sendMessage: (credentials: ISendMessageCredentials) =>
       axiosInstance
         .post(END_POINTS.chat.sendMessage, { ...credentials })
+        .then(res => res.data),
+    sendFiles: (filesData: FormData) =>
+      axiosInstance
+        .post(END_POINTS.chat.sendFiles, filesData)
         .then(res => res.data),
   },
 };

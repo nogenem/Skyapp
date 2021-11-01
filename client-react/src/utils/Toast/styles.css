@@ -1,0 +1,57 @@
+#toast-root {
+  bottom: 10px;
+  left: 30px;
+  position: fixed;
+  z-index: 2001;
+  display: block;
+
+  max-height: 24%;
+  min-width: 30%;
+  max-width: 40%;
+  overflow-y: auto;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+#toast-root > .chat-toast:not(:last-child) {
+  margin-bottom: 10px;
+}
+
+.chat-toast {
+  background: #323232;
+  color: #fff;
+  border: 1px solid transparent;
+
+  opacity: 0;
+
+  width: 100%;
+  line-height: 1.43;
+  min-height: 42px;
+  padding: 6px 16px;
+
+  font-size: 0.875rem;
+  font-weight: 500;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  -webkit-font-smoothing: antialiased;
+
+  display: flex;
+  align-items: center;
+
+  box-shadow:
+    0px 3px 5px -1px rgba(0,0,0,0.2),
+    0px 6px 10px 0px rgba(0,0,0,0.14),
+    0px 1px 18px 0px rgba(0,0,0,0.12);
+  border-radius: 4px;
+
+  cursor: pointer;
+  touch-action: pan-y;
+  -webkit-user-drag: none;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+.chat-toast > .chat-toast-span {
+  width: 100%;
+
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
