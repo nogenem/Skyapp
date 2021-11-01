@@ -1,10 +1,11 @@
 import { Response } from 'express';
 import { Types as MongooseTypes } from 'mongoose';
 
-import { MESSAGE_TYPES } from '~/constants/message_types';
+import { MESSAGE_TYPES, TMessageType } from '~/constants/message_types';
 import {
   CHANNEL_CREATED,
   CHANNEL_UPDATED,
+  FILES_UPLOADED,
   MESSAGE_SENT,
   REMOVED_FROM_GROUP,
 } from '~/constants/return_messages';
@@ -18,6 +19,7 @@ import {
 import type { IAuthRequest } from '~/middlewares/auth';
 import {
   Channel,
+  IAttachment,
   IChannelDoc,
   IMemberDoc,
   IMessage,
@@ -67,6 +69,14 @@ interface ISendMessageCredentials {
   channel_id: string;
   body: string;
 }
+
+const isValidMessageType = (type: number) => {
+  let isValid = false;
+  Object.values(MESSAGE_TYPES).forEach(t => {
+    isValid = isValid || t === type;
+  });
+  return isValid;
+};
 
 const insertManyMessages = (messages: IMessage[]): Promise<IMessageDoc[]> => {
   // Without this, all dates would be the same...
@@ -537,5 +547,62 @@ export default {
     } catch (err) {
       return handleErrors(err as Error, res);
     }
+  },
+  async sendFiles(
+    req: IAuthRequest,
+    res: Response,
+  ): Promise<Response<unknown>> {
+    const { channel_id: channelId, type } = req.body as {
+      // eslint-disable-next-line camelcase
+      channel_id: string;
+      type: string;
+    };
+    const currentUser = req.currentUser as IUserDoc;
+    let channel: IChannelDoc | null = null;
+
+    console.log({ channelId, type });
+
+    try {
+      channel = await Channel.findOne({ _id: channelId });
+      if (!channel) {
+        return handleErrors(invalidIdError(), res);
+      }
+    } catch (err) {
+      return handleErrors(err as Error, res);
+    }
+
+    const reqFiles = req?.files as Express.Multer.File[];
+    const files: IAttachment[] = reqFiles.map(file => ({
+      originalName: file.originalname,
+      size: file.size,
+      path: file.path.replace(/\\/gi, '/'),
+      mimeType: file.mimetype,
+    }));
+
+    const messages: IMessage[] = [];
+    files.forEach(file => {
+      messages.push({
+        channel_id: channel?._id as string,
+        from_id: currentUser._id,
+        body: file,
+        type: isValidMessageType(+type)
+          ? (+type as TMessageType)
+          : MESSAGE_TYPES.UPLOADED_FILE,
+      });
+    });
+
+    const channelJson = channel.toChatChannel();
+    const messagesRecord = await insertManyMessages(messages);
+    const messageJson = messagesRecord.map(message => message.toChatMessage());
+
+    const io = IoService.instance();
+    io.emit(IO_MESSAGES_RECEIVED, {
+      channel: channelJson,
+      messages: messageJson,
+    });
+    return res.status(200).json({
+      message: FILES_UPLOADED,
+      messagesObjs: messageJson,
+    });
   },
 };

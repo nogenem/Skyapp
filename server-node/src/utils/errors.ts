@@ -81,3 +81,7 @@ export const userIsNotGroupAdmError = (): CustomError =>
 
 export const notMemberOfGroupError = (): CustomError =>
   new CustomError({ global: NOT_MEMBER_OF_GROUP });
+
+export const multerErrors = (
+  errs: [msgObj: IMsgObj<TMsgObjTypes>, status?: number],
+): CustomError => new CustomError(...errs);

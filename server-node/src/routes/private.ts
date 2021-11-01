@@ -1,8 +1,26 @@
 import { Router } from 'express';
+import multer from 'multer';
 
+import fileUploadLimits from '~/constants/file_upload_limits';
 import { ChatController, UserController } from '~/controllers';
 import { validate } from '~/middlewares';
+import sanitize from '~/utils/sanitize';
 import { chat, user } from '~/validators';
+
+const multerStorage = multer.diskStorage({
+  destination: '~/../public/uploads',
+  filename: (req, file, cb) => {
+    const prefix = Date.now() + Math.round(Math.random() * 1e9);
+    const name = `${prefix}-${sanitize(file.originalname)}`;
+    cb(null, name);
+  },
+});
+
+const multerUploader = multer({
+  // dest: "~/../public/uploads",
+  storage: multerStorage,
+  limits: fileUploadLimits,
+}).array('files');
 
 const routes = Router();
 
@@ -46,6 +64,12 @@ routes.post(
   '/chat/messages',
   validate(chat.sendMessage),
   ChatController.sendMessage,
+);
+routes.post(
+  '/chat/files',
+  validate(chat.sendFiles),
+  multerUploader,
+  ChatController.sendFiles,
 );
 
 export default routes;

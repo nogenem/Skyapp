@@ -1,8 +1,8 @@
 {
   "Invalid email": "Email inválido",
   "Passwords must match": "As senhas devem corresponder",
-  "This field must have at least {{count}} characters": "Este campo deve ter pelo menos {{count}} caractere",
-  "This field must have at least {{count}} characters_plural": "Este campo deve ter pelo menos {{count}} caracteres",
+  "This field must have at least {{count}} character": "Este campo deve ter pelo menos {{count}} caractere",
+  "This field must have at least {{count}} character_plural": "Este campo deve ter pelo menos {{count}} caracteres",
   "Internal server error": "Erro interno do servidor",
   "This email is already taken": "Este email ja esta sendo utilizado",
   "Invalid id": "Id inválido",
@@ -18,5 +18,9 @@
   "You are not an administrator of this group": "Você não é um administrador deste grupo",
   "You are not a member of this group": "Você não é um membro deste grupo",
   "`Offset` query param has to be a number greater or equal to 0": "O parâmetro de query `Offset` tem que ser um número maior ou igual a 0",
-  "Field cant be empty": "O campo não pode estar vazio"
+  "Field cant be empty": "O campo não pode estar vazio",
+  "Can't upload files bigger than {{count}}MB": "Não é possível fazer upload de arquivos maiores que {{count}}MB",
+  "Can't upload files bigger than {{count}}MB_plural": "Não é possível fazer upload de arquivos maiores que {{count}}MBs",
+  "Can't upload more than {{count}} file at the same time": "Não é possível fazer upload de mais de {{count}} arquivo ao mesmo tempo",
+  "Can't upload more than {{count}} file at the same time_plural": "Não é possível fazer upload de mais de {{count}} arquivos ao mesmo tempo"
 }

@@ -1,6 +1,7 @@
 import { Response } from 'express';
 import { Result, ValidationError } from 'express-validator';
 import mongoose from 'mongoose';
+import multer from 'multer';
 
 import i18n from '~/i18n';
 
@@ -10,11 +11,14 @@ import {
   internalServerError,
   invalidIdError,
   mongooseErrors,
+  multerErrors,
 } from './errors';
 import parseMongooseErrors from './parseMongooseErrors';
+import parseMulterErrors from './parseMulterErrors';
 import parseValidatorErrors from './parseValidatorErrors';
 
 type TError =
+  | multer.MulterError
   | Result<ValidationError>
   | CustomError
   | mongoose.Error.CastError
@@ -57,6 +61,10 @@ const handleErrors = (err: TError, res: Response): Response<unknown> => {
     const errors = translateErrors(err);
     return res.status(err.status).json({ errors });
   }
+
+  // Errors coming from `multer`
+  if (err instanceof multer.MulterError)
+    return handleErrors(multerErrors(parseMulterErrors(err)), res);
 
   // Errors coming from `express-validator`
   if (err instanceof Result) {

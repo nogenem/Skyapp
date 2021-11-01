@@ -48,6 +48,7 @@ const chat = {
       .isEmpty()
       .withMessage(FIELD_CANT_BE_EMPY),
   ],
+  sendFiles: [],
 };
 
 export default chat;

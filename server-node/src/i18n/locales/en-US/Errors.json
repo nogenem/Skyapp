@@ -1,8 +1,8 @@
 {
   "Invalid email": "Invalid email",
   "Passwords must match": "Passwords must match",
-  "This field must have at least {{count}} characters": "This field must have at least {{count}} character",
-  "This field must have at least {{count}} characters_plural": "This field must have at least {{count}} characters",
+  "This field must have at least {{count}} character": "This field must have at least {{count}} character",
+  "This field must have at least {{count}} character_plural": "This field must have at least {{count}} characters",
   "Internal server error": "Internal server error",
   "This email is already taken": "This email is already taken",
   "Invalid id": "Invalid id",
@@ -18,5 +18,9 @@
   "You are not an administrator of this group": "You are not an administrator of this group",
   "You are not a member of this group": "You are not a member of this group",
   "`Offset` query param has to be a number greater or equal to 0": "`Offset` query param has to be a number greater or equal to 0",
-  "Field cant be empty": "Field cant be empty"
+  "Field cant be empty": "Field cant be empty",
+  "Can't upload files bigger than {{count}}MB": "Can't upload files bigger than {{count}}MB",
+  "Can't upload files bigger than {{count}}MB_plural": "Can't upload files bigger than {{count}}MBs",
+  "Can't upload more than {{count}} file at the same time": "Can't upload more than {{count}} file at the same time",
+  "Can't upload more than {{count}} file at the same time_plural": "Can't upload more than {{count}} files at the same time"
 }
