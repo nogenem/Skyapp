@@ -4,5 +4,9 @@
   "Passwords must match": "Passwords must match",
   "This field must have at least {{count}} characters": "This field must have at least {{count}} character",
   "This field must have at least {{count}} characters_plural": "This field must have at least {{count}} characters",
-  "You need to select at least 2 members": "You need to select at least 2 members"
+  "You need to select at least 2 members": "You need to select at least 2 members",
+  "Can't upload files bigger than {{count}}MB": "Can't upload files bigger than {{count}}MB",
+  "Can't upload files bigger than {{count}}MB_plural": "Can't upload files bigger than {{count}}MBs",
+  "Can't upload more than {{count}} file at the same time": "Can't upload more than {{count}} file at the same time",
+  "Can't upload more than {{count}} file at the same time_plural": "Can't upload more than {{count}} files at the same time"
 }
