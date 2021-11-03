@@ -1,15 +1,27 @@
 #toast-root {
-  bottom: 10px;
-  left: 30px;
+  bottom: 85px;
+  left: 10px;
   position: fixed;
   z-index: 2001;
   display: block;
 
   max-height: 24%;
-  min-width: 30%;
+  min-width: 20%;
   max-width: 40%;
   overflow-y: auto;
   background: rgba(0, 0, 0, 0.5);
+}
+
+@media only screen and (max-width: 930px) {
+  #toast-root {
+    max-width: 80%;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  #toast-root {
+    max-width: 100%;
+  }
 }
 
 #toast-root > .chat-toast:not(:last-child) {
@@ -28,7 +40,7 @@
   min-height: 42px;
   padding: 6px 16px;
 
-  font-size: 0.875rem;
+  font-size: 1rem;
   font-weight: 500;
   font-family: "Roboto", "Helvetica", "Arial", sans-serif;
   -webkit-font-smoothing: antialiased;

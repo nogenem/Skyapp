@@ -80,6 +80,7 @@ class Toast {
     }
 
     el.innerHTML = innerHTML;
+    el.title = el.textContent || '';
     el.style.color = color;
     el.style.background = background;
     el.style.borderColor = borderColor;
