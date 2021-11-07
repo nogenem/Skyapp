@@ -21,7 +21,7 @@ const UploadedFileMessage = ({ message }: TProps) => {
   const name = sanitize(body.originalName);
   let url = body.path;
   if (!url.startsWith('blob:') && !url.startsWith('http'))
-    url = `${process.env.REACT_APP_BACKEND_URL}${body.path}`;
+    url = `${process.env.REACT_APP_BASE_API_URL}${body.path}`;
 
   return (
     <a
