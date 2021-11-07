@@ -18,6 +18,7 @@ import FILE_UPLOAD_LIMITS from '~/constants/file_upload_limits';
 import { MESSAGE_TYPES } from '~/constants/message_types';
 import { Toast } from '~/utils/Toast';
 
+import RecordingMenuItem from './RecordingMenuItem';
 import useStyles from './useStyles';
 
 interface IOwnProps {
@@ -97,6 +98,18 @@ const ChatMoreOptsMenu = ({ handleSendingFiles }: TProps) => {
     }
   };
 
+  const saveAudio = (chunks: Blob[]) => {
+    if (chunks.length > 0) {
+      const audioBlob = new Blob(chunks, { type: 'audio/x-mpeg-3' });
+
+      const filesData = new FormData();
+      filesData.append('files', audioBlob, getAudioName());
+      filesData.append('type', `${MESSAGE_TYPES.UPLOADED_AUDIO}`);
+      handleSendingFiles(filesData);
+    }
+    closeMenu();
+  };
+
   return (
     <>
       <IconButton
@@ -114,7 +127,7 @@ const ChatMoreOptsMenu = ({ handleSendingFiles }: TProps) => {
       <Menu
         keepMounted
         transformOrigin={{
-          vertical: 60, //60~150
+          vertical: 110, //60~150
           horizontal: 0,
         }}
         id="more-options-menu"
@@ -136,9 +149,20 @@ const ChatMoreOptsMenu = ({ handleSendingFiles }: TProps) => {
             onChange={onChangeFileInput}
           />
         </MenuItem>
+        <RecordingMenuItem saveAudio={saveAudio} onClose={closeMenu} />
       </Menu>
     </>
   );
+};
+
+const getAudioName = () => {
+  const date = new Date();
+
+  let isoString = date.toISOString();
+  isoString = isoString.split('.')[0];
+  isoString = isoString.replace(/:/gi, '_');
+
+  return `audio_${isoString}.mp3`;
 };
 
 export type { TProps };

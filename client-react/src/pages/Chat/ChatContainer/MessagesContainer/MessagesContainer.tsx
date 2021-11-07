@@ -12,6 +12,7 @@ import {
   UploadedFileMessage,
   UploadedImageMessage,
 } from './Messages';
+import AudioMessage from './Messages/AudioMessage';
 import useStyles from './useStyles';
 
 interface IOwnProps {
@@ -75,7 +76,7 @@ const getMessageByType = (message: IMessage) => {
       else return <UploadedFileMessage message={message} />;
     }
     case MESSAGE_TYPES.UPLOADED_AUDIO:
-      return <div>{message.body}</div>;
+      return <AudioMessage message={message} />;
     default:
       return null;
   }
