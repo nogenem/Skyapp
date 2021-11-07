@@ -560,8 +560,6 @@ export default {
     const currentUser = req.currentUser as IUserDoc;
     let channel: IChannelDoc | null = null;
 
-    console.log({ channelId, type });
-
     try {
       channel = await Channel.findOne({ _id: channelId });
       if (!channel) {
