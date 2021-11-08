@@ -255,10 +255,7 @@ const SecondaryText = ({ lastMessage, unreadMsgs }: ISecondaryText) => {
     ) {
       message = lastMessage.body as string;
       title = message;
-    } else if (
-      lastMessage.type === MESSAGE_TYPES.UPLOADED_FILE ||
-      lastMessage.type === MESSAGE_TYPES.UPLOADED_AUDIO
-    ) {
+    } else if (lastMessage.type === MESSAGE_TYPES.UPLOADED_FILE) {
       const body = lastMessage.body as IAttachment;
       const name = sanitize(body.originalName);
       message = (

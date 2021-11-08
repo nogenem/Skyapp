@@ -1,13 +1,29 @@
-import React from 'react';
+import React, { SyntheticEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { IconButton } from '@material-ui/core';
 import { Send as SendIcon } from '@material-ui/icons';
 
 import { TextInput } from '~/components';
+import useObjState from '~/hooks/useObjState';
 
 import { ChatMoreOptsMenu } from '../ChatMoreOptsMenu';
 import useStyles from './useStyles';
+
+interface IOwnState {
+  message: string;
+  files: File[];
+  isDisabled: boolean;
+  isSubmitting: boolean;
+}
+type TState = IOwnState;
+
+const initialState: TState = {
+  message: '',
+  files: [],
+  isDisabled: true,
+  isSubmitting: false,
+};
 
 interface IOwnProps {
   handleSubmit: (message: string) => void;
@@ -17,26 +33,42 @@ interface IOwnProps {
 type TProps = IOwnProps;
 
 const ChatInput = ({ handleSubmit, handleSendingFiles }: TProps) => {
-  const [currentMessage, setCurrentMessage] = React.useState('');
-  const [isDisabled, setIsDisabled] = React.useState(true);
+  const [state, setState] = useObjState(initialState);
   const { t: trans } = useTranslation(['Messages']);
 
   const classes = useStyles();
 
-  const onSubmit = () => {
-    const message = currentMessage.trim();
-    if (!!message) {
-      handleSubmit(message);
+  const onSubmit = async () => {
+    setState({ isSubmitting: true });
+    if (state.files.length > 0) {
+      const filesData = new FormData();
+      for (let i = 0; i < state.files.length; i++) {
+        filesData.append('files', state.files[i]);
+      }
+      await handleSendingFiles(filesData);
     }
-    setCurrentMessage('');
-    setIsDisabled(true);
+
+    const message = state.message.trim();
+    if (!!message) {
+      await handleSubmit(message);
+    }
+    setState(initialState);
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const disabled = event.target.value.trim() === '';
+    const isDisabled = event.target.value.trim() === '';
     const message = event.target.value;
-    setCurrentMessage(message);
-    setIsDisabled(disabled);
+    setState({
+      message,
+      isDisabled,
+    });
+  };
+
+  const handleFormSubmit = (event: SyntheticEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    onSubmit();
   };
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
@@ -48,21 +80,31 @@ const ChatInput = ({ handleSubmit, handleSendingFiles }: TProps) => {
     }
   };
 
+  const addFiles = (files: File[]) => {
+    setState(old => ({
+      files: [...old.files, ...files],
+      isDisabled: false,
+    }));
+  };
+
   return (
-    <form className={classes.container} onSubmit={onSubmit}>
+    <form className={classes.container} onSubmit={handleFormSubmit}>
+      {/* TODO: Add a better file preview ;p */}
+      <span>{state.files.length}</span>
       <TextInput
         id="chat-send-input"
         label={trans('Messages:Type here')}
         className={classes.sendInput}
         multiline
         maxRows="3"
-        value={currentMessage}
+        value={state.message}
         onChange={handleChange}
         onKeyDown={handleKeyDown}
         margin="normal"
         variant="outlined"
+        disabled={state.isSubmitting}
       />
-      {currentMessage !== '' && (
+      {(!!state.message || !!state.files.length) && (
         <IconButton
           type="submit"
           className={classes.icon}
@@ -70,13 +112,13 @@ const ChatInput = ({ handleSubmit, handleSendingFiles }: TProps) => {
             root: classes.iconRoot,
           }}
           aria-label="send"
-          disabled={isDisabled}
+          disabled={state.isDisabled || state.isSubmitting}
         >
           <SendIcon />
         </IconButton>
       )}
-      {currentMessage === '' && (
-        <ChatMoreOptsMenu handleSendingFiles={handleSendingFiles} />
+      {!state.message && !state.files.length && (
+        <ChatMoreOptsMenu addFiles={addFiles} />
       )}
     </form>
   );

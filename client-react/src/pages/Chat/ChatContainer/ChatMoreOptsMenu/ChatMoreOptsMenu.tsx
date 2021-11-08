@@ -15,19 +15,18 @@ import {
 
 import { HAS_TOO_MANY_FILES, UPLOAD_FILE_IS_TOO_BIG } from '~/constants/errors';
 import FILE_UPLOAD_LIMITS from '~/constants/file_upload_limits';
-import { MESSAGE_TYPES } from '~/constants/message_types';
 import { Toast } from '~/utils/Toast';
 
 import RecordingMenuItem from './RecordingMenuItem';
 import useStyles from './useStyles';
 
 interface IOwnProps {
-  handleSendingFiles: (filesData: FormData) => void;
+  addFiles: (files: File[]) => void;
 }
 
 type TProps = IOwnProps;
 
-const ChatMoreOptsMenu = ({ handleSendingFiles }: TProps) => {
+const ChatMoreOptsMenu = ({ addFiles }: TProps) => {
   const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const { t: trans } = useTranslation(['Messages']);
@@ -88,12 +87,11 @@ const ChatMoreOptsMenu = ({ handleSendingFiles }: TProps) => {
         }
       }
 
-      const filesData = new FormData();
+      const files: File[] = [];
       for (let i = 0; i < event.target.files.length; i++) {
-        filesData.append('files', event.target.files[i]);
+        files.push(event.target.files[i]);
       }
-      filesData.append('type', `${MESSAGE_TYPES.UPLOADED_FILE}`);
-      handleSendingFiles(filesData);
+      addFiles(files);
       event.target.value = '';
     }
   };
@@ -101,11 +99,11 @@ const ChatMoreOptsMenu = ({ handleSendingFiles }: TProps) => {
   const saveAudio = (chunks: Blob[]) => {
     if (chunks.length > 0) {
       const audioBlob = new Blob(chunks, { type: 'audio/x-mpeg-3' });
-
-      const filesData = new FormData();
-      filesData.append('files', audioBlob, getAudioName());
-      filesData.append('type', `${MESSAGE_TYPES.UPLOADED_AUDIO}`);
-      handleSendingFiles(filesData);
+      const audioFile = new File([audioBlob], getAudioName(), {
+        type: audioBlob.type,
+        lastModified: new Date().getTime(),
+      });
+      addFiles([audioFile]);
     }
     closeMenu();
   };

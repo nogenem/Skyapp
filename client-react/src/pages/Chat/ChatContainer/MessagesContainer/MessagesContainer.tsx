@@ -73,10 +73,10 @@ const getMessageByType = (message: IMessage) => {
       const body = message.body as IAttachment;
       if (body.mimeType.startsWith('image/'))
         return <UploadedImageMessage message={message} />;
+      else if (body.mimeType.startsWith('audio/'))
+        return <AudioMessage message={message} />;
       else return <UploadedFileMessage message={message} />;
     }
-    case MESSAGE_TYPES.UPLOADED_AUDIO:
-      return <AudioMessage message={message} />;
     default:
       return null;
   }
