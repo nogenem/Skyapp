@@ -1,7 +1,7 @@
 import { Response } from 'express';
 import { Types as MongooseTypes } from 'mongoose';
 
-import { MESSAGE_TYPES, TMessageType } from '~/constants/message_types';
+import { MESSAGE_TYPES } from '~/constants/message_types';
 import {
   CHANNEL_CREATED,
   CHANNEL_UPDATED,
@@ -69,14 +69,6 @@ interface ISendMessageCredentials {
   channel_id: string;
   body: string;
 }
-
-const isValidMessageType = (type: number) => {
-  let isValid = false;
-  Object.values(MESSAGE_TYPES).forEach(t => {
-    isValid = isValid || t === type;
-  });
-  return isValid;
-};
 
 const insertManyMessages = (messages: IMessage[]): Promise<IMessageDoc[]> => {
   // Without this, all dates would be the same...
@@ -552,10 +544,9 @@ export default {
     req: IAuthRequest,
     res: Response,
   ): Promise<Response<unknown>> {
-    const { channel_id: channelId, type } = req.body as {
+    const { channel_id: channelId } = req.body as {
       // eslint-disable-next-line camelcase
       channel_id: string;
-      type: string;
     };
     const currentUser = req.currentUser as IUserDoc;
     let channel: IChannelDoc | null = null;
@@ -583,9 +574,7 @@ export default {
         channel_id: channel?._id as string,
         from_id: currentUser._id,
         body: file,
-        type: isValidMessageType(+type)
-          ? (+type as TMessageType)
-          : MESSAGE_TYPES.UPLOADED_FILE,
+        type: MESSAGE_TYPES.UPLOADED_FILE,
       });
     });
 
