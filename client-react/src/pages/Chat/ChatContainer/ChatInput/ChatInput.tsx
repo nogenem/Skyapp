@@ -5,7 +5,10 @@ import { IconButton } from '@material-ui/core';
 import { Send as SendIcon } from '@material-ui/icons';
 
 import { TextInput } from '~/components';
+import { HAS_TOO_MANY_FILES, UPLOAD_FILE_IS_TOO_BIG } from '~/constants/errors';
+import FILE_UPLOAD_LIMITS from '~/constants/file_upload_limits';
 import useObjState from '~/hooks/useObjState';
+import { Toast } from '~/utils/Toast';
 
 import { ChatMoreOptsMenu } from '../ChatMoreOptsMenu';
 import useStyles from './useStyles';
@@ -81,6 +84,28 @@ const ChatInput = ({ handleSubmit, handleSendingFiles }: TProps) => {
   };
 
   const addFiles = (files: File[]) => {
+    // validation
+    if (files.length + state.files.length > FILE_UPLOAD_LIMITS.files) {
+      Toast.error({
+        html: trans(HAS_TOO_MANY_FILES, { count: FILE_UPLOAD_LIMITS.files }),
+      });
+
+      return;
+    }
+
+    for (let i = 0; i < files.length; i++) {
+      if (files[i].size > FILE_UPLOAD_LIMITS.fileSize) {
+        Toast.error({
+          html: trans(UPLOAD_FILE_IS_TOO_BIG, {
+            count: FILE_UPLOAD_LIMITS.fileSize / 1024 / 1024,
+          }),
+        });
+
+        return;
+      }
+    }
+
+    // stash the files
     setState(old => ({
       files: [...old.files, ...files],
       isDisabled: false,

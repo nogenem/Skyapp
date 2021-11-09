@@ -13,10 +13,6 @@ import {
   AttachFile as AttachFileIcon,
 } from '@material-ui/icons';
 
-import { HAS_TOO_MANY_FILES, UPLOAD_FILE_IS_TOO_BIG } from '~/constants/errors';
-import FILE_UPLOAD_LIMITS from '~/constants/file_upload_limits';
-import { Toast } from '~/utils/Toast';
-
 import RecordingMenuItem from './RecordingMenuItem';
 import useStyles from './useStyles';
 
@@ -60,38 +56,15 @@ const ChatMoreOptsMenu = ({ addFiles }: TProps) => {
 
   const onChangeFileInput = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
-      // validation
-      if (event.target.files.length > FILE_UPLOAD_LIMITS.files) {
-        Toast.error({
-          html: trans(HAS_TOO_MANY_FILES, { count: FILE_UPLOAD_LIMITS.files }),
-        });
-        event.preventDefault();
-        event.stopPropagation();
-        event.target.value = '';
-
-        return false;
-      }
-
-      for (let i = 0; i < event.target.files.length; i++) {
-        if (event.target.files[i].size > FILE_UPLOAD_LIMITS.fileSize) {
-          Toast.error({
-            html: trans(UPLOAD_FILE_IS_TOO_BIG, {
-              count: FILE_UPLOAD_LIMITS.fileSize / 1024 / 1024,
-            }),
-          });
-          event.preventDefault();
-          event.stopPropagation();
-          event.target.value = '';
-
-          return false;
-        }
-      }
+      event.preventDefault();
+      event.stopPropagation();
 
       const files: File[] = [];
       for (let i = 0; i < event.target.files.length; i++) {
         files.push(event.target.files[i]);
       }
       addFiles(files);
+
       event.target.value = '';
     }
   };
