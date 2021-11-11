@@ -10,7 +10,9 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingLeft: '2em',
       paddingRight: '0.5em',
       overflowY: 'auto',
-      maxHeight: '90vh',
+      maxHeight: `calc(90vh - ${theme.spacing(1)}px)`,
+      minHeight: `calc(70vh - ${theme.spacing(1)}px)`,
+      marginBottom: theme.spacing(1),
     },
     messageFromMe: {
       alignSelf: 'flex-end',

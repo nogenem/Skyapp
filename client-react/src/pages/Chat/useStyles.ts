@@ -4,13 +4,15 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
       display: 'flex',
+      height: '100vh',
     },
     rightContainer: {
       display: 'flex',
-      flexDirection: 'column',
       width: '100%',
       paddingLeft: theme.spacing(1),
       paddingRight: theme.spacing(1),
+      paddingBottom: theme.spacing(1),
+      height: '100vh',
     },
   }),
 );

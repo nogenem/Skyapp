@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { IconButton } from '@material-ui/core';
 import { Send as SendIcon } from '@material-ui/icons';
 
+import { TmpFile, TmpImage } from '~/classes';
 import { TextInput } from '~/components';
 import { HAS_TOO_MANY_FILES, UPLOAD_FILE_IS_TOO_BIG } from '~/constants/errors';
 import FILE_UPLOAD_LIMITS from '~/constants/file_upload_limits';
@@ -11,11 +12,13 @@ import useObjState from '~/hooks/useObjState';
 import { Toast } from '~/utils/Toast';
 
 import { ChatMoreOptsMenu } from '../ChatMoreOptsMenu';
+import FilePreview from './FilePreview';
+import ImagePreview from './ImagePreview';
 import useStyles from './useStyles';
 
 interface IOwnState {
   message: string;
-  files: File[];
+  files: TmpFile[];
   isDisabled: boolean;
   isSubmitting: boolean;
 }
@@ -38,7 +41,6 @@ type TProps = IOwnProps;
 const ChatInput = ({ handleSubmit, handleSendingFiles }: TProps) => {
   const [state, setState] = useObjState(initialState);
   const { t: trans } = useTranslation(['Messages']);
-
   const classes = useStyles();
 
   const onSubmit = async () => {
@@ -46,7 +48,7 @@ const ChatInput = ({ handleSubmit, handleSendingFiles }: TProps) => {
     if (state.files.length > 0) {
       const filesData = new FormData();
       for (let i = 0; i < state.files.length; i++) {
-        filesData.append('files', state.files[i]);
+        filesData.append('files', state.files[i].file());
       }
       await handleSendingFiles(filesData);
     }
@@ -55,6 +57,13 @@ const ChatInput = ({ handleSubmit, handleSendingFiles }: TProps) => {
     if (!!message) {
       await handleSubmit(message);
     }
+
+    state.files.forEach(file => {
+      if (file.type().startsWith('image/')) {
+        const image = file as TmpImage;
+        image.revokeSrc();
+      }
+    });
     setState(initialState);
   };
 
@@ -105,30 +114,64 @@ const ChatInput = ({ handleSubmit, handleSendingFiles }: TProps) => {
       }
     }
 
+    const tmpFiles = files.map(file => {
+      if (file.type.startsWith('image/')) {
+        return new TmpImage(file);
+      }
+      return new TmpFile(file);
+    });
+
     // stash the files
     setState(old => ({
-      files: [...old.files, ...files],
+      files: [...old.files, ...tmpFiles],
       isDisabled: false,
     }));
   };
 
+  const previews = React.useMemo(() => {
+    const removeFile = (id: string) => {
+      setState(old => ({
+        files: old.files.filter(file => file.id() !== id),
+      }));
+    };
+
+    return state.files.map(file => {
+      if (file.type().startsWith('image/')) {
+        return (
+          <ImagePreview key={file.id()} file={file} removeFile={removeFile} />
+        );
+      } else {
+        return (
+          <FilePreview key={file.id()} file={file} removeFile={removeFile} />
+        );
+      }
+    });
+  }, [setState, state.files]);
+
   return (
     <form className={classes.container} onSubmit={handleFormSubmit}>
-      {/* TODO: Add a better file preview ;p */}
-      <span>{state.files.length}</span>
-      <TextInput
-        id="chat-send-input"
-        label={trans('Messages:Type here')}
-        className={classes.sendInput}
-        multiline
-        maxRows="3"
-        value={state.message}
-        onChange={handleChange}
-        onKeyDown={handleKeyDown}
-        margin="normal"
-        variant="outlined"
-        disabled={state.isSubmitting}
-      />
+      <div className={classes.inputContainer}>
+        {!!state.files.length && (
+          <div className={classes.previewContainer}>
+            {previews}
+            <ChatMoreOptsMenu addFiles={addFiles} />
+          </div>
+        )}
+        <TextInput
+          id="chat-send-input"
+          label={trans('Messages:Type here')}
+          className={classes.sendInput}
+          multiline
+          maxRows="3"
+          value={state.message}
+          onChange={handleChange}
+          onKeyDown={handleKeyDown}
+          margin="normal"
+          variant="outlined"
+          disabled={state.isSubmitting}
+        />
+      </div>
+
       {(!!state.message || !!state.files.length) && (
         <IconButton
           type="submit"
