@@ -3,6 +3,7 @@ import { Dispatch } from 'redux';
 import * as SOCKET_EVENTS from '~/constants/socket_events';
 import type { IUser } from '~/redux/user/types';
 import { ApiService, IoService } from '~/services';
+import MessageQueueService from '~/services/MessageQueueService';
 
 import type {
   IChannel,
@@ -61,6 +62,16 @@ const addMessages = (
     totalMessages,
     atTop,
   },
+});
+
+export const addToMessagesQueue = (message: IMessage) => ({
+  type: EChatActions.ADD_TO_MESSAGES_QUEUE,
+  payload: message,
+});
+
+export const removeFromMessagesQueue = (message: IMessage) => ({
+  type: EChatActions.REMOVE_FROM_MESSAGES_QUEUE,
+  payload: message,
 });
 
 const setLatestMessage = (message: IMessage) => ({
@@ -158,14 +169,14 @@ export const fetchMessages =
       dispatch(addMessages(docs, totalDocs, true));
     });
 
-export const sendMessage =
-  (channel_id: string, message: string) => (dispatch: Dispatch) => {
-    const credentials: ISendMessageCredentials = {
-      channel_id,
-      body: message,
-    };
-    return ApiService.chat.sendMessage(credentials);
+export const sendMessage = (channel_id: string, message: string) => () => {
+  const credentials: ISendMessageCredentials = {
+    channel_id,
+    body: message,
   };
+  MessageQueueService.enqueue(credentials);
+};
 
-export const sendFiles = (filesData: FormData) => (dispatch: Dispatch) =>
-  ApiService.chat.sendFiles(filesData);
+export const sendFiles = (filesData: FormData) => () => {
+  MessageQueueService.enqueue(filesData);
+};

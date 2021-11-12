@@ -59,6 +59,7 @@ export default function chat(
             _id: action.payload._id,
             messages: [],
             totalMessages: 0,
+            queue: [],
           };
         }
         return draft;
@@ -123,6 +124,26 @@ export default function chat(
           draft.channels[channelId].unread_msgs += 1;
         }
 
+        return draft;
+      }
+      case EChatActions.ADD_TO_MESSAGES_QUEUE: {
+        if (
+          draft.activeChannelInfo &&
+          draft.activeChannelInfo._id === action.payload.channel_id
+        ) {
+          draft.activeChannelInfo.queue.push(action.payload);
+        }
+        return draft;
+      }
+      case EChatActions.REMOVE_FROM_MESSAGES_QUEUE: {
+        if (
+          draft.activeChannelInfo &&
+          draft.activeChannelInfo._id === action.payload.channel_id
+        ) {
+          draft.activeChannelInfo.queue = draft.activeChannelInfo.queue.filter(
+            message => message._id !== action.payload._id,
+          );
+        }
         return draft;
       }
       default:

@@ -60,6 +60,7 @@ interface IActiveChannelInfo {
   _id: string;
   messages: IMessage[];
   totalMessages: number;
+  queue: IMessage[];
 }
 
 interface INewGroupCredentials {
@@ -106,6 +107,8 @@ enum EChatActions {
   ADD_NEW_USER = '@chat/ADD_NEW_USER',
   ADD_MESSAGES = '@chat/ADD_MESSAGES',
   SET_LATEST_MESSAGE = '@chat/SET_LATEST_MESSAGE',
+  ADD_TO_MESSAGES_QUEUE = '@chat/ADD_TO_MESSAGES_QUEUE',
+  REMOVE_FROM_MESSAGES_QUEUE = '@chat/REMOVE_FROM_MESSAGES_QUEUE',
 }
 
 interface IChatActionType<T, P> {
@@ -127,7 +130,9 @@ type TChatAction =
       typeof EChatActions.ADD_MESSAGES,
       { messages: IMessage[]; totalMessages: number; atTop: boolean }
     >
-  | IChatActionType<typeof EChatActions.SET_LATEST_MESSAGE, IMessage>;
+  | IChatActionType<typeof EChatActions.SET_LATEST_MESSAGE, IMessage>
+  | IChatActionType<typeof EChatActions.ADD_TO_MESSAGES_QUEUE, IMessage>
+  | IChatActionType<typeof EChatActions.REMOVE_FROM_MESSAGES_QUEUE, IMessage>;
 
 export type {
   TChatState,

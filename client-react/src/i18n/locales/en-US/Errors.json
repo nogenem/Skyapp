@@ -9,5 +9,7 @@
   "Can't upload files bigger than {{count}}MB_plural": "Can't upload files bigger than {{count}}MBs",
   "Can't upload more than {{count}} file at the same time": "Can't upload more than {{count}} file at the same time",
   "Can't upload more than {{count}} file at the same time_plural": "Can't upload more than {{count}} files at the same time",
-  "Your browser doesn't support audio recording": "Your browser doesn't support audio recording"
+  "Your browser doesn't support audio recording": "Your browser doesn't support audio recording",
+  "Unable to send {{count}} of your messages": "Unable to send one of your messages",
+  "Unable to send {{count}} of your messages_plural": "Unable to send {{count}} of your messages"
 }
