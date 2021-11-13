@@ -51,7 +51,7 @@ const addNewUser = (newUser: IOtherUser) => ({
   payload: newUser,
 });
 
-const addMessages = (
+export const addMessages = (
   messages: IMessage[],
   totalMessages: number = -1,
   atTop: boolean = false,
@@ -74,7 +74,7 @@ export const removeFromMessagesQueue = (message: IMessage) => ({
   payload: message,
 });
 
-const setLatestMessage = (message: IMessage) => ({
+export const setLatestMessage = (message: IMessage) => ({
   type: EChatActions.SET_LATEST_MESSAGE,
   payload: message,
 });

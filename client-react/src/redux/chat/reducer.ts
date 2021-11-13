@@ -230,3 +230,7 @@ export const getOtherUserFromChannel = createSelector(
     return undefined;
   },
 );
+export const getMessagesQueue = createSelector(
+  getChat,
+  data => data.activeChannelInfo?.queue,
+);

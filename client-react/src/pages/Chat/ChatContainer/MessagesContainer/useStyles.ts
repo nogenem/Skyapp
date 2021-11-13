@@ -32,6 +32,13 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: theme.palette.primary.main,
       color: theme.palette.primary.contrastText,
     },
+    loading_icon: {
+      position: 'absolute',
+      left: '-1.5em',
+      top: 'calc(50% - 0.6em)',
+      width: '1.2em !important',
+      height: '1.2em !important',
+    },
   }),
 );
 

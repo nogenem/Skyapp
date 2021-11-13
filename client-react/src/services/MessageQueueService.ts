@@ -2,8 +2,10 @@ import i18n from 'i18next';
 
 import { MESSAGE_TYPES } from '~/constants/message_types';
 import {
+  addMessages,
   addToMessagesQueue,
   removeFromMessagesQueue,
+  setLatestMessage,
 } from '~/redux/chat/actions';
 import { IMessage, ISendMessageCredentials } from '~/redux/chat/types';
 import store from '~/redux/store';
@@ -20,6 +22,11 @@ interface IQueueEntry {
 }
 interface IQueue {
   [channelId: string]: IQueueEntry[];
+}
+interface IServerResponse {
+  message: string;
+  messagesObjs?: IMessage[];
+  messageObj?: IMessage;
 }
 
 const MAX_ATTEMPTS = 3;
@@ -118,9 +125,10 @@ class MessageQueueService {
 
         let sent = false;
         let attempts = 0;
+        let ret: IServerResponse | null = null;
         while (!sent && attempts < MAX_ATTEMPTS) {
           try {
-            await this._sendMessage(queuedMsgs, toSendMsg);
+            ret = await this._sendMessage(queuedMsgs, toSendMsg);
             sent = true;
           } catch (err) {
             attempts += 1;
@@ -133,7 +141,21 @@ class MessageQueueService {
             URL.revokeObjectURL(msg.body.path);
         });
 
-        if (!sent) {
+        if (sent) {
+          let messages: IMessage[] | null = null;
+          if (!!ret && !!ret.messageObj) {
+            messages = [ret.messageObj];
+          } else if (!!ret && !!ret.messagesObjs) {
+            messages = ret.messagesObjs;
+          }
+
+          if (!!messages && messages.length) {
+            store.dispatch<any>(addMessages(messages));
+            store.dispatch<any>(
+              setLatestMessage(messages[messages.length - 1]),
+            );
+          }
+        } else {
           this._onError(queuedMsgs);
         }
       }

@@ -12,6 +12,7 @@ import {
 import {
   getActiveChannel,
   getActiveChannelMessages,
+  getMessagesQueue,
 } from '~/redux/chat/reducer';
 import { IAppState } from '~/redux/store';
 import { getUser } from '~/redux/user/reducer';
@@ -26,6 +27,7 @@ const mapStateToProps = (state: IAppState) => ({
   activeChannel: getActiveChannel(state),
   activeChannelMessages: getActiveChannelMessages(state),
   loggedUser: getUser(state),
+  messagesQueue: getMessagesQueue(state),
 });
 const mapDispatchToProps = {
   fetchMessages: fetchMessagesAction,
@@ -40,6 +42,7 @@ type TProps = TPropsFromRedux & RouteComponentProps;
 const ChatContainer = ({
   activeChannel,
   activeChannelMessages,
+  messagesQueue,
   loggedUser,
   fetchMessages,
   sendMessage,
@@ -80,11 +83,12 @@ const ChatContainer = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeChannel?._id]);
 
-  if (!activeChannel || !activeChannelMessages) return null;
+  if (!activeChannel || !activeChannelMessages || !messagesQueue) return null;
   return (
     <div className={classes.content}>
       <MessagesContainer
         messages={activeChannelMessages}
+        messagesQueue={messagesQueue}
         loggedUser={loggedUser}
       />
       <ChatInput

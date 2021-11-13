@@ -1,6 +1,7 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
-import { Paper } from '@material-ui/core';
+import { CircularProgress, Paper } from '@material-ui/core';
 
 import { MESSAGE_TYPES } from '~/constants/message_types';
 import { IAttachment, IMessage } from '~/redux/chat/types';
@@ -17,16 +18,21 @@ import useStyles from './useStyles';
 
 interface IOwnProps {
   messages: IMessage[];
+  messagesQueue: IMessage[];
   loggedUser: IUser;
 }
 
 type TProps = IOwnProps;
 
-const MessagesContainer = ({ messages, loggedUser }: TProps) => {
+const MessagesContainer = ({ messages, messagesQueue, loggedUser }: TProps) => {
+  const { t: trans } = useTranslation(['Messages']);
   const ref = React.useRef<HTMLDivElement>(null);
   const classes = useStyles();
 
-  const renderMessage = (message: IMessage) => {
+  const renderMessage = (
+    message: IMessage,
+    isQueuedMessage: boolean = false,
+  ) => {
     const isLoggedUser = message.from_id === loggedUser._id;
     const msgClassName = isLoggedUser
       ? classes.messageFromMe
@@ -34,6 +40,14 @@ const MessagesContainer = ({ messages, loggedUser }: TProps) => {
 
     return (
       <Paper key={message._id} className={msgClassName}>
+        {isQueuedMessage && (
+          <CircularProgress
+            title={trans('Messages:Sending the message')}
+            color="secondary"
+            thickness={4}
+            className={classes.loading_icon}
+          />
+        )}
         {getMessageByType(message)}
       </Paper>
     );
@@ -52,15 +66,31 @@ const MessagesContainer = ({ messages, loggedUser }: TProps) => {
     return ret;
   };
 
+  const renderQueue = () => {
+    const ret = [];
+    for (let i = 0; i < messagesQueue.length; i++) {
+      const message = messagesQueue[i];
+      ret.push(renderMessage(message, true));
+    }
+    return ret;
+  };
+
   React.useEffect(() => {
     if (!!messages && messages.length) {
       setTimeout(() => scrollToBottom(ref), 50);
     }
   }, [messages]);
 
+  React.useEffect(() => {
+    if (!!messagesQueue && messagesQueue.length) {
+      setTimeout(() => scrollToBottom(ref), 50);
+    }
+  }, [messagesQueue]);
+
   return (
     <div className={classes.container} ref={ref}>
       {renderMessages()}
+      {renderQueue()}
     </div>
   );
 };
