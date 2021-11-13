@@ -10,7 +10,6 @@ import {
 import { IMessage, ISendMessageCredentials } from '~/redux/chat/types';
 import store from '~/redux/store';
 import { getUser } from '~/redux/user/reducer';
-import sanitize from '~/utils/sanitize';
 import { Toast } from '~/utils/Toast';
 
 import { ApiService } from '.';
@@ -63,7 +62,7 @@ class MessageQueueService {
           from_id: userId,
           channel_id: channelId,
           body: {
-            originalName: sanitize(file.name),
+            originalName: file.name,
             size: file.size,
             mimeType: file.type,
             path,

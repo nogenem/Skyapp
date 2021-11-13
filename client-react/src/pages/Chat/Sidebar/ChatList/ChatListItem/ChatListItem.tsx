@@ -31,7 +31,6 @@ import { getOtherUserFromChannel } from '~/redux/chat/reducer';
 import type { IAttachment, IChannel, IMessage } from '~/redux/chat/types';
 import type { IAppState } from '~/redux/store';
 import handleServerErrors, { IErrors } from '~/utils/handleServerErrors';
-import sanitize from '~/utils/sanitize';
 
 import useStyles from './useStyles';
 
@@ -257,7 +256,7 @@ const SecondaryText = ({ lastMessage, unreadMsgs }: ISecondaryText) => {
       title = message;
     } else if (lastMessage.type === MESSAGE_TYPES.UPLOADED_FILE) {
       const body = lastMessage.body as IAttachment;
-      const name = sanitize(body.originalName);
+      const name = body.originalName;
       message = (
         <>
           <InsertDriveFileIcon className={classes.secondaryTextIcon} /> {name}

@@ -4,7 +4,6 @@ import { Typography } from '@material-ui/core';
 import { InsertDriveFile as InsertDriveFileIcon } from '@material-ui/icons';
 
 import { IAttachment, IMessage } from '~/redux/chat/types';
-import sanitize from '~/utils/sanitize';
 
 import useStyles from './useStyles';
 
@@ -18,7 +17,7 @@ const UploadedFileMessage = ({ message }: TProps) => {
   const classes = useStyles();
 
   const body = message.body as IAttachment;
-  const name = sanitize(body.originalName);
+  const name = body.originalName;
   let url = body.path;
   if (!url.startsWith('blob:') && !url.startsWith('http'))
     url = `${process.env.REACT_APP_BASE_API_URL}${body.path}`;

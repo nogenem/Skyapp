@@ -1,5 +1,3 @@
-import sanitize from '~/utils/sanitize';
-
 class TmpFile {
   protected _id: string;
   protected _file: File;
@@ -14,7 +12,7 @@ class TmpFile {
   }
 
   name() {
-    return sanitize(this._file.name);
+    return this._file.name;
   }
 
   type() {
