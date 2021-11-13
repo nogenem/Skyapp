@@ -1,17 +1,20 @@
 import { Router } from 'express';
 import multer from 'multer';
+import slugify from 'slugify';
 
 import fileUploadLimits from '~/constants/file_upload_limits';
 import { ChatController, UserController } from '~/controllers';
 import { validate } from '~/middlewares';
-import sanitize from '~/utils/sanitize';
 import { chat, user } from '~/validators';
 
 const multerStorage = multer.diskStorage({
   destination: '~/../public/uploads',
   filename: (req, file, cb) => {
     const prefix = Date.now() + Math.round(Math.random() * 1e9);
-    const name = `${prefix}-${sanitize(file.originalname)}`;
+    // https://stackoverflow.com/a/52768801
+    const name = slugify(`${prefix}-${file.originalname}`, {
+      remove: /"<>#%\{\}\|\\\^~\[\]`;\?:@=&/g,
+    });
     cb(null, name);
   },
 });

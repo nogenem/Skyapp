@@ -1,5 +1,4 @@
 import { body, query } from 'express-validator';
-import sanitizeHtml from 'sanitize-html';
 
 import {
   FIELD_CANT_BE_EMPY,
@@ -39,14 +38,7 @@ const chat = {
   ],
   sendMessage: [
     body('channel_id').trim().not().isEmpty().withMessage(invalidIdError()),
-    body('body')
-      .trim()
-      .customSanitizer(value =>
-        sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} }),
-      )
-      .not()
-      .isEmpty()
-      .withMessage(FIELD_CANT_BE_EMPY),
+    body('body').trim().not().isEmpty().withMessage(FIELD_CANT_BE_EMPY),
   ],
   sendFiles: [],
 };
