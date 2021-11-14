@@ -13,7 +13,7 @@ const multerStorage = multer.diskStorage({
     const prefix = Date.now() + Math.round(Math.random() * 1e9);
     // https://stackoverflow.com/a/52768801
     const name = slugify(`${prefix}-${file.originalname}`, {
-      remove: /"<>#%\{\}\|\\\^~\[\]`;\?:@=&/g,
+      remove: /[<>#%{}|\\^~[\]`;?:@=&'"]/g,
     });
     cb(null, name);
   },
