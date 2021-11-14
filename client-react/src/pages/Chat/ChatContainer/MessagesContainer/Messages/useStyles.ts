@@ -20,8 +20,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     image_message_img: {
       maxWidth: '330px',
-      maxHeight: '330px',
-      width: '100%',
+      maxHeight: '250px',
     },
     file_message_icon: {
       width: '1.5em',

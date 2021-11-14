@@ -39,6 +39,7 @@ interface IAttachment {
   size: number;
   path: string;
   mimeType: string;
+  imageDimensions?: { width: number; height: number };
 }
 
 interface IMessage {
