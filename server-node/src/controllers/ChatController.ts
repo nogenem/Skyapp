@@ -1,4 +1,5 @@
 import { Response } from 'express';
+import sizeOfImage from 'image-size';
 import { Types as MongooseTypes } from 'mongoose';
 
 import { MESSAGE_TYPES } from '~/constants/message_types';
@@ -561,12 +562,26 @@ export default {
     }
 
     const reqFiles = req?.files as Express.Multer.File[];
-    const files: IAttachment[] = reqFiles.map(file => ({
-      originalName: file.originalname,
-      size: file.size,
-      path: file.path.replace(/\\/gi, '/'),
-      mimeType: file.mimetype,
-    }));
+    const files: IAttachment[] = [];
+    reqFiles.forEach(file => {
+      const path = file.path.replace(/\\/gi, '/');
+      let imageDimensions;
+      if (file.mimetype.startsWith('image/')) {
+        const dimensions = sizeOfImage(path);
+        imageDimensions = {
+          width: dimensions.width || 0,
+          height: dimensions.height || 0,
+        };
+      }
+
+      files.push({
+        originalName: file.originalname,
+        size: file.size,
+        path,
+        mimeType: file.mimetype,
+        imageDimensions,
+      });
+    });
 
     const messages: IMessage[] = [];
     files.forEach(file => {
