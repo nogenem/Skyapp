@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { CircularProgress, Paper } from '@material-ui/core';
 
 import { MESSAGE_TYPES } from '~/constants/message_types';
+import useScrollState, { EScrollStates } from '~/hooks/useScrollState';
 import { IAttachment, IMessage } from '~/redux/chat/types';
 import { IUser } from '~/redux/user/types';
 
@@ -25,9 +26,12 @@ interface IOwnProps {
 type TProps = IOwnProps;
 
 const MessagesContainer = ({ messages, messagesQueue, loggedUser }: TProps) => {
-  const { t: trans } = useTranslation(['Messages']);
   const ref = React.useRef<HTMLDivElement>(null);
+  const scrollState = useScrollState(ref.current);
+  const { t: trans } = useTranslation(['Messages']);
   const classes = useStyles();
+
+  const channelId = messages[0]?.channel_id;
 
   const renderMessage = (
     message: IMessage,
@@ -76,16 +80,20 @@ const MessagesContainer = ({ messages, messagesQueue, loggedUser }: TProps) => {
   };
 
   React.useEffect(() => {
-    if (!!messages && messages.length) {
+    if (
+      scrollState === EScrollStates.INDETERMINED ||
+      scrollState === EScrollStates.AT_BOTTOM
+    ) {
       setTimeout(() => scrollToBottom(ref), 50);
     }
-  }, [messages]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [messages, messagesQueue]);
 
   React.useEffect(() => {
-    if (!!messagesQueue && messagesQueue.length) {
+    if (!!channelId) {
       setTimeout(() => scrollToBottom(ref), 50);
     }
-  }, [messagesQueue]);
+  }, [channelId]);
 
   return (
     <div className={classes.container} ref={ref}>
