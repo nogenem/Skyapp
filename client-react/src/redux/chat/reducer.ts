@@ -208,6 +208,10 @@ export const getUsersWithoutChannelArray = createSelector(getChat, data => {
   users.sort((a, b) => a.nickname.localeCompare(b.nickname));
   return users;
 });
+export const getActiveChannelInfo = createSelector(
+  getChat,
+  data => data.activeChannelInfo,
+);
 export const getActiveChannelId = createSelector(
   getChat,
   data => data.activeChannelInfo?._id,

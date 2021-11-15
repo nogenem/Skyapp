@@ -9,12 +9,7 @@ import {
   sendMessage as sendMessageAction,
   sendFiles as sendFilesAction,
 } from '~/redux/chat/actions';
-import {
-  getActiveChannel,
-  getActiveChannelMessages,
-  getActiveChannelTotalMessages,
-  getMessagesQueue,
-} from '~/redux/chat/reducer';
+import { getActiveChannel, getActiveChannelInfo } from '~/redux/chat/reducer';
 import { IAppState } from '~/redux/store';
 import { getUser } from '~/redux/user/reducer';
 import handleServerErrors from '~/utils/handleServerErrors';
@@ -26,10 +21,8 @@ import useStyles from './useStyles';
 
 const mapStateToProps = (state: IAppState) => ({
   activeChannel: getActiveChannel(state),
-  activeChannelMessages: getActiveChannelMessages(state),
-  activeChannelTotalMessages: getActiveChannelTotalMessages(state),
+  activeChannelInfo: getActiveChannelInfo(state),
   loggedUser: getUser(state),
-  messagesQueue: getMessagesQueue(state),
 });
 const mapDispatchToProps = {
   fetchMessages: fetchMessagesAction,
@@ -43,9 +36,7 @@ type TProps = TPropsFromRedux & RouteComponentProps;
 
 const ChatContainer = ({
   activeChannel,
-  activeChannelMessages,
-  activeChannelTotalMessages,
-  messagesQueue,
+  activeChannelInfo,
   loggedUser,
   fetchMessages,
   sendMessage,
@@ -77,16 +68,13 @@ const ChatContainer = ({
 
   const onScrollTop = async () => {
     if (
-      activeChannel !== undefined &&
-      activeChannelMessages !== undefined &&
-      activeChannelTotalMessages !== undefined
+      activeChannelInfo !== undefined &&
+      activeChannelInfo.messages.length < activeChannelInfo.totalMessages
     ) {
-      if (activeChannelMessages.length < activeChannelTotalMessages) {
-        await fetchMessages({
-          channel_id: activeChannel._id,
-          offset: activeChannelMessages.length,
-        });
-      }
+      await fetchMessages({
+        channel_id: activeChannelInfo._id,
+        offset: activeChannelInfo.messages.length,
+      });
     }
   };
 
@@ -101,12 +89,12 @@ const ChatContainer = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeChannel?._id]);
 
-  if (!activeChannel || !activeChannelMessages || !messagesQueue) return null;
+  if (!activeChannel || !activeChannelInfo) return null;
   return (
     <div className={classes.content}>
       <MessagesContainer
-        messages={activeChannelMessages}
-        messagesQueue={messagesQueue}
+        messages={activeChannelInfo.messages}
+        messagesQueue={activeChannelInfo.queue}
         loggedUser={loggedUser}
         onScrollTop={onScrollTop}
       />
