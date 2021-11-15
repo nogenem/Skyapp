@@ -221,6 +221,14 @@ export const getActiveChannelMessages = createSelector(
   getChat,
   data => data.activeChannelInfo?.messages,
 );
+export const getMessagesQueue = createSelector(
+  getChat,
+  data => data.activeChannelInfo?.queue,
+);
+export const getActiveChannelTotalMessages = createSelector(
+  getChat,
+  data => data.activeChannelInfo?.totalMessages,
+);
 export const getOtherUserFromChannel = createSelector(
   [getChat, getChannelFromProps],
   (data, channel) => {
@@ -229,8 +237,4 @@ export const getOtherUserFromChannel = createSelector(
     }
     return undefined;
   },
-);
-export const getMessagesQueue = createSelector(
-  getChat,
-  data => data.activeChannelInfo?.queue,
 );

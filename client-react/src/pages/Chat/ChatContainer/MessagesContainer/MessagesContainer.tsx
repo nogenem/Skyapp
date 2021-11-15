@@ -21,11 +21,17 @@ interface IOwnProps {
   messages: IMessage[];
   messagesQueue: IMessage[];
   loggedUser: IUser;
+  onScrollTop: () => Promise<void>;
 }
 
 type TProps = IOwnProps;
 
-const MessagesContainer = ({ messages, messagesQueue, loggedUser }: TProps) => {
+const MessagesContainer = ({
+  messages,
+  messagesQueue,
+  loggedUser,
+  onScrollTop,
+}: TProps) => {
   const ref = React.useRef<HTMLDivElement>(null);
   const scrollState = useScrollState(ref.current);
   const { t: trans } = useTranslation(['Messages']);
@@ -94,6 +100,22 @@ const MessagesContainer = ({ messages, messagesQueue, loggedUser }: TProps) => {
       setTimeout(() => scrollToBottom(ref), 50);
     }
   }, [channelId]);
+
+  React.useEffect(() => {
+    async function handleScrollTop() {
+      if (ref.current) {
+        const lastScrollHeight = ref.current.scrollHeight;
+        await onScrollTop();
+        // Keep the scrollTop in the same position
+        ref.current.scrollTop = ref.current.scrollHeight - lastScrollHeight;
+      }
+    }
+
+    if (scrollState === EScrollStates.AT_TOP) {
+      handleScrollTop();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scrollState]);
 
   return (
     <div className={classes.container} ref={ref}>

@@ -12,6 +12,7 @@ import {
 import {
   getActiveChannel,
   getActiveChannelMessages,
+  getActiveChannelTotalMessages,
   getMessagesQueue,
 } from '~/redux/chat/reducer';
 import { IAppState } from '~/redux/store';
@@ -26,6 +27,7 @@ import useStyles from './useStyles';
 const mapStateToProps = (state: IAppState) => ({
   activeChannel: getActiveChannel(state),
   activeChannelMessages: getActiveChannelMessages(state),
+  activeChannelTotalMessages: getActiveChannelTotalMessages(state),
   loggedUser: getUser(state),
   messagesQueue: getMessagesQueue(state),
 });
@@ -42,6 +44,7 @@ type TProps = TPropsFromRedux & RouteComponentProps;
 const ChatContainer = ({
   activeChannel,
   activeChannelMessages,
+  activeChannelTotalMessages,
   messagesQueue,
   loggedUser,
   fetchMessages,
@@ -72,6 +75,21 @@ const ChatContainer = ({
     }
   };
 
+  const onScrollTop = async () => {
+    if (
+      activeChannel !== undefined &&
+      activeChannelMessages !== undefined &&
+      activeChannelTotalMessages !== undefined
+    ) {
+      if (activeChannelMessages.length < activeChannelTotalMessages) {
+        await fetchMessages({
+          channel_id: activeChannel._id,
+          offset: activeChannelMessages.length,
+        });
+      }
+    }
+  };
+
   React.useEffect(() => {
     async function fetchData() {
       if (!!activeChannel) {
@@ -90,6 +108,7 @@ const ChatContainer = ({
         messages={activeChannelMessages}
         messagesQueue={messagesQueue}
         loggedUser={loggedUser}
+        onScrollTop={onScrollTop}
       />
       <ChatInput
         handleSubmit={handleSubmit}
