@@ -1,5 +1,7 @@
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
+import getInverseThemeMode from '~/utils/getInverseThemeMode';
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     system_message_wrapper: {
@@ -33,6 +35,12 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'space-between',
       color: 'inherit',
       textDecoration: 'none',
+    },
+    text_message: {
+      whiteSpace: 'pre-line',
+      '& a': {
+        color: theme.palette.primary[getInverseThemeMode(theme.palette.type)],
+      },
     },
   }),
 );
