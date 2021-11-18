@@ -2,9 +2,10 @@ import produce from 'immer';
 import { createSelector } from 'reselect';
 
 import type { IAppState } from '../store';
+import { getId as getLoggedUserId } from '../user/reducer';
 import { EUserActions } from '../user/types';
 import type { TUserAction } from '../user/types';
-import { EChatActions } from './types';
+import { EChatActions, IOtherUser } from './types';
 import type { TChatAction, TChatState, IChannel, IChannels } from './types';
 
 export const initialState: TChatState = {
@@ -240,5 +241,19 @@ export const getOtherUserFromChannel = createSelector(
       return data.users[channel.members[channel.other_member_idx || 0].user_id];
     }
     return undefined;
+  },
+);
+export const getOtherUsersFromActiveChannel = createSelector(
+  [getChat, getActiveChannel, getLoggedUserId],
+  (data, channel, loggedUserId) => {
+    const users: IOtherUser[] = [];
+    if (channel) {
+      channel.members.forEach(member => {
+        if (member.user_id !== loggedUserId) {
+          users.push(data.users[member.user_id]);
+        }
+      });
+    }
+    return users;
   },
 );

@@ -15,6 +15,7 @@ import { getUser } from '~/redux/user/reducer';
 import handleServerErrors from '~/utils/handleServerErrors';
 import { Toast } from '~/utils/Toast';
 
+import { ChatHeader } from './ChatHeader';
 import { ChatInput } from './ChatInput';
 import { MessagesContainer } from './MessagesContainer';
 import useStyles from './useStyles';
@@ -92,6 +93,7 @@ const ChatContainer = ({
   if (!activeChannel || !activeChannelInfo) return null;
   return (
     <div className={classes.content}>
+      <ChatHeader activeChannel={activeChannel} />
       <MessagesContainer
         messages={activeChannelInfo.messages}
         messagesQueue={activeChannelInfo.queue}
