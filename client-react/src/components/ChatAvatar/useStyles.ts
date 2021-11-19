@@ -4,6 +4,8 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
       position: 'relative',
+      maxWidth: '40px',
+      maxHeight: '40px',
     },
     icon: {
       width: '100%',

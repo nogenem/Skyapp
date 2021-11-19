@@ -6,7 +6,7 @@ exports[`Connected ChatPage renders correctly 1`] = `
     class="makeStyles-container-1"
   >
     <div
-      class="MuiPaper-root makeStyles-container-3 MuiPaper-elevation8"
+      class="MuiPaper-root makeStyles-container-3  MuiPaper-elevation8"
     >
       <div
         aria-disabled="false"
@@ -15,7 +15,7 @@ exports[`Connected ChatPage renders correctly 1`] = `
         tabindex="0"
       >
         <div
-          style="position: relative;"
+          class="makeStyles-container-7"
         >
           <div
             class="MuiAvatar-root MuiAvatar-circular MuiAvatar-colorDefault"

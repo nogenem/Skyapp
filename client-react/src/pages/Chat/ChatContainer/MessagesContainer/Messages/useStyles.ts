@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     image_message_img: {
-      maxWidth: '330px',
+      maxWidth: 'min(330px, 100%)',
       maxHeight: '250px',
     },
     file_message_icon: {
@@ -41,6 +41,12 @@ const useStyles = makeStyles((theme: Theme) =>
       '& a': {
         color: theme.palette.primary[getInverseThemeMode(theme.palette.type)],
       },
+    },
+    audio_message: {
+      maxHeight: '100%',
+      maxWidth: '100%',
+      margin: 'auto',
+      objectFit: 'contain',
     },
   }),
 );

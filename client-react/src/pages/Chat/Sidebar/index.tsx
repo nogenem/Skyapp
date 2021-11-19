@@ -1,2 +1,2 @@
-export { default as Sidebar } from './Sidebar';
+export { default as Sidebar, UnconnectedSidebar } from './Sidebar';
 export type { TProps } from './Sidebar';

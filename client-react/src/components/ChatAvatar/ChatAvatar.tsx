@@ -34,7 +34,7 @@ const ChatAvatar = ({
   const classes = useStyles();
 
   return (
-    <div style={{ position: 'relative' }}>
+    <div className={classes.container}>
       <MuiAvatar>
         {!isGroup ? (
           <AccountCircleIcon className={classes.icon} color={color} />

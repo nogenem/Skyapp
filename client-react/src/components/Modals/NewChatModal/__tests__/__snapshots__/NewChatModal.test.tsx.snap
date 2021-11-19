@@ -85,7 +85,7 @@ exports[`Connected NewChatModal renders correctly 1`] = `
               class="MuiListItemAvatar-root makeStyles-listAvatar-2"
             >
               <div
-                style="position: relative;"
+                class="makeStyles-container-9"
               >
                 <div
                   class="MuiAvatar-root MuiAvatar-circular MuiAvatar-colorDefault"
