@@ -41,9 +41,14 @@ const UploadedImageMessage = ({ message }: TProps) => {
       download={name}
       type={body.mimeType}
       title={name}
-      style={styles}
+      className={classes.image_message_wrapper}
     >
-      <img src={url} alt={name} className={classes.image_message_img} />
+      <img
+        src={url}
+        alt={name}
+        className={classes.image_message_img}
+        style={styles}
+      />
     </a>
   );
 };

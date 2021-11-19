@@ -20,6 +20,11 @@ const useStyles = makeStyles((theme: Theme) =>
         maxWidth: '50%',
       },
     },
+    image_message_wrapper: {
+      display: 'flex',
+      maxWidth: '330px',
+      maxHeight: '250px',
+    },
     image_message_img: {
       maxWidth: 'min(330px, 100%)',
       maxHeight: '250px',
