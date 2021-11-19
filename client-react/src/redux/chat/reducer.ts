@@ -52,7 +52,9 @@ export default function chat(
         return draft;
       }
       case EChatActions.SET_ACTIVE_CHANNEL: {
-        if (
+        if (action.payload._id === undefined) {
+          draft.activeChannelInfo = undefined;
+        } else if (
           draft.channels[action.payload._id] &&
           draft.activeChannelInfo?._id !== action.payload._id
         ) {

@@ -4,10 +4,12 @@ import { connect, ConnectedProps } from 'react-redux';
 import { RouteComponentProps } from '@reach/router';
 import { AxiosError } from 'axios';
 
+import useMediaQuery from '~/hooks/useMediaQuery';
 import {
   fetchMessages as fetchMessagesAction,
   sendMessage as sendMessageAction,
   sendFiles as sendFilesAction,
+  setActiveChannel as setActiveChannelAction,
 } from '~/redux/chat/actions';
 import { getActiveChannel, getActiveChannelInfo } from '~/redux/chat/reducer';
 import { IAppState } from '~/redux/store';
@@ -29,6 +31,7 @@ const mapDispatchToProps = {
   fetchMessages: fetchMessagesAction,
   sendMessage: sendMessageAction,
   sendFiles: sendFilesAction,
+  setActiveChannel: setActiveChannelAction,
 };
 const connector = connect(mapStateToProps, mapDispatchToProps);
 type TPropsFromRedux = ConnectedProps<typeof connector>;
@@ -42,7 +45,9 @@ const ChatContainer = ({
   fetchMessages,
   sendMessage,
   sendFiles,
+  setActiveChannel,
 }: TProps) => {
+  const isSmall = useMediaQuery('(max-width: 875px)');
   const classes = useStyles();
 
   const handleSubmit = (message: string) => {
@@ -79,6 +84,10 @@ const ChatContainer = ({
     }
   };
 
+  const onHeaderGoBack = () => {
+    setActiveChannel(undefined);
+  };
+
   React.useEffect(() => {
     async function fetchData() {
       if (!!activeChannel) {
@@ -93,7 +102,11 @@ const ChatContainer = ({
   if (!activeChannel || !activeChannelInfo) return null;
   return (
     <div className={classes.content}>
-      <ChatHeader activeChannel={activeChannel} />
+      <ChatHeader
+        activeChannel={activeChannel}
+        showGoBackButton={isSmall}
+        onGoBack={onHeaderGoBack}
+      />
       <MessagesContainer
         messages={activeChannelInfo.messages}
         messagesQueue={activeChannelInfo.queue}

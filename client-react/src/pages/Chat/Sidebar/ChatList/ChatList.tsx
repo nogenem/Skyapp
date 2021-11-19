@@ -5,7 +5,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { Typography, List } from '@material-ui/core';
 import debounce from 'lodash.debounce';
 
-import { getActiveChannelId, getChannelsList } from '~/redux/chat/reducer';
+import { getChannelsList } from '~/redux/chat/reducer';
 import { IChannel } from '~/redux/chat/types';
 import { IAppState } from '~/redux/store';
 
@@ -14,7 +14,6 @@ import useStyles from './useStyles';
 
 const mapStateToProps = (state: IAppState) => ({
   channels: getChannelsList(state),
-  activeChannelId: getActiveChannelId(state),
 });
 const mapDispatchToProps = {};
 
@@ -23,11 +22,12 @@ type TPropsFromRedux = ConnectedProps<typeof connector>;
 
 interface IOwnProps {
   filter: string;
+  activeChannelId: string | undefined;
 }
 
 type TProps = TPropsFromRedux & IOwnProps;
 
-const ChatList = ({ filter, channels, activeChannelId }: TProps) => {
+const ChatList = ({ filter, activeChannelId, channels }: TProps) => {
   const [filteredChannels, setFilteredChannels] = React.useState(channels);
   const { t: trans } = useTranslation(['Common']);
   const classes = useStyles();

@@ -21,11 +21,18 @@ type TPropsFromRedux = ConnectedProps<typeof connector>;
 
 interface IOwnProps {
   activeChannel: IChannel;
+  showGoBackButton: boolean;
+  onGoBack: () => void;
 }
 
 type TProps = IOwnProps & TPropsFromRedux;
 
-const ChatHeader = ({ activeChannel, otherUsers }: TProps) => {
+const ChatHeader = ({
+  activeChannel,
+  showGoBackButton,
+  onGoBack,
+  otherUsers,
+}: TProps) => {
   const { t: trans } = useTranslation(['Common']);
   const classes = useStyles();
 
@@ -37,14 +44,17 @@ const ChatHeader = ({ activeChannel, otherUsers }: TProps) => {
 
   return (
     <div className={classes.container}>
-      <IconButton
-        classes={{
-          root: classes.backIconRoot,
-        }}
-        aria-label={trans('Common:Go back')}
-      >
-        <ArrowBackIcon />
-      </IconButton>
+      {showGoBackButton && (
+        <IconButton
+          classes={{
+            root: classes.backIconRoot,
+          }}
+          aria-label={trans('Common:Go back')}
+          onClick={onGoBack}
+        >
+          <ArrowBackIcon />
+        </IconButton>
+      )}
       <ChatAvatar
         online={activeChannel.is_group || otherUsers[0].online}
         status={

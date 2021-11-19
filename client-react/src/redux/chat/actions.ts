@@ -41,7 +41,7 @@ const removeChannel = (channelId: string) => ({
   payload: { channelId },
 });
 
-export const setActiveChannel = (channel_id: string) => ({
+export const setActiveChannel = (channel_id: string | undefined) => ({
   type: EChatActions.SET_ACTIVE_CHANNEL,
   payload: { _id: channel_id },
 });

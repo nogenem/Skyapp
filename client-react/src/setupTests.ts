@@ -57,3 +57,13 @@ class LocalStorageMock {
 }
 
 global.localStorage = new LocalStorageMock();
+
+global.matchMedia =
+  global.matchMedia ||
+  function () {
+    return {
+      matches: false,
+      addEventListener: function () {},
+      removeEventListener: function () {},
+    };
+  };

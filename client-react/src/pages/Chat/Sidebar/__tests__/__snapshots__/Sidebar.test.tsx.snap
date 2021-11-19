@@ -3,7 +3,7 @@
 exports[`Sidebar renders correctly when \`isUserEmailConfirmed\` is false 1`] = `
 <div>
   <div
-    class="MuiPaper-root makeStyles-container-33 MuiPaper-elevation8"
+    class="MuiPaper-root makeStyles-container-33  MuiPaper-elevation8"
   >
     <div
       aria-disabled="false"
@@ -12,7 +12,7 @@ exports[`Sidebar renders correctly when \`isUserEmailConfirmed\` is false 1`] = 
       tabindex="0"
     >
       <div
-        style="position: relative;"
+        class="makeStyles-container-37"
       >
         <div
           class="MuiAvatar-root MuiAvatar-circular MuiAvatar-colorDefault"
@@ -56,7 +56,7 @@ exports[`Sidebar renders correctly when \`isUserEmailConfirmed\` is false 1`] = 
 exports[`Sidebar renders correctly when \`isUserEmailConfirmed\` is true 1`] = `
 <div>
   <div
-    class="MuiPaper-root makeStyles-container-1 MuiPaper-elevation8"
+    class="MuiPaper-root makeStyles-container-1  MuiPaper-elevation8"
   >
     <div
       aria-disabled="false"
@@ -65,7 +65,7 @@ exports[`Sidebar renders correctly when \`isUserEmailConfirmed\` is true 1`] = `
       tabindex="0"
     >
       <div
-        style="position: relative;"
+        class="makeStyles-container-5"
       >
         <div
           class="MuiAvatar-root MuiAvatar-circular MuiAvatar-colorDefault"

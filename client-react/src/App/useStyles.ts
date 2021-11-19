@@ -6,6 +6,7 @@ const useStyles = makeStyles((theme: Theme) =>
       flexGrow: 1,
       display: 'flex',
       flexDirection: 'column',
+      overflow: 'hidden',
     },
   }),
 );

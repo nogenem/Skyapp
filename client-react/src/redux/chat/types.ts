@@ -124,7 +124,10 @@ type TChatAction =
       { _id: string; value: boolean }
     >
   | IChatActionType<typeof EChatActions.ADD_OR_UPDATE_CHANNEL, IChannel>
-  | IChatActionType<typeof EChatActions.SET_ACTIVE_CHANNEL, { _id: string }>
+  | IChatActionType<
+      typeof EChatActions.SET_ACTIVE_CHANNEL,
+      { _id: string | undefined }
+    >
   | IChatActionType<typeof EChatActions.REMOVE_CHANNEL, { channelId: string }>
   | IChatActionType<typeof EChatActions.ADD_NEW_USER, IOtherUser>
   | IChatActionType<

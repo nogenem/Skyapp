@@ -9,7 +9,7 @@ exports[`Connected UserInfoMenu renders correctly 1`] = `
     tabindex="0"
   >
     <div
-      style="position: relative;"
+      class="makeStyles-container-3"
     >
       <div
         class="MuiAvatar-root MuiAvatar-circular MuiAvatar-colorDefault"
