@@ -110,6 +110,7 @@ enum EChatActions {
   SET_LATEST_MESSAGE = '@chat/SET_LATEST_MESSAGE',
   ADD_TO_MESSAGES_QUEUE = '@chat/ADD_TO_MESSAGES_QUEUE',
   REMOVE_FROM_MESSAGES_QUEUE = '@chat/REMOVE_FROM_MESSAGES_QUEUE',
+  SET_LAST_SEEN = '@chat/SET_LAST_SEEN',
 }
 
 interface IChatActionType<T, P> {
@@ -136,7 +137,15 @@ type TChatAction =
     >
   | IChatActionType<typeof EChatActions.SET_LATEST_MESSAGE, IMessage>
   | IChatActionType<typeof EChatActions.ADD_TO_MESSAGES_QUEUE, IMessage>
-  | IChatActionType<typeof EChatActions.REMOVE_FROM_MESSAGES_QUEUE, IMessage>;
+  | IChatActionType<typeof EChatActions.REMOVE_FROM_MESSAGES_QUEUE, IMessage>
+  | IChatActionType<
+      typeof EChatActions.SET_LAST_SEEN,
+      {
+        channel_id: string;
+        user_id: string;
+        last_seen: string;
+      }
+    >;
 
 export type {
   TChatState,

@@ -41,9 +41,18 @@ const removeChannel = (channelId: string) => ({
   payload: { channelId },
 });
 
-export const setActiveChannel = (channel_id: string | undefined) => ({
+const setActiveChannel = (channel_id: string | undefined) => ({
   type: EChatActions.SET_ACTIVE_CHANNEL,
   payload: { _id: channel_id },
+});
+
+const setLastSeen = (data: {
+  channel_id: string;
+  user_id: string;
+  last_seen: string;
+}) => ({
+  type: EChatActions.SET_LAST_SEEN,
+  payload: data,
 });
 
 const addNewUser = (newUser: IOtherUser) => ({
@@ -131,6 +140,9 @@ export const connectIo = (user: IUser) => (dispatch: Dispatch) => {
         dispatch(setLatestMessage(messages[messages.length - 1]));
       },
     );
+    instance.socket!.on(SOCKET_EVENTS.IO_SET_LAST_SEEN, data => {
+      dispatch(setLastSeen(data));
+    });
   });
 };
 
@@ -180,3 +192,11 @@ export const sendMessage = (channel_id: string, message: string) => () => {
 export const sendFiles = (filesData: FormData) => () => {
   MessageQueueService.enqueue(filesData);
 };
+
+export const sendSetActiveChannel =
+  (channel_id: string | undefined) => (dispatch: Dispatch) => {
+    const instance = IoService.instance();
+    instance.socket!.emit(SOCKET_EVENTS.IO_SET_ACTIVE_CHANNEL, { channel_id });
+
+    dispatch(setActiveChannel(channel_id));
+  };

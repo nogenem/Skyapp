@@ -9,7 +9,7 @@ import {
   fetchMessages as fetchMessagesAction,
   sendMessage as sendMessageAction,
   sendFiles as sendFilesAction,
-  setActiveChannel as setActiveChannelAction,
+  sendSetActiveChannel as sendSetActiveChannelAction,
 } from '~/redux/chat/actions';
 import {
   getActiveChannel,
@@ -36,7 +36,7 @@ const mapDispatchToProps = {
   fetchMessages: fetchMessagesAction,
   sendMessage: sendMessageAction,
   sendFiles: sendFilesAction,
-  setActiveChannel: setActiveChannelAction,
+  sendSetActiveChannel: sendSetActiveChannelAction,
 };
 const connector = connect(mapStateToProps, mapDispatchToProps);
 type TPropsFromRedux = ConnectedProps<typeof connector>;
@@ -51,7 +51,7 @@ const ChatContainer = ({
   fetchMessages,
   sendMessage,
   sendFiles,
-  setActiveChannel,
+  sendSetActiveChannel,
 }: TProps) => {
   const isSmall = useMediaQuery('(max-width: 875px)');
   const classes = useStyles();
@@ -91,7 +91,7 @@ const ChatContainer = ({
   };
 
   const onHeaderGoBack = () => {
-    setActiveChannel(undefined);
+    sendSetActiveChannel(undefined);
   };
 
   React.useEffect(() => {

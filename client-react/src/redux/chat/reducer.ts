@@ -64,6 +64,7 @@ export default function chat(
             totalMessages: 0,
             queue: [],
           };
+          draft.channels[action.payload._id].unread_msgs = 0;
         }
         return draft;
       }
@@ -149,6 +150,15 @@ export default function chat(
         }
         return draft;
       }
+      case EChatActions.SET_LAST_SEEN: {
+        const channel = draft.channels[action.payload.channel_id];
+        channel.members.forEach(member => {
+          if (member.user_id === action.payload.user_id) {
+            member.last_seen = new Date(action.payload.last_seen);
+          }
+        });
+        return draft;
+      }
       default:
         return draft;
     }
@@ -171,6 +181,9 @@ const wrapChannelDates = (channel: IChannel) => {
     channel.lastMessage.createdAt = new Date(channel.lastMessage.createdAt);
     channel.lastMessage.updatedAt = new Date(channel.lastMessage.updatedAt);
   }
+  channel.members.forEach(member => {
+    member.last_seen = new Date(member.last_seen);
+  });
   return channel;
 };
 

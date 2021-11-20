@@ -24,7 +24,7 @@ import { MESSAGE_TYPES } from '~/constants/message_types';
 import { USER_STATUS } from '~/constants/user_status';
 import useObjState from '~/hooks/useObjState';
 import {
-  setActiveChannel as setActiveChannelAction,
+  sendSetActiveChannel as sendSetActiveChannelAction,
   leaveGroupChannel as leaveGroupChannelAction,
 } from '~/redux/chat/actions';
 import { getOtherUserFromChannel } from '~/redux/chat/reducer';
@@ -51,7 +51,7 @@ const mapStateToProps = (state: IAppState, props: IOwnProps) => ({
   otherUser: getOtherUserFromChannel(state, props),
 });
 const mapDispatchToProps = {
-  setActiveChannel: setActiveChannelAction,
+  sendSetActiveChannel: sendSetActiveChannelAction,
   leaveGroupChannel: leaveGroupChannelAction,
 };
 
@@ -69,7 +69,7 @@ const ChatListItem = ({
   channel,
   selected,
   otherUser,
-  setActiveChannel,
+  sendSetActiveChannel,
   leaveGroupChannel,
 }: TProps) => {
   const [state, setState] = useObjState(initialState);
@@ -79,7 +79,7 @@ const ChatListItem = ({
   const classes = useStyles();
 
   const handleListClick = () => {
-    setActiveChannel(channel._id);
+    sendSetActiveChannel(channel._id);
   };
 
   const handleOptionsClick = (event: MouseEvent<Element>) => {
