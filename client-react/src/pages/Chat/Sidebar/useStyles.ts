@@ -3,12 +3,14 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
-      width: '330px',
+      minWidth: '330px',
+      maxWidth: '330px',
       height: '100vh',
       padding: theme.spacing(1),
 
       '&.expanded': {
         width: '100%',
+        maxWidth: 'unset',
       },
       '&.hidden': {
         display: 'none',

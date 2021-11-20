@@ -13,6 +13,10 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingRight: theme.spacing(1),
       paddingBottom: theme.spacing(1),
       height: '100vh',
+
+      '&.hidden': {
+        display: 'none',
+      },
     },
   }),
 );

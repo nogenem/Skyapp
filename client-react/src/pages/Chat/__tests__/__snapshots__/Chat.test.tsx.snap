@@ -54,7 +54,7 @@ exports[`Connected ChatPage renders correctly 1`] = `
       </div>
     </div>
     <div
-      class="makeStyles-rightContainer-2"
+      class="makeStyles-rightContainer-2 "
     >
       <div
         class="makeStyles-content-25"

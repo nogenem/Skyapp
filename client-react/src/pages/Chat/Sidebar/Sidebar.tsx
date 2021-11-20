@@ -1,6 +1,5 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { connect, ConnectedProps } from 'react-redux';
 
 import { Paper, IconButton } from '@material-ui/core';
 import {
@@ -9,33 +8,27 @@ import {
 } from '@material-ui/icons';
 
 import { TextInput, NewChatModal, NewGroupModal } from '~/components';
-import useMediaQuery from '~/hooks/useMediaQuery';
-import { getActiveChannelId } from '~/redux/chat/reducer';
-import { IAppState } from '~/redux/store';
 
 import { ChatList } from './ChatList';
 import { UserInfoMenu } from './UserInfoMenu';
 import useStyles from './useStyles';
 
-const mapStateToProps = (state: IAppState) => ({
-  activeChannelId: getActiveChannelId(state),
-});
-const mapDispatchToProps = {};
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-type TPropsFromRedux = ConnectedProps<typeof connector>;
-
 interface IOwnProps {
   isUserEmailConfirmed: boolean;
+  isSmall: boolean;
+  activeChannelId: string | undefined;
 }
 
-type TProps = IOwnProps & TPropsFromRedux;
+type TProps = IOwnProps;
 
-const Sidebar = ({ isUserEmailConfirmed, activeChannelId }: TProps) => {
+const Sidebar = ({
+  isUserEmailConfirmed,
+  isSmall,
+  activeChannelId,
+}: TProps) => {
   const [isNewChatModalOpen, setIsNewChatModalOpen] = React.useState(false);
   const [isNewGroupModalOpen, setIsNewGroupModalOpen] = React.useState(false);
   const [filter, setFilter] = React.useState('');
-  const isSmall = useMediaQuery('(max-width: 875px)');
   const { t: trans } = useTranslation(['Common']);
   const classes = useStyles();
 
@@ -130,5 +123,4 @@ const getExtraClassName = (
 };
 
 export type { TProps };
-export const UnconnectedSidebar = Sidebar;
-export default connector(Sidebar);
+export default Sidebar;

@@ -4,18 +4,14 @@ import { connect, ConnectedProps } from 'react-redux';
 import { RouteComponentProps } from '@reach/router';
 import { AxiosError } from 'axios';
 
-import useMediaQuery from '~/hooks/useMediaQuery';
 import {
   fetchMessages as fetchMessagesAction,
   sendMessage as sendMessageAction,
   sendFiles as sendFilesAction,
   sendSetActiveChannel as sendSetActiveChannelAction,
 } from '~/redux/chat/actions';
-import {
-  getActiveChannel,
-  getActiveChannelInfo,
-  getUsers,
-} from '~/redux/chat/reducer';
+import { getActiveChannelInfo, getUsers } from '~/redux/chat/reducer';
+import { IChannel } from '~/redux/chat/types';
 import { IAppState } from '~/redux/store';
 import { getUser } from '~/redux/user/reducer';
 import handleServerErrors from '~/utils/handleServerErrors';
@@ -27,7 +23,6 @@ import { MessagesContainer } from './MessagesContainer';
 import useStyles from './useStyles';
 
 const mapStateToProps = (state: IAppState) => ({
-  activeChannel: getActiveChannel(state),
   activeChannelInfo: getActiveChannelInfo(state),
   loggedUser: getUser(state),
   users: getUsers(state),
@@ -41,10 +36,16 @@ const mapDispatchToProps = {
 const connector = connect(mapStateToProps, mapDispatchToProps);
 type TPropsFromRedux = ConnectedProps<typeof connector>;
 
-type TProps = TPropsFromRedux & RouteComponentProps;
+interface OwnProps {
+  activeChannel: IChannel | undefined;
+  isSmall: boolean;
+}
+
+type TProps = OwnProps & TPropsFromRedux & RouteComponentProps;
 
 const ChatContainer = ({
   activeChannel,
+  isSmall,
   activeChannelInfo,
   loggedUser,
   users,
@@ -53,7 +54,6 @@ const ChatContainer = ({
   sendFiles,
   sendSetActiveChannel,
 }: TProps) => {
-  const isSmall = useMediaQuery('(max-width: 875px)');
   const classes = useStyles();
 
   const handleSubmit = (message: string) => {

@@ -20,7 +20,10 @@ describe('Connected ChatPage', () => {
 describe('Unconnected ChatPage', () => {
   it('renders CTA when `isUserEmailConfirmed` is false', () => {
     const { getByText } = renderWithRedux(
-      <UnconnectedChatPage isUserEmailConfirmed={false} />,
+      <UnconnectedChatPage
+        isUserEmailConfirmed={false}
+        activeChannel={undefined}
+      />,
     );
 
     expect(getByText(/confirm your email/i)).toBeInTheDocument();
@@ -28,7 +31,7 @@ describe('Unconnected ChatPage', () => {
 
   it("doesn't render CTA when `isUserEmailConfirmed` is true", () => {
     const { queryByText } = renderWithRedux(
-      <UnconnectedChatPage isUserEmailConfirmed />,
+      <UnconnectedChatPage isUserEmailConfirmed activeChannel={undefined} />,
     );
 
     expect(queryByText(/confirm your email/i)).not.toBeInTheDocument();

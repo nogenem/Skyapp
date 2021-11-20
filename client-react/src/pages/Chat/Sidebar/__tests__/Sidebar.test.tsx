@@ -9,14 +9,22 @@ const renderWithRedux = getRenderWithRedux();
 describe('Sidebar', () => {
   it('renders correctly when `isUserEmailConfirmed` is true', () => {
     const { container } = renderWithRedux(
-      <Sidebar isUserEmailConfirmed={true} />,
+      <Sidebar
+        isUserEmailConfirmed={true}
+        isSmall={false}
+        activeChannelId={undefined}
+      />,
     );
 
     expect(container).toMatchSnapshot();
   });
   it('renders correctly when `isUserEmailConfirmed` is false', () => {
     const { container } = renderWithRedux(
-      <Sidebar isUserEmailConfirmed={false} />,
+      <Sidebar
+        isUserEmailConfirmed={false}
+        isSmall={false}
+        activeChannelId={undefined}
+      />,
     );
 
     expect(container).toMatchSnapshot();
