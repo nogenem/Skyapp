@@ -2,13 +2,15 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { CircularProgress, Paper } from '@material-ui/core';
+import { AccountCircle as AccountCircleIcon } from '@material-ui/icons';
 
 import { MESSAGE_TYPES } from '~/constants/message_types';
 import useScrollState, { EScrollStates } from '~/hooks/useScrollState';
-import { IAttachment, IMessage } from '~/redux/chat/types';
+import { IAttachment, IMessage, IOtherUsers } from '~/redux/chat/types';
 import { IUser } from '~/redux/user/types';
 
 import {
+  DateMessage,
   SystemMessage,
   TextMessage,
   UploadedFileMessage,
@@ -21,6 +23,7 @@ interface IOwnProps {
   messages: IMessage[];
   messagesQueue: IMessage[];
   loggedUser: IUser;
+  users: IOtherUsers;
   onScrollTop: () => Promise<void>;
 }
 
@@ -30,6 +33,7 @@ const MessagesContainer = ({
   messages,
   messagesQueue,
   loggedUser,
+  users,
   onScrollTop,
 }: TProps) => {
   const ref = React.useRef<HTMLDivElement>(null);
@@ -41,37 +45,78 @@ const MessagesContainer = ({
 
   const renderMessage = (
     message: IMessage,
+    shouldShowUserInfo: boolean = false,
     isQueuedMessage: boolean = false,
   ) => {
     const isLoggedUser = message.from_id === loggedUser._id;
     const msgClassName = isLoggedUser
       ? classes.messageFromMe
       : classes.messageFromThem;
+    const infoClassName = isLoggedUser ? classes.myInfo : classes.theirInfo;
+
+    const user = users[message.from_id || ''] || loggedUser;
+    const nickname = getFirstName(user.nickname);
+    const date = getTime(message.createdAt);
 
     return (
-      <Paper key={message._id} className={msgClassName}>
-        {isQueuedMessage && (
-          <CircularProgress
-            title={trans('Messages:Sending the message')}
-            color="secondary"
-            thickness={4}
-            className={classes.loading_icon}
-          />
+      <React.Fragment key={message._id}>
+        {shouldShowUserInfo && (
+          <div className={infoClassName}>
+            {isLoggedUser ? date : `${nickname}, ${date}`}
+          </div>
         )}
-        {getMessageByType(message)}
-      </Paper>
+        <Paper className={msgClassName}>
+          {shouldShowUserInfo && !isLoggedUser && (
+            <AccountCircleIcon className={classes.user_icon} />
+          )}
+          {isQueuedMessage && (
+            <CircularProgress
+              title={trans('Messages:Sending the message')}
+              color="secondary"
+              thickness={4}
+              className={classes.loading_icon}
+            />
+          )}
+          {getMessageByType(message)}
+        </Paper>
+      </React.Fragment>
     );
   };
 
   const renderMessages = () => {
     const ret = [];
+    let lastDate: Date | undefined = undefined;
+    let lastUserId: string | undefined = undefined;
     for (let i = 0; i < messages.length; i++) {
       const message = messages[i];
+      let addedDate = false;
+
+      // Add date message
+      if (!lastDate || lastDate.getDate() !== message.createdAt.getDate()) {
+        ret.push(
+          <DateMessage
+            key={`${message._id}_${message.createdAt}`}
+            date={message.createdAt}
+          />,
+        );
+        addedDate = true;
+      }
+
       if (!message.from_id) {
         ret.push(<SystemMessage key={message._id} message={message} />);
       } else {
-        ret.push(renderMessage(message));
+        const isOtherTime =
+          lastDate &&
+          (lastDate.getHours() !== message.createdAt.getHours() ||
+            Math.abs(lastDate.getMinutes() - message.createdAt.getMinutes()) >=
+              5);
+        const shouldShowUserInfo =
+          lastUserId !== message.from_id || addedDate || isOtherTime;
+        ret.push(renderMessage(message, shouldShowUserInfo));
       }
+
+      lastDate = message.createdAt;
+      lastUserId = message.from_id;
     }
     return ret;
   };
@@ -80,7 +125,7 @@ const MessagesContainer = ({
     const ret = [];
     for (let i = 0; i < messagesQueue.length; i++) {
       const message = messagesQueue[i];
-      ret.push(renderMessage(message, true));
+      ret.push(renderMessage(message, false, true));
     }
     return ret;
   };
@@ -155,6 +200,17 @@ const scrollToBottom = (ref: React.RefObject<HTMLDivElement>) => {
       ref.current.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
     }
   }
+};
+
+const getFirstName = (nickname: string) => {
+  const tmp = nickname.split(' ')[0];
+  return tmp.charAt(0).toUpperCase() + tmp.slice(1);
+};
+
+const getTime = (date: Date) => {
+  const hour = date.getHours();
+  const min = `${date.getMinutes()}`.padStart(2, '0');
+  return `${hour}:${min}`;
 };
 
 export type { TProps };

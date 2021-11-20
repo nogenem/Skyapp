@@ -11,7 +11,11 @@ import {
   sendFiles as sendFilesAction,
   setActiveChannel as setActiveChannelAction,
 } from '~/redux/chat/actions';
-import { getActiveChannel, getActiveChannelInfo } from '~/redux/chat/reducer';
+import {
+  getActiveChannel,
+  getActiveChannelInfo,
+  getUsers,
+} from '~/redux/chat/reducer';
 import { IAppState } from '~/redux/store';
 import { getUser } from '~/redux/user/reducer';
 import handleServerErrors from '~/utils/handleServerErrors';
@@ -26,6 +30,7 @@ const mapStateToProps = (state: IAppState) => ({
   activeChannel: getActiveChannel(state),
   activeChannelInfo: getActiveChannelInfo(state),
   loggedUser: getUser(state),
+  users: getUsers(state),
 });
 const mapDispatchToProps = {
   fetchMessages: fetchMessagesAction,
@@ -42,6 +47,7 @@ const ChatContainer = ({
   activeChannel,
   activeChannelInfo,
   loggedUser,
+  users,
   fetchMessages,
   sendMessage,
   sendFiles,
@@ -111,6 +117,7 @@ const ChatContainer = ({
         messages={activeChannelInfo.messages}
         messagesQueue={activeChannelInfo.queue}
         loggedUser={loggedUser}
+        users={users}
         onScrollTop={onScrollTop}
       />
       <ChatInput

@@ -142,6 +142,7 @@ export type {
   TChatState,
   TChatAction,
   IInitialData,
+  IOtherUsers,
   IOtherUser,
   IChannel,
   IChannels,

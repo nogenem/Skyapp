@@ -53,6 +53,35 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: 'auto',
       objectFit: 'contain',
     },
+    date: {
+      fontSize: '.8rem',
+      minHeight: '1.2rem',
+      color: theme.palette.text.primary,
+      textAlign: 'center',
+      marginTop: theme.spacing(1),
+    },
+    fancy: {
+      // https://stackoverflow.com/a/14731123
+      overflow: 'hidden',
+      textAlign: 'center',
+      '&:before, &:after': {
+        backgroundColor: theme.palette.text.hint,
+        content: "''",
+        display: 'inline-block',
+        height: '1px',
+        position: 'relative',
+        verticalAlign: 'middle',
+        width: '50%',
+      },
+      '&:before': {
+        right: '0.5em',
+        marginLeft: '-50%',
+      },
+      '&:after': {
+        left: '0.5em',
+        marginRight: '-50%',
+      },
+    },
   }),
 );
 
