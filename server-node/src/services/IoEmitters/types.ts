@@ -16,12 +16,19 @@ interface IRemovedFromGroupChannel {
   members: string[];
 }
 
+interface ISetLastSeen {
+  channel: IChatChannel;
+  currentUserId: string;
+  lastSeen: Date;
+}
+
 type TSocketEventData =
   | IChannelDoc
   | IChatChannel
   | IMessagesReceived
   | IRemovedFromGroupChannel
-  | IChatUser;
+  | IChatUser
+  | ISetLastSeen;
 
 type TEmitterFunc = (
   io: Namespace,
@@ -35,4 +42,5 @@ export type {
   IRemovedFromGroupChannel,
   TSocketEventData,
   TEmitterFunc,
+  ISetLastSeen,
 };

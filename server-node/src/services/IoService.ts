@@ -2,6 +2,7 @@ import { Server as HttpServer } from 'http';
 import { Server as SocketServer, Namespace } from 'socket.io';
 
 import * as SOCKET_EVENTS from '~/constants/socket_events';
+import { Channel } from '~/models';
 import { IClientInfo, IClientMap } from '~/typescript-declarations/io.d';
 import getUsersAndChannelsData from '~/utils/getUsersAndChannelsData';
 
@@ -84,6 +85,7 @@ class IoService {
         currentUserId = socket.handshake.query._id as string;
         this._clients[currentUserId] = {
           socketId: socket.id,
+          currentChannelId: undefined,
         };
 
         socket.join(currentUserId);
@@ -107,6 +109,50 @@ class IoService {
 
         currentUserId = '';
       });
+
+      socket.on(
+        SOCKET_EVENTS.IO_SET_ACTIVE_CHANNEL,
+        async ({
+          channel_id: channelId,
+        }: {
+          // eslint-disable-next-line camelcase
+          channel_id: string | undefined;
+        }) => {
+          const lastSeen = new Date();
+
+          // update the last channel that the user was in
+          if (this._clients[currentUserId].currentChannelId !== undefined) {
+            await Channel.updateOne(
+              {
+                _id: this._clients[currentUserId].currentChannelId,
+                'members.user_id': currentUserId,
+              },
+              { 'members.$.last_seen': lastSeen },
+            );
+          }
+
+          this._clients[currentUserId].currentChannelId = channelId;
+
+          if (channelId !== undefined) {
+            // update the new channel that the user is entering
+            const channel = await Channel.findOneAndUpdate(
+              { _id: channelId, 'members.user_id': currentUserId },
+              { 'members.$.last_seen': lastSeen },
+              { new: true },
+            );
+
+            if (channel) {
+              const channelJson = channel.toChatChannel();
+
+              this.emit(SOCKET_EVENTS.IO_SET_LAST_SEEN, {
+                channel: channelJson,
+                currentUserId,
+                lastSeen,
+              });
+            }
+          }
+        },
+      );
     });
     return true;
   }
