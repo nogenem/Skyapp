@@ -32,14 +32,16 @@ const initialState: TState = {
 };
 
 interface IOwnProps {
+  channelId?: string;
   handleSubmit: (message: string) => void;
   handleSendingFiles: (filesData: FormData) => void;
 }
 
 type TProps = IOwnProps;
 
-const ChatInput = ({ handleSubmit, handleSendingFiles }: TProps) => {
+const ChatInput = ({ channelId, handleSubmit, handleSendingFiles }: TProps) => {
   const [state, setState] = useObjState(initialState);
+  const inputRef = React.useRef<HTMLInputElement>();
   const { t: trans } = useTranslation(['Messages']);
   const classes = useStyles();
 
@@ -64,7 +66,12 @@ const ChatInput = ({ handleSubmit, handleSendingFiles }: TProps) => {
         image.revokeSrc();
       }
     });
+
     setState(initialState);
+
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -126,6 +133,10 @@ const ChatInput = ({ handleSubmit, handleSendingFiles }: TProps) => {
       files: [...old.files, ...tmpFiles],
       isDisabled: false,
     }));
+
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
   };
 
   const previews = React.useMemo(() => {
@@ -146,7 +157,14 @@ const ChatInput = ({ handleSubmit, handleSendingFiles }: TProps) => {
         );
       }
     });
-  }, [setState, state.files]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.files]);
+
+  React.useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [channelId]);
 
   return (
     <form className={classes.container} onSubmit={handleFormSubmit}>
@@ -169,6 +187,7 @@ const ChatInput = ({ handleSubmit, handleSendingFiles }: TProps) => {
           margin="normal"
           variant="outlined"
           disabled={state.isSubmitting}
+          inputRef={inputRef}
         />
       </div>
 

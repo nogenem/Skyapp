@@ -134,6 +134,7 @@ const ChatContainer = ({
         onScrollTop={onScrollTop}
       />
       <ChatInput
+        channelId={activeChannel._id}
         handleSubmit={handleSubmit}
         handleSendingFiles={handleSendingFiles}
       />
