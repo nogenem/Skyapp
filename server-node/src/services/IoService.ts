@@ -153,6 +153,34 @@ class IoService {
           }
         },
       );
+
+      socket.on(
+        SOCKET_EVENTS.IO_SET_LAST_SEEN,
+        async ({
+          channel_id: channelId,
+        }: {
+          // eslint-disable-next-line camelcase
+          channel_id: string | undefined;
+        }) => {
+          const lastSeen = new Date();
+
+          const channel = await Channel.findOneAndUpdate(
+            { _id: channelId, 'members.user_id': currentUserId },
+            { 'members.$.last_seen': lastSeen },
+            { new: true },
+          );
+
+          if (channel) {
+            const channelJson = channel.toChatChannel();
+
+            this.emit(SOCKET_EVENTS.IO_SET_LAST_SEEN, {
+              channel: channelJson,
+              currentUserId,
+              lastSeen,
+            });
+          }
+        },
+      );
     });
     return true;
   }
