@@ -11,12 +11,7 @@ const setLastSeen: TEmitterFunc = async (io, clients, eventData) => {
     last_seen: lastSeen,
   };
 
-  if (channel.is_group) {
-    const thisMemberClient = clients[currentUserId];
-    if (thisMemberClient) {
-      io.to(thisMemberClient.socketId).emit(event, data);
-    }
-  } else {
+  if (!channel.is_group) {
     channel.members.forEach(member => {
       const thisMemberClient = clients[member.user_id];
       if (thisMemberClient) {
