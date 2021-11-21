@@ -4,11 +4,13 @@ import { connect, ConnectedProps } from 'react-redux';
 import { RouteComponentProps } from '@reach/router';
 import { AxiosError } from 'axios';
 
+import useVisibility from '~/hooks/useVisibility';
 import {
   fetchMessages as fetchMessagesAction,
   sendMessage as sendMessageAction,
   sendFiles as sendFilesAction,
   sendSetActiveChannel as sendSetActiveChannelAction,
+  sendSetLastSeen as sendSetLastSeenAction,
 } from '~/redux/chat/actions';
 import { getActiveChannelInfo, getUsers } from '~/redux/chat/reducer';
 import { IChannel } from '~/redux/chat/types';
@@ -32,6 +34,7 @@ const mapDispatchToProps = {
   sendMessage: sendMessageAction,
   sendFiles: sendFilesAction,
   sendSetActiveChannel: sendSetActiveChannelAction,
+  sendSetLastSeen: sendSetLastSeenAction,
 };
 const connector = connect(mapStateToProps, mapDispatchToProps);
 type TPropsFromRedux = ConnectedProps<typeof connector>;
@@ -53,6 +56,7 @@ const ChatContainer = ({
   sendMessage,
   sendFiles,
   sendSetActiveChannel,
+  sendSetLastSeen,
 }: TProps) => {
   const classes = useStyles();
 
@@ -105,6 +109,14 @@ const ChatContainer = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeChannel?._id]);
 
+  useOnLastMessageChangeDebounced(
+    (channelId: string) => {
+      sendSetLastSeen(channelId);
+    },
+    5 * 1000,
+    activeChannel,
+  );
+
   if (!activeChannel || !activeChannelInfo) return null;
   return (
     <div className={classes.content}>
@@ -114,6 +126,7 @@ const ChatContainer = ({
         onGoBack={onHeaderGoBack}
       />
       <MessagesContainer
+        activeChannel={activeChannel}
         messages={activeChannelInfo.messages}
         messagesQueue={activeChannelInfo.queue}
         loggedUser={loggedUser}
@@ -126,6 +139,74 @@ const ChatContainer = ({
       />
     </div>
   );
+};
+
+const useOnLastMessageChangeDebounced = (
+  callback: (channelId: string) => void,
+  delay: number,
+  activeChannel: IChannel | undefined,
+) => {
+  const isVisible = useVisibility();
+  const lastChannelIdRef = React.useRef<string>();
+  const callbacksPendingRef = React.useRef<Record<string, boolean>>({});
+  const timeoutsRef = React.useRef<Record<string, NodeJS.Timeout>>({});
+
+  const clearAll = React.useCallback(() => {
+    Object.keys(timeoutsRef.current).forEach(id => {
+      clearTimeout(timeoutsRef.current[id]);
+    });
+  }, []);
+
+  const updateTimeout = (channelId: string) => {
+    if (timeoutsRef.current[channelId])
+      clearTimeout(timeoutsRef.current[channelId]);
+
+    timeoutsRef.current[channelId] = setTimeout(
+      () => callback(channelId),
+      delay,
+    );
+  };
+
+  React.useEffect(() => {
+    const lastChannelId = lastChannelIdRef.current;
+    lastChannelIdRef.current = activeChannel?._id;
+
+    if (
+      !activeChannel ||
+      activeChannel._id !== lastChannelId ||
+      activeChannel.is_group
+    )
+      return;
+
+    const channelId = activeChannel._id;
+
+    if (!isVisible) {
+      callbacksPendingRef.current[channelId] = true;
+      return;
+    }
+
+    updateTimeout(channelId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeChannel?._id, activeChannel?.lastMessage]);
+
+  React.useEffect(() => {
+    if (isVisible) {
+      Object.keys(callbacksPendingRef.current).forEach(channelId => {
+        if (callbacksPendingRef.current[channelId]) {
+          callbacksPendingRef.current[channelId] = false;
+
+          if (channelId === activeChannel?._id) {
+            updateTimeout(channelId);
+          }
+        }
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isVisible]);
+
+  React.useEffect(() => {
+    return clearAll;
+  }, [clearAll]);
 };
 
 export type { TProps };

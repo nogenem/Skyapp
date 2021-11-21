@@ -63,6 +63,12 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '1.2em',
       height: '1.2em',
     },
+    last_seen_icon: {
+      alignSelf: 'flex-end',
+      width: '0.9em',
+      height: '0.9em',
+      margin: '2px 0',
+    },
   }),
 );
 

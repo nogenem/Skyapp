@@ -6,11 +6,17 @@ import { AccountCircle as AccountCircleIcon } from '@material-ui/icons';
 
 import { MESSAGE_TYPES } from '~/constants/message_types';
 import useScrollState, { EScrollStates } from '~/hooks/useScrollState';
-import { IAttachment, IMessage, IOtherUsers } from '~/redux/chat/types';
+import {
+  IAttachment,
+  IChannel,
+  IMessage,
+  IOtherUsers,
+} from '~/redux/chat/types';
 import { IUser } from '~/redux/user/types';
 
 import {
   DateMessage,
+  NewMsgsMessage,
   SystemMessage,
   TextMessage,
   UploadedFileMessage,
@@ -20,6 +26,7 @@ import AudioMessage from './Messages/AudioMessage';
 import useStyles from './useStyles';
 
 interface IOwnProps {
+  activeChannel: IChannel;
   messages: IMessage[];
   messagesQueue: IMessage[];
   loggedUser: IUser;
@@ -30,6 +37,7 @@ interface IOwnProps {
 type TProps = IOwnProps;
 
 const MessagesContainer = ({
+  activeChannel,
   messages,
   messagesQueue,
   loggedUser,
@@ -87,6 +95,18 @@ const MessagesContainer = ({
     const ret = [];
     let lastDate: Date | undefined = undefined;
     let lastUserId: string | undefined = undefined;
+    let addedOtherLastSeen: boolean = false;
+    let addedNewMsgsAlert: boolean = false;
+
+    const myLastSeen = !activeChannel.is_group
+      ? activeChannel.members.find(member => member.user_id === loggedUser._id)
+          ?.last_seen
+      : undefined;
+    const otherLastSeen = !activeChannel.is_group
+      ? activeChannel.members.find(member => member.user_id !== loggedUser._id)
+          ?.last_seen
+      : undefined;
+
     for (let i = 0; i < messages.length; i++) {
       const message = messages[i];
       let addedDate = false;
@@ -100,6 +120,32 @@ const MessagesContainer = ({
           />,
         );
         addedDate = true;
+      }
+
+      // Add 'other user' icon to demostrate his/her last seen message
+      if (
+        !addedOtherLastSeen &&
+        otherLastSeen &&
+        otherLastSeen < message.createdAt
+      ) {
+        ret.push(
+          <AccountCircleIcon
+            key="last_seen"
+            className={classes.last_seen_icon}
+          />,
+        );
+        addedOtherLastSeen = true;
+      }
+
+      // Add 'new messages' message
+      if (
+        !addedNewMsgsAlert &&
+        myLastSeen &&
+        myLastSeen < message.createdAt &&
+        message.from_id !== loggedUser._id
+      ) {
+        ret.push(<NewMsgsMessage key="new_messages" />);
+        addedNewMsgsAlert = true;
       }
 
       if (!message.from_id) {
@@ -117,6 +163,16 @@ const MessagesContainer = ({
 
       lastDate = message.createdAt;
       lastUserId = message.from_id;
+    }
+
+    // Add 'other user' icon to demostrate his/her last seen message
+    if (!addedOtherLastSeen && otherLastSeen && messages.length) {
+      ret.push(
+        <AccountCircleIcon
+          key="last_seen"
+          className={classes.last_seen_icon}
+        />,
+      );
     }
     return ret;
   };

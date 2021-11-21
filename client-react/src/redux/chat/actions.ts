@@ -200,3 +200,8 @@ export const sendSetActiveChannel =
 
     dispatch(setActiveChannel(channel_id));
   };
+
+export const sendSetLastSeen = (channel_id: string) => () => {
+  const instance = IoService.instance();
+  instance.socket!.emit(SOCKET_EVENTS.IO_SET_LAST_SEEN, { channel_id });
+};

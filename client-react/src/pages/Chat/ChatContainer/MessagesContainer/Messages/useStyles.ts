@@ -82,6 +82,16 @@ const useStyles = makeStyles((theme: Theme) =>
         marginRight: '-50%',
       },
     },
+    new_messages: {
+      fontSize: '.8rem',
+      padding: '0.2rem 0 1.2rem 0',
+      color: theme.palette.primary[getInverseThemeMode(theme.palette.type)],
+      textAlign: 'center',
+      '&:before, &:after': {
+        backgroundColor:
+          theme.palette.primary[getInverseThemeMode(theme.palette.type)],
+      },
+    },
   }),
 );
 
