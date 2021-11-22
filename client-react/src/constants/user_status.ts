@@ -1,4 +1,5 @@
 export const USER_STATUS = {
+  TMP_AWAY: -1,
   ACTIVE: 1,
   AWAY: 2,
   DO_NOT_DISTURB: 3,
@@ -6,6 +7,7 @@ export const USER_STATUS = {
 } as const;
 
 export const USER_STATUS_2_TEXT = {
+  [USER_STATUS.TMP_AWAY]: 'Away',
   [USER_STATUS.ACTIVE]: 'Active',
   [USER_STATUS.AWAY]: 'Away',
   [USER_STATUS.DO_NOT_DISTURB]: 'Do not disturb',

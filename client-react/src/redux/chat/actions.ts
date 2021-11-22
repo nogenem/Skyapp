@@ -1,6 +1,7 @@
 import { Dispatch } from 'redux';
 
 import * as SOCKET_EVENTS from '~/constants/socket_events';
+import { TUserStatus } from '~/constants/user_status';
 import type { IUser } from '~/redux/user/types';
 import { ApiService, IoService } from '~/services';
 import MessageQueueService from '~/services/MessageQueueService';
@@ -52,6 +53,11 @@ const setLastSeen = (data: {
   last_seen: string;
 }) => ({
   type: EChatActions.SET_LAST_SEEN,
+  payload: data,
+});
+
+const setUserStatus = (data: { user_id: string; newStatus: TUserStatus }) => ({
+  type: EChatActions.SET_USER_STATUS,
   payload: data,
 });
 
@@ -142,6 +148,9 @@ export const connectIo = (user: IUser) => (dispatch: Dispatch) => {
     );
     instance.socket!.on(SOCKET_EVENTS.IO_SET_LAST_SEEN, data => {
       dispatch(setLastSeen(data));
+    });
+    instance.socket!.on(SOCKET_EVENTS.IO_USER_STATUS_CHANGED, data => {
+      dispatch(setUserStatus(data));
     });
   });
 };

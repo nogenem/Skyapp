@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { USER_STATUS } from '~/constants/user_status';
 import { getRenderWithRedux } from '~/utils/testUtils';
 
 import {
@@ -23,6 +24,8 @@ describe('Unconnected ChatPage', () => {
       <UnconnectedChatPage
         isUserEmailConfirmed={false}
         activeChannel={undefined}
+        loggedUserStatus={USER_STATUS.ACTIVE}
+        broadcastUserStatusChanged={() => {}}
       />,
     );
 
@@ -31,7 +34,12 @@ describe('Unconnected ChatPage', () => {
 
   it("doesn't render CTA when `isUserEmailConfirmed` is true", () => {
     const { queryByText } = renderWithRedux(
-      <UnconnectedChatPage isUserEmailConfirmed activeChannel={undefined} />,
+      <UnconnectedChatPage
+        isUserEmailConfirmed
+        activeChannel={undefined}
+        loggedUserStatus={USER_STATUS.ACTIVE}
+        broadcastUserStatusChanged={() => {}}
+      />,
     );
 
     expect(queryByText(/confirm your email/i)).not.toBeInTheDocument();

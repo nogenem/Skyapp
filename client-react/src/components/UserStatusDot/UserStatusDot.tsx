@@ -65,6 +65,7 @@ const getDotStyle = (
     case USER_STATUS.ACTIVE:
       return classes.dot_active;
     case USER_STATUS.AWAY:
+    case USER_STATUS.TMP_AWAY:
       return classes.dot_away;
     case USER_STATUS.DO_NOT_DISTURB:
       return classes.dot_do_not_disturb;

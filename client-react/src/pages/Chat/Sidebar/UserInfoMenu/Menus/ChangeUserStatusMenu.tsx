@@ -44,7 +44,7 @@ interface IOwnProps {
 
 type TProps = IOwnProps;
 
-const STATUS = Object.values(USER_STATUS);
+const STATUS = Object.values(USER_STATUS).filter(status => status >= 0);
 const ChangeUserStatusMenu = ({
   userStatus,
   anchorEl,

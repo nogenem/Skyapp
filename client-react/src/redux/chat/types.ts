@@ -111,6 +111,7 @@ enum EChatActions {
   ADD_TO_MESSAGES_QUEUE = '@chat/ADD_TO_MESSAGES_QUEUE',
   REMOVE_FROM_MESSAGES_QUEUE = '@chat/REMOVE_FROM_MESSAGES_QUEUE',
   SET_LAST_SEEN = '@chat/SET_LAST_SEEN',
+  SET_USER_STATUS = '@chat/SET_USER_STATUS',
 }
 
 interface IChatActionType<T, P> {
@@ -144,6 +145,13 @@ type TChatAction =
         channel_id: string;
         user_id: string;
         last_seen: string;
+      }
+    >
+  | IChatActionType<
+      typeof EChatActions.SET_USER_STATUS,
+      {
+        user_id: string;
+        newStatus: TUserStatus;
       }
     >;
 

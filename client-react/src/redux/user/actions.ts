@@ -1,8 +1,9 @@
 import { Dispatch } from 'redux';
 
 import { LOCAL_STORAGE_TOKEN } from '~/constants/localStorageKeys';
+import * as SOCKET_EVENTS from '~/constants/socket_events';
 import { TUserStatus } from '~/constants/user_status';
-import { ApiService } from '~/services';
+import { ApiService, IoService } from '~/services';
 import setAuthorizationHeader from '~/utils/setAuthorizationHeader';
 
 import { connectIo, disconnectIo } from '../chat/actions';
@@ -102,3 +103,11 @@ export const changeThoughts =
     ApiService.user.changeThoughts(credentials).then(() => {
       dispatch(userChangedThoughts(credentials.newThoughts));
     });
+
+export const broadcastUserStatusChanged =
+  (newStatus: TUserStatus) => (dispatch: Dispatch) => {
+    const instance = IoService.instance();
+    instance.socket!.emit(SOCKET_EVENTS.IO_USER_STATUS_CHANGED, { newStatus });
+
+    dispatch(userChangedStatus(newStatus));
+  };

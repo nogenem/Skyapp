@@ -159,6 +159,12 @@ export default function chat(
         });
         return draft;
       }
+      case EChatActions.SET_USER_STATUS: {
+        if (draft.users[action.payload.user_id]) {
+          draft.users[action.payload.user_id].status = action.payload.newStatus;
+        }
+        return draft;
+      }
       default:
         return draft;
     }

@@ -28,9 +28,13 @@ export default function user(
     case EUserActions.SIGNED_OUT:
       return initialState;
     case EUserActions.CHANGED_STATUS:
-      return { ...state, status: action.payload };
+      if (state.status !== action.payload)
+        return { ...state, status: action.payload };
+      return state;
     case EUserActions.CHANGED_THOUGHTS:
-      return { ...state, thoughts: action.payload };
+      if (state.thoughts !== action.payload)
+        return { ...state, thoughts: action.payload };
+      return state;
     default:
       return state;
   }
