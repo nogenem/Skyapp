@@ -61,6 +61,11 @@ const setUserStatus = (data: { user_id: string; newStatus: TUserStatus }) => ({
   payload: data,
 });
 
+const setUserThoughts = (data: { user_id: string; newThoughts: string }) => ({
+  type: EChatActions.SET_USER_THOUGHTS,
+  payload: data,
+});
+
 const addNewUser = (newUser: IOtherUser) => ({
   type: EChatActions.ADD_NEW_USER,
   payload: newUser,
@@ -151,6 +156,9 @@ export const connectIo = (user: IUser) => (dispatch: Dispatch) => {
     });
     instance.socket!.on(SOCKET_EVENTS.IO_USER_STATUS_CHANGED, data => {
       dispatch(setUserStatus(data));
+    });
+    instance.socket!.on(SOCKET_EVENTS.IO_USER_THOUGHTS_CHANGED, data => {
+      dispatch(setUserThoughts(data));
     });
   });
 };

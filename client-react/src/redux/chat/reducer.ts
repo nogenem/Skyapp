@@ -165,6 +165,13 @@ export default function chat(
         }
         return draft;
       }
+      case EChatActions.SET_USER_THOUGHTS: {
+        if (draft.users[action.payload.user_id]) {
+          draft.users[action.payload.user_id].thoughts =
+            action.payload.newThoughts;
+        }
+        return draft;
+      }
       default:
         return draft;
     }
