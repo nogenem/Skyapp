@@ -6,7 +6,7 @@ import {
 } from '~/constants/return_messages';
 import type { TUserStatus } from '~/constants/user_status';
 import type { IAuthRequest } from '~/middlewares/auth';
-import { IUserDoc } from '~/models/User';
+import { User, IUserDoc } from '~/models';
 import handleErrors from '~/utils/handleErrors';
 
 interface IChangeStatusCredentials {
@@ -27,8 +27,9 @@ export default {
 
     try {
       if (user.status !== newStatus) {
-        user.status = newStatus;
-        await user.save();
+        await User.updateOne({ _id: user._id }, { status: newStatus });
+
+        // TODO: Broadcast the change
 
         return res.status(200).json({
           message: req.t(USER_STATUS_CHANGED),
@@ -49,8 +50,9 @@ export default {
 
     try {
       if (user.thoughts !== newThoughts) {
-        user.thoughts = newThoughts;
-        await user.save();
+        await User.updateOne({ _id: user._id }, { thoughts: newThoughts });
+
+        // TODO: Broadcast the change
 
         return res.status(200).json({
           message: req.t(USER_THOUGHTS_CHANGED),
