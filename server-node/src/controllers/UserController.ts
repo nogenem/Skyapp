@@ -4,9 +4,11 @@ import {
   USER_STATUS_CHANGED,
   USER_THOUGHTS_CHANGED,
 } from '~/constants/return_messages';
+import { IO_USER_STATUS_CHANGED } from '~/constants/socket_events';
 import type { TUserStatus } from '~/constants/user_status';
 import type { IAuthRequest } from '~/middlewares/auth';
 import { User, IUserDoc } from '~/models';
+import { IoService } from '~/services';
 import handleErrors from '~/utils/handleErrors';
 
 interface IChangeStatusCredentials {
@@ -29,7 +31,9 @@ export default {
       if (user.status !== newStatus) {
         await User.updateOne({ _id: user._id }, { status: newStatus });
 
-        // TODO: Broadcast the change
+        const io = IoService.instance();
+
+        await io.emit(IO_USER_STATUS_CHANGED, { user_id: user._id, newStatus });
 
         return res.status(200).json({
           message: req.t(USER_STATUS_CHANGED),
