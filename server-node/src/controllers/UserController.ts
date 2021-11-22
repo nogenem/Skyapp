@@ -4,7 +4,10 @@ import {
   USER_STATUS_CHANGED,
   USER_THOUGHTS_CHANGED,
 } from '~/constants/return_messages';
-import { IO_USER_STATUS_CHANGED } from '~/constants/socket_events';
+import {
+  IO_USER_STATUS_CHANGED,
+  IO_USER_THOUGHTS_CHANGED,
+} from '~/constants/socket_events';
 import type { TUserStatus } from '~/constants/user_status';
 import type { IAuthRequest } from '~/middlewares/auth';
 import { User, IUserDoc } from '~/models';
@@ -56,7 +59,12 @@ export default {
       if (user.thoughts !== newThoughts) {
         await User.updateOne({ _id: user._id }, { thoughts: newThoughts });
 
-        // TODO: Broadcast the change
+        const io = IoService.instance();
+
+        await io.emit(IO_USER_THOUGHTS_CHANGED, {
+          user_id: user._id,
+          newThoughts,
+        });
 
         return res.status(200).json({
           message: req.t(USER_THOUGHTS_CHANGED),

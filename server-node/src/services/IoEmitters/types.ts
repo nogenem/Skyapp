@@ -29,6 +29,11 @@ interface IUserStatusChanged {
   newStatus: TUserStatus;
 }
 
+interface IUserThoughtsChanged {
+  user_id: string;
+  newThoughts: string;
+}
+
 type TSocketEventData =
   | IChannelDoc
   | IChatChannel
@@ -36,7 +41,8 @@ type TSocketEventData =
   | IRemovedFromGroupChannel
   | IChatUser
   | ISetLastSeen
-  | IUserStatusChanged;
+  | IUserStatusChanged
+  | IUserThoughtsChanged;
 
 type TEmitterFunc = (
   io: Namespace,
@@ -52,4 +58,5 @@ export type {
   TEmitterFunc,
   ISetLastSeen,
   IUserStatusChanged,
+  IUserThoughtsChanged,
 };
