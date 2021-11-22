@@ -8,6 +8,7 @@ import privateChannelCreated from './privateChannelCreated';
 import removedFromGroupChannel from './removedFromGroupChannel';
 import setLastSeen from './setLastSeen';
 import type { TSocketEvent, TEmitterFunc } from './types';
+import userStatusChanged from './userStatusChanged';
 
 const emitters = {
   [SOCKET_EVENTS.IO_PRIVATE_CHANNEL_CREATED]: privateChannelCreated,
@@ -17,6 +18,7 @@ const emitters = {
   [SOCKET_EVENTS.IO_MESSAGES_RECEIVED]: messagesReceived,
   [SOCKET_EVENTS.IO_NEW_USER]: newUser,
   [SOCKET_EVENTS.IO_SET_LAST_SEEN]: setLastSeen,
+  [SOCKET_EVENTS.IO_USER_STATUS_CHANGED]: userStatusChanged,
 } as {
   [event in TSocketEvent]: TEmitterFunc | undefined;
 };

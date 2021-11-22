@@ -1,6 +1,8 @@
+/* eslint-disable camelcase */
 import { Namespace } from 'socket.io';
 
 import * as SOCKET_EVENTS from '~/constants/socket_events';
+import { TUserStatus } from '~/constants/user_status';
 import { IChannelDoc, IChatChannel, IChatMessage, IChatUser } from '~/models';
 import { IClientMap } from '~/typescript-declarations/io.d';
 
@@ -22,13 +24,19 @@ interface ISetLastSeen {
   lastSeen: Date;
 }
 
+interface IUserStatusChanged {
+  user_id: string;
+  newStatus: TUserStatus;
+}
+
 type TSocketEventData =
   | IChannelDoc
   | IChatChannel
   | IMessagesReceived
   | IRemovedFromGroupChannel
   | IChatUser
-  | ISetLastSeen;
+  | ISetLastSeen
+  | IUserStatusChanged;
 
 type TEmitterFunc = (
   io: Namespace,
@@ -43,4 +51,5 @@ export type {
   TSocketEventData,
   TEmitterFunc,
   ISetLastSeen,
+  IUserStatusChanged,
 };

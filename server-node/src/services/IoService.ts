@@ -2,6 +2,7 @@ import { Server as HttpServer } from 'http';
 import { Server as SocketServer, Namespace } from 'socket.io';
 
 import * as SOCKET_EVENTS from '~/constants/socket_events';
+import { TUserStatus } from '~/constants/user_status';
 import { Channel } from '~/models';
 import { IClientInfo, IClientMap } from '~/typescript-declarations/io.d';
 import getUsersAndChannelsData from '~/utils/getUsersAndChannelsData';
@@ -179,6 +180,16 @@ class IoService {
               lastSeen,
             });
           }
+        },
+      );
+
+      socket.on(
+        SOCKET_EVENTS.IO_USER_STATUS_CHANGED,
+        async ({ newStatus }: { newStatus: TUserStatus }) => {
+          this.emit(SOCKET_EVENTS.IO_USER_STATUS_CHANGED, {
+            user_id: currentUserId,
+            newStatus,
+          });
         },
       );
     });
