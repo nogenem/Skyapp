@@ -38,5 +38,7 @@
   "Record": "Record",
   "Send": "Send",
   "Remove": "Remove",
-  "participants": "participants"
+  "participants": "participants",
+  "Edit": "Edit",
+  "Options": "Options"
 }

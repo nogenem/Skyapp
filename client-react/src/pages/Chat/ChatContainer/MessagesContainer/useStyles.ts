@@ -8,11 +8,12 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDirection: 'column',
       paddingLeft: '2em',
-      paddingRight: '0.5em',
+      paddingRight: '2em', // 0.5
       overflowY: 'auto',
       maxHeight: `calc(90vh - ${theme.spacing(1)}px)`,
       minHeight: `calc(70vh - ${theme.spacing(1)}px)`,
       marginBottom: theme.spacing(1),
+      position: 'relative',
     },
     messageFromMe: {
       alignSelf: 'flex-end',

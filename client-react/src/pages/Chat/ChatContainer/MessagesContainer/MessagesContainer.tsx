@@ -1,10 +1,20 @@
-import React from 'react';
+import React, { MouseEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { CircularProgress, Paper } from '@material-ui/core';
-import { AccountCircle as AccountCircleIcon } from '@material-ui/icons';
+import {
+  CircularProgress,
+  IconButton,
+  Menu,
+  MenuItem,
+  Paper,
+} from '@material-ui/core';
+import {
+  AccountCircle as AccountCircleIcon,
+  MoreVert as MoreVertIcon,
+} from '@material-ui/icons';
 
 import { MESSAGE_TYPES } from '~/constants/message_types';
+import useObjState from '~/hooks/useObjState';
 import useScrollState, { EScrollStates } from '~/hooks/useScrollState';
 import {
   IAttachment,
@@ -46,35 +56,58 @@ const MessagesContainer = ({
 }: TProps) => {
   const ref = React.useRef<HTMLDivElement>(null);
   const scrollState = useScrollState(ref.current);
-  const { t: trans } = useTranslation(['Messages']);
+
+  const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
+  const [hoveringMsgInfo, setHoveringMsgInfo] = useObjState({
+    _id: '',
+    top: -1,
+    left: -1,
+  });
+
+  const { t: trans } = useTranslation(['Common', 'Messages']);
   const classes = useStyles();
 
   const channelId = messages[0]?.channel_id;
+  const isMenuOpen = Boolean(anchorEl);
+
+  const handleOnMouseEnter =
+    (messageId: string) => (event: MouseEvent<Element>) => {
+      const element = event.target as HTMLElement;
+      setHoveringMsgInfo({
+        _id: messageId,
+        top: element.offsetTop,
+        left: element.offsetLeft + element.clientWidth,
+      });
+    };
 
   const renderMessage = (
     message: IMessage,
     shouldShowUserInfo: boolean = false,
     isQueuedMessage: boolean = false,
   ) => {
-    const isLoggedUser = message.from_id === loggedUser._id;
-    const msgClassName = isLoggedUser
+    const isFromLoggedUser = message.from_id === loggedUser._id;
+    const msgClassName = isFromLoggedUser
       ? classes.messageFromMe
       : classes.messageFromThem;
-    const infoClassName = isLoggedUser ? classes.myInfo : classes.theirInfo;
+    const infoClassName = isFromLoggedUser ? classes.myInfo : classes.theirInfo;
 
     const user = users[message.from_id || ''] || loggedUser;
     const nickname = getFirstName(user.nickname);
     const date = getTime(message.createdAt);
 
+    const onMouseEnter = isFromLoggedUser
+      ? handleOnMouseEnter(message._id)
+      : undefined;
+
     return (
       <React.Fragment key={message._id}>
         {shouldShowUserInfo && (
           <div className={infoClassName}>
-            {isLoggedUser ? date : `${nickname}, ${date}`}
+            {isFromLoggedUser ? date : `${nickname}, ${date}`}
           </div>
         )}
-        <Paper className={msgClassName}>
-          {shouldShowUserInfo && !isLoggedUser && (
+        <Paper className={msgClassName} onMouseEnter={onMouseEnter}>
+          {shouldShowUserInfo && !isFromLoggedUser && (
             <AccountCircleIcon className={classes.user_icon} />
           )}
           {isQueuedMessage && (
@@ -186,6 +219,28 @@ const MessagesContainer = ({
     return ret;
   };
 
+  const handleOptionsClick = (event: MouseEvent<Element>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setAnchorEl(event.currentTarget as Element);
+  };
+
+  const handleMenuClose = (event: MouseEvent<Element>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setAnchorEl(null);
+  };
+
+  const handleEditClick = (event: MouseEvent<Element>) => {
+    handleMenuClose(event);
+    // TODO
+  };
+
+  const handleRemoveClick = (event: MouseEvent<Element>) => {
+    handleMenuClose(event);
+    // TODO
+  };
+
   React.useEffect(() => {
     if (
       scrollState === EScrollStates.INDETERMINED ||
@@ -222,6 +277,32 @@ const MessagesContainer = ({
     <div className={classes.container} ref={ref}>
       {renderMessages()}
       {renderQueue()}
+      <IconButton
+        aria-label={trans('Common:Options')}
+        aria-controls={`msg-menu-${channelId}`}
+        aria-haspopup="true"
+        style={{
+          position: 'absolute',
+          padding: '0',
+          top: hoveringMsgInfo.top,
+          left: hoveringMsgInfo.left,
+          display: !!hoveringMsgInfo._id ? 'block' : 'none',
+        }}
+        onClick={handleOptionsClick}
+      >
+        <MoreVertIcon />
+      </IconButton>
+      <Menu
+        id={`msg-menu-${channelId}`}
+        anchorEl={anchorEl}
+        open={isMenuOpen}
+        onClose={handleMenuClose}
+      >
+        <MenuItem onClick={handleEditClick}>{trans('Common:Edit')}</MenuItem>
+        <MenuItem onClick={handleRemoveClick}>
+          {trans('Common:Remove')}
+        </MenuItem>
+      </Menu>
     </div>
   );
 };
