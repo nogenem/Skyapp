@@ -16,7 +16,6 @@ const useStyles = makeStyles((theme: Theme) =>
       position: 'relative',
     },
     messageFromMe: {
-      alignSelf: 'flex-end',
       padding: '10px',
       margin: '1px 0',
       maxWidth: '70%',
@@ -27,7 +26,6 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     messageFromThem: {
-      alignSelf: 'flex-start',
       padding: '10px',
       margin: '1px 0',
       maxWidth: '70%',
@@ -38,13 +36,6 @@ const useStyles = makeStyles((theme: Theme) =>
       '& $user_icon': {
         left: '-1.25em',
       },
-    },
-    loading_icon: {
-      position: 'absolute',
-      left: '-1.5em',
-      top: 'calc(50% - 0.6em)',
-      width: '1.2em !important',
-      height: '1.2em !important',
     },
     myInfo: {
       alignSelf: 'flex-end',
@@ -69,6 +60,28 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '0.9em',
       height: '0.9em',
       margin: '2px 0',
+    },
+    messageWrapper: {
+      width: '100%',
+      display: 'flex',
+      alignItems: 'center',
+    },
+    messageWrapperFromMe: {
+      flexDirection: 'row-reverse',
+    },
+    messageWrapperFromThem: {
+      flexDirection: 'row',
+    },
+    loading_icon: {
+      width: '1.2em !important',
+      height: '1.2em !important',
+      margin: `0px ${theme.spacing(1) / 2}px`,
+    },
+    edited_icon: {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      margin: `0px ${theme.spacing(1) / 2}px`,
     },
   }),
 );

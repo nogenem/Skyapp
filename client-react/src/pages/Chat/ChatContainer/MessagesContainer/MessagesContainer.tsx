@@ -11,6 +11,7 @@ import {
 import {
   AccountCircle as AccountCircleIcon,
   MoreVert as MoreVertIcon,
+  Edit as EditIcon,
 } from '@material-ui/icons';
 
 import { MESSAGE_TYPES } from '~/constants/message_types';
@@ -55,6 +56,7 @@ interface IOwnProps {
   loggedUser: IUser;
   users: IOtherUsers;
   onScrollTop: () => Promise<void>;
+  changeEditingMessage: (messageId: string) => void;
 }
 
 type TProps = IOwnProps;
@@ -66,6 +68,7 @@ const MessagesContainer = ({
   loggedUser,
   users,
   onScrollTop,
+  changeEditingMessage,
 }: TProps) => {
   const ref = React.useRef<HTMLDivElement>(null);
   const scrollState = useScrollState(ref.current);
@@ -99,6 +102,9 @@ const MessagesContainer = ({
     isQueuedMessage: boolean = false,
   ) => {
     const isFromLoggedUser = message.from_id === loggedUser._id;
+    const wrapperExtraClassName = isFromLoggedUser
+      ? classes.messageWrapperFromMe
+      : classes.messageWrapperFromThem;
     const msgClassName = isFromLoggedUser
       ? classes.messageFromMe
       : classes.messageFromThem;
@@ -120,20 +126,38 @@ const MessagesContainer = ({
             {isFromLoggedUser ? date : `${nickname}, ${date}`}
           </div>
         )}
-        <Paper className={msgClassName} onMouseEnter={onMouseEnter}>
-          {shouldShowUserInfo && !isFromLoggedUser && (
-            <AccountCircleIcon className={classes.user_icon} />
-          )}
-          {isQueuedMessage && (
+        <div
+          className={`${classes.messageWrapper} ${wrapperExtraClassName}`}
+          onMouseEnter={onMouseEnter}
+        >
+          <Paper className={msgClassName}>
+            {shouldShowUserInfo && !isFromLoggedUser && (
+              <AccountCircleIcon className={classes.user_icon} />
+            )}
+
+            {getMessageByType(message)}
+          </Paper>
+          {(isQueuedMessage || message.isUpdating) && (
             <CircularProgress
-              title={trans('Messages:Sending the message')}
+              title={
+                isQueuedMessage
+                  ? trans('Messages:Sending the message')
+                  : trans('Messages:Updating this message')
+              }
               color="secondary"
               thickness={4}
               className={classes.loading_icon}
             />
           )}
-          {getMessageByType(message)}
-        </Paper>
+          {message.createdAt.getTime() !== message.updatedAt.getTime() && (
+            <span
+              className={classes.edited_icon}
+              title={trans('Messages:This message was edited')}
+            >
+              <EditIcon fontSize="small" />
+            </span>
+          )}
+        </div>
       </React.Fragment>
     );
   };
@@ -247,7 +271,7 @@ const MessagesContainer = ({
 
   const handleEditClick = (event: MouseEvent<Element>) => {
     handleMenuClose(event);
-    // TODO
+    changeEditingMessage(hoveringMsgInfo._id);
   };
 
   const handleRemoveClick = (event: MouseEvent<Element>) => {

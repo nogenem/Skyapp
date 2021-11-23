@@ -8,6 +8,7 @@ import MessageQueueService from '~/services/MessageQueueService';
 
 import type {
   IChannel,
+  IEditMessageCredentials,
   IFetchMessagesCredentials,
   IInitialData,
   ILeaveGroupCredentials,
@@ -84,6 +85,19 @@ export const addMessages = (
   },
 });
 
+export const setMessageIsUpdating = (message_id: string, value: boolean) => ({
+  type: EChatActions.SET_MESSAGE_IS_UPDATING,
+  payload: {
+    message_id,
+    value,
+  },
+});
+
+export const updateMessage = (message: IMessage) => ({
+  type: EChatActions.UPDATE_MESSAGE,
+  payload: message,
+});
+
 export const addToMessagesQueue = (message: IMessage) => ({
   type: EChatActions.ADD_TO_MESSAGES_QUEUE,
   payload: message,
@@ -91,11 +105,6 @@ export const addToMessagesQueue = (message: IMessage) => ({
 
 export const removeFromMessagesQueue = (message: IMessage) => ({
   type: EChatActions.REMOVE_FROM_MESSAGES_QUEUE,
-  payload: message,
-});
-
-export const setLatestMessage = (message: IMessage) => ({
-  type: EChatActions.SET_LATEST_MESSAGE,
   payload: message,
 });
 
@@ -148,7 +157,6 @@ export const connectIo = (user: IUser) => (dispatch: Dispatch) => {
       SOCKET_EVENTS.IO_MESSAGES_RECEIVED,
       (messages: IMessage[]) => {
         dispatch(addMessages(messages));
-        dispatch(setLatestMessage(messages[messages.length - 1]));
       },
     );
     instance.socket!.on(SOCKET_EVENTS.IO_SET_LAST_SEEN, data => {
@@ -160,6 +168,12 @@ export const connectIo = (user: IUser) => (dispatch: Dispatch) => {
     instance.socket!.on(SOCKET_EVENTS.IO_USER_THOUGHTS_CHANGED, data => {
       dispatch(setUserThoughts(data));
     });
+    instance.socket!.on(
+      SOCKET_EVENTS.IO_MESSAGE_EDITED,
+      (message: IMessage) => {
+        dispatch(updateMessage(message));
+      },
+    );
   });
 };
 
@@ -208,6 +222,14 @@ export const sendMessage = (channel_id: string, message: string) => () => {
 
 export const sendFiles = (filesData: FormData) => () => {
   MessageQueueService.enqueue(filesData);
+};
+
+export const sendEditMessage = (message: IMessage, newBody: string) => () => {
+  const credentials: IEditMessageCredentials = {
+    message,
+    newBody,
+  };
+  MessageQueueService.enqueue(credentials);
 };
 
 export const sendSetActiveChannel =

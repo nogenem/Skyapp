@@ -9,6 +9,7 @@ import { TextInput } from '~/components';
 import { HAS_TOO_MANY_FILES, UPLOAD_FILE_IS_TOO_BIG } from '~/constants/errors';
 import FILE_UPLOAD_LIMITS from '~/constants/file_upload_limits';
 import useObjState from '~/hooks/useObjState';
+import { IMessage } from '~/redux/chat/types';
 import { Toast } from '~/utils/Toast';
 
 import { ChatMoreOptsMenu } from '../ChatMoreOptsMenu';
@@ -33,31 +34,41 @@ const initialState: TState = {
 
 interface IOwnProps {
   channelId?: string;
+  editingMessage?: IMessage;
   handleSubmit: (message: string) => void;
   handleSendingFiles: (filesData: FormData) => void;
+  startEditingLoggedUserLastestMessage: () => void;
+  stopEditingMessage: () => void;
 }
 
 type TProps = IOwnProps;
 
-const ChatInput = ({ channelId, handleSubmit, handleSendingFiles }: TProps) => {
+const ChatInput = ({
+  channelId,
+  editingMessage,
+  handleSubmit,
+  handleSendingFiles,
+  startEditingLoggedUserLastestMessage,
+  stopEditingMessage,
+}: TProps) => {
   const [state, setState] = useObjState(initialState);
   const inputRef = React.useRef<HTMLInputElement>();
   const { t: trans } = useTranslation(['Messages']);
   const classes = useStyles();
 
-  const onSubmit = async () => {
+  const onSubmit = () => {
     setState({ isSubmitting: true });
     if (state.files.length > 0) {
       const filesData = new FormData();
       for (let i = 0; i < state.files.length; i++) {
         filesData.append('files', state.files[i].file());
       }
-      await handleSendingFiles(filesData);
+      handleSendingFiles(filesData);
     }
 
     const message = state.message.trim();
     if (!!message) {
-      await handleSubmit(message);
+      handleSubmit(message);
     }
 
     state.files.forEach(file => {
@@ -81,6 +92,10 @@ const ChatInput = ({ channelId, handleSubmit, handleSendingFiles }: TProps) => {
       message,
       isDisabled,
     });
+
+    if (isDisabled && !!editingMessage) {
+      stopEditingMessage();
+    }
   };
 
   const handleFormSubmit = (event: SyntheticEvent) => {
@@ -96,6 +111,10 @@ const ChatInput = ({ channelId, handleSubmit, handleSendingFiles }: TProps) => {
       event.stopPropagation();
 
       onSubmit();
+    } else if (event.shiftKey && event.key === 'ArrowUp') {
+      startEditingLoggedUserLastestMessage();
+    } else if (event.key === 'Escape' && !!editingMessage) {
+      stopEditingMessage();
     }
   };
 
@@ -165,6 +184,27 @@ const ChatInput = ({ channelId, handleSubmit, handleSendingFiles }: TProps) => {
       inputRef.current.focus();
     }
   }, [channelId]);
+
+  React.useEffect(() => {
+    if (editingMessage) {
+      setState({
+        message: editingMessage.body as string,
+        files: [],
+        isDisabled: false,
+      });
+
+      if (inputRef.current) {
+        inputRef.current.focus();
+      }
+    } else {
+      setState({
+        message: '',
+        files: [],
+        isDisabled: true,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editingMessage]);
 
   return (
     <form className={classes.container} onSubmit={handleFormSubmit}>

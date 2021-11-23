@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import type {
+  IEditMessageCredentials,
   IFetchMessagesCredentials,
   ILeaveGroupCredentials,
   INewGroupCredentials,
@@ -40,6 +41,7 @@ export const END_POINTS = {
     getMessages: 'api/chat/messages',
     sendMessage: 'api/chat/messages',
     sendFiles: 'api/chat/files',
+    editMessage: 'api/chat/messages',
   },
 };
 
@@ -116,6 +118,13 @@ export default {
     sendFiles: (filesData: FormData) =>
       axiosInstance
         .post(END_POINTS.chat.sendFiles, filesData)
+        .then(res => res.data),
+    editMessage: (credentials: IEditMessageCredentials) =>
+      axiosInstance
+        .patch(END_POINTS.chat.editMessage, {
+          message_id: credentials.message._id,
+          newBody: credentials.newBody,
+        })
         .then(res => res.data),
   },
 };

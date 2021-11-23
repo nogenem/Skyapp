@@ -86,48 +86,40 @@ export default function chat(
       }
       case EChatActions.ADD_MESSAGES: {
         const { messages, totalMessages, atTop } = action.payload;
-        for (let i = 0; i < messages.length; i++) {
-          messages[i].createdAt = new Date(messages[i].createdAt);
-          messages[i].updatedAt = new Date(messages[i].updatedAt);
-        }
-
         const channelId = !!messages.length ? messages[0].channel_id : '';
-        if (
-          !!channelId &&
-          !!draft.activeChannelInfo &&
-          draft.activeChannelInfo._id === channelId
-        ) {
-          if (atTop) {
-            draft.activeChannelInfo.messages = [
-              ...messages,
-              ...draft.activeChannelInfo.messages,
-            ];
+
+        for (let i = 0; i < messages.length; i++) {
+          if (!(messages[i].createdAt instanceof Date))
+            messages[i].createdAt = new Date(messages[i].createdAt);
+          if (!(messages[i].updatedAt instanceof Date))
+            messages[i].updatedAt = new Date(messages[i].updatedAt);
+        }
+
+        if (!!channelId) {
+          if (
+            !!draft.activeChannelInfo &&
+            draft.activeChannelInfo._id === channelId
+          ) {
+            if (atTop) {
+              draft.activeChannelInfo.messages = [
+                ...messages,
+                ...draft.activeChannelInfo.messages,
+              ];
+            } else {
+              draft.activeChannelInfo.messages = [
+                ...draft.activeChannelInfo.messages,
+                ...messages,
+              ];
+            }
+
+            if (totalMessages >= 0)
+              draft.activeChannelInfo.totalMessages = totalMessages;
+            else draft.activeChannelInfo.totalMessages += messages.length;
           } else {
-            draft.activeChannelInfo.messages = [
-              ...draft.activeChannelInfo.messages,
-              ...messages,
-            ];
+            draft.channels[channelId].unread_msgs += 1;
           }
-          if (totalMessages >= 0)
-            draft.activeChannelInfo.totalMessages = totalMessages;
-          else draft.activeChannelInfo.totalMessages += messages.length;
+          draft.channels[channelId].lastMessage = messages[messages.length - 1];
         }
-        return draft;
-      }
-      case EChatActions.SET_LATEST_MESSAGE: {
-        const message = { ...action.payload };
-        message.createdAt = new Date(message.createdAt);
-        message.updatedAt = new Date(message.updatedAt);
-
-        const channelId = message.channel_id;
-        draft.channels[channelId].lastMessage = message;
-        if (
-          !draft.activeChannelInfo ||
-          draft.activeChannelInfo._id !== channelId
-        ) {
-          draft.channels[channelId].unread_msgs += 1;
-        }
-
         return draft;
       }
       case EChatActions.ADD_TO_MESSAGES_QUEUE: {
@@ -169,6 +161,43 @@ export default function chat(
         if (draft.users[action.payload.user_id]) {
           draft.users[action.payload.user_id].thoughts =
             action.payload.newThoughts;
+        }
+        return draft;
+      }
+      case EChatActions.SET_MESSAGE_IS_UPDATING: {
+        if (draft.activeChannelInfo) {
+          const message = draft.activeChannelInfo.messages.find(
+            msg => msg._id === action.payload.message_id,
+          );
+
+          if (message) {
+            message.isUpdating = action.payload.value;
+          }
+        }
+        return draft;
+      }
+      case EChatActions.UPDATE_MESSAGE: {
+        const newMessage = { ...action.payload };
+        if (!(newMessage.createdAt instanceof Date))
+          newMessage.createdAt = new Date(newMessage.createdAt);
+        if (!(newMessage.updatedAt instanceof Date))
+          newMessage.updatedAt = new Date(newMessage.updatedAt);
+
+        if (draft.activeChannelInfo) {
+          for (let i = 0; i < draft.activeChannelInfo.messages.length; i++) {
+            if (draft.activeChannelInfo.messages[i]._id === newMessage._id) {
+              draft.activeChannelInfo.messages[i] = newMessage;
+              break;
+            }
+          }
+        }
+
+        if (
+          draft.channels[newMessage.channel_id] &&
+          draft.channels[newMessage.channel_id].lastMessage?._id ===
+            newMessage._id
+        ) {
+          draft.channels[newMessage.channel_id].lastMessage = newMessage;
         }
         return draft;
       }

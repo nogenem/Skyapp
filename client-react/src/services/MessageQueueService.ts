@@ -5,16 +5,24 @@ import {
   addMessages,
   addToMessagesQueue,
   removeFromMessagesQueue,
-  setLatestMessage,
+  setMessageIsUpdating,
+  updateMessage,
 } from '~/redux/chat/actions';
-import { IMessage, ISendMessageCredentials } from '~/redux/chat/types';
+import {
+  IEditMessageCredentials,
+  IMessage,
+  ISendMessageCredentials,
+} from '~/redux/chat/types';
 import store from '~/redux/store';
 import { getUser } from '~/redux/user/reducer';
 import { Toast } from '~/utils/Toast';
 
 import { ApiService } from '.';
 
-type TToSendMessage = ISendMessageCredentials | FormData;
+type TToSendMessage =
+  | ISendMessageCredentials
+  | FormData
+  | IEditMessageCredentials;
 interface IQueueEntry {
   queuedMsgs: IMessage[];
   toSendMsg: TToSendMessage;
@@ -75,11 +83,7 @@ class MessageQueueService {
         queuedMsgs.push(queueMsg);
         store.dispatch<any>(addToMessagesQueue(queueMsg));
       });
-    } else if (
-      message instanceof Object &&
-      message.channel_id &&
-      message.body
-    ) {
+    } else if (isSendMessageCredendials(message)) {
       const credentials = message as ISendMessageCredentials;
       channelId = credentials.channel_id;
       const date = new Date();
@@ -96,6 +100,17 @@ class MessageQueueService {
 
       queuedMsgs.push(queueMsg);
       store.dispatch<any>(addToMessagesQueue(queueMsg));
+    } else if (isEditMessageCredendials(message)) {
+      const credentials = message as IEditMessageCredentials;
+      channelId = credentials.message.channel_id;
+
+      const queueMsg: IMessage = {
+        ...message.message,
+        body: credentials.newBody,
+      };
+
+      queuedMsgs.push(queueMsg);
+      store.dispatch<any>(setMessageIsUpdating(message.message._id, true));
     }
 
     if (queuedMsgs.length && channelId) {
@@ -149,12 +164,18 @@ class MessageQueueService {
           }
 
           if (!!messages && messages.length) {
-            store.dispatch<any>(addMessages(messages));
-            store.dispatch<any>(
-              setLatestMessage(messages[messages.length - 1]),
-            );
+            if (isEditMessageCredendials(toSendMsg)) {
+              store.dispatch<any>(updateMessage(messages[0]));
+            } else {
+              store.dispatch<any>(addMessages(messages));
+            }
           }
         } else {
+          if (isEditMessageCredendials(toSendMsg)) {
+            store.dispatch<any>(
+              setMessageIsUpdating(toSendMsg.message._id, false),
+            );
+          }
           this._onError(queuedMsgs);
         }
       }
@@ -165,22 +186,15 @@ class MessageQueueService {
   private _sendMessage(queuedMsgs: IMessage[], toSendMsg: TToSendMessage) {
     const type = queuedMsgs[0].type;
 
-    switch (type) {
-      case MESSAGE_TYPES.TEXT: {
-        const message = toSendMsg as ISendMessageCredentials;
-        return ApiService.chat.sendMessage(message);
-      }
-      case MESSAGE_TYPES.UPLOADED_FILE: {
-        const message = toSendMsg as FormData;
-        return ApiService.chat.sendFiles(message);
-      }
-      default: {
-        console.error(
-          'MessageQueueService._sendMessage:> Invalid type: ',
-          type,
-        );
-        return Promise.reject({});
-      }
+    if (toSendMsg instanceof FormData) {
+      return ApiService.chat.sendFiles(toSendMsg as FormData);
+    } else if (isSendMessageCredendials(toSendMsg)) {
+      return ApiService.chat.sendMessage(toSendMsg as ISendMessageCredentials);
+    } else if (isEditMessageCredendials(toSendMsg)) {
+      return ApiService.chat.editMessage(toSendMsg as IEditMessageCredentials);
+    } else {
+      console.error('MessageQueueService._sendMessage:> Invalid type: ', type);
+      return Promise.reject({});
     }
   }
 
@@ -198,5 +212,29 @@ class MessageQueueService {
     });
   }
 }
+
+// https://www.typescriptlang.org/docs/handbook/advanced-types.html#user-defined-type-guards
+// PS: This is so annoying...
+const isSendMessageCredendials = (
+  message: TToSendMessage,
+): message is ISendMessageCredentials => {
+  const tmp = message as ISendMessageCredentials;
+  return (
+    typeof tmp === 'object' &&
+    tmp.channel_id !== undefined &&
+    tmp.body !== undefined
+  );
+};
+
+const isEditMessageCredendials = (
+  message: TToSendMessage,
+): message is IEditMessageCredentials => {
+  const tmp = message as IEditMessageCredentials;
+  return (
+    typeof tmp === 'object' &&
+    tmp.message !== undefined &&
+    tmp.newBody !== undefined
+  );
+};
 
 export default new MessageQueueService();

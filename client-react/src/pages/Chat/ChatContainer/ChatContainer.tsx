@@ -2,8 +2,8 @@ import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 
 import { RouteComponentProps } from '@reach/router';
-import { AxiosError } from 'axios';
 
+import { MESSAGE_TYPES } from '~/constants/message_types';
 import useVisibility from '~/hooks/useVisibility';
 import {
   fetchMessages as fetchMessagesAction,
@@ -11,13 +11,12 @@ import {
   sendFiles as sendFilesAction,
   sendSetActiveChannel as sendSetActiveChannelAction,
   sendSetLastSeen as sendSetLastSeenAction,
+  sendEditMessage as sendEditMessageAction,
 } from '~/redux/chat/actions';
 import { getActiveChannelInfo, getUsers } from '~/redux/chat/reducer';
-import { IChannel } from '~/redux/chat/types';
+import { IChannel, IMessage } from '~/redux/chat/types';
 import { IAppState } from '~/redux/store';
 import { getUser } from '~/redux/user/reducer';
-import handleServerErrors from '~/utils/handleServerErrors';
-import { Toast } from '~/utils/Toast';
 
 import { ChatHeader } from './ChatHeader';
 import { ChatInput } from './ChatInput';
@@ -35,6 +34,7 @@ const mapDispatchToProps = {
   sendFiles: sendFilesAction,
   sendSetActiveChannel: sendSetActiveChannelAction,
   sendSetLastSeen: sendSetLastSeenAction,
+  sendEditMessage: sendEditMessageAction,
 };
 const connector = connect(mapStateToProps, mapDispatchToProps);
 type TPropsFromRedux = ConnectedProps<typeof connector>;
@@ -57,28 +57,30 @@ const ChatContainer = ({
   sendFiles,
   sendSetActiveChannel,
   sendSetLastSeen,
+  sendEditMessage,
 }: TProps) => {
+  const [editingMessage, setEditingMessage] = React.useState<IMessage>();
   const classes = useStyles();
 
   const handleSubmit = (message: string) => {
     try {
-      sendMessage(activeChannel?._id as string, message);
+      if (editingMessage) {
+        sendEditMessage(editingMessage, message);
+        setEditingMessage(undefined);
+      } else {
+        sendMessage(activeChannel?._id as string, message);
+      }
     } catch (err) {
       console.error(err);
     }
   };
 
-  const handleSendingFiles = async (filesData: FormData) => {
+  const handleSendingFiles = (filesData: FormData) => {
     try {
       filesData.append('channel_id', activeChannel?._id as string);
-      await sendFiles(filesData);
+      sendFiles(filesData);
     } catch (err) {
-      const errors = handleServerErrors(err as AxiosError);
-      if (errors.global) {
-        Toast.error({
-          html: errors.global,
-        });
-      }
+      console.error(err);
     }
   };
 
@@ -96,6 +98,37 @@ const ChatContainer = ({
 
   const onHeaderGoBack = () => {
     sendSetActiveChannel(undefined);
+  };
+
+  const changeEditingMessage = (messageId: string) => {
+    const message = activeChannelInfo?.messages.find(
+      message => message._id === messageId,
+    );
+    setEditingMessage(message);
+  };
+
+  const startEditingLoggedUserLastestMessage = () => {
+    if (activeChannelInfo) {
+      let message: IMessage | undefined = undefined;
+      for (let i = activeChannelInfo.messages.length - 1; i >= 0; i--) {
+        const tmpMsg = activeChannelInfo.messages[i];
+        if (
+          tmpMsg.from_id === loggedUser._id &&
+          tmpMsg.type === MESSAGE_TYPES.TEXT
+        ) {
+          message = tmpMsg;
+          break;
+        }
+      }
+
+      if (message) {
+        setEditingMessage(message);
+      }
+    }
+  };
+
+  const stopEditingMessage = () => {
+    setEditingMessage(undefined);
   };
 
   React.useEffect(() => {
@@ -132,11 +165,17 @@ const ChatContainer = ({
         loggedUser={loggedUser}
         users={users}
         onScrollTop={onScrollTop}
+        changeEditingMessage={changeEditingMessage}
       />
       <ChatInput
         channelId={activeChannel._id}
+        editingMessage={editingMessage}
         handleSubmit={handleSubmit}
         handleSendingFiles={handleSendingFiles}
+        startEditingLoggedUserLastestMessage={
+          startEditingLoggedUserLastestMessage
+        }
+        stopEditingMessage={stopEditingMessage}
       />
     </div>
   );

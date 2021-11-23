@@ -50,6 +50,7 @@ interface IMessage {
   type: TMessageType;
   createdAt: Date;
   updatedAt: Date;
+  isUpdating?: boolean;
 }
 
 interface IInitialData {
@@ -93,6 +94,11 @@ interface ISendMessageCredentials {
   body: string;
 }
 
+interface IEditMessageCredentials {
+  message: IMessage;
+  newBody: string;
+}
+
 type TChatState = {
   users: IOtherUsers;
   channels: IChannels;
@@ -107,12 +113,13 @@ enum EChatActions {
   REMOVE_CHANNEL = '@chat/REMOVE_CHANNEL',
   ADD_NEW_USER = '@chat/ADD_NEW_USER',
   ADD_MESSAGES = '@chat/ADD_MESSAGES',
-  SET_LATEST_MESSAGE = '@chat/SET_LATEST_MESSAGE',
   ADD_TO_MESSAGES_QUEUE = '@chat/ADD_TO_MESSAGES_QUEUE',
   REMOVE_FROM_MESSAGES_QUEUE = '@chat/REMOVE_FROM_MESSAGES_QUEUE',
   SET_LAST_SEEN = '@chat/SET_LAST_SEEN',
   SET_USER_STATUS = '@chat/SET_USER_STATUS',
   SET_USER_THOUGHTS = '@chat/SET_USER_THOUGHTS',
+  SET_MESSAGE_IS_UPDATING = '@chat/SET_MESSAGE_IS_UPDATING',
+  UPDATE_MESSAGE = '@chat/UPDATE_MESSAGE',
 }
 
 interface IChatActionType<T, P> {
@@ -135,9 +142,12 @@ type TChatAction =
   | IChatActionType<typeof EChatActions.ADD_NEW_USER, IOtherUser>
   | IChatActionType<
       typeof EChatActions.ADD_MESSAGES,
-      { messages: IMessage[]; totalMessages: number; atTop: boolean }
+      {
+        messages: IMessage[];
+        totalMessages: number;
+        atTop: boolean;
+      }
     >
-  | IChatActionType<typeof EChatActions.SET_LATEST_MESSAGE, IMessage>
   | IChatActionType<typeof EChatActions.ADD_TO_MESSAGES_QUEUE, IMessage>
   | IChatActionType<typeof EChatActions.REMOVE_FROM_MESSAGES_QUEUE, IMessage>
   | IChatActionType<
@@ -161,7 +171,15 @@ type TChatAction =
         user_id: string;
         newThoughts: string;
       }
-    >;
+    >
+  | IChatActionType<
+      typeof EChatActions.SET_MESSAGE_IS_UPDATING,
+      {
+        message_id: string;
+        value: boolean;
+      }
+    >
+  | IChatActionType<typeof EChatActions.UPDATE_MESSAGE, IMessage>;
 
 export type {
   TChatState,
@@ -179,5 +197,6 @@ export type {
   ILeaveGroupCredentials,
   IFetchMessagesCredentials,
   ISendMessageCredentials,
+  IEditMessageCredentials,
 };
 export { EChatActions };
