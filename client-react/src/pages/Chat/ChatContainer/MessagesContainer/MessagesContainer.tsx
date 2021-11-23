@@ -311,6 +311,13 @@ const MessagesContainer = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scrollState]);
 
+  React.useEffect(() => {
+    if (activeChannel) {
+      setHoveringMsgInfo(initialHoveringMsgInfo);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeChannel]);
+
   return (
     <div className={classes.container} ref={ref}>
       {renderMessages()}
