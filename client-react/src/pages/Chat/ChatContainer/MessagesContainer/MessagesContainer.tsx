@@ -14,6 +14,7 @@ import {
 } from '@material-ui/icons';
 
 import { MESSAGE_TYPES } from '~/constants/message_types';
+import type { TMessageType } from '~/constants/message_types';
 import useObjState from '~/hooks/useObjState';
 import useScrollState, { EScrollStates } from '~/hooks/useScrollState';
 import {
@@ -34,6 +35,18 @@ import {
 } from './Messages';
 import AudioMessage from './Messages/AudioMessage';
 import useStyles from './useStyles';
+
+const initialHoveringMsgInfo: {
+  _id: string;
+  type?: TMessageType;
+  top: number;
+  left: number;
+} = {
+  _id: '',
+  type: undefined,
+  top: -1,
+  left: -1,
+};
 
 interface IOwnProps {
   activeChannel: IChannel;
@@ -58,11 +71,9 @@ const MessagesContainer = ({
   const scrollState = useScrollState(ref.current);
 
   const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
-  const [hoveringMsgInfo, setHoveringMsgInfo] = useObjState({
-    _id: '',
-    top: -1,
-    left: -1,
-  });
+  const [hoveringMsgInfo, setHoveringMsgInfo] = useObjState(
+    initialHoveringMsgInfo,
+  );
 
   const { t: trans } = useTranslation(['Common', 'Messages']);
   const classes = useStyles();
@@ -71,10 +82,12 @@ const MessagesContainer = ({
   const isMenuOpen = Boolean(anchorEl);
 
   const handleOnMouseEnter =
-    (messageId: string) => (event: MouseEvent<Element>) => {
+    (messageId: string, messageType: TMessageType) =>
+    (event: MouseEvent<Element>) => {
       const element = event.target as HTMLElement;
       setHoveringMsgInfo({
         _id: messageId,
+        type: messageType,
         top: element.offsetTop,
         left: element.offsetLeft + element.clientWidth,
       });
@@ -96,7 +109,7 @@ const MessagesContainer = ({
     const date = getTime(message.createdAt);
 
     const onMouseEnter = isFromLoggedUser
-      ? handleOnMouseEnter(message._id)
+      ? handleOnMouseEnter(message._id, message.type)
       : undefined;
 
     return (
@@ -298,7 +311,9 @@ const MessagesContainer = ({
         open={isMenuOpen}
         onClose={handleMenuClose}
       >
-        <MenuItem onClick={handleEditClick}>{trans('Common:Edit')}</MenuItem>
+        {hoveringMsgInfo.type === MESSAGE_TYPES.TEXT && (
+          <MenuItem onClick={handleEditClick}>{trans('Common:Edit')}</MenuItem>
+        )}
         <MenuItem onClick={handleRemoveClick}>
           {trans('Common:Remove')}
         </MenuItem>
