@@ -34,5 +34,6 @@ export const uploadHasTooManyFiles = (n: number): TTranslatableError => ({
   msg: "Can't upload more than {{count}} file at the same time",
   params: { count: n },
 });
+export const CANT_EDIT_THIS_MESSAGE = "You can't edit this message";
 
 export type { TTranslatableError };

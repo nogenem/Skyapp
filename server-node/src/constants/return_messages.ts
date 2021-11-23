@@ -18,3 +18,4 @@ export const CHANNEL_UPDATED = 'Messages:Channel updated with success';
 export const REMOVED_FROM_GROUP = 'Messages:You were removed from the group';
 export const MESSAGE_SENT = 'Messages:Message sent with success';
 export const FILES_UPLOADED = 'Messages:Files uploaded with success';
+export const MESSAGE_EDITED = 'Messages:Message edited with success';

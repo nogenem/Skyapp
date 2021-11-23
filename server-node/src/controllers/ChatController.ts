@@ -7,6 +7,7 @@ import {
   CHANNEL_CREATED,
   CHANNEL_UPDATED,
   FILES_UPLOADED,
+  MESSAGE_EDITED,
   MESSAGE_SENT,
   REMOVED_FROM_GROUP,
 } from '~/constants/return_messages';
@@ -16,6 +17,7 @@ import {
   IO_REMOVED_FROM_GROUP_CHANNEL,
   IO_GROUP_CHANNEL_UPDATED,
   IO_MESSAGES_RECEIVED,
+  IO_MESSAGE_EDITED,
 } from '~/constants/socket_events';
 import type { IAuthRequest } from '~/middlewares/auth';
 import {
@@ -31,6 +33,7 @@ import {
 } from '~/models';
 import { IoService } from '~/services';
 import {
+  cantEditThisMessageError,
   channelAlreadyExistsError,
   invalidIdError,
   notMemberOfGroupError,
@@ -69,6 +72,12 @@ interface ISendMessageCredentials {
   // eslint-disable-next-line camelcase
   channel_id: string;
   body: string;
+}
+
+interface IEditMessageCredentials {
+  // eslint-disable-next-line camelcase
+  message_id: string;
+  newBody: string;
 }
 
 const insertManyMessages = (messages: IMessage[]): Promise<IMessageDoc[]> => {
@@ -606,5 +615,41 @@ export default {
       message: FILES_UPLOADED,
       messagesObjs: messageJson,
     });
+  },
+  async editMessage(
+    req: IAuthRequest,
+    res: Response,
+  ): Promise<Response<unknown>> {
+    const { message_id: messageId, newBody } =
+      req.body as unknown as IEditMessageCredentials;
+    const currentUser = req.currentUser as IUserDoc;
+
+    // You can only edit YOUR TEXT message
+    const messageRecord = await Message.findOneAndUpdate(
+      { _id: messageId, from_id: currentUser._id, type: MESSAGE_TYPES.TEXT },
+      { body: newBody },
+      { new: true },
+    );
+
+    if (messageRecord) {
+      const messageJson = messageRecord.toChatMessage();
+      const channelRecord = (await Channel.findOne({
+        _id: messageJson.channel_id,
+      })) as IChannelDoc;
+      const channelJson = channelRecord.toChatChannel();
+
+      const io = IoService.instance();
+
+      await io.emit(IO_MESSAGE_EDITED, {
+        channel: channelJson,
+        message: messageJson,
+      });
+      return res.status(200).json({
+        message: MESSAGE_EDITED,
+        messageObj: messageJson,
+      });
+    }
+
+    return handleErrors(cantEditThisMessageError(), res);
   },
 };

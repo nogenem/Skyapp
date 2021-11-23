@@ -65,7 +65,7 @@ const Message = new mongoose.Schema<IMessageDoc>(
   // { timestamps: true },
 );
 
-Message.pre('update', function preUpdate() {
+Message.pre(/'update|updateOne|findOneAndUpdate/, function preUpdate() {
   this.update({}, { $set: { updatedAt: new Date() } });
 });
 

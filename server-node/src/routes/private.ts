@@ -74,5 +74,10 @@ routes.post(
   multerUploader,
   ChatController.sendFiles,
 );
+routes.patch(
+  '/chat/messages',
+  validate(chat.editMessage),
+  ChatController.editMessage,
+);
 
 export default routes;

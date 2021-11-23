@@ -10,6 +10,7 @@ import {
   CHANNEL_ALREADY_EXISTS,
   USER_IS_NOT_GROUP_ADM,
   NOT_MEMBER_OF_GROUP,
+  CANT_EDIT_THIS_MESSAGE,
 } from '~/constants/error_messages';
 import type { TTranslatableError } from '~/constants/error_messages';
 
@@ -85,3 +86,6 @@ export const notMemberOfGroupError = (): CustomError =>
 export const multerErrors = (
   errs: [msgObj: IMsgObj<TMsgObjTypes>, status?: number],
 ): CustomError => new CustomError(...errs);
+
+export const cantEditThisMessageError = (): CustomError =>
+  new CustomError({ global: CANT_EDIT_THIS_MESSAGE });

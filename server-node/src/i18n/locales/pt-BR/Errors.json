@@ -22,5 +22,6 @@
   "Can't upload files bigger than {{count}}MB": "Não é possível fazer upload de arquivos maiores que {{count}}MB",
   "Can't upload files bigger than {{count}}MB_plural": "Não é possível fazer upload de arquivos maiores que {{count}}MBs",
   "Can't upload more than {{count}} file at the same time": "Não é possível fazer upload de mais de {{count}} arquivo ao mesmo tempo",
-  "Can't upload more than {{count}} file at the same time_plural": "Não é possível fazer upload de mais de {{count}} arquivos ao mesmo tempo"
+  "Can't upload more than {{count}} file at the same time_plural": "Não é possível fazer upload de mais de {{count}} arquivos ao mesmo tempo",
+  "You can't edit this message": "Você não pode editar essa mensagem"
 }

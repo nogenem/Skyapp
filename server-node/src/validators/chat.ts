@@ -41,6 +41,10 @@ const chat = {
     body('body').trim().not().isEmpty().withMessage(FIELD_CANT_BE_EMPY),
   ],
   sendFiles: [],
+  editMessage: [
+    body('message_id').trim().not().isEmpty().withMessage(invalidIdError()),
+    body('newBody').trim().not().isEmpty().withMessage(FIELD_CANT_BE_EMPY),
+  ],
 };
 
 export default chat;
