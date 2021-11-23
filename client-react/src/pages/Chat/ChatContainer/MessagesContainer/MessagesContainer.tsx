@@ -108,9 +108,10 @@ const MessagesContainer = ({
     const nickname = getFirstName(user.nickname);
     const date = getTime(message.createdAt);
 
-    const onMouseEnter = isFromLoggedUser
-      ? handleOnMouseEnter(message._id, message.type)
-      : undefined;
+    const onMouseEnter =
+      isFromLoggedUser && !isQueuedMessage
+        ? handleOnMouseEnter(message._id, message.type)
+        : undefined;
 
     return (
       <React.Fragment key={message._id}>
