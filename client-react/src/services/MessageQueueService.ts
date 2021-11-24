@@ -24,6 +24,7 @@ type TToSendMessage =
   | FormData
   | IEditMessageCredentials;
 interface IQueueEntry {
+  queueAction: TQueueAction;
   queuedMsgs: IMessage[];
   toSendMsg: TToSendMessage;
 }
@@ -38,6 +39,13 @@ interface IServerResponse {
 
 const MAX_ATTEMPTS = 3;
 
+const QUEUE_ACTIONS = {
+  SEND_TEXT_MESSAGE: 'SEND_TEXT_MESSAGE',
+  SEND_FILE_MESSAGES: 'SEND_FILE_MESSAGES',
+  EDIT_TEXT_MESSAGE: 'EDIT_TEXT_MESSAGE',
+} as const;
+type TQueueAction = typeof QUEUE_ACTIONS[keyof typeof QUEUE_ACTIONS];
+
 class MessageQueueService {
   private _queues: IQueue;
   private _running: Record<string, boolean>;
@@ -47,12 +55,12 @@ class MessageQueueService {
     this._running = {};
   }
 
-  enqueue(message: TToSendMessage) {
+  enqueue(message: TToSendMessage, queueAction: TQueueAction) {
     const userId = getUser(store.getState())._id;
     const queuedMsgs = [];
     let channelId: string = '';
 
-    if (message instanceof FormData) {
+    if (queueAction === QUEUE_ACTIONS.SEND_FILE_MESSAGES) {
       const formData = message as FormData;
       channelId = formData.get('channel_id') as string;
       const dateTime = new Date().getTime();
@@ -83,7 +91,7 @@ class MessageQueueService {
         queuedMsgs.push(queueMsg);
         store.dispatch<any>(addToMessagesQueue(queueMsg));
       });
-    } else if (isSendMessageCredendials(message)) {
+    } else if (queueAction === QUEUE_ACTIONS.SEND_TEXT_MESSAGE) {
       const credentials = message as ISendMessageCredentials;
       channelId = credentials.channel_id;
       const date = new Date();
@@ -100,22 +108,23 @@ class MessageQueueService {
 
       queuedMsgs.push(queueMsg);
       store.dispatch<any>(addToMessagesQueue(queueMsg));
-    } else if (isEditMessageCredendials(message)) {
+    } else if (queueAction === QUEUE_ACTIONS.EDIT_TEXT_MESSAGE) {
       const credentials = message as IEditMessageCredentials;
       channelId = credentials.message.channel_id;
 
       const queueMsg: IMessage = {
-        ...message.message,
+        ...credentials.message,
         body: credentials.newBody,
       };
 
       queuedMsgs.push(queueMsg);
-      store.dispatch<any>(setMessageIsUpdating(message.message._id, true));
+      store.dispatch<any>(setMessageIsUpdating(credentials.message._id, true));
     }
 
     if (queuedMsgs.length && channelId) {
       if (!this._queues[channelId]) this._queues[channelId] = [];
       this._queues[channelId].push({
+        queueAction,
         queuedMsgs,
         toSendMsg: message,
       });
@@ -133,7 +142,7 @@ class MessageQueueService {
   private _run(channelId: string) {
     return async () => {
       while (!!this._queues[channelId] && this._queues[channelId].length > 0) {
-        const { queuedMsgs, toSendMsg } = this._queues[
+        const { queueAction, queuedMsgs, toSendMsg } = this._queues[
           channelId
         ].shift() as IQueueEntry;
 
@@ -142,7 +151,7 @@ class MessageQueueService {
         let ret: IServerResponse | null = null;
         while (!sent && attempts < MAX_ATTEMPTS) {
           try {
-            ret = await this._sendMessage(queuedMsgs, toSendMsg);
+            ret = await this._sendMessage(queueAction, queuedMsgs, toSendMsg);
             sent = true;
           } catch (err) {
             attempts += 1;
@@ -164,16 +173,17 @@ class MessageQueueService {
           }
 
           if (!!messages && messages.length) {
-            if (isEditMessageCredendials(toSendMsg)) {
+            if (queueAction === QUEUE_ACTIONS.EDIT_TEXT_MESSAGE) {
               store.dispatch<any>(updateMessage(messages[0]));
             } else {
               store.dispatch<any>(addMessages(messages));
             }
           }
         } else {
-          if (isEditMessageCredendials(toSendMsg)) {
+          if (queueAction === QUEUE_ACTIONS.EDIT_TEXT_MESSAGE) {
+            const message = toSendMsg as IEditMessageCredentials;
             store.dispatch<any>(
-              setMessageIsUpdating(toSendMsg.message._id, false),
+              setMessageIsUpdating(message.message._id, false),
             );
           }
           this._onError(queuedMsgs);
@@ -183,14 +193,18 @@ class MessageQueueService {
     };
   }
 
-  private _sendMessage(queuedMsgs: IMessage[], toSendMsg: TToSendMessage) {
+  private _sendMessage(
+    queueAction: TQueueAction,
+    queuedMsgs: IMessage[],
+    toSendMsg: TToSendMessage,
+  ) {
     const type = queuedMsgs[0].type;
 
-    if (toSendMsg instanceof FormData) {
+    if (queueAction === QUEUE_ACTIONS.SEND_FILE_MESSAGES) {
       return ApiService.chat.sendFiles(toSendMsg as FormData);
-    } else if (isSendMessageCredendials(toSendMsg)) {
+    } else if (queueAction === QUEUE_ACTIONS.SEND_TEXT_MESSAGE) {
       return ApiService.chat.sendMessage(toSendMsg as ISendMessageCredentials);
-    } else if (isEditMessageCredendials(toSendMsg)) {
+    } else if (queueAction === QUEUE_ACTIONS.EDIT_TEXT_MESSAGE) {
       return ApiService.chat.editMessage(toSendMsg as IEditMessageCredentials);
     } else {
       console.error('MessageQueueService._sendMessage:> Invalid type: ', type);
@@ -213,28 +227,6 @@ class MessageQueueService {
   }
 }
 
-// https://www.typescriptlang.org/docs/handbook/advanced-types.html#user-defined-type-guards
-// PS: This is so annoying...
-const isSendMessageCredendials = (
-  message: TToSendMessage,
-): message is ISendMessageCredentials => {
-  const tmp = message as ISendMessageCredentials;
-  return (
-    typeof tmp === 'object' &&
-    tmp.channel_id !== undefined &&
-    tmp.body !== undefined
-  );
-};
-
-const isEditMessageCredendials = (
-  message: TToSendMessage,
-): message is IEditMessageCredentials => {
-  const tmp = message as IEditMessageCredentials;
-  return (
-    typeof tmp === 'object' &&
-    tmp.message !== undefined &&
-    tmp.newBody !== undefined
-  );
-};
-
+export { QUEUE_ACTIONS };
+export type { TQueueAction };
 export default new MessageQueueService();

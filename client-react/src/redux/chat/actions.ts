@@ -4,7 +4,9 @@ import * as SOCKET_EVENTS from '~/constants/socket_events';
 import { TUserStatus } from '~/constants/user_status';
 import type { IUser } from '~/redux/user/types';
 import { ApiService, IoService } from '~/services';
-import MessageQueueService from '~/services/MessageQueueService';
+import MessageQueueService, {
+  QUEUE_ACTIONS,
+} from '~/services/MessageQueueService';
 
 import type {
   IChannel,
@@ -217,11 +219,11 @@ export const sendMessage = (channel_id: string, message: string) => () => {
     channel_id,
     body: message,
   };
-  MessageQueueService.enqueue(credentials);
+  MessageQueueService.enqueue(credentials, QUEUE_ACTIONS.SEND_TEXT_MESSAGE);
 };
 
 export const sendFiles = (filesData: FormData) => () => {
-  MessageQueueService.enqueue(filesData);
+  MessageQueueService.enqueue(filesData, QUEUE_ACTIONS.SEND_FILE_MESSAGES);
 };
 
 export const sendEditMessage = (message: IMessage, newBody: string) => () => {
@@ -229,7 +231,7 @@ export const sendEditMessage = (message: IMessage, newBody: string) => () => {
     message,
     newBody,
   };
-  MessageQueueService.enqueue(credentials);
+  MessageQueueService.enqueue(credentials, QUEUE_ACTIONS.EDIT_TEXT_MESSAGE);
 };
 
 export const sendSetActiveChannel =
