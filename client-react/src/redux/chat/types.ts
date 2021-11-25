@@ -51,6 +51,7 @@ interface IMessage {
   createdAt: Date;
   updatedAt: Date;
   isUpdating?: boolean;
+  isDeleting?: boolean;
 }
 
 interface IInitialData {
@@ -99,6 +100,10 @@ interface IEditMessageCredentials {
   newBody: string;
 }
 
+interface IDeleteMessageCredentials {
+  message: IMessage;
+}
+
 type TChatState = {
   users: IOtherUsers;
   channels: IChannels;
@@ -120,6 +125,8 @@ enum EChatActions {
   SET_USER_THOUGHTS = '@chat/SET_USER_THOUGHTS',
   SET_MESSAGE_IS_UPDATING = '@chat/SET_MESSAGE_IS_UPDATING',
   UPDATE_MESSAGE = '@chat/UPDATE_MESSAGE',
+  SET_MESSAGE_IS_DELETING = '@chat/SET_MESSAGE_IS_DELETING',
+  DELETE_MESSAGE = '@chat/DELETE_MESSAGE',
 }
 
 interface IChatActionType<T, P> {
@@ -179,7 +186,21 @@ type TChatAction =
         value: boolean;
       }
     >
-  | IChatActionType<typeof EChatActions.UPDATE_MESSAGE, IMessage>;
+  | IChatActionType<typeof EChatActions.UPDATE_MESSAGE, IMessage>
+  | IChatActionType<
+      typeof EChatActions.SET_MESSAGE_IS_DELETING,
+      {
+        message_id: string;
+        value: boolean;
+      }
+    >
+  | IChatActionType<
+      typeof EChatActions.DELETE_MESSAGE,
+      {
+        message: IMessage;
+        lastMessage?: IMessage;
+      }
+    >;
 
 export type {
   TChatState,
@@ -198,5 +219,6 @@ export type {
   IFetchMessagesCredentials,
   ISendMessageCredentials,
   IEditMessageCredentials,
+  IDeleteMessageCredentials,
 };
 export { EChatActions };

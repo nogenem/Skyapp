@@ -12,6 +12,7 @@ import {
   sendSetActiveChannel as sendSetActiveChannelAction,
   sendSetLastSeen as sendSetLastSeenAction,
   sendEditMessage as sendEditMessageAction,
+  sendDeleteMessage as sendDeleteMessageAction,
 } from '~/redux/chat/actions';
 import { getActiveChannelInfo, getUsers } from '~/redux/chat/reducer';
 import { IChannel, IMessage } from '~/redux/chat/types';
@@ -35,6 +36,7 @@ const mapDispatchToProps = {
   sendSetActiveChannel: sendSetActiveChannelAction,
   sendSetLastSeen: sendSetLastSeenAction,
   sendEditMessage: sendEditMessageAction,
+  sendDeleteMessage: sendDeleteMessageAction,
 };
 const connector = connect(mapStateToProps, mapDispatchToProps);
 type TPropsFromRedux = ConnectedProps<typeof connector>;
@@ -58,6 +60,7 @@ const ChatContainer = ({
   sendSetActiveChannel,
   sendSetLastSeen,
   sendEditMessage,
+  sendDeleteMessage,
 }: TProps) => {
   const [editingMessage, setEditingMessage] = React.useState<IMessage>();
   const classes = useStyles();
@@ -131,6 +134,16 @@ const ChatContainer = ({
     setEditingMessage(undefined);
   };
 
+  const onDeleteMessage = (messageId: string) => {
+    const message = activeChannelInfo?.messages.find(
+      message => message._id === messageId,
+    );
+
+    if (message) {
+      sendDeleteMessage(message);
+    }
+  };
+
   React.useEffect(() => {
     async function fetchData() {
       if (!!activeChannel) {
@@ -166,6 +179,7 @@ const ChatContainer = ({
         users={users}
         onScrollTop={onScrollTop}
         changeEditingMessage={changeEditingMessage}
+        onDeleteMessage={onDeleteMessage}
       />
       <ChatInput
         channelId={activeChannel._id}

@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import type {
+  IDeleteMessageCredentials,
   IEditMessageCredentials,
   IFetchMessagesCredentials,
   ILeaveGroupCredentials,
@@ -42,6 +43,7 @@ export const END_POINTS = {
     sendMessage: 'api/chat/messages',
     sendFiles: 'api/chat/files',
     editMessage: 'api/chat/messages',
+    deleteMessage: (message_id: string) => `api/chat/messages/${message_id}`,
   },
 };
 
@@ -125,6 +127,10 @@ export default {
           message_id: credentials.message._id,
           newBody: credentials.newBody,
         })
+        .then(res => res.data),
+    deleteMessage: (credentials: IDeleteMessageCredentials) =>
+      axiosInstance
+        .delete(END_POINTS.chat.deleteMessage(credentials.message._id))
         .then(res => res.data),
   },
 };

@@ -27,5 +27,8 @@
   "Sending the message": "Sending the message",
   "New Messages": "New Messages",
   "This message was edited": "This message was edited",
-  "Updating this message": "Updating this message"
+  "Updating this message": "Updating this message",
+  "Are you sure?": "Are you sure?",
+  "Deleting this message": "Deleting this message",
+  "Are you sure you want to delete this message?": "Are you sure you want to delete this message?"
 }

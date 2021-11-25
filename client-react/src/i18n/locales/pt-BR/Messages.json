@@ -27,5 +27,8 @@
   "Sending the message": "Enviando a mensagem",
   "New Messages": "Novas Mensagens",
   "This message was edited": "Esta mensagem foi editada",
-  "Updating this message": "Atualizando esta mensagem"
+  "Updating this message": "Atualizando esta mensagem",
+  "Are you sure?": "Você tem certeza?",
+  "Deleting this message": "Deletando esta mensagem",
+  "Are you sure you want to delete this message?": "Você tem certeza que deseja deletar esta mensagem?"
 }

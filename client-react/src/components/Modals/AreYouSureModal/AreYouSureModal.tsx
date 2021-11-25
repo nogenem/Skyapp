@@ -15,6 +15,7 @@ import { IErrors } from '~/utils/handleServerErrors';
 
 const defaultProps = {
   body: 'Messages:Are you sure?',
+  errors: {},
 };
 
 interface IOwnProps {

@@ -201,6 +201,38 @@ export default function chat(
         }
         return draft;
       }
+      case EChatActions.SET_MESSAGE_IS_DELETING: {
+        if (draft.activeChannelInfo) {
+          const message = draft.activeChannelInfo.messages.find(
+            msg => msg._id === action.payload.message_id,
+          );
+
+          if (message) {
+            message.isDeleting = action.payload.value;
+          }
+        }
+        return draft;
+      }
+      case EChatActions.DELETE_MESSAGE: {
+        if (draft.activeChannelInfo) {
+          draft.activeChannelInfo.messages =
+            draft.activeChannelInfo.messages.filter(
+              message => message._id !== action.payload.message._id,
+            );
+        }
+
+        let lastMessage = action.payload.lastMessage;
+        if (!!lastMessage) {
+          if (!(lastMessage.createdAt instanceof Date))
+            lastMessage.createdAt = new Date(lastMessage.createdAt);
+          if (!(lastMessage.updatedAt instanceof Date))
+            lastMessage.updatedAt = new Date(lastMessage.updatedAt);
+        }
+        draft.channels[action.payload.message.channel_id].lastMessage =
+          lastMessage;
+
+        return draft;
+      }
       default:
         return draft;
     }

@@ -10,6 +10,7 @@ import MessageQueueService, {
 
 import type {
   IChannel,
+  IDeleteMessageCredentials,
   IEditMessageCredentials,
   IFetchMessagesCredentials,
   IInitialData,
@@ -100,6 +101,19 @@ export const updateMessage = (message: IMessage) => ({
   payload: message,
 });
 
+export const setMessageIsDeleting = (message_id: string, value: boolean) => ({
+  type: EChatActions.SET_MESSAGE_IS_DELETING,
+  payload: {
+    message_id,
+    value,
+  },
+});
+
+export const deleteMessage = (message: IMessage, lastMessage?: IMessage) => ({
+  type: EChatActions.DELETE_MESSAGE,
+  payload: { message, lastMessage },
+});
+
 export const addToMessagesQueue = (message: IMessage) => ({
   type: EChatActions.ADD_TO_MESSAGES_QUEUE,
   payload: message,
@@ -176,6 +190,10 @@ export const connectIo = (user: IUser) => (dispatch: Dispatch) => {
         dispatch(updateMessage(message));
       },
     );
+    instance.socket!.on(SOCKET_EVENTS.IO_MESSAGE_DELETED, data => {
+      const deleteData = data as { message: IMessage; lastMessage?: IMessage };
+      dispatch(deleteMessage(deleteData.message, deleteData.lastMessage));
+    });
   });
 };
 
@@ -232,6 +250,13 @@ export const sendEditMessage = (message: IMessage, newBody: string) => () => {
     newBody,
   };
   MessageQueueService.enqueue(credentials, QUEUE_ACTIONS.EDIT_TEXT_MESSAGE);
+};
+
+export const sendDeleteMessage = (message: IMessage) => () => {
+  const credentials: IDeleteMessageCredentials = {
+    message,
+  };
+  MessageQueueService.enqueue(credentials, QUEUE_ACTIONS.DELETE_MESSAGE);
 };
 
 export const sendSetActiveChannel =

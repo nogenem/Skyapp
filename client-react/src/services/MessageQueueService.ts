@@ -4,11 +4,14 @@ import { MESSAGE_TYPES } from '~/constants/message_types';
 import {
   addMessages,
   addToMessagesQueue,
+  deleteMessage,
   removeFromMessagesQueue,
+  setMessageIsDeleting,
   setMessageIsUpdating,
   updateMessage,
 } from '~/redux/chat/actions';
 import {
+  IDeleteMessageCredentials,
   IEditMessageCredentials,
   IMessage,
   ISendMessageCredentials,
@@ -22,7 +25,8 @@ import { ApiService } from '.';
 type TToSendMessage =
   | ISendMessageCredentials
   | FormData
-  | IEditMessageCredentials;
+  | IEditMessageCredentials
+  | IDeleteMessageCredentials;
 interface IQueueEntry {
   queueAction: TQueueAction;
   queuedMsgs: IMessage[];
@@ -35,6 +39,7 @@ interface IServerResponse {
   message: string;
   messagesObjs?: IMessage[];
   messageObj?: IMessage;
+  lastMessage?: IMessage;
 }
 
 const MAX_ATTEMPTS = 3;
@@ -43,6 +48,7 @@ const QUEUE_ACTIONS = {
   SEND_TEXT_MESSAGE: 'SEND_TEXT_MESSAGE',
   SEND_FILE_MESSAGES: 'SEND_FILE_MESSAGES',
   EDIT_TEXT_MESSAGE: 'EDIT_TEXT_MESSAGE',
+  DELETE_MESSAGE: 'DELETE_MESSAGE',
 } as const;
 type TQueueAction = typeof QUEUE_ACTIONS[keyof typeof QUEUE_ACTIONS];
 
@@ -119,6 +125,14 @@ class MessageQueueService {
 
       queuedMsgs.push(queueMsg);
       store.dispatch<any>(setMessageIsUpdating(credentials.message._id, true));
+    } else if (queueAction === QUEUE_ACTIONS.DELETE_MESSAGE) {
+      const credentials = message as IEditMessageCredentials;
+      channelId = credentials.message.channel_id;
+
+      const queueMsg: IMessage = credentials.message;
+
+      queuedMsgs.push(queueMsg);
+      store.dispatch<any>(setMessageIsDeleting(credentials.message._id, true));
     }
 
     if (queuedMsgs.length && channelId) {
@@ -175,6 +189,8 @@ class MessageQueueService {
           if (!!messages && messages.length) {
             if (queueAction === QUEUE_ACTIONS.EDIT_TEXT_MESSAGE) {
               store.dispatch<any>(updateMessage(messages[0]));
+            } else if (queueAction === QUEUE_ACTIONS.DELETE_MESSAGE) {
+              store.dispatch<any>(deleteMessage(messages[0], ret?.lastMessage));
             } else {
               store.dispatch<any>(addMessages(messages));
             }
@@ -184,6 +200,11 @@ class MessageQueueService {
             const message = toSendMsg as IEditMessageCredentials;
             store.dispatch<any>(
               setMessageIsUpdating(message.message._id, false),
+            );
+          } else if (queueAction === QUEUE_ACTIONS.DELETE_MESSAGE) {
+            const message = toSendMsg as IDeleteMessageCredentials;
+            store.dispatch<any>(
+              setMessageIsDeleting(message.message._id, false),
             );
           }
           this._onError(queuedMsgs);
@@ -206,6 +227,10 @@ class MessageQueueService {
       return ApiService.chat.sendMessage(toSendMsg as ISendMessageCredentials);
     } else if (queueAction === QUEUE_ACTIONS.EDIT_TEXT_MESSAGE) {
       return ApiService.chat.editMessage(toSendMsg as IEditMessageCredentials);
+    } else if (queueAction === QUEUE_ACTIONS.DELETE_MESSAGE) {
+      return ApiService.chat.deleteMessage(
+        toSendMsg as IDeleteMessageCredentials,
+      );
     } else {
       console.error('MessageQueueService._sendMessage:> Invalid type: ', type);
       return Promise.reject({});

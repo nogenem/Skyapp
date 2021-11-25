@@ -14,6 +14,7 @@ import {
   Edit as EditIcon,
 } from '@material-ui/icons';
 
+import { AreYouSureModal } from '~/components';
 import { MESSAGE_TYPES } from '~/constants/message_types';
 import type { TMessageType } from '~/constants/message_types';
 import useObjState from '~/hooks/useObjState';
@@ -57,6 +58,7 @@ interface IOwnProps {
   users: IOtherUsers;
   onScrollTop: () => Promise<void>;
   changeEditingMessage: (messageId: string) => void;
+  onDeleteMessage: (messageId: string) => void;
 }
 
 type TProps = IOwnProps;
@@ -69,9 +71,12 @@ const MessagesContainer = ({
   users,
   onScrollTop,
   changeEditingMessage,
+  onDeleteMessage,
 }: TProps) => {
   const ref = React.useRef<HTMLDivElement>(null);
   const scrollState = useScrollState(ref.current);
+  const [isDeleteMessageModalOpen, setIsDeleteMessageModalOpen] =
+    React.useState(false);
 
   const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
   const [hoveringMsgInfo, setHoveringMsgInfo] = useObjState(
@@ -110,6 +115,13 @@ const MessagesContainer = ({
       : classes.messageFromThem;
     const infoClassName = isFromLoggedUser ? classes.myInfo : classes.theirInfo;
 
+    let progressTitle = '';
+    if (isQueuedMessage) progressTitle = trans('Messages:Sending the message');
+    else if (message.isUpdating)
+      progressTitle = trans('Messages:Updating this message');
+    else if (message.isDeleting)
+      progressTitle = trans('Messages:Deleting this message');
+
     const user = users[message.from_id || ''] || loggedUser;
     const nickname = getFirstName(user.nickname);
     const date = getTime(message.createdAt);
@@ -137,13 +149,9 @@ const MessagesContainer = ({
 
             {getMessageByType(message)}
           </Paper>
-          {(isQueuedMessage || message.isUpdating) && (
+          {(isQueuedMessage || message.isUpdating || message.isDeleting) && (
             <CircularProgress
-              title={
-                isQueuedMessage
-                  ? trans('Messages:Sending the message')
-                  : trans('Messages:Updating this message')
-              }
+              title={progressTitle}
               color="secondary"
               thickness={4}
               className={classes.loading_icon}
@@ -274,9 +282,20 @@ const MessagesContainer = ({
     changeEditingMessage(hoveringMsgInfo._id);
   };
 
-  const handleRemoveClick = (event: MouseEvent<Element>) => {
+  const handleDeleteClick = (event: MouseEvent<Element>) => {
     handleMenuClose(event);
-    // TODO
+    setIsDeleteMessageModalOpen(true);
+  };
+
+  const onDeleteMessageModalClose = () => {
+    setIsDeleteMessageModalOpen(false);
+  };
+
+  const onDeleteMessageModalConfirm = () => {
+    const messageId = hoveringMsgInfo._id;
+
+    onDeleteMessageModalClose();
+    onDeleteMessage(messageId);
   };
 
   React.useEffect(() => {
@@ -346,10 +365,16 @@ const MessagesContainer = ({
         {hoveringMsgInfo.type === MESSAGE_TYPES.TEXT && (
           <MenuItem onClick={handleEditClick}>{trans('Common:Edit')}</MenuItem>
         )}
-        <MenuItem onClick={handleRemoveClick}>
-          {trans('Common:Remove')}
+        <MenuItem onClick={handleDeleteClick}>
+          {trans('Common:Delete')}
         </MenuItem>
       </Menu>
+      <AreYouSureModal
+        isOpen={isDeleteMessageModalOpen}
+        body="Messages:Are you sure you want to delete this message?"
+        onConfirm={onDeleteMessageModalConfirm}
+        onClose={onDeleteMessageModalClose}
+      />
     </div>
   );
 };
