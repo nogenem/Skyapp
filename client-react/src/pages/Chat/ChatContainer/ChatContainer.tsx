@@ -225,12 +225,7 @@ const useOnLastMessageChangeDebounced = (
     const lastChannelId = lastChannelIdRef.current;
     lastChannelIdRef.current = activeChannel?._id;
 
-    if (
-      !activeChannel ||
-      activeChannel._id !== lastChannelId ||
-      activeChannel.is_group
-    )
-      return;
+    if (!activeChannel || activeChannel._id !== lastChannelId) return;
 
     const channelId = activeChannel._id;
 
