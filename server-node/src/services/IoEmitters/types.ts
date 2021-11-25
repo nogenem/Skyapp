@@ -39,6 +39,12 @@ interface IMessageEdited {
   message: IChatMessage;
 }
 
+interface IMessageRemoved {
+  channel: IChatChannel;
+  message: IChatMessage;
+  lastMessage?: IChatMessage;
+}
+
 type TSocketEventData =
   | IChannelDoc
   | IChatChannel
@@ -48,7 +54,8 @@ type TSocketEventData =
   | ISetLastSeen
   | IUserStatusChanged
   | IUserThoughtsChanged
-  | IMessageEdited;
+  | IMessageEdited
+  | IMessageRemoved;
 
 type TEmitterFunc = (
   io: Namespace,
@@ -66,4 +73,5 @@ export type {
   IUserStatusChanged,
   IUserThoughtsChanged,
   IMessageEdited,
+  IMessageRemoved,
 };

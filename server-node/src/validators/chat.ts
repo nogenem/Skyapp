@@ -45,6 +45,7 @@ const chat = {
     body('message_id').trim().not().isEmpty().withMessage(invalidIdError()),
     body('newBody').trim().not().isEmpty().withMessage(FIELD_CANT_BE_EMPY),
   ],
+  deleteMessage: [],
 };
 
 export default chat;

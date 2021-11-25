@@ -79,5 +79,10 @@ routes.patch(
   validate(chat.editMessage),
   ChatController.editMessage,
 );
+routes.delete(
+  '/chat/messages/:message_id',
+  validate(chat.deleteMessage),
+  ChatController.deleteMessage,
+);
 
 export default routes;

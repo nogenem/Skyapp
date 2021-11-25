@@ -2,6 +2,7 @@ import * as SOCKET_EVENTS from '~/constants/socket_events';
 
 import groupChannelCreated from './groupChannelCreated';
 import groupChannelUpdated from './groupChannelUpdated';
+import messageDeleted from './messageDeleted';
 import messageEdited from './messageEdited';
 import messagesReceived from './messagesReceived';
 import newUser from './newUser';
@@ -23,6 +24,7 @@ const emitters = {
   [SOCKET_EVENTS.IO_USER_STATUS_CHANGED]: userStatusChanged,
   [SOCKET_EVENTS.IO_USER_THOUGHTS_CHANGED]: userThoughtsChanged,
   [SOCKET_EVENTS.IO_MESSAGE_EDITED]: messageEdited,
+  [SOCKET_EVENTS.IO_MESSAGE_DELETED]: messageDeleted,
 } as {
   [event in TSocketEvent]: TEmitterFunc | undefined;
 };

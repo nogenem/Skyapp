@@ -1,4 +1,5 @@
 import { Response } from 'express';
+import fs from 'fs';
 import sizeOfImage from 'image-size';
 import { Types as MongooseTypes } from 'mongoose';
 
@@ -7,6 +8,7 @@ import {
   CHANNEL_CREATED,
   CHANNEL_UPDATED,
   FILES_UPLOADED,
+  MESSAGE_DELETED,
   MESSAGE_EDITED,
   MESSAGE_SENT,
   REMOVED_FROM_GROUP,
@@ -18,6 +20,7 @@ import {
   IO_GROUP_CHANNEL_UPDATED,
   IO_MESSAGES_RECEIVED,
   IO_MESSAGE_EDITED,
+  IO_MESSAGE_DELETED,
 } from '~/constants/socket_events';
 import type { IAuthRequest } from '~/middlewares/auth';
 import {
@@ -651,5 +654,58 @@ export default {
     }
 
     return handleErrors(cantEditThisMessageError(), res);
+  },
+  async deleteMessage(
+    req: IAuthRequest,
+    res: Response,
+  ): Promise<Response<unknown>> {
+    const messageId = req.params.message_id;
+    const currentUser = req.currentUser as IUserDoc;
+
+    const messageRecord = await Message.findOne({
+      _id: messageId,
+      from_id: currentUser._id,
+    });
+
+    if (!messageRecord) {
+      return handleErrors(invalidIdError(), res);
+    }
+
+    await Message.deleteOne({ _id: messageId, from_id: currentUser._id });
+
+    if (messageRecord.type === MESSAGE_TYPES.UPLOADED_FILE) {
+      const body = messageRecord.body as IAttachment;
+      if (fs.existsSync(body.path)) {
+        fs.unlinkSync(body.path);
+      }
+    }
+
+    const lastMessageRecord = await Message.findOne(
+      { channel_id: messageRecord.channel_id },
+      null,
+      {
+        sort: '-createdAt',
+      },
+    );
+
+    const messageJson = messageRecord.toChatMessage();
+    const lastMessageJson = lastMessageRecord?.toChatMessage();
+    const channelRecord = (await Channel.findOne({
+      _id: messageJson.channel_id,
+    })) as IChannelDoc;
+    const channelJson = channelRecord.toChatChannel();
+
+    const io = IoService.instance();
+
+    await io.emit(IO_MESSAGE_DELETED, {
+      channel: channelJson,
+      message: messageJson,
+      lastMessage: lastMessageJson,
+    });
+    return res.status(200).json({
+      message: MESSAGE_DELETED,
+      messageObj: messageJson,
+      lastMessage: lastMessageJson,
+    });
   },
 };
