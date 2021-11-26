@@ -8,7 +8,7 @@ import {
 } from '@material-ui/icons';
 import fileSize from 'filesize';
 
-import { TmpFile } from '~/classes';
+import TmpFile from '~/classes/TmpFile';
 
 import useStyles from './useStyles';
 

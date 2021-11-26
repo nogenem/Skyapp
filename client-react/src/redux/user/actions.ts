@@ -3,7 +3,8 @@ import { Dispatch } from 'redux';
 import { LOCAL_STORAGE_TOKEN } from '~/constants/localStorageKeys';
 import * as SOCKET_EVENTS from '~/constants/socket_events';
 import { TUserStatus } from '~/constants/user_status';
-import { ApiService, IoService } from '~/services';
+import ApiService from '~/services/ApiService';
+import IoService from '~/services/IoService';
 import setAuthorizationHeader from '~/utils/setAuthorizationHeader';
 
 import { connectIo, disconnectIo } from '../chat/actions';

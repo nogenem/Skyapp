@@ -40,14 +40,14 @@ const initialState: TState = {
 const getId = (id: string) =>
   id || `sky-form-${Math.floor(Math.random() * 100000)}`;
 
-function Form<D>({
+const Form = <D extends any>({
   id,
   getData,
   resetData,
   validate,
   submit,
   render,
-}: TProps<D>) {
+}: TProps<D>) => {
   const [formId, setFormId] = React.useState(getId(id));
   const [state, setState] = React.useState<TState>(initialState);
   const isMounted = React.useRef(false);
@@ -111,7 +111,7 @@ function Form<D>({
       <Spinner show={state.loading} size="4rem" />
     </>
   );
-}
+};
 
 Form.defaultProps = defaultProps;
 

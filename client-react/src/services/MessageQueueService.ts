@@ -20,7 +20,7 @@ import store from '~/redux/store';
 import { getUser } from '~/redux/user/reducer';
 import { Toast } from '~/utils/Toast';
 
-import { ApiService } from '.';
+import ApiService from './ApiService';
 
 type TToSendMessage =
   | ISendMessageCredentials

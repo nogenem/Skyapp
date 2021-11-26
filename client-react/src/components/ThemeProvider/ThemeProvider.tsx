@@ -36,12 +36,13 @@ prefersDarkMode = !!prefersDarkMode ? prefersDarkMode.matches : false;
 
 const ThemeProvider = ({ children, themeMode, switchMode }: TProps) => {
   React.useEffect(() => {
-    async function loadThemeMode() {
+    const loadThemeMode = async () => {
       let mode = localStorage.getItem(LOCAL_STORAGE_THEME_MODE);
       if (!mode) mode = prefersDarkMode ? 'dark' : 'light';
 
       switchMode(mode as TThemeMode);
-    }
+    };
+
     loadThemeMode();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

@@ -34,12 +34,12 @@ type TPropsFromRedux = ConnectedProps<typeof connector>;
 
 type TProps = RouteComponentProps & TPropsFromRedux;
 
-function App({ validateToken }: TProps) {
+const App = ({ validateToken }: TProps) => {
   const [loading, setLoading] = React.useState(true);
   const classes = useStyles();
 
   React.useEffect(() => {
-    async function signin() {
+    const signin = async () => {
       const token = localStorage.getItem(LOCAL_STORAGE_TOKEN);
       if (!token) return false;
       try {
@@ -48,7 +48,7 @@ function App({ validateToken }: TProps) {
         if (process.env.NODE_ENV !== 'test') console.error(err);
       }
       return false;
-    }
+    };
 
     signin().then(() => setLoading(false));
   }, [validateToken]);
@@ -76,7 +76,7 @@ function App({ validateToken }: TProps) {
       </main>
     </ThemeProvider>
   );
-}
+};
 
 export type { TProps };
 export const UnconnectedApp = App;

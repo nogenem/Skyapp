@@ -119,5 +119,5 @@ const ChangeUserThoughtsMenu = ({
   );
 };
 
-export type { TProps };
+export type { TProps, TState };
 export default ChangeUserThoughtsMenu;

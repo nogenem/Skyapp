@@ -3,7 +3,8 @@ import { Dispatch } from 'redux';
 import * as SOCKET_EVENTS from '~/constants/socket_events';
 import { TUserStatus } from '~/constants/user_status';
 import type { IUser } from '~/redux/user/types';
-import { ApiService, IoService } from '~/services';
+import ApiService from '~/services/ApiService';
+import IoService from '~/services/IoService';
 import MessageQueueService, {
   QUEUE_ACTIONS,
 } from '~/services/MessageQueueService';

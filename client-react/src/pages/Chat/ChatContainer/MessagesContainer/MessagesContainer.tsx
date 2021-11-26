@@ -38,12 +38,14 @@ import {
 import AudioMessage from './Messages/AudioMessage';
 import useStyles from './useStyles';
 
-const initialHoveringMsgInfo: {
+interface IHoveringMsgInfo {
   _id: string;
   type?: TMessageType;
   top: number;
   left: number;
-} = {
+}
+
+const initialHoveringMsgInfo: IHoveringMsgInfo = {
   _id: '',
   type: undefined,
   top: -1,
@@ -315,14 +317,14 @@ const MessagesContainer = ({
   }, [channelId]);
 
   React.useEffect(() => {
-    async function handleScrollTop() {
+    const handleScrollTop = async () => {
       if (ref.current) {
         const lastScrollHeight = ref.current.scrollHeight;
         await onScrollTop();
         // Keep the scrollTop in the same position
         ref.current.scrollTop = ref.current.scrollHeight - lastScrollHeight;
       }
-    }
+    };
 
     if (scrollState === EScrollStates.AT_TOP) {
       handleScrollTop();

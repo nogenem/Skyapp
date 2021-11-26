@@ -140,5 +140,5 @@ const RecordingMenuItem = ({ saveAudio, onClose }: TProps) => {
   );
 };
 
-export type { TProps };
+export type { TProps, TState };
 export default RecordingMenuItem;

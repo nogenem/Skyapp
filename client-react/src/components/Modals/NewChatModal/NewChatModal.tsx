@@ -184,6 +184,6 @@ const NewChatModal = ({
   );
 };
 
-export type { TProps };
+export type { TProps, TState };
 export const UnconnectedNewChatModal = NewChatModal;
 export default connector(NewChatModal);

@@ -128,5 +128,5 @@ const ChangeUserStatusMenu = ({
   );
 };
 
-export type { TProps };
+export type { TProps, TState };
 export default ChangeUserStatusMenu;

@@ -3,7 +3,8 @@ import { useTranslation } from 'react-i18next';
 
 import { Close as CloseIcon } from '@material-ui/icons';
 
-import { TmpFile, TmpImage } from '~/classes';
+import TmpFile from '~/classes/TmpFile';
+import TmpImage from '~/classes/TmpImage';
 
 import useStyles from './useStyles';
 

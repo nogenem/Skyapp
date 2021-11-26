@@ -222,5 +222,5 @@ const Label = ({ user, isAdmin, onClick }: ILabelProps) => {
   );
 };
 
-export type { TProps };
+export type { TProps, TState };
 export default Form;

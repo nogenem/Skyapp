@@ -145,11 +145,11 @@ const ChatContainer = ({
   };
 
   React.useEffect(() => {
-    async function fetchData() {
+    const fetchData = async () => {
       if (!!activeChannel) {
         await fetchMessages({ channel_id: activeChannel._id, offset: 0 });
       }
-    }
+    };
 
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -179,6 +179,6 @@ const NewGroupModal = ({
   );
 };
 
-export type { TProps };
+export type { TProps, TState };
 export const UnconnectedNewGroupModal = NewGroupModal;
 export default connector(NewGroupModal);

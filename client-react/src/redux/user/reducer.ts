@@ -16,10 +16,7 @@ export const initialState: TUserState = {
   token: '',
 };
 
-export default function user(
-  state = initialState,
-  action: TUserAction,
-): TUserState {
+const user = (state = initialState, action: TUserAction): TUserState => {
   switch (action.type) {
     case EUserActions.SIGNED_IN:
       const { _id, nickname, email, confirmed, status, thoughts, token } =
@@ -38,7 +35,7 @@ export default function user(
     default:
       return state;
   }
-}
+};
 
 // SELECTORS
 export const getUser = (state: IAppState) => state.user || initialState;
@@ -61,3 +58,5 @@ export const getThoughts = createSelector(
   getUser,
   userData => userData.thoughts || '',
 );
+
+export default user;

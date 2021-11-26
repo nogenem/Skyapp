@@ -24,7 +24,7 @@ interface IOwnProps {
 
 type TProps = IOwnProps;
 
-function Form({ submit }: TProps) {
+const Form = ({ submit }: TProps) => {
   const { t: trans } = useTranslation(['Common', 'Errors']);
   const classes = useStyles();
 
@@ -80,7 +80,7 @@ function Form({ submit }: TProps) {
       render={renderForm}
     />
   );
-}
+};
 
 export type { TProps };
 export default Form;

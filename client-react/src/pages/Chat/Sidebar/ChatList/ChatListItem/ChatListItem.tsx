@@ -304,6 +304,6 @@ const SecondaryText = ({ lastMessage, unreadMsgs }: ISecondaryText) => {
   );
 };
 
-export type { TProps };
+export type { TProps, TState };
 export const UnconnectedChatListItem = ChatListItem;
 export default connector(ChatListItem);

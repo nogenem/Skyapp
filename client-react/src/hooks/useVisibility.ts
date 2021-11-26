@@ -29,6 +29,7 @@ const useVisibility = () => {
     document.addEventListener('visibilitychange', onVisibilityChange, false);
     window.addEventListener('focus', onFocus, false);
     window.addEventListener('blur', onBlur, false);
+
     return () => {
       timeoutRef.current && clearTimeout(timeoutRef.current);
       document.removeEventListener(

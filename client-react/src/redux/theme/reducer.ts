@@ -8,10 +8,7 @@ export const initialState: TThemeState = {
   mode: undefined,
 };
 
-export default function theme(
-  state = initialState,
-  action: TThemeAction,
-): TThemeState {
+const theme = (state = initialState, action: TThemeAction): TThemeState => {
   switch (action.type) {
     case EThemeActions.SWITCH_MODE:
       return {
@@ -21,7 +18,7 @@ export default function theme(
     default:
       return state;
   }
-}
+};
 
 // SELECTORS
 export const getTheme = (state: IAppState) => state.theme || initialState;
@@ -29,3 +26,5 @@ export const getThemeMode = createSelector(
   getTheme,
   themeData => themeData.mode,
 );
+
+export default theme;

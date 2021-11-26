@@ -221,6 +221,6 @@ const GroupInfoModal = ({
   );
 };
 
-export type { TProps };
+export type { TProps, TState };
 export const UnconnectedGroupInfoModal = GroupInfoModal;
 export default connector(GroupInfoModal);

@@ -1,6 +1,6 @@
 import * as SOCKET_EVENTS from '~/constants/socket_events';
 import { TUserState } from '~/redux/user/types';
-import { IoService } from '~/services';
+import IoService from '~/services/IoService';
 import { setupFakeSocket, getMockStore, FACTORIES } from '~/utils/testUtils';
 
 import { connectIo, disconnectIo } from '../actions';

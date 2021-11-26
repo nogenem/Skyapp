@@ -82,7 +82,7 @@ const Confirmation = ({
   }, []);
 
   React.useEffect(() => {
-    async function confirm() {
+    const confirm = async () => {
       try {
         const credentials: ITokenCredentials = {
           token: token as string,
@@ -100,7 +100,7 @@ const Confirmation = ({
           errors: handleServerErrors(err as AxiosError),
         });
       }
-    }
+    };
     confirm();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);

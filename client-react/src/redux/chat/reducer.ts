@@ -14,11 +14,11 @@ export const initialState: TChatState = {
   activeChannelInfo: undefined,
 };
 
-export default function chat(
+const chat = (
   state = initialState,
   action: TChatAction | TUserAction,
-): TChatState {
-  return produce(state, draft => {
+): TChatState =>
+  produce(state, draft => {
     switch (action.type) {
       case EUserActions.SIGNED_OUT: {
         return initialState;
@@ -237,7 +237,6 @@ export default function chat(
         return draft;
     }
   });
-}
 
 const wrapChannelsDates = (channels: IChannels) => {
   const ret = {} as IChannels;
@@ -346,3 +345,5 @@ export const getOtherUsersFromActiveChannel = createSelector(
     return users;
   },
 );
+
+export default chat;

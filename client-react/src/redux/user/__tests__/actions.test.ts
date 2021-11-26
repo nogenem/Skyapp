@@ -1,6 +1,7 @@
 import { LOCAL_STORAGE_TOKEN } from '~/constants/localStorageKeys';
 import { USER_STATUS } from '~/constants/user_status';
-import { ApiService, IoService } from '~/services';
+import ApiService from '~/services/ApiService';
+import IoService from '~/services/IoService';
 import { FACTORIES, getMockStore, setupFakeSocket } from '~/utils/testUtils';
 
 import {

@@ -4,7 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { IconButton } from '@material-ui/core';
 import { Send as SendIcon } from '@material-ui/icons';
 
-import { TmpFile, TmpImage } from '~/classes';
+import TmpFile from '~/classes/TmpFile';
+import TmpImage from '~/classes/TmpImage';
 import { TextInput } from '~/components';
 import { HAS_TOO_MANY_FILES, UPLOAD_FILE_IS_TOO_BIG } from '~/constants/errors';
 import FILE_UPLOAD_LIMITS from '~/constants/file_upload_limits';
@@ -251,5 +252,5 @@ const ChatInput = ({
   );
 };
 
-export type { TProps };
+export type { TProps, TState };
 export default ChatInput;
