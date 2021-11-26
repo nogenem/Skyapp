@@ -74,6 +74,7 @@ const ChatListItem = ({
 }: TProps) => {
   const [state, setState] = useObjState(initialState);
   const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
+  const isMounted = React.useRef(false);
   const { t: trans } = useTranslation(['Common']);
   const isMenuOpen = Boolean(anchorEl);
   const classes = useStyles();
@@ -132,6 +133,15 @@ const ChatListItem = ({
       });
     }
   };
+
+  React.useEffect(() => {
+    if (isMounted.current && channel.lastMessage && !selected) {
+      new Audio('/skype_message_sound.mp3').play();
+    }
+
+    if (!isMounted.current) isMounted.current = true;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [channel.lastMessage]);
 
   return (
     <ListItem button selected={selected} onClick={handleListClick}>

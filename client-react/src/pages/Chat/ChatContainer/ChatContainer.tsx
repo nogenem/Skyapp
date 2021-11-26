@@ -230,6 +230,7 @@ const useOnLastMessageChangeDebounced = (
     const channelId = activeChannel._id;
 
     if (!isVisible) {
+      new Audio('/skype_message_sound.mp3').play();
       callbacksPendingRef.current[channelId] = true;
       return;
     }
