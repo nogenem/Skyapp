@@ -20,13 +20,13 @@ import {
   ForgotPassword,
   ResetPassword,
 } from '~/pages';
-import { validateToken as validateTokenAction } from '~/redux/user/actions';
+import { sendValidateToken as sendValidateTokenAction } from '~/redux/user/actions';
 
 import './styles.css';
 import useStyles from './useStyles';
 
 const mapDispatchToProps = {
-  validateToken: validateTokenAction,
+  sendValidateToken: sendValidateTokenAction,
 };
 
 const connector = connect(null, mapDispatchToProps);
@@ -34,7 +34,7 @@ type TPropsFromRedux = ConnectedProps<typeof connector>;
 
 type TProps = RouteComponentProps & TPropsFromRedux;
 
-const App = ({ validateToken }: TProps) => {
+const App = ({ sendValidateToken }: TProps) => {
   const [loading, setLoading] = React.useState(true);
   const classes = useStyles();
 
@@ -43,7 +43,7 @@ const App = ({ validateToken }: TProps) => {
       const token = localStorage.getItem(LOCAL_STORAGE_TOKEN);
       if (!token) return false;
       try {
-        await validateToken({ token });
+        await sendValidateToken({ token });
       } catch (err) {
         if (process.env.NODE_ENV !== 'test') console.error(err);
       }
@@ -51,7 +51,8 @@ const App = ({ validateToken }: TProps) => {
     };
 
     signin().then(() => setLoading(false));
-  }, [validateToken]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (loading) return <Spinner show />;
 

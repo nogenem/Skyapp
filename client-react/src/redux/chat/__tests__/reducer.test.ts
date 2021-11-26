@@ -5,10 +5,10 @@ import type { TChatAction, IInitialData, TChatState } from '../types';
 import { EChatActions } from '../types';
 
 describe('chat reducer', () => {
-  it('should handle SET_INITIAL_DATA', () => {
+  it('should handle INITIAL_DATA_LOADED', () => {
     const initialData: IInitialData = { users: {}, channels: {} };
     const action: TChatAction = {
-      type: EChatActions.SET_INITIAL_DATA,
+      type: EChatActions.INITIAL_DATA_LOADED,
       payload: initialData,
     };
 
@@ -17,7 +17,7 @@ describe('chat reducer', () => {
     expect(newState.channels).toEqual(action.payload.channels);
   });
 
-  it('should handle SET_USER_ONLINE', () => {
+  it('should handle USER_ONLINE_STATUS_CHANGED', () => {
     const userId = '123456';
     const initialState: TChatState = {
       users: {
@@ -35,7 +35,7 @@ describe('chat reducer', () => {
     // value = true
     let data = { _id: userId, value: true };
     let action: TChatAction = {
-      type: EChatActions.SET_USER_ONLINE,
+      type: EChatActions.USER_ONLINE_STATUS_CHANGED,
       payload: data,
     };
 
@@ -44,7 +44,7 @@ describe('chat reducer', () => {
 
     data = { _id: userId, value: false };
     action = {
-      type: EChatActions.SET_USER_ONLINE,
+      type: EChatActions.USER_ONLINE_STATUS_CHANGED,
       payload: data,
     };
 

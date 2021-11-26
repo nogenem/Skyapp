@@ -17,7 +17,7 @@ import debounce from 'lodash.debounce';
 
 import { ChatAvatar, Alert, TextInput } from '~/components';
 import useObjState from '~/hooks/useObjState';
-import { startChattingWith as startChattingWithAction } from '~/redux/chat/actions';
+import { sendCreateChannelWith as sendCreateChannelWithAction } from '~/redux/chat/actions';
 import { getUsersWithoutChannelArray } from '~/redux/chat/reducer';
 import type { IOtherUser } from '~/redux/chat/types';
 import { IAppState } from '~/redux/store';
@@ -42,7 +42,7 @@ const mapStateToProps = (state: IAppState) => ({
   users: getUsersWithoutChannelArray(state),
 });
 const mapDispatchToProps = {
-  startChattingWith: startChattingWithAction,
+  sendCreateChannelWith: sendCreateChannelWithAction,
 };
 const connector = connect(mapStateToProps, mapDispatchToProps);
 type TPropsFromRedux = ConnectedProps<typeof connector>;
@@ -58,7 +58,7 @@ const NewChatModal = ({
   isOpen,
   onClose,
   users,
-  startChattingWith,
+  sendCreateChannelWith,
 }: TProps) => {
   const [state, setState] = useObjState({
     ...initialState,
@@ -96,7 +96,7 @@ const NewChatModal = ({
 
   const handleConfirm = async (user: IOtherUser) => {
     try {
-      await startChattingWith(user);
+      await sendCreateChannelWith(user);
       onClose();
     } catch (err) {
       setState({ errors: handleServerErrors(err as AxiosError) });

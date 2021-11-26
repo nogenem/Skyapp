@@ -9,7 +9,7 @@ import useMediaQuery from '~/hooks/useMediaQuery';
 import useVisibility from '~/hooks/useVisibility';
 import { getActiveChannel } from '~/redux/chat/reducer';
 import { IAppState } from '~/redux/store';
-import { broadcastUserStatusChanged as broadcastUserStatusChangedAction } from '~/redux/user/actions';
+import { emitUserStatusChanged as emitUserStatusChangedAction } from '~/redux/user/actions';
 import { getConfirmed, getStatus } from '~/redux/user/reducer';
 
 import { ChatContainer } from './ChatContainer';
@@ -22,7 +22,7 @@ const mapStateToProps = (state: IAppState) => ({
   loggedUserStatus: getStatus(state),
 });
 const mapDispatchToProps = {
-  broadcastUserStatusChanged: broadcastUserStatusChangedAction,
+  emitUserStatusChanged: emitUserStatusChangedAction,
 };
 const connector = connect(mapStateToProps, mapDispatchToProps);
 type TPropsFromRedux = ConnectedProps<typeof connector>;
@@ -33,7 +33,7 @@ const Chat = ({
   isUserEmailConfirmed,
   activeChannel,
   loggedUserStatus,
-  broadcastUserStatusChanged,
+  emitUserStatusChanged,
 }: TProps) => {
   const isSmall = useMediaQuery('(max-width: 875px)');
   const classes = useStyles();
@@ -44,10 +44,10 @@ const Chat = ({
     timeoutRef.current && clearTimeout(timeoutRef.current);
     if (!isVisible && loggedUserStatus === USER_STATUS.ACTIVE) {
       timeoutRef.current = setTimeout(() => {
-        broadcastUserStatusChanged(USER_STATUS.TMP_AWAY);
+        emitUserStatusChanged(USER_STATUS.TMP_AWAY);
       }, 5 * 60 * 1000); // 5min
     } else if (isVisible && loggedUserStatus === USER_STATUS.TMP_AWAY) {
-      broadcastUserStatusChanged(USER_STATUS.ACTIVE);
+      emitUserStatusChanged(USER_STATUS.ACTIVE);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isVisible]);

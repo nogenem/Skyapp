@@ -22,7 +22,7 @@ import {
 
 import { SUPPORTED_LANGUAGES } from '~/i18n';
 import type { IAppState } from '~/redux/store';
-import { switchMode as switchModeAction } from '~/redux/theme/actions';
+import { themeModeSwitched as themeModeSwitchedAction } from '~/redux/theme/actions';
 import { getThemeMode } from '~/redux/theme/reducer';
 import { getToken } from '~/redux/user/reducer';
 
@@ -33,7 +33,7 @@ const mapStateToProps = (state: IAppState) => ({
   theme: getThemeMode(state),
 });
 const mapDispatchToProps = {
-  switchMode: switchModeAction,
+  themeModeSwitched: themeModeSwitchedAction,
 };
 const connector = connect(mapStateToProps, mapDispatchToProps);
 type TPropsFromRedux = ConnectedProps<typeof connector>;
@@ -43,14 +43,14 @@ type TProps = TPropsFromRedux;
 const UnauthenticatedNavBar = ({
   isAuthenticated,
   theme,
-  switchMode,
+  themeModeSwitched,
 }: TProps) => {
   const [langMenu, setLangMenu] = React.useState<Element | null>(null);
   const { t: trans, i18n } = useTranslation(['Messages']);
   const classes = useStyles();
 
   const handleToggleTheme = () => {
-    switchMode(theme === 'light' ? 'dark' : 'light');
+    themeModeSwitched(theme === 'light' ? 'dark' : 'light');
   };
 
   const handleLanguageIconClick = (event: React.MouseEvent) => {

@@ -9,7 +9,7 @@ import { getRenderWithRedux } from '~/utils/testUtils';
 import { App, UnconnectedApp } from '../index';
 
 jest.mock('../../redux/user/actions', () => ({
-  validateToken: () => () => Promise.resolve(),
+  sendValidateToken: () => () => Promise.resolve(),
 }));
 
 const VALID_TOKEN = '123456789';
@@ -35,18 +35,18 @@ describe('Connected App', () => {
 describe('Unconnected App', () => {
   it('Trys to confirm token', async () => {
     const credentials: ITokenCredentials = { token: VALID_TOKEN };
-    const validateToken = jest.fn(() => Promise.resolve());
+    const sendValidateToken = jest.fn(() => Promise.resolve());
 
     localStorage.setItem(LOCAL_STORAGE_TOKEN, VALID_TOKEN);
     const { container, queryByTestId } = renderWithRedux(
-      <UnconnectedApp validateToken={validateToken} />,
+      <UnconnectedApp sendValidateToken={sendValidateToken} />,
     );
 
     await waitForElementToBeRemoved(() => queryByTestId(/spinner_div/i), {
       container: container as HTMLElement,
     }); // wait for the Spinner to disappear
 
-    expect(validateToken).toHaveBeenCalledTimes(1);
-    expect(validateToken).toHaveBeenCalledWith(credentials);
+    expect(sendValidateToken).toHaveBeenCalledTimes(1);
+    expect(sendValidateToken).toHaveBeenCalledWith(credentials);
   });
 });

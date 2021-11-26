@@ -10,8 +10,8 @@ import { Alert, AuthContainer, Spinner } from '~/components';
 import type { IErrors } from '~/components/Form';
 import useObjState from '~/hooks/useObjState';
 import {
-  confirmation as confirmationAction,
-  resendConfirmationEmail as resendConfirmationEmailAction,
+  sendConfirmation as sendConfirmationAction,
+  SendResendConfirmationEmail as SendResendConfirmationEmailAction,
 } from '~/redux/user/actions';
 import type { ITokenCredentials } from '~/redux/user/types';
 import handleServerErrors from '~/utils/handleServerErrors';
@@ -36,8 +36,8 @@ const initialState: TState = {
 };
 
 const mapDispatchToProps = {
-  confirmation: confirmationAction,
-  resendConfirmationEmail: resendConfirmationEmailAction,
+  sendConfirmation: sendConfirmationAction,
+  SendResendConfirmationEmail: SendResendConfirmationEmailAction,
 };
 
 const connector = connect(null, mapDispatchToProps);
@@ -51,8 +51,8 @@ type TProps = TPropsFromRedux & OwnProps;
 
 const Confirmation = ({
   token,
-  confirmation,
-  resendConfirmationEmail,
+  sendConfirmation,
+  SendResendConfirmationEmail,
 }: TProps) => {
   const [state, setState] = useObjState<TState>(initialState);
   const { t: trans } = useTranslation(['Common', 'Messages']);
@@ -64,7 +64,7 @@ const Confirmation = ({
       const credentials: ITokenCredentials = {
         token: token as string,
       };
-      await resendConfirmationEmail(credentials);
+      await SendResendConfirmationEmail(credentials);
       setState({ resendingEmail: STATES.COMPLETED, errors: {} });
     } catch (err) {
       setState({
@@ -87,7 +87,7 @@ const Confirmation = ({
         const credentials: ITokenCredentials = {
           token: token as string,
         };
-        await confirmation(credentials);
+        await sendConfirmation(credentials);
         setState(() => {
           if (isMounted.current)
             return { validatingToken: STATES.COMPLETED, errors: {} };

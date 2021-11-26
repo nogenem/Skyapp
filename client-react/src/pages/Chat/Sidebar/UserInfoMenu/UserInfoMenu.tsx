@@ -9,12 +9,12 @@ import { MENU_STATES } from '~/constants/chat_menu_states';
 import type { TMenuStates } from '~/constants/chat_menu_states';
 import type { TUserStatus } from '~/constants/user_status';
 import type { IAppState } from '~/redux/store';
-import { switchMode as switchModeAction } from '~/redux/theme/actions';
+import { themeModeSwitched as themeModeSwitchedAction } from '~/redux/theme/actions';
 import { getThemeMode } from '~/redux/theme/reducer';
 import {
   userSignedOut as userSignedOutAction,
-  changeStatus as changeStatusAction,
-  changeThoughts as changeThoughtsAction,
+  sendChangeStatus as sendChangeStatusAction,
+  sendChangeThoughts as sendChangeThoughtsAction,
 } from '~/redux/user/actions';
 import { getUser } from '~/redux/user/reducer';
 
@@ -32,9 +32,9 @@ const mapStateToProps = (state: IAppState) => ({
 });
 const mapDispatchToProps = {
   userSignedOut: userSignedOutAction,
-  switchMode: switchModeAction,
-  changeStatus: changeStatusAction,
-  changeThoughts: changeThoughtsAction,
+  themeModeSwitched: themeModeSwitchedAction,
+  sendChangeStatus: sendChangeStatusAction,
+  sendChangeThoughts: sendChangeThoughtsAction,
 };
 const connector = connect(mapStateToProps, mapDispatchToProps);
 type TPropsFromRedux = ConnectedProps<typeof connector>;
@@ -45,9 +45,9 @@ const UserInfoMenu = ({
   user,
   themeMode,
   userSignedOut,
-  switchMode,
-  changeStatus,
-  changeThoughts,
+  themeModeSwitched,
+  sendChangeStatus,
+  sendChangeThoughts,
 }: TProps) => {
   const { i18n } = useTranslation();
   const [menuState, setMenuState] = React.useState<TMenuStates>(
@@ -73,7 +73,7 @@ const UserInfoMenu = ({
   };
 
   const handleSwitchThemeMode = () => {
-    switchMode(themeMode === 'light' ? 'dark' : 'light');
+    themeModeSwitched(themeMode === 'light' ? 'dark' : 'light');
   };
 
   const handleLanguageChange = (lang: string) => {
@@ -82,12 +82,12 @@ const UserInfoMenu = ({
   };
 
   const handleUserStatusChange = async (status: TUserStatus) => {
-    await changeStatus({ newStatus: status });
+    await sendChangeStatus({ newStatus: status });
     setMenuState(MENU_STATES.MAIN);
   };
 
   const handleUserThoughtsChange = async (newThoughts: string) => {
-    await changeThoughts({ newThoughts });
+    await sendChangeThoughts({ newThoughts });
     setMenuState(MENU_STATES.MAIN);
   };
 

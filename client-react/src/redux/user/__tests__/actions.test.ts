@@ -8,15 +8,15 @@ import {
   userSignedIn,
   userSignedOut,
   //
-  signUp,
-  signIn,
-  confirmation,
-  resendConfirmationEmail,
-  validateToken,
-  forgotPassword,
-  resetPassword,
-  changeStatus,
-  changeThoughts,
+  sendSignUp,
+  sendSignIn,
+  sendConfirmation,
+  SendResendConfirmationEmail,
+  sendValidateToken,
+  sendForgotPassword,
+  sendResetPassword,
+  sendChangeStatus,
+  sendChangeThoughts,
 } from '../actions';
 import { EUserActions } from '../types';
 import type {
@@ -112,7 +112,7 @@ describe('auth actions', () => {
     expect(ioServer.socket!.connected).toBe(false);
   });
 
-  it('signUp', async () => {
+  it('sendSignUp', async () => {
     const user: TUserState = FACTORIES.userState({
       token: VALID_TOKEN,
     });
@@ -133,13 +133,13 @@ describe('auth actions', () => {
       });
     const store = mockStore({});
 
-    await signUp(credentials)(store.dispatch);
+    await sendSignUp(credentials)(store.dispatch);
 
     expect(spy).toHaveBeenCalledWith(credentials);
     expect(store.getActions()).toEqual(expectedActions);
   });
 
-  it('signIn', async () => {
+  it('sendSignIn', async () => {
     const user: TUserState = FACTORIES.userState({
       token: VALID_TOKEN,
     });
@@ -159,13 +159,13 @@ describe('auth actions', () => {
 
     const store = mockStore({});
 
-    await signIn(credentials)(store.dispatch);
+    await sendSignIn(credentials)(store.dispatch);
 
     expect(spy).toHaveBeenCalledWith(credentials);
     expect(store.getActions()).toEqual(expectedActions);
   });
 
-  it('confirmation', async () => {
+  it('sendConfirmation', async () => {
     const user: TUserState = FACTORIES.userState({
       token: VALID_TOKEN,
     });
@@ -183,13 +183,13 @@ describe('auth actions', () => {
 
     const store = mockStore({});
 
-    await confirmation(credentials)(store.dispatch);
+    await sendConfirmation(credentials)(store.dispatch);
 
     expect(spy).toHaveBeenCalledWith(credentials);
     expect(store.getActions()).toEqual(expectedActions);
   });
 
-  it('resendConfirmationEmail', async () => {
+  it('SendResendConfirmationEmail', async () => {
     const message = 'success';
     const credentials: ITokenCredentials = {
       token: VALID_TOKEN,
@@ -200,12 +200,12 @@ describe('auth actions', () => {
         return Promise.resolve({ message });
       });
 
-    await resendConfirmationEmail(credentials)();
+    await SendResendConfirmationEmail(credentials)();
 
     expect(spy).toHaveBeenCalledWith(credentials);
   });
 
-  it('validateToken', async () => {
+  it('sendValidateToken', async () => {
     const user: TUserState = FACTORIES.userState({
       token: VALID_TOKEN,
     });
@@ -223,13 +223,13 @@ describe('auth actions', () => {
 
     const store = mockStore({});
 
-    await validateToken(credentials)(store.dispatch);
+    await sendValidateToken(credentials)(store.dispatch);
 
     expect(spy).toHaveBeenCalledWith(credentials);
     expect(store.getActions()).toEqual(expectedActions);
   });
 
-  it('forgotPassword', async () => {
+  it('sendForgotPassword', async () => {
     const message = 'success';
     const credentials: IForgotPasswordCredentials = {
       email: 'test@test.com',
@@ -240,12 +240,12 @@ describe('auth actions', () => {
         return Promise.resolve({ message });
       });
 
-    await forgotPassword(credentials)();
+    await sendForgotPassword(credentials)();
 
     expect(spy).toHaveBeenCalledWith(credentials);
   });
 
-  it('resetPassword', async () => {
+  it('sendResetPassword', async () => {
     const user: TUserState = FACTORIES.userState({
       token: VALID_TOKEN,
     });
@@ -266,19 +266,19 @@ describe('auth actions', () => {
 
     const store = mockStore({});
 
-    await resetPassword(credentials)(store.dispatch);
+    await sendResetPassword(credentials)(store.dispatch);
 
     expect(spy).toHaveBeenCalledWith(credentials);
     expect(store.getActions()).toEqual(expectedActions);
   });
 
-  it('changeStatus', async () => {
+  it('sendChangeStatus', async () => {
     const credentials: IChangeStatusCredentials = {
       newStatus: USER_STATUS.AWAY,
     };
     const expectedActions = [
       {
-        type: EUserActions.CHANGED_STATUS,
+        type: EUserActions.STATUS_CHANGED,
         payload: credentials.newStatus,
       } as TUserAction,
     ];
@@ -291,19 +291,19 @@ describe('auth actions', () => {
 
     const store = mockStore({});
 
-    await changeStatus(credentials)(store.dispatch);
+    await sendChangeStatus(credentials)(store.dispatch);
 
     expect(spy).toHaveBeenCalledWith(credentials);
     expect(store.getActions()).toEqual(expectedActions);
   });
 
-  it('changeThoughts', async () => {
+  it('sendChangeThoughts', async () => {
     const credentials: IChangeThoughtsCredentials = {
       newThoughts: 'hello world',
     };
     const expectedActions = [
       {
-        type: EUserActions.CHANGED_THOUGHTS,
+        type: EUserActions.THOUGHTS_CHANGED,
         payload: credentials.newThoughts,
       } as TUserAction,
     ];
@@ -316,7 +316,7 @@ describe('auth actions', () => {
 
     const store = mockStore({});
 
-    await changeThoughts(credentials)(store.dispatch);
+    await sendChangeThoughts(credentials)(store.dispatch);
 
     expect(spy).toHaveBeenCalledWith(credentials);
     expect(store.getActions()).toEqual(expectedActions);

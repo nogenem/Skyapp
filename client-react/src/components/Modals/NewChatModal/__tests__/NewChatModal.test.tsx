@@ -49,14 +49,14 @@ describe('Unconnected NewChatModal', () => {
     };
     const users = [otherUser];
     const onClose = jest.fn(() => {});
-    const startChattingWith = jest.fn(() => Promise.resolve());
+    const sendCreateChannelWith = jest.fn(() => Promise.resolve());
 
     const { getByText } = renderWithRedux(
       <UnconnectedNewChatModal
         isOpen
         onClose={onClose}
         users={users}
-        startChattingWith={startChattingWith}
+        sendCreateChannelWith={sendCreateChannelWith}
       />,
     );
 
@@ -66,7 +66,7 @@ describe('Unconnected NewChatModal', () => {
 
     await waitFor(() => expect(onClose).toHaveBeenCalled());
 
-    expect(startChattingWith).toHaveBeenCalled();
+    expect(sendCreateChannelWith).toHaveBeenCalled();
     expect(onClose).toHaveBeenCalled();
   });
 });

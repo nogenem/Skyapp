@@ -28,7 +28,7 @@ describe('user reducer', () => {
       status: USER_STATUS.ACTIVE,
     });
     const action: TUserAction = {
-      type: EUserActions.CHANGED_STATUS,
+      type: EUserActions.STATUS_CHANGED,
       payload: USER_STATUS.AWAY,
     };
 
@@ -41,7 +41,7 @@ describe('user reducer', () => {
       thoughts: 'hello',
     });
     const action: TUserAction = {
-      type: EUserActions.CHANGED_THOUGHTS,
+      type: EUserActions.THOUGHTS_CHANGED,
       payload: 'hello world',
     };
 

@@ -3,7 +3,7 @@ import { TUserState } from '~/redux/user/types';
 import IoService from '~/services/IoService';
 import { setupFakeSocket, getMockStore, FACTORIES } from '~/utils/testUtils';
 
-import { connectIo, disconnectIo } from '../actions';
+import { userSignedIn, userSignedOut } from '../actions';
 
 jest.mock('socket.io-client');
 
@@ -16,12 +16,12 @@ describe('chat actions', () => {
     jest.restoreAllMocks();
   });
 
-  it('connectIo', async () => {
+  it('userSignedIn', async () => {
     const user: TUserState = FACTORIES.userState();
 
     const store = mockStore({});
 
-    connectIo(user)(store.dispatch);
+    userSignedIn(user)(store.dispatch);
 
     // Since fakeSocket does not automatically emit a connect message as socketio io() does, simulate it here.
     fakeSocket.server!.emit(SOCKET_EVENTS.SOCKET_CONNECT);
@@ -30,10 +30,8 @@ describe('chat actions', () => {
     expect(instance!.socket!.connected).toBe(true);
   });
 
-  it('disconnectIo', () => {
-    const store = mockStore({});
-
-    disconnectIo()(store.dispatch);
+  it('userSignedOut', () => {
+    userSignedOut()();
 
     const instance = IoService.instance();
     expect(instance!.socket!.connected).toBe(false);

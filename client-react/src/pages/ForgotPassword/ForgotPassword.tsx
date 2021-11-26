@@ -6,13 +6,13 @@ import { Grid, Link } from '@material-ui/core';
 import { Link as ReachLink, RouteComponentProps } from '@reach/router';
 
 import { Alert, AuthContainer } from '~/components';
-import { forgotPassword as forgotPasswordAction } from '~/redux/user/actions';
+import { sendForgotPassword as sendForgotPasswordAction } from '~/redux/user/actions';
 import type { IForgotPasswordCredentials } from '~/redux/user/types';
 
 import { Form } from './Form';
 
 const mapDispatchToProps = {
-  forgotPassword: forgotPasswordAction,
+  sendForgotPassword: sendForgotPasswordAction,
 };
 
 const connector = connect(null, mapDispatchToProps);
@@ -20,13 +20,13 @@ type TPropsFromRedux = ConnectedProps<typeof connector>;
 
 type TProps = RouteComponentProps & TPropsFromRedux;
 
-const ForgotPassword = ({ forgotPassword }: TProps) => {
+const ForgotPassword = ({ sendForgotPassword }: TProps) => {
   const [success, setSuccess] = React.useState(false);
   const { t: trans } = useTranslation(['Common', 'Messages']);
 
   const submit = async (credentials: IForgotPasswordCredentials) => {
     try {
-      await forgotPassword(credentials);
+      await sendForgotPassword(credentials);
       setSuccess(true);
     } catch (err) {
       setSuccess(false);

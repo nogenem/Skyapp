@@ -25,7 +25,7 @@ describe('Unconnected ChatPage', () => {
         isUserEmailConfirmed={false}
         activeChannel={undefined}
         loggedUserStatus={USER_STATUS.ACTIVE}
-        broadcastUserStatusChanged={() => {}}
+        emitUserStatusChanged={() => {}}
       />,
     );
 
@@ -38,7 +38,7 @@ describe('Unconnected ChatPage', () => {
         isUserEmailConfirmed
         activeChannel={undefined}
         loggedUserStatus={USER_STATUS.ACTIVE}
-        broadcastUserStatusChanged={() => {}}
+        emitUserStatusChanged={() => {}}
       />,
     );
 

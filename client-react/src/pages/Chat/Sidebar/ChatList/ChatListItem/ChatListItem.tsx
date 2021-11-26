@@ -24,8 +24,8 @@ import { MESSAGE_TYPES } from '~/constants/message_types';
 import { USER_STATUS } from '~/constants/user_status';
 import useObjState from '~/hooks/useObjState';
 import {
-  sendSetActiveChannel as sendSetActiveChannelAction,
-  leaveGroupChannel as leaveGroupChannelAction,
+  emitSetActiveChannel as emitSetActiveChannelAction,
+  sendLeaveGroupChannel as sendLeaveGroupChannelAction,
 } from '~/redux/chat/actions';
 import { getOtherUserFromChannel } from '~/redux/chat/reducer';
 import type { IAttachment, IChannel, IMessage } from '~/redux/chat/types';
@@ -51,8 +51,8 @@ const mapStateToProps = (state: IAppState, props: IOwnProps) => ({
   otherUser: getOtherUserFromChannel(state, props),
 });
 const mapDispatchToProps = {
-  sendSetActiveChannel: sendSetActiveChannelAction,
-  leaveGroupChannel: leaveGroupChannelAction,
+  emitSetActiveChannel: emitSetActiveChannelAction,
+  sendLeaveGroupChannel: sendLeaveGroupChannelAction,
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
@@ -69,8 +69,8 @@ const ChatListItem = ({
   channel,
   selected,
   otherUser,
-  sendSetActiveChannel,
-  leaveGroupChannel,
+  emitSetActiveChannel,
+  sendLeaveGroupChannel,
 }: TProps) => {
   const [state, setState] = useObjState(initialState);
   const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
@@ -80,7 +80,7 @@ const ChatListItem = ({
   const classes = useStyles();
 
   const handleListClick = () => {
-    sendSetActiveChannel(channel._id);
+    emitSetActiveChannel(channel._id);
   };
 
   const handleOptionsClick = (event: MouseEvent<Element>) => {
@@ -125,7 +125,7 @@ const ChatListItem = ({
   const onLeaveGroupModalConfirm = async (event: MouseEvent<Element>) => {
     handleMenuClose(event);
     try {
-      await leaveGroupChannel({ channel_id: channel._id });
+      await sendLeaveGroupChannel({ channel_id: channel._id });
       onLeaveGroupModalClose(event);
     } catch (err) {
       setState({

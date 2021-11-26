@@ -1,22 +1,22 @@
 import { LOCAL_STORAGE_THEME_MODE } from '~/constants/localStorageKeys';
 import { getMockStore } from '~/utils/testUtils';
 
-import { switchMode } from '../actions';
+import { themeModeSwitched } from '../actions';
 import { EThemeActions } from '../types';
 import type { TThemeAction, TThemeMode } from '../types';
 
 const mockStore = getMockStore();
 
 describe('auth actions', () => {
-  it('switchMode', async () => {
+  it('themeModeSwitched', async () => {
     const newMode = 'dark' as TThemeMode;
     const expectedActions = [
-      { type: EThemeActions.SWITCH_MODE, payload: newMode } as TThemeAction,
+      { type: EThemeActions.MODE_SWITCHED, payload: newMode } as TThemeAction,
     ];
 
     const store = mockStore({});
 
-    store.dispatch(switchMode(newMode));
+    store.dispatch(themeModeSwitched(newMode));
 
     expect(store.getActions()).toEqual(expectedActions);
     expect(localStorage.getItem(LOCAL_STORAGE_THEME_MODE)).toBe(newMode);

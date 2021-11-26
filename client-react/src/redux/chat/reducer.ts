@@ -23,18 +23,18 @@ const chat = (
       case EUserActions.SIGNED_OUT: {
         return initialState;
       }
-      case EChatActions.SET_INITIAL_DATA: {
+      case EChatActions.INITIAL_DATA_LOADED: {
         draft.users = action.payload.users;
         draft.channels = wrapChannelsDates(action.payload.channels);
         return draft;
       }
-      case EChatActions.SET_USER_ONLINE: {
+      case EChatActions.USER_ONLINE_STATUS_CHANGED: {
         if (draft.users[action.payload._id]) {
           draft.users[action.payload._id].online = action.payload.value;
         }
         return draft;
       }
-      case EChatActions.ADD_OR_UPDATE_CHANNEL: {
+      case EChatActions.CHANNEL_UPDATED: {
         draft.channels[action.payload._id] = wrapChannelDates(action.payload);
         if (!action.payload.is_group) {
           const otherMemberIdx = action.payload.other_member_idx as number;
@@ -51,7 +51,7 @@ const chat = (
         }
         return draft;
       }
-      case EChatActions.SET_ACTIVE_CHANNEL: {
+      case EChatActions.ACTIVE_CHANNEL_CHANGED: {
         if (action.payload._id === undefined) {
           draft.activeChannelInfo = undefined;
         } else if (
@@ -68,7 +68,7 @@ const chat = (
         }
         return draft;
       }
-      case EChatActions.REMOVE_CHANNEL: {
+      case EChatActions.REMOVED_FROM_CHANNEL: {
         if (!!draft.channels[action.payload.channelId]) {
           if (
             !!draft.activeChannelInfo &&
@@ -80,11 +80,11 @@ const chat = (
         }
         return draft;
       }
-      case EChatActions.ADD_NEW_USER: {
+      case EChatActions.NEW_USER_CONFIRMED: {
         draft.users[action.payload._id] = action.payload;
         return draft;
       }
-      case EChatActions.ADD_MESSAGES: {
+      case EChatActions.NEW_MESSAGES_RECEIVED: {
         const { messages, totalMessages, atTop } = action.payload;
         const channelId = !!messages.length ? messages[0].channel_id : '';
 
@@ -122,7 +122,7 @@ const chat = (
         }
         return draft;
       }
-      case EChatActions.ADD_TO_MESSAGES_QUEUE: {
+      case EChatActions.MESSAGE_ENQUEUED: {
         if (
           draft.activeChannelInfo &&
           draft.activeChannelInfo._id === action.payload.channel_id
@@ -131,7 +131,7 @@ const chat = (
         }
         return draft;
       }
-      case EChatActions.REMOVE_FROM_MESSAGES_QUEUE: {
+      case EChatActions.MESSAGE_DEQUEUED: {
         if (
           draft.activeChannelInfo &&
           draft.activeChannelInfo._id === action.payload.channel_id
@@ -142,7 +142,7 @@ const chat = (
         }
         return draft;
       }
-      case EChatActions.SET_LAST_SEEN: {
+      case EChatActions.LAST_SEEN_CHANGED: {
         const channel = draft.channels[action.payload.channel_id];
         channel.members.forEach(member => {
           if (member.user_id === action.payload.user_id) {
@@ -151,20 +151,20 @@ const chat = (
         });
         return draft;
       }
-      case EChatActions.SET_USER_STATUS: {
+      case EChatActions.USER_STATUS_CHANGED: {
         if (draft.users[action.payload.user_id]) {
           draft.users[action.payload.user_id].status = action.payload.newStatus;
         }
         return draft;
       }
-      case EChatActions.SET_USER_THOUGHTS: {
+      case EChatActions.USER_THOUGHTS_CHANGED: {
         if (draft.users[action.payload.user_id]) {
           draft.users[action.payload.user_id].thoughts =
             action.payload.newThoughts;
         }
         return draft;
       }
-      case EChatActions.SET_MESSAGE_IS_UPDATING: {
+      case EChatActions.MESSAGE_IS_UPDATING_CHANGED: {
         if (draft.activeChannelInfo) {
           const message = draft.activeChannelInfo.messages.find(
             msg => msg._id === action.payload.message_id,
@@ -176,7 +176,7 @@ const chat = (
         }
         return draft;
       }
-      case EChatActions.UPDATE_MESSAGE: {
+      case EChatActions.MESSAGE_UPDATED: {
         const newMessage = { ...action.payload };
         if (!(newMessage.createdAt instanceof Date))
           newMessage.createdAt = new Date(newMessage.createdAt);
@@ -201,7 +201,7 @@ const chat = (
         }
         return draft;
       }
-      case EChatActions.SET_MESSAGE_IS_DELETING: {
+      case EChatActions.MESSAGE_IS_DELETING_CHANGED: {
         if (draft.activeChannelInfo) {
           const message = draft.activeChannelInfo.messages.find(
             msg => msg._id === action.payload.message_id,
@@ -213,7 +213,7 @@ const chat = (
         }
         return draft;
       }
-      case EChatActions.DELETE_MESSAGE: {
+      case EChatActions.MESSAGE_DELETED: {
         if (draft.activeChannelInfo) {
           draft.activeChannelInfo.messages =
             draft.activeChannelInfo.messages.filter(

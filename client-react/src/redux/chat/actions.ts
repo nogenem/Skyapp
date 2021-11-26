@@ -24,64 +24,70 @@ import type {
 } from './types';
 import { EChatActions } from './types';
 
-const setInitialData = (data: IInitialData) => ({
-  type: EChatActions.SET_INITIAL_DATA,
+const chatInitialDataLoaded = (data: IInitialData) => ({
+  type: EChatActions.INITIAL_DATA_LOADED,
   payload: data,
 });
 
-const setUserOnline = (_id: string, value: boolean) => ({
-  type: EChatActions.SET_USER_ONLINE,
+const userOnlineStatusChanged = (_id: string, value: boolean) => ({
+  type: EChatActions.USER_ONLINE_STATUS_CHANGED,
   payload: {
     _id,
     value,
   },
 });
 
-const addOrUpdateChannel = (channel: IChannel) => ({
-  type: EChatActions.ADD_OR_UPDATE_CHANNEL,
+const channelUpdated = (channel: IChannel) => ({
+  type: EChatActions.CHANNEL_UPDATED,
   payload: channel,
 });
 
-const removeChannel = (channelId: string) => ({
-  type: EChatActions.REMOVE_CHANNEL,
+const userRemovedFromChannel = (channelId: string) => ({
+  type: EChatActions.REMOVED_FROM_CHANNEL,
   payload: { channelId },
 });
 
-const setActiveChannel = (channel_id: string | undefined) => ({
-  type: EChatActions.SET_ACTIVE_CHANNEL,
+const activeChannelChanged = (channel_id: string | undefined) => ({
+  type: EChatActions.ACTIVE_CHANNEL_CHANGED,
   payload: { _id: channel_id },
 });
 
-const setLastSeen = (data: {
+const userLastSeenChanged = (data: {
   channel_id: string;
   user_id: string;
   last_seen: string;
 }) => ({
-  type: EChatActions.SET_LAST_SEEN,
+  type: EChatActions.LAST_SEEN_CHANGED,
   payload: data,
 });
 
-const setUserStatus = (data: { user_id: string; newStatus: TUserStatus }) => ({
-  type: EChatActions.SET_USER_STATUS,
+const userStatusChanged = (data: {
+  user_id: string;
+  newStatus: TUserStatus;
+}) => ({
+  type: EChatActions.USER_STATUS_CHANGED,
   payload: data,
 });
 
-const setUserThoughts = (data: { user_id: string; newThoughts: string }) => ({
-  type: EChatActions.SET_USER_THOUGHTS,
+const userThoughtsChanged = (data: {
+  user_id: string;
+  newThoughts: string;
+}) => ({
+  type: EChatActions.USER_THOUGHTS_CHANGED,
   payload: data,
 });
 
-const addNewUser = (newUser: IOtherUser) => ({
-  type: EChatActions.ADD_NEW_USER,
+const newUserConfirmed = (newUser: IOtherUser) => ({
+  type: EChatActions.NEW_USER_CONFIRMED,
   payload: newUser,
 });
 
-export const addMessages = (
+export const newMessagesReceived = (
   messages: IMessage[],
   totalMessages: number = -1,
   atTop: boolean = false,
 ) => ({
-  type: EChatActions.ADD_MESSAGES,
+  type: EChatActions.NEW_MESSAGES_RECEIVED,
   payload: {
     messages,
     totalMessages,
@@ -89,43 +95,49 @@ export const addMessages = (
   },
 });
 
-export const setMessageIsUpdating = (message_id: string, value: boolean) => ({
-  type: EChatActions.SET_MESSAGE_IS_UPDATING,
+export const messageIsUpdatingChanged = (
+  message_id: string,
+  value: boolean,
+) => ({
+  type: EChatActions.MESSAGE_IS_UPDATING_CHANGED,
   payload: {
     message_id,
     value,
   },
 });
 
-export const updateMessage = (message: IMessage) => ({
-  type: EChatActions.UPDATE_MESSAGE,
+export const messageUpdated = (message: IMessage) => ({
+  type: EChatActions.MESSAGE_UPDATED,
   payload: message,
 });
 
-export const setMessageIsDeleting = (message_id: string, value: boolean) => ({
-  type: EChatActions.SET_MESSAGE_IS_DELETING,
+export const messageIsDeletingChanged = (
+  message_id: string,
+  value: boolean,
+) => ({
+  type: EChatActions.MESSAGE_IS_DELETING_CHANGED,
   payload: {
     message_id,
     value,
   },
 });
 
-export const deleteMessage = (message: IMessage, lastMessage?: IMessage) => ({
-  type: EChatActions.DELETE_MESSAGE,
+export const messageDeleted = (message: IMessage, lastMessage?: IMessage) => ({
+  type: EChatActions.MESSAGE_DELETED,
   payload: { message, lastMessage },
 });
 
-export const addToMessagesQueue = (message: IMessage) => ({
-  type: EChatActions.ADD_TO_MESSAGES_QUEUE,
+export const messageEnqueued = (message: IMessage) => ({
+  type: EChatActions.MESSAGE_ENQUEUED,
   payload: message,
 });
 
-export const removeFromMessagesQueue = (message: IMessage) => ({
-  type: EChatActions.REMOVE_FROM_MESSAGES_QUEUE,
+export const messageDequeued = (message: IMessage) => ({
+  type: EChatActions.MESSAGE_DEQUEUED,
   payload: message,
 });
 
-export const connectIo = (user: IUser) => (dispatch: Dispatch) => {
+export const userSignedIn = (user: IUser) => (dispatch: Dispatch) => {
   const instance = IoService.instance();
   instance.connect({ _id: user._id });
 
@@ -133,142 +145,144 @@ export const connectIo = (user: IUser) => (dispatch: Dispatch) => {
     instance.socket!.emit(
       SOCKET_EVENTS.IO_GET_INITIAL_DATA,
       (data: IInitialData) => {
-        dispatch(setInitialData(data));
+        dispatch(chatInitialDataLoaded(data));
       },
     );
 
     instance.socket!.on(SOCKET_EVENTS.IO_SIGNIN, (_id: string) => {
-      dispatch(setUserOnline(_id, true));
+      dispatch(userOnlineStatusChanged(_id, true));
     });
     instance.socket!.on(SOCKET_EVENTS.IO_SIGNOUT, (_id: string) => {
-      dispatch(setUserOnline(_id, false));
+      dispatch(userOnlineStatusChanged(_id, false));
     });
     instance.socket!.on(SOCKET_EVENTS.IO_NEW_USER, (newUser: IOtherUser) => {
-      dispatch(addNewUser(newUser));
+      dispatch(newUserConfirmed(newUser));
     });
     instance.socket!.on(
       SOCKET_EVENTS.IO_PRIVATE_CHANNEL_CREATED,
       (channel: IChannel) => {
-        dispatch(addOrUpdateChannel(channel));
+        dispatch(channelUpdated(channel));
       },
     );
     instance.socket!.on(
       SOCKET_EVENTS.IO_GROUP_CHANNEL_CREATED,
       (channel: IChannel) => {
-        dispatch(addOrUpdateChannel(channel));
+        dispatch(channelUpdated(channel));
       },
     );
     instance.socket!.on(
       SOCKET_EVENTS.IO_REMOVED_FROM_GROUP_CHANNEL,
       ({ channelId }: { channelId: string }) => {
-        dispatch(removeChannel(channelId));
+        dispatch(userRemovedFromChannel(channelId));
       },
     );
     instance.socket!.on(
       SOCKET_EVENTS.IO_GROUP_CHANNEL_UPDATED,
       (channel: IChannel) => {
-        dispatch(addOrUpdateChannel(channel));
+        dispatch(channelUpdated(channel));
       },
     );
     instance.socket!.on(
       SOCKET_EVENTS.IO_MESSAGES_RECEIVED,
       (messages: IMessage[]) => {
-        dispatch(addMessages(messages));
+        dispatch(newMessagesReceived(messages));
       },
     );
     instance.socket!.on(SOCKET_EVENTS.IO_SET_LAST_SEEN, data => {
-      dispatch(setLastSeen(data));
+      dispatch(userLastSeenChanged(data));
     });
     instance.socket!.on(SOCKET_EVENTS.IO_USER_STATUS_CHANGED, data => {
-      dispatch(setUserStatus(data));
+      dispatch(userStatusChanged(data));
     });
     instance.socket!.on(SOCKET_EVENTS.IO_USER_THOUGHTS_CHANGED, data => {
-      dispatch(setUserThoughts(data));
+      dispatch(userThoughtsChanged(data));
     });
     instance.socket!.on(
       SOCKET_EVENTS.IO_MESSAGE_EDITED,
       (message: IMessage) => {
-        dispatch(updateMessage(message));
+        dispatch(messageUpdated(message));
       },
     );
     instance.socket!.on(SOCKET_EVENTS.IO_MESSAGE_DELETED, data => {
       const deleteData = data as { message: IMessage; lastMessage?: IMessage };
-      dispatch(deleteMessage(deleteData.message, deleteData.lastMessage));
+      dispatch(messageDeleted(deleteData.message, deleteData.lastMessage));
     });
   });
 };
 
-export const disconnectIo = () => (dispatch: Dispatch) => {
+export const userSignedOut = () => () => {
   IoService.instance().disconnect();
 };
 
-export const startChattingWith =
+export const sendCreateChannelWith =
   (otherUser: IOtherUser) => (dispatch: Dispatch) =>
     ApiService.chat.createChannelWith(otherUser).then(({ channel_id }) => {
-      dispatch(setActiveChannel(channel_id));
+      dispatch(activeChannelChanged(channel_id));
     });
 
-export const createGroupChannel =
+export const sendCreateGroupChannel =
   (credentials: INewGroupCredentials) => (dispatch: Dispatch) =>
     ApiService.chat.createGroupChannel(credentials).then(({ channel_id }) => {
-      dispatch(setActiveChannel(channel_id));
+      dispatch(activeChannelChanged(channel_id));
     });
 
-export const updateGroupChannel =
+export const sendUpdateGroupChannel =
   (credentials: IUpdateGroupCredentials) => (dispatch: Dispatch) =>
     ApiService.chat.updateGroupChannel(credentials).then(({ channel_id }) => {
-      dispatch(setActiveChannel(channel_id));
+      dispatch(activeChannelChanged(channel_id));
     });
 
-export const leaveGroupChannel =
+export const sendLeaveGroupChannel =
   (credentials: ILeaveGroupCredentials) => (dispatch: Dispatch) =>
     ApiService.chat.leaveGroupChannel(credentials).then(() => {
-      dispatch(removeChannel(credentials.channel_id));
+      dispatch(userRemovedFromChannel(credentials.channel_id));
     });
 
-export const fetchMessages =
+export const sendGetMessages =
   (credentials: IFetchMessagesCredentials) => (dispatch: Dispatch) =>
     ApiService.chat.getMessages(credentials).then(({ docs, totalDocs }) => {
       docs.reverse();
-      dispatch(addMessages(docs, totalDocs, true));
+      dispatch(newMessagesReceived(docs, totalDocs, true));
     });
 
-export const sendMessage = (channel_id: string, message: string) => () => {
-  const credentials: ISendMessageCredentials = {
-    channel_id,
-    body: message,
+export const enqueueSendTextMessage =
+  (channel_id: string, message: string) => () => {
+    const credentials: ISendMessageCredentials = {
+      channel_id,
+      body: message,
+    };
+    MessageQueueService.enqueue(credentials, QUEUE_ACTIONS.SEND_TEXT_MESSAGE);
   };
-  MessageQueueService.enqueue(credentials, QUEUE_ACTIONS.SEND_TEXT_MESSAGE);
-};
 
-export const sendFiles = (filesData: FormData) => () => {
+export const enqueueSendFileMessages = (filesData: FormData) => () => {
   MessageQueueService.enqueue(filesData, QUEUE_ACTIONS.SEND_FILE_MESSAGES);
 };
 
-export const sendEditMessage = (message: IMessage, newBody: string) => () => {
-  const credentials: IEditMessageCredentials = {
-    message,
-    newBody,
+export const enqueueSendEditTextMessage =
+  (message: IMessage, newBody: string) => () => {
+    const credentials: IEditMessageCredentials = {
+      message,
+      newBody,
+    };
+    MessageQueueService.enqueue(credentials, QUEUE_ACTIONS.EDIT_TEXT_MESSAGE);
   };
-  MessageQueueService.enqueue(credentials, QUEUE_ACTIONS.EDIT_TEXT_MESSAGE);
-};
 
-export const sendDeleteMessage = (message: IMessage) => () => {
+export const enqueueSendDeleteMessage = (message: IMessage) => () => {
   const credentials: IDeleteMessageCredentials = {
     message,
   };
   MessageQueueService.enqueue(credentials, QUEUE_ACTIONS.DELETE_MESSAGE);
 };
 
-export const sendSetActiveChannel =
+export const emitSetActiveChannel =
   (channel_id: string | undefined) => (dispatch: Dispatch) => {
     const instance = IoService.instance();
     instance.socket!.emit(SOCKET_EVENTS.IO_SET_ACTIVE_CHANNEL, { channel_id });
 
-    dispatch(setActiveChannel(channel_id));
+    dispatch(activeChannelChanged(channel_id));
   };
 
-export const sendSetLastSeen = (channel_id: string) => () => {
+export const emitSetLastSeen = (channel_id: string) => () => {
   const instance = IoService.instance();
   instance.socket!.emit(SOCKET_EVENTS.IO_SET_LAST_SEEN, { channel_id });
 };

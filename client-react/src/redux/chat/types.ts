@@ -111,22 +111,22 @@ type TChatState = {
 };
 
 enum EChatActions {
-  SET_INITIAL_DATA = '@chat/SET_INITIAL_DATA',
-  SET_USER_ONLINE = '@chat/SET_USER_ONLINE',
-  ADD_OR_UPDATE_CHANNEL = '@chat/ADD_OR_UPDATE_CHANNEL',
-  SET_ACTIVE_CHANNEL = '@chat/SET_ACTIVE_CHANNEL',
-  REMOVE_CHANNEL = '@chat/REMOVE_CHANNEL',
-  ADD_NEW_USER = '@chat/ADD_NEW_USER',
-  ADD_MESSAGES = '@chat/ADD_MESSAGES',
-  ADD_TO_MESSAGES_QUEUE = '@chat/ADD_TO_MESSAGES_QUEUE',
-  REMOVE_FROM_MESSAGES_QUEUE = '@chat/REMOVE_FROM_MESSAGES_QUEUE',
-  SET_LAST_SEEN = '@chat/SET_LAST_SEEN',
-  SET_USER_STATUS = '@chat/SET_USER_STATUS',
-  SET_USER_THOUGHTS = '@chat/SET_USER_THOUGHTS',
-  SET_MESSAGE_IS_UPDATING = '@chat/SET_MESSAGE_IS_UPDATING',
-  UPDATE_MESSAGE = '@chat/UPDATE_MESSAGE',
-  SET_MESSAGE_IS_DELETING = '@chat/SET_MESSAGE_IS_DELETING',
-  DELETE_MESSAGE = '@chat/DELETE_MESSAGE',
+  INITIAL_DATA_LOADED = '@chat/INITIAL_DATA_LOADED',
+  USER_ONLINE_STATUS_CHANGED = '@chat/USER_ONLINE_STATUS_CHANGED',
+  CHANNEL_UPDATED = '@chat/CHANNEL_UPDATED',
+  ACTIVE_CHANNEL_CHANGED = '@chat/ACTIVE_CHANNEL_CHANGED',
+  REMOVED_FROM_CHANNEL = '@chat/REMOVED_FROM_CHANNEL',
+  NEW_USER_CONFIRMED = '@chat/NEW_USER_CONFIRMED',
+  NEW_MESSAGES_RECEIVED = '@chat/NEW_MESSAGES_RECEIVED',
+  MESSAGE_ENQUEUED = '@chat/MESSAGE_ENQUEUED',
+  MESSAGE_DEQUEUED = '@chat/MESSAGE_DEQUEUED',
+  LAST_SEEN_CHANGED = '@chat/LAST_SEEN_CHANGED',
+  USER_STATUS_CHANGED = '@chat/USER_STATUS_CHANGED',
+  USER_THOUGHTS_CHANGED = '@chat/USER_THOUGHTS_CHANGED',
+  MESSAGE_IS_UPDATING_CHANGED = '@chat/MESSAGE_IS_UPDATING_CHANGED',
+  MESSAGE_UPDATED = '@chat/MESSAGE_UPDATED',
+  MESSAGE_IS_DELETING_CHANGED = '@chat/MESSAGE_IS_DELETING_CHANGED',
+  MESSAGE_DELETED = '@chat/MESSAGE_DELETED',
 }
 
 interface IChatActionType<T, P> {
@@ -135,30 +135,33 @@ interface IChatActionType<T, P> {
 }
 
 type TChatAction =
-  | IChatActionType<typeof EChatActions.SET_INITIAL_DATA, IInitialData>
+  | IChatActionType<typeof EChatActions.INITIAL_DATA_LOADED, IInitialData>
   | IChatActionType<
-      typeof EChatActions.SET_USER_ONLINE,
+      typeof EChatActions.USER_ONLINE_STATUS_CHANGED,
       { _id: string; value: boolean }
     >
-  | IChatActionType<typeof EChatActions.ADD_OR_UPDATE_CHANNEL, IChannel>
+  | IChatActionType<typeof EChatActions.CHANNEL_UPDATED, IChannel>
   | IChatActionType<
-      typeof EChatActions.SET_ACTIVE_CHANNEL,
+      typeof EChatActions.ACTIVE_CHANNEL_CHANGED,
       { _id: string | undefined }
     >
-  | IChatActionType<typeof EChatActions.REMOVE_CHANNEL, { channelId: string }>
-  | IChatActionType<typeof EChatActions.ADD_NEW_USER, IOtherUser>
   | IChatActionType<
-      typeof EChatActions.ADD_MESSAGES,
+      typeof EChatActions.REMOVED_FROM_CHANNEL,
+      { channelId: string }
+    >
+  | IChatActionType<typeof EChatActions.NEW_USER_CONFIRMED, IOtherUser>
+  | IChatActionType<
+      typeof EChatActions.NEW_MESSAGES_RECEIVED,
       {
         messages: IMessage[];
         totalMessages: number;
         atTop: boolean;
       }
     >
-  | IChatActionType<typeof EChatActions.ADD_TO_MESSAGES_QUEUE, IMessage>
-  | IChatActionType<typeof EChatActions.REMOVE_FROM_MESSAGES_QUEUE, IMessage>
+  | IChatActionType<typeof EChatActions.MESSAGE_ENQUEUED, IMessage>
+  | IChatActionType<typeof EChatActions.MESSAGE_DEQUEUED, IMessage>
   | IChatActionType<
-      typeof EChatActions.SET_LAST_SEEN,
+      typeof EChatActions.LAST_SEEN_CHANGED,
       {
         channel_id: string;
         user_id: string;
@@ -166,36 +169,36 @@ type TChatAction =
       }
     >
   | IChatActionType<
-      typeof EChatActions.SET_USER_STATUS,
+      typeof EChatActions.USER_STATUS_CHANGED,
       {
         user_id: string;
         newStatus: TUserStatus;
       }
     >
   | IChatActionType<
-      typeof EChatActions.SET_USER_THOUGHTS,
+      typeof EChatActions.USER_THOUGHTS_CHANGED,
       {
         user_id: string;
         newThoughts: string;
       }
     >
   | IChatActionType<
-      typeof EChatActions.SET_MESSAGE_IS_UPDATING,
+      typeof EChatActions.MESSAGE_IS_UPDATING_CHANGED,
       {
         message_id: string;
         value: boolean;
       }
     >
-  | IChatActionType<typeof EChatActions.UPDATE_MESSAGE, IMessage>
+  | IChatActionType<typeof EChatActions.MESSAGE_UPDATED, IMessage>
   | IChatActionType<
-      typeof EChatActions.SET_MESSAGE_IS_DELETING,
+      typeof EChatActions.MESSAGE_IS_DELETING_CHANGED,
       {
         message_id: string;
         value: boolean;
       }
     >
   | IChatActionType<
-      typeof EChatActions.DELETE_MESSAGE,
+      typeof EChatActions.MESSAGE_DELETED,
       {
         message: IMessage;
         lastMessage?: IMessage;

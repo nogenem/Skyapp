@@ -10,17 +10,13 @@ import {
 } from '@reach/router';
 
 import { AuthContainer } from '~/components';
-import {
-  validateToken as validateTokenAction,
-  resetPassword as resetPasswordAction,
-} from '~/redux/user/actions';
+import { sendResetPassword as sendResetPasswordAction } from '~/redux/user/actions';
 import type { IResetPasswordCredentials } from '~/redux/user/types';
 
 import { Form } from './Form';
 
 const mapDispatchToProps = {
-  validateToken: validateTokenAction,
-  resetPassword: resetPasswordAction,
+  sendResetPassword: sendResetPasswordAction,
 };
 
 const connector = connect(null, mapDispatchToProps);
@@ -32,11 +28,11 @@ interface OwnProps extends RouteComponentProps {
 
 type TProps = TPropsFromRedux & OwnProps;
 
-const ResetPassword = ({ token, resetPassword }: TProps) => {
+const ResetPassword = ({ token, sendResetPassword }: TProps) => {
   const { t: trans } = useTranslation(['Common', 'Messages']);
 
   const submit = async (credentials: IResetPasswordCredentials) => {
-    await resetPassword({ ...credentials, token: token as string });
+    await sendResetPassword({ ...credentials, token: token as string });
     navigate('/chat');
   };
 

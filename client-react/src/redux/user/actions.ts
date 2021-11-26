@@ -7,7 +7,10 @@ import ApiService from '~/services/ApiService';
 import IoService from '~/services/IoService';
 import setAuthorizationHeader from '~/utils/setAuthorizationHeader';
 
-import { connectIo, disconnectIo } from '../chat/actions';
+import {
+  userSignedIn as chatUserSignedIn,
+  userSignedOut as chatUserSignedOut,
+} from '../chat/actions';
 import { EUserActions } from './types';
 import type {
   ISignUpCredentials,
@@ -26,7 +29,7 @@ export const userSignedIn = (user: IUser) => (dispatch: Dispatch) => {
   setAuthorizationHeader(user.token);
 
   if (user.confirmed) {
-    connectIo(user)(dispatch);
+    chatUserSignedIn(user)(dispatch);
   }
 
   dispatch<TUserAction>({
@@ -35,13 +38,13 @@ export const userSignedIn = (user: IUser) => (dispatch: Dispatch) => {
   });
 };
 
-const userChangedStatus = (newStatus: TUserStatus) => ({
-  type: EUserActions.CHANGED_STATUS,
+const userStatusChanged = (newStatus: TUserStatus) => ({
+  type: EUserActions.STATUS_CHANGED,
   payload: newStatus,
 });
 
-const userChangedThoughts = (newThoughts: string) => ({
-  type: EUserActions.CHANGED_THOUGHTS,
+const userThoughtsChanged = (newThoughts: string) => ({
+  type: EUserActions.THOUGHTS_CHANGED,
   payload: newThoughts,
 });
 
@@ -49,7 +52,7 @@ export const userSignedOut = () => (dispatch: Dispatch) => {
   localStorage.removeItem(LOCAL_STORAGE_TOKEN);
   setAuthorizationHeader();
 
-  disconnectIo()(dispatch);
+  chatUserSignedOut()();
 
   dispatch<TUserAction>({
     type: EUserActions.SIGNED_OUT,
@@ -57,58 +60,60 @@ export const userSignedOut = () => (dispatch: Dispatch) => {
   });
 };
 
-export const signUp =
+export const sendSignUp =
   (credentials: ISignUpCredentials) => (dispatch: Dispatch) =>
     ApiService.auth.signUp(credentials).then(({ user }) => {
       userSignedIn(user)(dispatch);
     });
 
-export const signIn =
+export const sendSignIn =
   (credentials: ISignInCredentials) => (dispatch: Dispatch) =>
     ApiService.auth.signIn(credentials).then(({ user }) => {
       userSignedIn(user)(dispatch);
     });
 
-export const confirmation =
+export const sendConfirmation =
   (credentials: ITokenCredentials) => (dispatch: Dispatch) =>
     ApiService.auth.confirmation(credentials).then(({ user }) => {
       userSignedIn(user)(dispatch);
     });
 
-export const resendConfirmationEmail = (credentials: ITokenCredentials) => () =>
-  ApiService.auth.resendConfirmationEmail(credentials);
+export const SendResendConfirmationEmail =
+  (credentials: ITokenCredentials) => () =>
+    ApiService.auth.resendConfirmationEmail(credentials);
 
-export const validateToken =
+export const sendValidateToken =
   (credentials: ITokenCredentials) => (dispatch: Dispatch) =>
     ApiService.auth.validateToken(credentials).then(({ user }) => {
       userSignedIn(user)(dispatch);
     });
 
-export const forgotPassword = (credentials: IForgotPasswordCredentials) => () =>
-  ApiService.auth.forgotPassword(credentials);
+export const sendForgotPassword =
+  (credentials: IForgotPasswordCredentials) => () =>
+    ApiService.auth.forgotPassword(credentials);
 
-export const resetPassword =
+export const sendResetPassword =
   (credentials: IResetPasswordCredentials) => (dispatch: Dispatch) =>
     ApiService.auth.resetPassword(credentials).then(({ user }) => {
       userSignedIn(user)(dispatch);
     });
 
-export const changeStatus =
+export const sendChangeStatus =
   (credentials: IChangeStatusCredentials) => (dispatch: Dispatch) =>
     ApiService.user.changeStatus(credentials).then(() => {
-      dispatch(userChangedStatus(credentials.newStatus));
+      dispatch(userStatusChanged(credentials.newStatus));
     });
 
-export const changeThoughts =
+export const sendChangeThoughts =
   (credentials: IChangeThoughtsCredentials) => (dispatch: Dispatch) =>
     ApiService.user.changeThoughts(credentials).then(() => {
-      dispatch(userChangedThoughts(credentials.newThoughts));
+      dispatch(userThoughtsChanged(credentials.newThoughts));
     });
 
-export const broadcastUserStatusChanged =
+export const emitUserStatusChanged =
   (newStatus: TUserStatus) => (dispatch: Dispatch) => {
     const instance = IoService.instance();
     instance.socket!.emit(SOCKET_EVENTS.IO_USER_STATUS_CHANGED, { newStatus });
 
-    dispatch(userChangedStatus(newStatus));
+    dispatch(userStatusChanged(newStatus));
   };

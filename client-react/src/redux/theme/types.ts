@@ -5,7 +5,7 @@ type TThemeState = {
 };
 
 enum EThemeActions {
-  SWITCH_MODE = '@theme/SWITCH_MODE',
+  MODE_SWITCHED = '@theme/MODE_SWITCHED',
 }
 
 interface IThemeActionType<T, P> {
@@ -14,7 +14,7 @@ interface IThemeActionType<T, P> {
 }
 
 type TThemeAction = IThemeActionType<
-  typeof EThemeActions.SWITCH_MODE,
+  typeof EThemeActions.MODE_SWITCHED,
   TThemeMode
 >;
 

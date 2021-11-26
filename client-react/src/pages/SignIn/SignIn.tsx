@@ -10,13 +10,13 @@ import {
 } from '@reach/router';
 
 import { AuthContainer } from '~/components';
-import { signIn as signInAction } from '~/redux/user/actions';
+import { sendSignIn as sendSignInAction } from '~/redux/user/actions';
 import type { ISignInCredentials } from '~/redux/user/types';
 
 import { Form } from './Form';
 
 const mapDispatchToProps = {
-  signIn: signInAction,
+  sendSignIn: sendSignInAction,
 };
 
 const connector = connect(null, mapDispatchToProps);
@@ -24,11 +24,11 @@ type TPropsFromRedux = ConnectedProps<typeof connector>;
 
 type TProps = RouteComponentProps & TPropsFromRedux;
 
-const SignIn = ({ signIn }: TProps) => {
+const SignIn = ({ sendSignIn }: TProps) => {
   const { t: trans } = useTranslation(['Common', 'Messages']);
 
   const submit = async (credentials: ISignInCredentials) => {
-    await signIn(credentials);
+    await sendSignIn(credentials);
     navigate('/chat');
   };
 

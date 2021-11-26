@@ -20,7 +20,7 @@ import {
 } from '../index';
 
 jest.mock('../../../redux/user/actions', () => ({
-  confirmation: () => () => Promise.resolve(),
+  sendConfirmation: () => () => Promise.resolve(),
 }));
 
 const VALID_TOKEN = '123456789';
@@ -76,13 +76,13 @@ describe('Unconnected ConfirmationPage', () => {
       options?: router.NavigateOptions<{}>,
     ) => {}) as router.NavigateFn;
     const spy = jest.spyOn(router, 'navigate').mockImplementationOnce(mockFunc);
-    const confirmation = jest.fn(() => Promise.resolve());
-    const resendConfirmationEmail = jest.fn(() => Promise.resolve());
+    const sendConfirmation = jest.fn(() => Promise.resolve());
+    const SendResendConfirmationEmail = jest.fn(() => Promise.resolve());
 
     const { container, queryByTestId } = render(
       <UnconnectedConfirmationPage
-        confirmation={confirmation}
-        resendConfirmationEmail={resendConfirmationEmail}
+        sendConfirmation={sendConfirmation}
+        SendResendConfirmationEmail={SendResendConfirmationEmail}
         token={credentials.token}
       />,
     );
@@ -91,8 +91,8 @@ describe('Unconnected ConfirmationPage', () => {
       container: container as HTMLElement,
     }); // wait for the Spinner to disappear
 
-    expect(confirmation).toHaveBeenCalledTimes(1);
-    expect(confirmation).toHaveBeenCalledWith(credentials);
+    expect(sendConfirmation).toHaveBeenCalledTimes(1);
+    expect(sendConfirmation).toHaveBeenCalledWith(credentials);
     expect(spy).toHaveBeenCalledTimes(1);
     expect(spy).toHaveBeenCalledWith('/chat');
   });
@@ -100,19 +100,19 @@ describe('Unconnected ConfirmationPage', () => {
   it('Trys to confirm invalid token and shows error alert', async () => {
     const credentials: ITokenCredentials = { token: INVALID_TOKEN };
 
-    const confirmation = jest.fn(() =>
+    const sendConfirmation = jest.fn(() =>
       Promise.reject(
         mockServerResponse({
           global: 'Invalid token',
         }),
       ),
     );
-    const resendConfirmationEmail = jest.fn(() => Promise.resolve());
+    const SendResendConfirmationEmail = jest.fn(() => Promise.resolve());
 
     const { container, getByRole, queryByTestId } = render(
       <UnconnectedConfirmationPage
-        confirmation={confirmation}
-        resendConfirmationEmail={resendConfirmationEmail}
+        sendConfirmation={sendConfirmation}
+        SendResendConfirmationEmail={SendResendConfirmationEmail}
         token={credentials.token}
       />,
     );
@@ -123,27 +123,27 @@ describe('Unconnected ConfirmationPage', () => {
 
     const alert = getByRole('alert');
 
-    expect(confirmation).toHaveBeenCalledTimes(1);
-    expect(confirmation).toHaveBeenCalledWith(credentials);
+    expect(sendConfirmation).toHaveBeenCalledTimes(1);
+    expect(sendConfirmation).toHaveBeenCalledWith(credentials);
     expect(alert).toHaveTextContent(/invalid token/i);
   });
 
   it('Trys to resend confirmation email and shows primary alert', async () => {
     const credentials: ITokenCredentials = { token: INVALID_TOKEN };
 
-    const confirmation = jest.fn(() =>
+    const sendConfirmation = jest.fn(() =>
       Promise.reject(
         mockServerResponse({
           global: 'Invalid token',
         }),
       ),
     );
-    const resendConfirmationEmail = jest.fn(() => Promise.resolve());
+    const SendResendConfirmationEmail = jest.fn(() => Promise.resolve());
 
     const { container, getByRole, queryByTestId, getByText } = render(
       <UnconnectedConfirmationPage
-        confirmation={confirmation}
-        resendConfirmationEmail={resendConfirmationEmail}
+        sendConfirmation={sendConfirmation}
+        SendResendConfirmationEmail={SendResendConfirmationEmail}
         token={credentials.token}
       />,
     );
@@ -160,8 +160,8 @@ describe('Unconnected ConfirmationPage', () => {
 
     const alert = getByRole('alert');
 
-    expect(resendConfirmationEmail).toHaveBeenCalledTimes(1);
-    expect(resendConfirmationEmail).toHaveBeenCalledWith(credentials);
+    expect(SendResendConfirmationEmail).toHaveBeenCalledTimes(1);
+    expect(SendResendConfirmationEmail).toHaveBeenCalledWith(credentials);
     expect(alert).toHaveTextContent(
       /the confirmation email was resend! please check your email\./i,
     );
@@ -170,14 +170,14 @@ describe('Unconnected ConfirmationPage', () => {
   it('Trys to resend confirmation email and shows error alert', async () => {
     const credentials: ITokenCredentials = { token: INVALID_TOKEN };
 
-    const confirmation = jest.fn(() =>
+    const sendConfirmation = jest.fn(() =>
       Promise.reject(
         mockServerResponse({
           global: 'Invalid token',
         }),
       ),
     );
-    const resendConfirmationEmail = jest.fn(() =>
+    const SendResendConfirmationEmail = jest.fn(() =>
       Promise.reject(
         mockServerResponse({
           global: 'Invalid token',
@@ -187,8 +187,8 @@ describe('Unconnected ConfirmationPage', () => {
 
     const { container, getByRole, queryByTestId, getByText } = render(
       <UnconnectedConfirmationPage
-        confirmation={confirmation}
-        resendConfirmationEmail={resendConfirmationEmail}
+        sendConfirmation={sendConfirmation}
+        SendResendConfirmationEmail={SendResendConfirmationEmail}
         token={credentials.token}
       />,
     );
@@ -205,8 +205,8 @@ describe('Unconnected ConfirmationPage', () => {
 
     const alert = getByRole('alert');
 
-    expect(resendConfirmationEmail).toHaveBeenCalledTimes(1);
-    expect(resendConfirmationEmail).toHaveBeenCalledWith(credentials);
+    expect(SendResendConfirmationEmail).toHaveBeenCalledTimes(1);
+    expect(SendResendConfirmationEmail).toHaveBeenCalledWith(credentials);
     expect(alert).toHaveTextContent(/invalid token/i);
   });
 });

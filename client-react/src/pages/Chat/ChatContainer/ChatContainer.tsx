@@ -6,13 +6,13 @@ import { RouteComponentProps } from '@reach/router';
 import { MESSAGE_TYPES } from '~/constants/message_types';
 import useVisibility from '~/hooks/useVisibility';
 import {
-  fetchMessages as fetchMessagesAction,
-  sendMessage as sendMessageAction,
-  sendFiles as sendFilesAction,
-  sendSetActiveChannel as sendSetActiveChannelAction,
-  sendSetLastSeen as sendSetLastSeenAction,
-  sendEditMessage as sendEditMessageAction,
-  sendDeleteMessage as sendDeleteMessageAction,
+  sendGetMessages as sendGetMessagesAction,
+  enqueueSendTextMessage as enqueueSendTextMessageAction,
+  enqueueSendFileMessages as enqueueSendFileMessagesAction,
+  emitSetActiveChannel as emitSetActiveChannelAction,
+  emitSetLastSeen as emitSetLastSeenAction,
+  enqueueSendEditTextMessage as enqueueSendEditTextMessageAction,
+  enqueueSendDeleteMessage as enqueueSendDeleteMessageAction,
 } from '~/redux/chat/actions';
 import { getActiveChannelInfo, getUsers } from '~/redux/chat/reducer';
 import { IChannel, IMessage } from '~/redux/chat/types';
@@ -30,13 +30,13 @@ const mapStateToProps = (state: IAppState) => ({
   users: getUsers(state),
 });
 const mapDispatchToProps = {
-  fetchMessages: fetchMessagesAction,
-  sendMessage: sendMessageAction,
-  sendFiles: sendFilesAction,
-  sendSetActiveChannel: sendSetActiveChannelAction,
-  sendSetLastSeen: sendSetLastSeenAction,
-  sendEditMessage: sendEditMessageAction,
-  sendDeleteMessage: sendDeleteMessageAction,
+  sendGetMessages: sendGetMessagesAction,
+  enqueueSendTextMessage: enqueueSendTextMessageAction,
+  enqueueSendFileMessages: enqueueSendFileMessagesAction,
+  emitSetActiveChannel: emitSetActiveChannelAction,
+  emitSetLastSeen: emitSetLastSeenAction,
+  enqueueSendEditTextMessage: enqueueSendEditTextMessageAction,
+  enqueueSendDeleteMessage: enqueueSendDeleteMessageAction,
 };
 const connector = connect(mapStateToProps, mapDispatchToProps);
 type TPropsFromRedux = ConnectedProps<typeof connector>;
@@ -54,13 +54,13 @@ const ChatContainer = ({
   activeChannelInfo,
   loggedUser,
   users,
-  fetchMessages,
-  sendMessage,
-  sendFiles,
-  sendSetActiveChannel,
-  sendSetLastSeen,
-  sendEditMessage,
-  sendDeleteMessage,
+  sendGetMessages,
+  enqueueSendTextMessage,
+  enqueueSendFileMessages,
+  emitSetActiveChannel,
+  emitSetLastSeen,
+  enqueueSendEditTextMessage,
+  enqueueSendDeleteMessage,
 }: TProps) => {
   const [editingMessage, setEditingMessage] = React.useState<IMessage>();
   const classes = useStyles();
@@ -68,10 +68,10 @@ const ChatContainer = ({
   const handleSubmit = (message: string) => {
     try {
       if (editingMessage) {
-        sendEditMessage(editingMessage, message);
+        enqueueSendEditTextMessage(editingMessage, message);
         setEditingMessage(undefined);
       } else {
-        sendMessage(activeChannel?._id as string, message);
+        enqueueSendTextMessage(activeChannel?._id as string, message);
       }
     } catch (err) {
       console.error(err);
@@ -81,7 +81,7 @@ const ChatContainer = ({
   const handleSendingFiles = (filesData: FormData) => {
     try {
       filesData.append('channel_id', activeChannel?._id as string);
-      sendFiles(filesData);
+      enqueueSendFileMessages(filesData);
     } catch (err) {
       console.error(err);
     }
@@ -92,7 +92,7 @@ const ChatContainer = ({
       activeChannelInfo !== undefined &&
       activeChannelInfo.messages.length < activeChannelInfo.totalMessages
     ) {
-      await fetchMessages({
+      await sendGetMessages({
         channel_id: activeChannelInfo._id,
         offset: activeChannelInfo.messages.length,
       });
@@ -100,7 +100,7 @@ const ChatContainer = ({
   };
 
   const onHeaderGoBack = () => {
-    sendSetActiveChannel(undefined);
+    emitSetActiveChannel(undefined);
   };
 
   const changeEditingMessage = (messageId: string) => {
@@ -140,14 +140,14 @@ const ChatContainer = ({
     );
 
     if (message) {
-      sendDeleteMessage(message);
+      enqueueSendDeleteMessage(message);
     }
   };
 
   React.useEffect(() => {
     const fetchData = async () => {
       if (!!activeChannel) {
-        await fetchMessages({ channel_id: activeChannel._id, offset: 0 });
+        await sendGetMessages({ channel_id: activeChannel._id, offset: 0 });
       }
     };
 
@@ -157,7 +157,7 @@ const ChatContainer = ({
 
   useOnLastMessageChangeDebounced(
     (channelId: string) => {
-      sendSetLastSeen(channelId);
+      emitSetLastSeen(channelId);
     },
     5 * 1000,
     activeChannel,

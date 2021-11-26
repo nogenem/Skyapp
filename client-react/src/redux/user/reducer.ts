@@ -24,11 +24,11 @@ const user = (state = initialState, action: TUserAction): TUserState => {
       return { _id, nickname, email, confirmed, status, thoughts, token };
     case EUserActions.SIGNED_OUT:
       return initialState;
-    case EUserActions.CHANGED_STATUS:
+    case EUserActions.STATUS_CHANGED:
       if (state.status !== action.payload)
         return { ...state, status: action.payload };
       return state;
-    case EUserActions.CHANGED_THOUGHTS:
+    case EUserActions.THOUGHTS_CHANGED:
       if (state.thoughts !== action.payload)
         return { ...state, thoughts: action.payload };
       return state;

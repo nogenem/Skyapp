@@ -14,7 +14,7 @@ import { AxiosError } from 'axios';
 import { IErrors } from '~/components/Form';
 import { CANT_BE_BLANK, NEED_ATLEAST_2_MEMBERS } from '~/constants/errors';
 import useObjState from '~/hooks/useObjState';
-import { createGroupChannel as createGroupChannelAction } from '~/redux/chat/actions';
+import { sendCreateGroupChannel as sendCreateGroupChannelAction } from '~/redux/chat/actions';
 import { getUsersArray } from '~/redux/chat/reducer';
 import { INewGroupCredentials } from '~/redux/chat/types';
 import { IAppState } from '~/redux/store';
@@ -41,7 +41,7 @@ const mapStateToProps = (state: IAppState) => ({
   users: getUsersArray(state),
 });
 const mapDispatchToProps = {
-  createGroupChannel: createGroupChannelAction,
+  sendCreateGroupChannel: sendCreateGroupChannelAction,
 };
 const connector = connect(mapStateToProps, mapDispatchToProps);
 type TPropsFromRedux = ConnectedProps<typeof connector>;
@@ -57,7 +57,7 @@ const NewGroupModal = ({
   isOpen,
   onClose,
   users,
-  createGroupChannel,
+  sendCreateGroupChannel,
 }: TProps) => {
   const [state, setState] = useObjState(initialState);
   const { t: trans } = useTranslation(['Common', 'Messages']);
@@ -110,7 +110,7 @@ const NewGroupModal = ({
       });
 
       try {
-        await createGroupChannel(credentials);
+        await sendCreateGroupChannel(credentials);
         setState(initialState);
         onClose();
       } catch (err) {

@@ -35,7 +35,7 @@ describe('UnauthenticatedNavBar', () => {
     const props: TProps = {
       isAuthenticated: false,
       theme: 'light' as TThemeMode,
-      switchMode: jest.fn(),
+      themeModeSwitched: jest.fn(),
     };
     const { getByTestId } = render(
       <UnconnectedUnauthenticatedNavBar {...props} />,
@@ -43,8 +43,8 @@ describe('UnauthenticatedNavBar', () => {
 
     fireEvent.click(getByTestId('toggle_theme_btn'));
 
-    expect(props.switchMode).toHaveBeenCalledTimes(1);
-    expect(props.switchMode).toHaveBeenCalledWith('dark');
+    expect(props.themeModeSwitched).toHaveBeenCalledTimes(1);
+    expect(props.themeModeSwitched).toHaveBeenCalledWith('dark');
   });
 
   // TODO: Add test !? I dunno how to do it ;/

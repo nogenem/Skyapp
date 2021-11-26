@@ -10,7 +10,7 @@ export const initialState: TThemeState = {
 
 const theme = (state = initialState, action: TThemeAction): TThemeState => {
   switch (action.type) {
-    case EThemeActions.SWITCH_MODE:
+    case EThemeActions.MODE_SWITCHED:
       return {
         ...state,
         mode: action.payload,

@@ -2,13 +2,13 @@ import i18n from 'i18next';
 
 import { MESSAGE_TYPES } from '~/constants/message_types';
 import {
-  addMessages,
-  addToMessagesQueue,
-  deleteMessage,
-  removeFromMessagesQueue,
-  setMessageIsDeleting,
-  setMessageIsUpdating,
-  updateMessage,
+  newMessagesReceived,
+  messageEnqueued,
+  messageDeleted,
+  messageDequeued,
+  messageIsDeletingChanged,
+  messageIsUpdatingChanged,
+  messageUpdated,
 } from '~/redux/chat/actions';
 import {
   IDeleteMessageCredentials,
@@ -95,7 +95,7 @@ class MessageQueueService {
         };
 
         queuedMsgs.push(queueMsg);
-        store.dispatch<any>(addToMessagesQueue(queueMsg));
+        store.dispatch<any>(messageEnqueued(queueMsg));
       });
     } else if (queueAction === QUEUE_ACTIONS.SEND_TEXT_MESSAGE) {
       const credentials = message as ISendMessageCredentials;
@@ -113,7 +113,7 @@ class MessageQueueService {
       };
 
       queuedMsgs.push(queueMsg);
-      store.dispatch<any>(addToMessagesQueue(queueMsg));
+      store.dispatch<any>(messageEnqueued(queueMsg));
     } else if (queueAction === QUEUE_ACTIONS.EDIT_TEXT_MESSAGE) {
       const credentials = message as IEditMessageCredentials;
       channelId = credentials.message.channel_id;
@@ -124,7 +124,9 @@ class MessageQueueService {
       };
 
       queuedMsgs.push(queueMsg);
-      store.dispatch<any>(setMessageIsUpdating(credentials.message._id, true));
+      store.dispatch<any>(
+        messageIsUpdatingChanged(credentials.message._id, true),
+      );
     } else if (queueAction === QUEUE_ACTIONS.DELETE_MESSAGE) {
       const credentials = message as IEditMessageCredentials;
       channelId = credentials.message.channel_id;
@@ -132,7 +134,9 @@ class MessageQueueService {
       const queueMsg: IMessage = credentials.message;
 
       queuedMsgs.push(queueMsg);
-      store.dispatch<any>(setMessageIsDeleting(credentials.message._id, true));
+      store.dispatch<any>(
+        messageIsDeletingChanged(credentials.message._id, true),
+      );
     }
 
     if (queuedMsgs.length && channelId) {
@@ -173,7 +177,7 @@ class MessageQueueService {
         }
 
         queuedMsgs.forEach(msg => {
-          store.dispatch<any>(removeFromMessagesQueue(msg));
+          store.dispatch<any>(messageDequeued(msg));
           if (typeof msg.body !== 'string' && !!msg.body.path)
             URL.revokeObjectURL(msg.body.path);
         });
@@ -188,23 +192,25 @@ class MessageQueueService {
 
           if (!!messages && messages.length) {
             if (queueAction === QUEUE_ACTIONS.EDIT_TEXT_MESSAGE) {
-              store.dispatch<any>(updateMessage(messages[0]));
+              store.dispatch<any>(messageUpdated(messages[0]));
             } else if (queueAction === QUEUE_ACTIONS.DELETE_MESSAGE) {
-              store.dispatch<any>(deleteMessage(messages[0], ret?.lastMessage));
+              store.dispatch<any>(
+                messageDeleted(messages[0], ret?.lastMessage),
+              );
             } else {
-              store.dispatch<any>(addMessages(messages));
+              store.dispatch<any>(newMessagesReceived(messages));
             }
           }
         } else {
           if (queueAction === QUEUE_ACTIONS.EDIT_TEXT_MESSAGE) {
             const message = toSendMsg as IEditMessageCredentials;
             store.dispatch<any>(
-              setMessageIsUpdating(message.message._id, false),
+              messageIsUpdatingChanged(message.message._id, false),
             );
           } else if (queueAction === QUEUE_ACTIONS.DELETE_MESSAGE) {
             const message = toSendMsg as IDeleteMessageCredentials;
             store.dispatch<any>(
-              setMessageIsDeleting(message.message._id, false),
+              messageIsDeletingChanged(message.message._id, false),
             );
           }
           this._onError(queuedMsgs);

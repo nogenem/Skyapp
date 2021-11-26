@@ -28,19 +28,19 @@ describe('Connected ThemeProvider', () => {
 describe('Unconnected ThemeProvider', () => {
   it('Trys to switch the theme mode to `dark`', async () => {
     const currentThemeMode = 'light' as TThemeMode;
-    const switchMode = jest.fn();
+    const themeModeSwitched = jest.fn();
 
     localStorage.setItem(LOCAL_STORAGE_THEME_MODE, 'dark');
     render(
       <UnconnectedThemeProvider
-        switchMode={switchMode}
+        themeModeSwitched={themeModeSwitched}
         themeMode={currentThemeMode}
       >
         <Children />
       </UnconnectedThemeProvider>,
     );
 
-    expect(switchMode).toHaveBeenCalledTimes(1);
-    expect(switchMode).toHaveBeenCalledWith('dark');
+    expect(themeModeSwitched).toHaveBeenCalledTimes(1);
+    expect(themeModeSwitched).toHaveBeenCalledWith('dark');
   });
 });

@@ -10,7 +10,7 @@ import {
 
 import { LOCAL_STORAGE_THEME_MODE } from '~/constants/localStorageKeys';
 import type { IAppState } from '~/redux/store';
-import { switchMode as switchModeAction } from '~/redux/theme/actions';
+import { themeModeSwitched as themeModeSwitchedAction } from '~/redux/theme/actions';
 import { getThemeMode } from '~/redux/theme/reducer';
 import type { TThemeMode } from '~/redux/theme/types';
 
@@ -18,7 +18,7 @@ const mapStateToProps = (state: IAppState) => ({
   themeMode: getThemeMode(state),
 });
 const mapDispatchToProps = {
-  switchMode: switchModeAction,
+  themeModeSwitched: themeModeSwitchedAction,
 };
 const connector = connect(mapStateToProps, mapDispatchToProps);
 type TPropsFromRedux = ConnectedProps<typeof connector>;
@@ -34,13 +34,13 @@ let prefersDarkMode = !!window.matchMedia
   : false;
 prefersDarkMode = !!prefersDarkMode ? prefersDarkMode.matches : false;
 
-const ThemeProvider = ({ children, themeMode, switchMode }: TProps) => {
+const ThemeProvider = ({ children, themeMode, themeModeSwitched }: TProps) => {
   React.useEffect(() => {
     const loadThemeMode = async () => {
       let mode = localStorage.getItem(LOCAL_STORAGE_THEME_MODE);
       if (!mode) mode = prefersDarkMode ? 'dark' : 'light';
 
-      switchMode(mode as TThemeMode);
+      themeModeSwitched(mode as TThemeMode);
     };
 
     loadThemeMode();
