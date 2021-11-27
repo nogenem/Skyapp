@@ -16,9 +16,10 @@ import {
 } from '~/redux/chat/actions';
 import {
   selectActiveChannelInfo,
+  selectActiveChannelLastMessage,
   selectChatUsers,
 } from '~/redux/chat/selectors';
-import { IChannel, IMessage } from '~/redux/chat/types';
+import { IMessage } from '~/redux/chat/types';
 import { IAppState } from '~/redux/store';
 import { selectUser } from '~/redux/user/selectors';
 
@@ -29,6 +30,7 @@ import useStyles from './useStyles';
 
 const mapStateToProps = (state: IAppState) => ({
   activeChannelInfo: selectActiveChannelInfo(state),
+  activeChannelLastMessage: selectActiveChannelLastMessage(state),
   loggedUser: selectUser(state),
   users: selectChatUsers(state),
 });
@@ -45,16 +47,17 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 type TPropsFromRedux = ConnectedProps<typeof connector>;
 
 interface OwnProps {
-  activeChannel: IChannel | undefined;
+  activeChannelId: string | undefined;
   isSmall: boolean;
 }
 
 type TProps = OwnProps & TPropsFromRedux & RouteComponentProps;
 
 const ChatContainer = ({
-  activeChannel,
+  activeChannelId,
   isSmall,
   activeChannelInfo,
+  activeChannelLastMessage,
   loggedUser,
   users,
   sendGetMessages,
@@ -74,7 +77,7 @@ const ChatContainer = ({
         enqueueSendEditTextMessage(editingMessage, message);
         setEditingMessage(undefined);
       } else {
-        enqueueSendTextMessage(activeChannel?._id as string, message);
+        enqueueSendTextMessage(activeChannelId as string, message);
       }
     } catch (err) {
       console.error(err);
@@ -83,7 +86,7 @@ const ChatContainer = ({
 
   const handleSendingFiles = (filesData: FormData) => {
     try {
-      filesData.append('channel_id', activeChannel?._id as string);
+      filesData.append('channel_id', activeChannelId as string);
       enqueueSendFileMessages(filesData);
     } catch (err) {
       console.error(err);
@@ -149,33 +152,29 @@ const ChatContainer = ({
 
   React.useEffect(() => {
     const fetchData = async () => {
-      if (!!activeChannel) {
-        await sendGetMessages({ channel_id: activeChannel._id, offset: 0 });
+      if (!!activeChannelId) {
+        await sendGetMessages({ channel_id: activeChannelId, offset: 0 });
       }
     };
 
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeChannel?._id]);
+  }, [activeChannelId]);
 
   useOnLastMessageChangeDebounced(
     (channelId: string) => {
       emitSetLastSeen(channelId);
     },
     5 * 1000,
-    activeChannel,
+    activeChannelId,
+    activeChannelLastMessage,
   );
 
-  if (!activeChannel || !activeChannelInfo) return null;
+  if (!activeChannelId || !activeChannelInfo) return null;
   return (
     <div className={classes.content}>
-      <ChatHeader
-        activeChannel={activeChannel}
-        showGoBackButton={isSmall}
-        onGoBack={onHeaderGoBack}
-      />
+      <ChatHeader showGoBackButton={isSmall} onGoBack={onHeaderGoBack} />
       <MessagesContainer
-        activeChannel={activeChannel}
         messages={activeChannelInfo.messages}
         messagesQueue={activeChannelInfo.queue}
         loggedUser={loggedUser}
@@ -185,7 +184,7 @@ const ChatContainer = ({
         onDeleteMessage={onDeleteMessage}
       />
       <ChatInput
-        channelId={activeChannel._id}
+        channelId={activeChannelId}
         editingMessage={editingMessage}
         handleSubmit={handleSubmit}
         handleSendingFiles={handleSendingFiles}
@@ -201,7 +200,8 @@ const ChatContainer = ({
 const useOnLastMessageChangeDebounced = (
   callback: (channelId: string) => void,
   delay: number,
-  activeChannel: IChannel | undefined,
+  activeChannelId: string | undefined,
+  activeChannelLastMessage: IMessage | undefined,
 ) => {
   const isVisible = useVisibility();
   const lastChannelIdRef = React.useRef<string>();
@@ -226,11 +226,11 @@ const useOnLastMessageChangeDebounced = (
 
   React.useEffect(() => {
     const lastChannelId = lastChannelIdRef.current;
-    lastChannelIdRef.current = activeChannel?._id;
+    lastChannelIdRef.current = activeChannelId;
 
-    if (!activeChannel || activeChannel._id !== lastChannelId) return;
+    if (!activeChannelId || activeChannelId !== lastChannelId) return;
 
-    const channelId = activeChannel._id;
+    const channelId = activeChannelId;
 
     if (!isVisible) {
       new Audio('/skype_message_sound.mp3').play();
@@ -240,7 +240,7 @@ const useOnLastMessageChangeDebounced = (
 
     updateTimeout(channelId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeChannel?._id, activeChannel?.lastMessage]);
+  }, [activeChannelId, activeChannelLastMessage]);
 
   React.useEffect(() => {
     if (isVisible) {
@@ -248,7 +248,7 @@ const useOnLastMessageChangeDebounced = (
         if (callbacksPendingRef.current[channelId]) {
           callbacksPendingRef.current[channelId] = false;
 
-          if (channelId === activeChannel?._id) {
+          if (channelId === activeChannelId) {
             updateTimeout(channelId);
           }
         }

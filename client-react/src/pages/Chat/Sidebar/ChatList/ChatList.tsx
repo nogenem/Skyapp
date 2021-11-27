@@ -3,17 +3,15 @@ import { useTranslation } from 'react-i18next';
 import { connect, ConnectedProps } from 'react-redux';
 
 import { Typography, List } from '@material-ui/core';
-import debounce from 'lodash.debounce';
 
-import { selectChatChannelsList } from '~/redux/chat/selectors';
-import { IChannel } from '~/redux/chat/types';
+import { selectFilteredChatChannelsIdsList } from '~/redux/chat/selectors';
 import { IAppState } from '~/redux/store';
 
 import { ChatListItem } from './ChatListItem';
 import useStyles from './useStyles';
 
-const mapStateToProps = (state: IAppState) => ({
-  channels: selectChatChannelsList(state),
+const mapStateToProps = (state: IAppState, ownProps: IOwnProps) => ({
+  channelsIds: selectFilteredChatChannelsIdsList(state, ownProps),
 });
 const mapDispatchToProps = {};
 
@@ -27,30 +25,9 @@ interface IOwnProps {
 
 type TProps = TPropsFromRedux & IOwnProps;
 
-const ChatList = ({ filter, activeChannelId, channels }: TProps) => {
-  const [filteredChannels, setFilteredChannels] = React.useState(channels);
+const ChatList = ({ filter, activeChannelId, channelsIds }: TProps) => {
   const { t: trans } = useTranslation(['Common']);
   const classes = useStyles();
-
-  const updateFilteredChannels = (filter: string, channels: IChannel[]) => {
-    if (!filter) {
-      setFilteredChannels(channels);
-    } else {
-      setFilteredChannels(
-        channels.filter(channel => channel.name.toLowerCase().includes(filter)),
-      );
-    }
-  };
-
-  const debouncedOnFilterChange = React.useCallback(
-    debounce(updateFilteredChannels, 250),
-    [],
-  );
-
-  React.useEffect(() => {
-    debouncedOnFilterChange(filter, channels);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filter, channels]);
 
   return (
     <>
@@ -58,11 +35,11 @@ const ChatList = ({ filter, activeChannelId, channels }: TProps) => {
         {trans('Common:CHATS')}
       </Typography>
       <List>
-        {filteredChannels.map(channel => (
+        {channelsIds.map(channelId => (
           <ChatListItem
-            key={channel._id}
-            channel={channel}
-            selected={activeChannelId === channel._id}
+            key={channelId}
+            channelId={channelId}
+            selected={activeChannelId === channelId}
           />
         ))}
       </List>

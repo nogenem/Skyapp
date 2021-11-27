@@ -1,5 +1,6 @@
 import React, { MouseEvent } from 'react';
 import { useTranslation } from 'react-i18next';
+import { connect, ConnectedProps } from 'react-redux';
 
 import {
   CircularProgress,
@@ -19,12 +20,9 @@ import { MESSAGE_TYPES } from '~/constants/message_types';
 import type { TMessageType } from '~/constants/message_types';
 import useObjState from '~/hooks/useObjState';
 import useScrollState, { EScrollStates } from '~/hooks/useScrollState';
-import {
-  IAttachment,
-  IChannel,
-  IMessage,
-  IOtherUsers,
-} from '~/redux/chat/types';
+import { selectActiveChannel } from '~/redux/chat/selectors';
+import { IAttachment, IMessage, IOtherUsers } from '~/redux/chat/types';
+import { IAppState } from '~/redux/store';
 import { IUser } from '~/redux/user/types';
 
 import {
@@ -52,8 +50,14 @@ const initialHoveringMsgInfo: IHoveringMsgInfo = {
   left: -1,
 };
 
+const mapStateToProps = (state: IAppState) => ({
+  activeChannel: selectActiveChannel(state),
+});
+
+const connector = connect(mapStateToProps, {});
+type TPropsFromRedux = ConnectedProps<typeof connector>;
+
 interface IOwnProps {
-  activeChannel: IChannel;
   messages: IMessage[];
   messagesQueue: IMessage[];
   loggedUser: IUser;
@@ -63,10 +67,9 @@ interface IOwnProps {
   onDeleteMessage: (messageId: string) => void;
 }
 
-type TProps = IOwnProps;
+type TProps = IOwnProps & TPropsFromRedux;
 
 const MessagesContainer = ({
-  activeChannel,
   messages,
   messagesQueue,
   loggedUser,
@@ -74,6 +77,7 @@ const MessagesContainer = ({
   onScrollTop,
   changeEditingMessage,
   onDeleteMessage,
+  activeChannel,
 }: TProps) => {
   const ref = React.useRef<HTMLDivElement>(null);
   const scrollState = useScrollState(ref.current);
@@ -179,12 +183,12 @@ const MessagesContainer = ({
     let addedOtherLastSeen: boolean = false;
     let addedNewMsgsAlert: boolean = false;
 
-    const myLastSeen = !activeChannel.is_group
-      ? activeChannel.members.find(member => member.user_id === loggedUser._id)
+    const myLastSeen = !activeChannel?.is_group
+      ? activeChannel?.members.find(member => member.user_id === loggedUser._id)
           ?.last_seen
       : undefined;
-    const otherLastSeen = !activeChannel.is_group
-      ? activeChannel.members.find(member => member.user_id !== loggedUser._id)
+    const otherLastSeen = !activeChannel?.is_group
+      ? activeChannel?.members.find(member => member.user_id !== loggedUser._id)
           ?.last_seen
       : undefined;
 
@@ -425,4 +429,5 @@ const getTime = (date: Date) => {
 };
 
 export type { TProps };
-export default MessagesContainer;
+export const UnconnectedMessagesContainer = MessagesContainer;
+export default connector(MessagesContainer);

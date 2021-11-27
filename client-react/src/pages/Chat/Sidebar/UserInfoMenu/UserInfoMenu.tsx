@@ -126,7 +126,7 @@ const UserInfoMenu = ({
 
       {menuState === MENU_STATES.MAIN && (
         <MainMenu
-          user={user}
+          userStatus={user.status}
           anchorEl={anchorEl}
           themeMode={themeMode}
           handleSignOut={handleSignOut}

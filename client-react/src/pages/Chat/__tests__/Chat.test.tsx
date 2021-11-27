@@ -23,7 +23,7 @@ describe('Unconnected ChatPage', () => {
     const { getByText } = renderWithRedux(
       <UnconnectedChatPage
         isUserEmailConfirmed={false}
-        activeChannel={undefined}
+        activeChannelId={undefined}
         loggedUserStatus={USER_STATUS.ACTIVE}
         emitUserStatusChanged={() => {}}
       />,
@@ -36,7 +36,7 @@ describe('Unconnected ChatPage', () => {
     const { queryByText } = renderWithRedux(
       <UnconnectedChatPage
         isUserEmailConfirmed
-        activeChannel={undefined}
+        activeChannelId={undefined}
         loggedUserStatus={USER_STATUS.ACTIVE}
         emitUserStatusChanged={() => {}}
       />,

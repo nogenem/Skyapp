@@ -8,6 +8,7 @@ import {
 } from '@material-ui/icons';
 
 import { TextInput, NewChatModal, NewGroupModal } from '~/components';
+import useDebounce from '~/hooks/useDebounce';
 
 import { ChatList } from './ChatList';
 import { UserInfoMenu } from './UserInfoMenu';
@@ -48,8 +49,13 @@ const Sidebar = ({
     setIsNewGroupModalOpen(false);
   };
 
-  const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFilter(e.target.value.toLowerCase());
+  const debouncedHandleFilterChange = useDebounce(
+    (value: string) => setFilter(value),
+    250,
+    [],
+  );
+  const onFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    debouncedHandleFilterChange(e.target.value.toLowerCase());
   };
 
   const extraClassName = getExtraClassName(isSmall, activeChannelId);
@@ -73,7 +79,7 @@ const Sidebar = ({
               fullWidth
               variant="outlined"
               margin="dense"
-              onChange={handleFilterChange}
+              onChange={onFilterChange}
             />
 
             <div className={classes.btnsContainer}>

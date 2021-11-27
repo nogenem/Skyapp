@@ -7,7 +7,7 @@ import { ConfirmEmailCTA } from '~/components';
 import { USER_STATUS } from '~/constants/user_status';
 import useMediaQuery from '~/hooks/useMediaQuery';
 import useVisibility from '~/hooks/useVisibility';
-import { selectActiveChannel } from '~/redux/chat/selectors';
+import { selectActiveChannelId } from '~/redux/chat/selectors';
 import { IAppState } from '~/redux/store';
 import { emitUserStatusChanged as emitUserStatusChangedAction } from '~/redux/user/actions';
 import { selectUserConfirmed, selectUserStatus } from '~/redux/user/selectors';
@@ -18,7 +18,7 @@ import useStyles from './useStyles';
 
 const mapStateToProps = (state: IAppState) => ({
   isUserEmailConfirmed: !!selectUserConfirmed(state),
-  activeChannel: selectActiveChannel(state),
+  activeChannelId: selectActiveChannelId(state),
   loggedUserStatus: selectUserStatus(state),
 });
 const mapDispatchToProps = {
@@ -31,7 +31,7 @@ type TProps = TPropsFromRedux & RouteComponentProps;
 
 const Chat = ({
   isUserEmailConfirmed,
-  activeChannel,
+  activeChannelId,
   loggedUserStatus,
   emitUserStatusChanged,
 }: TProps) => {
@@ -52,18 +52,18 @@ const Chat = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isVisible]);
 
-  const hiddenClassName = isSmall && !activeChannel ? 'hidden' : '';
+  const hiddenClassName = isSmall && !activeChannelId ? 'hidden' : '';
   return (
     <div className={classes.container}>
       <Sidebar
         isUserEmailConfirmed={isUserEmailConfirmed}
         isSmall={isSmall}
-        activeChannelId={activeChannel?._id}
+        activeChannelId={activeChannelId}
       />
       <div className={`${classes.rightContainer} ${hiddenClassName}`}>
         {!isUserEmailConfirmed && <ConfirmEmailCTA />}
         {isUserEmailConfirmed && (
-          <ChatContainer isSmall={isSmall} activeChannel={activeChannel} />
+          <ChatContainer isSmall={isSmall} activeChannelId={activeChannelId} />
         )}
       </div>
     </div>

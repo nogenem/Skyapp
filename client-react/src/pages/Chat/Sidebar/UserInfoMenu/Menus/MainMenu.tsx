@@ -23,14 +23,13 @@ import {
 
 import { UserStatusDot } from '~/components';
 import { MENU_STATES, TMenuStates } from '~/constants/chat_menu_states';
-import { USER_STATUS_2_TEXT } from '~/constants/user_status';
+import { TUserStatus, USER_STATUS_2_TEXT } from '~/constants/user_status';
 import { TThemeMode } from '~/redux/theme/types';
-import type { IUser } from '~/redux/user/types';
 
 import useStyles from './useStyles';
 
 interface IOwnProps {
-  user: IUser;
+  userStatus: TUserStatus;
   anchorEl: Element | null;
   themeMode?: TThemeMode;
   handleSignOut: () => void;
@@ -42,7 +41,7 @@ interface IOwnProps {
 type TProps = IOwnProps;
 
 const MainMenu = ({
-  user,
+  userStatus,
   anchorEl,
   themeMode,
   handleSignOut,
@@ -122,10 +121,10 @@ const MainMenu = ({
         data-testid="user_status_changer"
       >
         <ListItemIcon>
-          <UserStatusDot online status={user.status} showInvisible />
+          <UserStatusDot online status={userStatus} showInvisible />
         </ListItemIcon>
         <ListItemText
-          primary={trans(`Common:${USER_STATUS_2_TEXT[user.status]}`)}
+          primary={trans(`Common:${USER_STATUS_2_TEXT[userStatus]}`)}
         />
         <ListItemIcon classes={{ root: classes.chevronRightContainer }}>
           <ChevronRightIcon />

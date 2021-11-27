@@ -20,6 +20,16 @@ export const selectChannelFromProps = (
   { channel }: { channel: IChannel },
 ) => channel || {};
 
+export const selectFilterFromProps = (
+  state: IAppState,
+  { filter }: { filter: string },
+) => filter || '';
+
+export const selectChannelIdFromProps = (
+  state: IAppState,
+  { channelId }: { channelId: string },
+) => channelId || '';
+
 export const selectChatUsersList = createSelector(selectChat, data => {
   const users = Object.values(data.users);
   users.sort((a, b) => a.nickname.localeCompare(b.nickname));
@@ -44,6 +54,26 @@ export const selectChatChannelsList = createSelector(selectChat, data => {
   });
   return channels;
 });
+
+export const selectFilteredChatChannelsList = createSelector(
+  [selectChatChannelsList, selectFilterFromProps],
+  (channelsList, filter) => {
+    if (!filter) return channelsList;
+    return channelsList.filter(channel =>
+      channel.name.toLowerCase().includes(filter),
+    );
+  },
+);
+
+export const selectFilteredChatChannelsIdsList = createSelector(
+  selectFilteredChatChannelsList,
+  channels => channels.map(channel => channel._id),
+);
+
+export const selectChatChannelById = createSelector(
+  [selectChatChannels, selectChannelIdFromProps],
+  (channels, channelId) => channels[channelId] as IChannel | undefined,
+);
 
 export const selectChatUsersWithoutChannelList = createSelector(
   selectChat,
@@ -70,6 +100,16 @@ export const selectActiveChannel = createSelector(
     data.channels[data.activeChannelInfo?._id || ''] as IChannel | undefined,
 );
 
+export const selectActiveChannelLastMessage = createSelector(
+  selectActiveChannel,
+  activeChannel => activeChannel?.lastMessage,
+);
+
+export const selectActiveChannelIsGroup = createSelector(
+  selectActiveChannel,
+  activeChannel => activeChannel?.is_group,
+);
+
 export const selectActiveChannelMessages = createSelector(
   selectChat,
   data => data.activeChannelInfo?.messages,
@@ -86,9 +126,9 @@ export const selectActiveChannelTotalMessages = createSelector(
 );
 
 export const selectOtherUserFromChannel = createSelector(
-  [selectChat, selectChannelFromProps],
+  [selectChat, selectChatChannelById],
   (data, channel) => {
-    if (!channel.is_group) {
+    if (!!channel && !channel.is_group) {
       return data.users[channel.members[channel.other_member_idx || 0].user_id];
     }
     return undefined;

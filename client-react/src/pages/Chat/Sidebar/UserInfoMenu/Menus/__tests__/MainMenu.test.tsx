@@ -13,7 +13,7 @@ describe('MainMenu', () => {
     const user = FACTORIES.userState();
 
     const props: TProps = {
-      user,
+      userStatus: user.status,
       anchorEl: document.body,
       themeMode: 'dark',
       handleSignOut: jest.fn(),
@@ -33,7 +33,7 @@ describe('MainMenu', () => {
     const user = FACTORIES.userState();
 
     const props: TProps = {
-      user,
+      userStatus: user.status,
       anchorEl: document.body,
       themeMode: 'dark',
       handleSignOut: jest.fn(),
@@ -56,7 +56,7 @@ describe('MainMenu', () => {
     const user = FACTORIES.userState();
 
     const props: TProps = {
-      user,
+      userStatus: user.status,
       anchorEl: document.body,
       themeMode: 'dark',
       handleSignOut: jest.fn(),
@@ -79,7 +79,7 @@ describe('MainMenu', () => {
     const user = FACTORIES.userState();
 
     const props: TProps = {
-      user,
+      userStatus: user.status,
       anchorEl: document.body,
       themeMode: 'dark',
       handleSignOut: jest.fn(),

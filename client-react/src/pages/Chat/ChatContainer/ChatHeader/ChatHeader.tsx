@@ -7,20 +7,22 @@ import { ArrowBack as ArrowBackIcon } from '@material-ui/icons';
 
 import { ChatAvatar } from '~/components';
 import { USER_STATUS } from '~/constants/user_status';
-import { selectOtherUsersFromActiveChannel } from '~/redux/chat/selectors';
-import { IChannel } from '~/redux/chat/types';
+import {
+  selectActiveChannelIsGroup,
+  selectOtherUsersFromActiveChannel,
+} from '~/redux/chat/selectors';
 import { IAppState } from '~/redux/store';
 
 import useStyles from './useStyles';
 
 const mapStateToProps = (state: IAppState) => ({
+  activeChannelIsGroup: !!selectActiveChannelIsGroup(state),
   otherUsers: selectOtherUsersFromActiveChannel(state),
 });
 const connector = connect(mapStateToProps, {});
 type TPropsFromRedux = ConnectedProps<typeof connector>;
 
 interface IOwnProps {
-  activeChannel: IChannel;
   showGoBackButton: boolean;
   onGoBack: () => void;
 }
@@ -28,10 +30,10 @@ interface IOwnProps {
 type TProps = IOwnProps & TPropsFromRedux;
 
 const ChatHeader = ({
-  activeChannel,
   showGoBackButton,
   onGoBack,
   otherUsers,
+  activeChannelIsGroup,
 }: TProps) => {
   const { t: trans } = useTranslation(['Common']);
   const classes = useStyles();
@@ -56,11 +58,11 @@ const ChatHeader = ({
         </IconButton>
       )}
       <ChatAvatar
-        online={activeChannel.is_group || otherUsers[0].online}
+        online={activeChannelIsGroup || otherUsers[0].online}
         status={
-          activeChannel.is_group ? USER_STATUS.ACTIVE : otherUsers[0].status
+          activeChannelIsGroup ? USER_STATUS.ACTIVE : otherUsers[0].status
         }
-        isGroup={activeChannel.is_group}
+        isGroup={activeChannelIsGroup}
       />
       <div className={classes.textContainer}>
         <Typography
@@ -72,7 +74,7 @@ const ChatHeader = ({
         >
           {names}
         </Typography>
-        {!activeChannel.is_group && !!otherUsers[0].thoughts && (
+        {!activeChannelIsGroup && !!otherUsers[0].thoughts && (
           <Typography
             component="span"
             variant="caption"
@@ -83,7 +85,7 @@ const ChatHeader = ({
             {otherUsers[0].thoughts}
           </Typography>
         )}
-        {activeChannel.is_group && (
+        {activeChannelIsGroup && (
           <Typography
             component="span"
             variant="caption"
