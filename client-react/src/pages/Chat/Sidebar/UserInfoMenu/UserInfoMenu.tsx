@@ -10,13 +10,13 @@ import type { TMenuStates } from '~/constants/chat_menu_states';
 import type { TUserStatus } from '~/constants/user_status';
 import type { IAppState } from '~/redux/store';
 import { themeModeSwitched as themeModeSwitchedAction } from '~/redux/theme/actions';
-import { getThemeMode } from '~/redux/theme/reducer';
+import { selectThemeMode } from '~/redux/theme/selectors';
 import {
   userSignedOut as userSignedOutAction,
   sendChangeStatus as sendChangeStatusAction,
   sendChangeThoughts as sendChangeThoughtsAction,
 } from '~/redux/user/actions';
-import { getUser } from '~/redux/user/reducer';
+import { selectUser } from '~/redux/user/selectors';
 
 import {
   MainMenu,
@@ -27,8 +27,8 @@ import {
 import useStyles from './useStyles';
 
 const mapStateToProps = (state: IAppState) => ({
-  user: getUser(state),
-  themeMode: getThemeMode(state),
+  user: selectUser(state),
+  themeMode: selectThemeMode(state),
 });
 const mapDispatchToProps = {
   userSignedOut: userSignedOutAction,

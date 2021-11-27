@@ -17,7 +17,7 @@ import {
   ISendMessageCredentials,
 } from '~/redux/chat/types';
 import store from '~/redux/store';
-import { getUser } from '~/redux/user/reducer';
+import { selectUserId } from '~/redux/user/selectors';
 import { Toast } from '~/utils/Toast';
 
 import ApiService from './ApiService';
@@ -62,7 +62,7 @@ class MessageQueueService {
   }
 
   enqueue(message: TToSendMessage, queueAction: TQueueAction) {
-    const userId = getUser(store.getState())._id;
+    const userId = selectUserId(store.getState());
     const queuedMsgs = [];
     let channelId: string = '';
 

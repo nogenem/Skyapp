@@ -18,7 +18,7 @@ import debounce from 'lodash.debounce';
 import { ChatAvatar, Alert, TextInput } from '~/components';
 import useObjState from '~/hooks/useObjState';
 import { sendCreateChannelWith as sendCreateChannelWithAction } from '~/redux/chat/actions';
-import { getUsersWithoutChannelArray } from '~/redux/chat/reducer';
+import { selectChatUsersWithoutChannelList } from '~/redux/chat/selectors';
 import type { IOtherUser } from '~/redux/chat/types';
 import { IAppState } from '~/redux/store';
 import handleServerErrors, { IErrors } from '~/utils/handleServerErrors';
@@ -39,7 +39,7 @@ const initialState: TState = {
 };
 
 const mapStateToProps = (state: IAppState) => ({
-  users: getUsersWithoutChannelArray(state),
+  users: selectChatUsersWithoutChannelList(state),
 });
 const mapDispatchToProps = {
   sendCreateChannelWith: sendCreateChannelWithAction,

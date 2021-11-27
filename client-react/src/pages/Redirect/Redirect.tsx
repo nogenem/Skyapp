@@ -8,10 +8,10 @@ import {
 } from '@reach/router';
 
 import type { IAppState } from '~/redux/store';
-import { getToken } from '~/redux/user/reducer';
+import { selectUserToken } from '~/redux/user/selectors';
 
 const mapStateToProps = (state: IAppState) => ({
-  isAuthenticated: !!getToken(state),
+  isAuthenticated: !!selectUserToken(state),
 });
 const connector = connect(mapStateToProps, {});
 type TPropsFromRedux = ConnectedProps<typeof connector>;

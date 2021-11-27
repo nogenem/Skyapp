@@ -27,7 +27,7 @@ import {
   emitSetActiveChannel as emitSetActiveChannelAction,
   sendLeaveGroupChannel as sendLeaveGroupChannelAction,
 } from '~/redux/chat/actions';
-import { getOtherUserFromChannel } from '~/redux/chat/reducer';
+import { selectOtherUserFromChannel } from '~/redux/chat/selectors';
 import type { IAttachment, IChannel, IMessage } from '~/redux/chat/types';
 import type { IAppState } from '~/redux/store';
 import handleServerErrors, { IErrors } from '~/utils/handleServerErrors';
@@ -48,7 +48,7 @@ const initialState: TState = {
 };
 
 const mapStateToProps = (state: IAppState, props: IOwnProps) => ({
-  otherUser: getOtherUserFromChannel(state, props),
+  otherUser: selectOtherUserFromChannel(state, props),
 });
 const mapDispatchToProps = {
   emitSetActiveChannel: emitSetActiveChannelAction,

@@ -11,11 +11,11 @@ import {
 import { LOCAL_STORAGE_THEME_MODE } from '~/constants/localStorageKeys';
 import type { IAppState } from '~/redux/store';
 import { themeModeSwitched as themeModeSwitchedAction } from '~/redux/theme/actions';
-import { getThemeMode } from '~/redux/theme/reducer';
+import { selectThemeMode } from '~/redux/theme/selectors';
 import type { TThemeMode } from '~/redux/theme/types';
 
 const mapStateToProps = (state: IAppState) => ({
-  themeMode: getThemeMode(state),
+  themeMode: selectThemeMode(state),
 });
 const mapDispatchToProps = {
   themeModeSwitched: themeModeSwitchedAction,

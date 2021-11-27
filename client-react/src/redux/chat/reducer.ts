@@ -1,11 +1,8 @@
 import produce from 'immer';
-import { createSelector } from 'reselect';
 
-import type { IAppState } from '../store';
-import { getId as getLoggedUserId } from '../user/reducer';
 import { EUserActions } from '../user/types';
 import type { TUserAction } from '../user/types';
-import { EChatActions, IOtherUser } from './types';
+import { EChatActions, IMessage } from './types';
 import type { TChatAction, TChatState, IChannel, IChannels } from './types';
 
 export const initialState: TChatState = {
@@ -88,12 +85,7 @@ const chat = (
         const { messages, totalMessages, atTop } = action.payload;
         const channelId = !!messages.length ? messages[0].channel_id : '';
 
-        for (let i = 0; i < messages.length; i++) {
-          if (!(messages[i].createdAt instanceof Date))
-            messages[i].createdAt = new Date(messages[i].createdAt);
-          if (!(messages[i].updatedAt instanceof Date))
-            messages[i].updatedAt = new Date(messages[i].updatedAt);
-        }
+        wrapMessagesDates(messages);
 
         if (!!channelId) {
           if (
@@ -178,10 +170,7 @@ const chat = (
       }
       case EChatActions.MESSAGE_UPDATED: {
         const newMessage = { ...action.payload };
-        if (!(newMessage.createdAt instanceof Date))
-          newMessage.createdAt = new Date(newMessage.createdAt);
-        if (!(newMessage.updatedAt instanceof Date))
-          newMessage.updatedAt = new Date(newMessage.updatedAt);
+        wrapMessageDates(newMessage);
 
         if (draft.activeChannelInfo) {
           for (let i = 0; i < draft.activeChannelInfo.messages.length; i++) {
@@ -223,10 +212,7 @@ const chat = (
 
         let lastMessage = action.payload.lastMessage;
         if (!!lastMessage) {
-          if (!(lastMessage.createdAt instanceof Date))
-            lastMessage.createdAt = new Date(lastMessage.createdAt);
-          if (!(lastMessage.updatedAt instanceof Date))
-            lastMessage.updatedAt = new Date(lastMessage.updatedAt);
+          wrapMessageDates(lastMessage);
         }
         draft.channels[action.payload.message.channel_id].lastMessage =
           lastMessage;
@@ -239,111 +225,40 @@ const chat = (
   });
 
 const wrapChannelsDates = (channels: IChannels) => {
-  const ret = {} as IChannels;
-
-  Object.entries(channels).forEach(([id, channel]) => {
+  Object.values(channels).forEach(channel => {
     wrapChannelDates(channel);
-    ret[id] = channel;
   });
 
-  return ret;
+  return channels;
 };
 
 const wrapChannelDates = (channel: IChannel) => {
   if (channel.lastMessage) {
-    channel.lastMessage.createdAt = new Date(channel.lastMessage.createdAt);
-    channel.lastMessage.updatedAt = new Date(channel.lastMessage.updatedAt);
+    wrapMessageDates(channel.lastMessage);
   }
+
   channel.members.forEach(member => {
     member.last_seen = new Date(member.last_seen);
   });
+
   return channel;
 };
 
-// SELECTORS
-export const getChat = (state: IAppState) => state.chat || initialState;
-export const getUsers = createSelector(getChat, data => data.users);
-export const getChannels = createSelector(getChat, data => data.channels);
-export const getChannelFromProps = (
-  state: IAppState,
-  { channel }: { channel: IChannel },
-) => channel || {};
-
-export const getUsersArray = createSelector(getChat, data => {
-  const users = Object.values(data.users);
-  users.sort((a, b) => a.nickname.localeCompare(b.nickname));
-  return users;
-});
-export const getChannelsList = createSelector(getChat, data => {
-  const channels = Object.values(data.channels);
-  channels.sort((a, b) => a.name.localeCompare(b.name));
-  channels.sort((a, b) => {
-    if (!!a.lastMessage && !!b.lastMessage) {
-      return (
-        b.lastMessage.updatedAt.getTime() - a.lastMessage.updatedAt.getTime()
-      );
-    } else if (!!a.lastMessage && !b.lastMessage) {
-      return -1;
-    } else if (!!b.lastMessage && !a.lastMessage) {
-      return 1;
-    } else {
-      return 0;
-    }
+const wrapMessagesDates = (messages: IMessage[]) => {
+  messages.forEach(message => {
+    wrapMessageDates(message);
   });
-  return channels;
-});
-export const getUsersWithoutChannelArray = createSelector(getChat, data => {
-  const users = Object.values(data.users).filter(user => !user.channel_id);
-  users.sort((a, b) => a.nickname.localeCompare(b.nickname));
-  return users;
-});
-export const getActiveChannelInfo = createSelector(
-  getChat,
-  data => data.activeChannelInfo,
-);
-export const getActiveChannelId = createSelector(
-  getChat,
-  data => data.activeChannelInfo?._id,
-);
-export const getActiveChannel = createSelector(
-  getChat,
-  data =>
-    data.channels[data.activeChannelInfo?._id || ''] as IChannel | undefined,
-);
-export const getActiveChannelMessages = createSelector(
-  getChat,
-  data => data.activeChannelInfo?.messages,
-);
-export const getMessagesQueue = createSelector(
-  getChat,
-  data => data.activeChannelInfo?.queue,
-);
-export const getActiveChannelTotalMessages = createSelector(
-  getChat,
-  data => data.activeChannelInfo?.totalMessages,
-);
-export const getOtherUserFromChannel = createSelector(
-  [getChat, getChannelFromProps],
-  (data, channel) => {
-    if (!channel.is_group) {
-      return data.users[channel.members[channel.other_member_idx || 0].user_id];
-    }
-    return undefined;
-  },
-);
-export const getOtherUsersFromActiveChannel = createSelector(
-  [getChat, getActiveChannel, getLoggedUserId],
-  (data, channel, loggedUserId) => {
-    const users: IOtherUser[] = [];
-    if (channel) {
-      channel.members.forEach(member => {
-        if (member.user_id !== loggedUserId) {
-          users.push(data.users[member.user_id]);
-        }
-      });
-    }
-    return users;
-  },
-);
+
+  return messages;
+};
+
+const wrapMessageDates = (message: IMessage) => {
+  if (!(message.createdAt instanceof Date))
+    message.createdAt = new Date(message.createdAt);
+  if (!(message.updatedAt instanceof Date))
+    message.updatedAt = new Date(message.updatedAt);
+
+  return message;
+};
 
 export default chat;

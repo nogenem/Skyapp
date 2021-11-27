@@ -7,19 +7,19 @@ import { ConfirmEmailCTA } from '~/components';
 import { USER_STATUS } from '~/constants/user_status';
 import useMediaQuery from '~/hooks/useMediaQuery';
 import useVisibility from '~/hooks/useVisibility';
-import { getActiveChannel } from '~/redux/chat/reducer';
+import { selectActiveChannel } from '~/redux/chat/selectors';
 import { IAppState } from '~/redux/store';
 import { emitUserStatusChanged as emitUserStatusChangedAction } from '~/redux/user/actions';
-import { getConfirmed, getStatus } from '~/redux/user/reducer';
+import { selectUserConfirmed, selectUserStatus } from '~/redux/user/selectors';
 
 import { ChatContainer } from './ChatContainer';
 import { Sidebar } from './Sidebar';
 import useStyles from './useStyles';
 
 const mapStateToProps = (state: IAppState) => ({
-  isUserEmailConfirmed: !!getConfirmed(state),
-  activeChannel: getActiveChannel(state),
-  loggedUserStatus: getStatus(state),
+  isUserEmailConfirmed: !!selectUserConfirmed(state),
+  activeChannel: selectActiveChannel(state),
+  loggedUserStatus: selectUserStatus(state),
 });
 const mapDispatchToProps = {
   emitUserStatusChanged: emitUserStatusChangedAction,

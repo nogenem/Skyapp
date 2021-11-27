@@ -7,14 +7,14 @@ import { ArrowBack as ArrowBackIcon } from '@material-ui/icons';
 
 import { ChatAvatar } from '~/components';
 import { USER_STATUS } from '~/constants/user_status';
-import { getOtherUsersFromActiveChannel } from '~/redux/chat/reducer';
+import { selectOtherUsersFromActiveChannel } from '~/redux/chat/selectors';
 import { IChannel } from '~/redux/chat/types';
 import { IAppState } from '~/redux/store';
 
 import useStyles from './useStyles';
 
 const mapStateToProps = (state: IAppState) => ({
-  otherUsers: getOtherUsersFromActiveChannel(state),
+  otherUsers: selectOtherUsersFromActiveChannel(state),
 });
 const connector = connect(mapStateToProps, {});
 type TPropsFromRedux = ConnectedProps<typeof connector>;

@@ -1,8 +1,5 @@
-import { createSelector } from 'reselect';
-
 import { USER_STATUS } from '~/constants/user_status';
 
-import type { IAppState } from '../store';
 import { EUserActions } from './types';
 import type { TUserAction, TUserState } from './types';
 
@@ -36,27 +33,5 @@ const user = (state = initialState, action: TUserAction): TUserState => {
       return state;
   }
 };
-
-// SELECTORS
-export const getUser = (state: IAppState) => state.user || initialState;
-
-export const getId = createSelector(getUser, userData => userData._id || '');
-export const getToken = createSelector(
-  getUser,
-  userData => userData.token || '',
-);
-export const getConfirmed = createSelector(
-  getUser,
-  userData => !!userData.confirmed,
-);
-export const getNickname = createSelector(
-  getUser,
-  userData => userData.nickname || '',
-);
-export const getStatus = createSelector(getUser, userData => userData.status);
-export const getThoughts = createSelector(
-  getUser,
-  userData => userData.thoughts || '',
-);
 
 export default user;

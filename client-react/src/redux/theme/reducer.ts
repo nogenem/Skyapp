@@ -1,6 +1,3 @@
-import { createSelector } from 'reselect';
-
-import type { IAppState } from '../store';
 import { EThemeActions } from './types';
 import type { TThemeAction, TThemeState } from './types';
 
@@ -19,12 +16,5 @@ const theme = (state = initialState, action: TThemeAction): TThemeState => {
       return state;
   }
 };
-
-// SELECTORS
-export const getTheme = (state: IAppState) => state.theme || initialState;
-export const getThemeMode = createSelector(
-  getTheme,
-  themeData => themeData.mode,
-);
 
 export default theme;

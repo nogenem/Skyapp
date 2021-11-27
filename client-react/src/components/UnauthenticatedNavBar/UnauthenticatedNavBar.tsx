@@ -23,14 +23,14 @@ import {
 import { SUPPORTED_LANGUAGES } from '~/i18n';
 import type { IAppState } from '~/redux/store';
 import { themeModeSwitched as themeModeSwitchedAction } from '~/redux/theme/actions';
-import { getThemeMode } from '~/redux/theme/reducer';
-import { getToken } from '~/redux/user/reducer';
+import { selectThemeMode } from '~/redux/theme/selectors';
+import { selectUserToken } from '~/redux/user/selectors';
 
 import useStyles from './useStyles';
 
 const mapStateToProps = (state: IAppState) => ({
-  isAuthenticated: !!getToken(state),
-  theme: getThemeMode(state),
+  isAuthenticated: !!selectUserToken(state),
+  theme: selectThemeMode(state),
 });
 const mapDispatchToProps = {
   themeModeSwitched: themeModeSwitchedAction,

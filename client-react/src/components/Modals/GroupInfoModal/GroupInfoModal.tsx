@@ -15,10 +15,10 @@ import { IErrors } from '~/components/Form';
 import { CANT_BE_BLANK, NEED_ATLEAST_2_MEMBERS } from '~/constants/errors';
 import useObjState from '~/hooks/useObjState';
 import { sendUpdateGroupChannel as sendUpdateGroupChannelAction } from '~/redux/chat/actions';
-import { getUsersArray } from '~/redux/chat/reducer';
+import { selectChatUsersList } from '~/redux/chat/selectors';
 import { IChannel, IUpdateGroupCredentials } from '~/redux/chat/types';
 import { IAppState } from '~/redux/store';
-import { getId } from '~/redux/user/reducer';
+import { selectUserId } from '~/redux/user/selectors';
 import handleServerErrors from '~/utils/handleServerErrors';
 
 import { Form } from './Form';
@@ -41,8 +41,8 @@ const initialState: TState = {
 };
 
 const mapStateToProps = (state: IAppState) => ({
-  users: getUsersArray(state),
-  loggedUserId: getId(state),
+  users: selectChatUsersList(state),
+  loggedUserId: selectUserId(state),
 });
 const mapDispatchToProps = {
   sendUpdateGroupChannel: sendUpdateGroupChannelAction,

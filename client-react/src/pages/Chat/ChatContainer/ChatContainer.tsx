@@ -14,10 +14,13 @@ import {
   enqueueSendEditTextMessage as enqueueSendEditTextMessageAction,
   enqueueSendDeleteMessage as enqueueSendDeleteMessageAction,
 } from '~/redux/chat/actions';
-import { getActiveChannelInfo, getUsers } from '~/redux/chat/reducer';
+import {
+  selectActiveChannelInfo,
+  selectChatUsers,
+} from '~/redux/chat/selectors';
 import { IChannel, IMessage } from '~/redux/chat/types';
 import { IAppState } from '~/redux/store';
-import { getUser } from '~/redux/user/reducer';
+import { selectUser } from '~/redux/user/selectors';
 
 import { ChatHeader } from './ChatHeader';
 import { ChatInput } from './ChatInput';
@@ -25,9 +28,9 @@ import { MessagesContainer } from './MessagesContainer';
 import useStyles from './useStyles';
 
 const mapStateToProps = (state: IAppState) => ({
-  activeChannelInfo: getActiveChannelInfo(state),
-  loggedUser: getUser(state),
-  users: getUsers(state),
+  activeChannelInfo: selectActiveChannelInfo(state),
+  loggedUser: selectUser(state),
+  users: selectChatUsers(state),
 });
 const mapDispatchToProps = {
   sendGetMessages: sendGetMessagesAction,

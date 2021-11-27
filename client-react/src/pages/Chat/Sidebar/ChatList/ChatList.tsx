@@ -5,7 +5,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { Typography, List } from '@material-ui/core';
 import debounce from 'lodash.debounce';
 
-import { getChannelsList } from '~/redux/chat/reducer';
+import { selectChatChannelsList } from '~/redux/chat/selectors';
 import { IChannel } from '~/redux/chat/types';
 import { IAppState } from '~/redux/store';
 
@@ -13,7 +13,7 @@ import { ChatListItem } from './ChatListItem';
 import useStyles from './useStyles';
 
 const mapStateToProps = (state: IAppState) => ({
-  channels: getChannelsList(state),
+  channels: selectChatChannelsList(state),
 });
 const mapDispatchToProps = {};
 
