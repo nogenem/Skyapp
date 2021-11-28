@@ -149,27 +149,30 @@ const ChatListItem = ({
   }, [channel.lastMessage]);
 
   return (
-    <ListItem button selected={selected} onClick={handleListClick}>
-      <div className={classes.avatarContainer}>
-        <ChatAvatar
-          online={otherUser === undefined || !!otherUser?.online}
-          status={otherUser?.status || USER_STATUS.ACTIVE}
-          isGroup={channel.is_group}
-        />
-      </div>
-      <ListItemText
-        primary={
-          <PrimaryText name={channel.name} lastMessage={channel.lastMessage} />
-        }
-        secondary={
-          <SecondaryText
-            lastMessage={channel.lastMessage}
-            unreadMsgs={channel.unread_msgs}
+    <>
+      <ListItem button selected={selected} onClick={handleListClick}>
+        <div className={classes.avatarContainer}>
+          <ChatAvatar
+            online={otherUser === undefined || !!otherUser?.online}
+            status={otherUser?.status || USER_STATUS.ACTIVE}
+            isGroup={channel.is_group}
           />
-        }
-      />
-      {channel.is_group && (
-        <>
+        </div>
+        <ListItemText
+          primary={
+            <PrimaryText
+              name={channel.name}
+              lastMessage={channel.lastMessage}
+            />
+          }
+          secondary={
+            <SecondaryText
+              lastMessage={channel.lastMessage}
+              unreadMsgs={channel.unread_msgs}
+            />
+          }
+        />
+        {channel.is_group && (
           <Menu
             id={`cli-menu-${channel._id}`}
             anchorEl={anchorEl}
@@ -185,6 +188,23 @@ const ChatListItem = ({
               {trans('Common:Leave')}
             </MenuItem>
           </Menu>
+        )}
+        {channel.is_group && (
+          <ListItemSecondaryAction>
+            <IconButton
+              edge="end"
+              aria-label="options"
+              aria-controls={`cli-menu-${channel._id}`}
+              aria-haspopup="true"
+              onClick={handleOptionsClick}
+            >
+              <MoreVertIcon />
+            </IconButton>
+          </ListItemSecondaryAction>
+        )}
+      </ListItem>
+      {channel.is_group && (
+        <>
           <GroupInfoModal
             isOpen={state.isGroupInfoModalOpen}
             onClose={onGroupInfoModalClose}
@@ -199,20 +219,7 @@ const ChatListItem = ({
           />
         </>
       )}
-      {channel.is_group && (
-        <ListItemSecondaryAction>
-          <IconButton
-            edge="end"
-            aria-label="options"
-            aria-controls={`cli-menu-${channel._id}`}
-            aria-haspopup="true"
-            onClick={handleOptionsClick}
-          >
-            <MoreVertIcon />
-          </IconButton>
-        </ListItemSecondaryAction>
-      )}
-    </ListItem>
+    </>
   );
 };
 
