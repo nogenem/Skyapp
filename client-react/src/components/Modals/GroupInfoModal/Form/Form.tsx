@@ -11,10 +11,10 @@ import {
   Tooltip,
   IconButton,
 } from '@material-ui/core';
-import debounce from 'lodash.debounce';
 
 import { Alert, ChatAvatar, TextInput } from '~/components';
 import type { IErrors } from '~/components/Form';
+import useDebounce from '~/hooks/useDebounce';
 import useObjState from '~/hooks/useObjState';
 import { IOtherUser } from '~/redux/chat/types';
 
@@ -64,27 +64,25 @@ const Form = ({
     ...initialState,
     filteredUsers: users,
   });
-  const isMounted = React.useRef(false);
   const { t: trans } = useTranslation(['Common', 'Messages']);
   const classes = useStyles();
 
   const updateFilteredUsers = (filter: string, users: IOtherUser[]) => {
-    if (isMounted.current) {
-      if (!filter) {
-        setState({ filteredUsers: users });
-      } else {
-        const toSeach = filter.toLowerCase();
-        setState({
-          filteredUsers: users.filter(user =>
-            user.nickname.toLowerCase().includes(toSeach),
-          ),
-        });
-      }
+    if (!filter) {
+      setState({ filteredUsers: users });
+    } else {
+      const toSeach = filter.toLowerCase();
+      setState({
+        filteredUsers: users.filter(user =>
+          user.nickname.toLowerCase().includes(toSeach),
+        ),
+      });
     }
   };
 
-  const debouncedUpdateFilteredUsers = React.useCallback(
-    debounce(updateFilteredUsers, 250),
+  const debouncedUpdateFilteredUsers = useDebounce(
+    updateFilteredUsers,
+    250,
     [],
   );
 
@@ -136,14 +134,6 @@ const Form = ({
         disabled={!isLoggedUserAdmin}
       />
     ));
-
-  React.useEffect(() => {
-    isMounted.current = true;
-    return () => {
-      isMounted.current = false;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   React.useEffect(() => {
     debouncedUpdateFilteredUsers(state.filter, users);

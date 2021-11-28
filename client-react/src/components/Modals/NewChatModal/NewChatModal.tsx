@@ -13,9 +13,9 @@ import {
   ListItemText,
 } from '@material-ui/core';
 import { AxiosError } from 'axios';
-import debounce from 'lodash.debounce';
 
 import { ChatAvatar, Alert, TextInput } from '~/components';
+import useDebounce from '~/hooks/useDebounce';
 import useObjState from '~/hooks/useObjState';
 import { sendCreateChannelWith as sendCreateChannelWithAction } from '~/redux/chat/actions';
 import { selectChatUsersWithoutChannelList } from '~/redux/chat/selectors';
@@ -64,31 +64,25 @@ const NewChatModal = ({
     ...initialState,
     filteredUsers: users,
   });
-  const isMounted = React.useRef(false);
   const { t: trans } = useTranslation(['Common', 'Messages']);
   const classes = useStyles();
 
   const updateFilteredUsers = (search: string, users: IOtherUser[]) => {
-    if (isMounted.current) {
-      if (!search) {
-        setState({ filteredUsers: users });
-      } else {
-        const toSeach = search.toLowerCase();
-        setState({
-          filteredUsers: users.filter(
-            user =>
-              user.nickname.toLowerCase().includes(toSeach) ||
-              user.thoughts.toLowerCase().includes(toSeach),
-          ),
-        });
-      }
+    if (!search) {
+      setState({ filteredUsers: users });
+    } else {
+      const toSeach = search.toLowerCase();
+      setState({
+        filteredUsers: users.filter(
+          user =>
+            user.nickname.toLowerCase().includes(toSeach) ||
+            user.thoughts.toLowerCase().includes(toSeach),
+        ),
+      });
     }
   };
 
-  const debouncedOnSearchChange = React.useCallback(
-    debounce(updateFilteredUsers, 250),
-    [],
-  );
+  const debouncedOnSearchChange = useDebounce(updateFilteredUsers, 250, []);
 
   const onSearchChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
     setState({ search: evt.target.value });
@@ -102,14 +96,6 @@ const NewChatModal = ({
       setState({ errors: handleServerErrors(err as AxiosError) });
     }
   };
-
-  React.useEffect(() => {
-    isMounted.current = true;
-    return () => {
-      isMounted.current = false;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   React.useEffect(() => {
     debouncedOnSearchChange(state.search, users);
