@@ -113,6 +113,7 @@ export default {
 
       const channel = await Channel.findOne({
         $and: [
+          { is_group: false },
           { 'members.user_id': currentUser._id },
           { 'members.user_id': user._id },
         ],
