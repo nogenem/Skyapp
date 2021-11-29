@@ -31,7 +31,7 @@ const chat = (
         }
         return draft;
       }
-      case EChatActions.CHANNEL_UPDATED: {
+      case EChatActions.CHANNEL_CREATED_OR_UPDATED: {
         draft.channels[action.payload._id] = wrapChannelDates(action.payload);
         if (!action.payload.is_group) {
           const otherMemberIdx = action.payload.other_member_idx as number;

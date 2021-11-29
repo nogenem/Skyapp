@@ -37,8 +37,8 @@ const userOnlineStatusChanged = (_id: string, value: boolean) => ({
   },
 });
 
-const channelUpdated = (channel: IChannel) => ({
-  type: EChatActions.CHANNEL_UPDATED,
+const channelCreatedOrUpdated = (channel: IChannel) => ({
+  type: EChatActions.CHANNEL_CREATED_OR_UPDATED,
   payload: channel,
 });
 
@@ -161,13 +161,13 @@ export const userSignedIn = (user: IUser) => (dispatch: Dispatch) => {
     instance.socket!.on(
       SOCKET_EVENTS.IO_PRIVATE_CHANNEL_CREATED,
       (channel: IChannel) => {
-        dispatch(channelUpdated(channel));
+        dispatch(channelCreatedOrUpdated(channel));
       },
     );
     instance.socket!.on(
       SOCKET_EVENTS.IO_GROUP_CHANNEL_CREATED,
       (channel: IChannel) => {
-        dispatch(channelUpdated(channel));
+        dispatch(channelCreatedOrUpdated(channel));
       },
     );
     instance.socket!.on(
@@ -179,7 +179,7 @@ export const userSignedIn = (user: IUser) => (dispatch: Dispatch) => {
     instance.socket!.on(
       SOCKET_EVENTS.IO_GROUP_CHANNEL_UPDATED,
       (channel: IChannel) => {
-        dispatch(channelUpdated(channel));
+        dispatch(channelCreatedOrUpdated(channel));
       },
     );
     instance.socket!.on(
