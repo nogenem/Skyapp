@@ -12,13 +12,22 @@ exports[`UserStatusDot renders all status correctly 1`] = `
 exports[`UserStatusDot renders all status correctly 2`] = `
 <div>
   <span
+    class="makeStyles-dot-1 makeStyles-dot_away-3 "
+    title="Common:Away"
+  />
+</div>
+`;
+
+exports[`UserStatusDot renders all status correctly 3`] = `
+<div>
+  <span
     class="makeStyles-dot-1 makeStyles-dot_active-2 "
     title="Common:Active"
   />
 </div>
 `;
 
-exports[`UserStatusDot renders all status correctly 3`] = `
+exports[`UserStatusDot renders all status correctly 4`] = `
 <div>
   <span
     class="makeStyles-dot-1 makeStyles-dot_away-3 "
@@ -27,7 +36,7 @@ exports[`UserStatusDot renders all status correctly 3`] = `
 </div>
 `;
 
-exports[`UserStatusDot renders all status correctly 4`] = `
+exports[`UserStatusDot renders all status correctly 5`] = `
 <div>
   <span
     class="makeStyles-dot-1 makeStyles-dot_do_not_disturb-4 "
@@ -36,7 +45,7 @@ exports[`UserStatusDot renders all status correctly 4`] = `
 </div>
 `;
 
-exports[`UserStatusDot renders all status correctly 5`] = `
+exports[`UserStatusDot renders all status correctly 6`] = `
 <div>
   <span
     class="makeStyles-dot-1 makeStyles-dot_invisible-5 "
