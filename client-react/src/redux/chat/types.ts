@@ -223,5 +223,6 @@ export type {
   ISendMessageCredentials,
   IEditMessageCredentials,
   IDeleteMessageCredentials,
+  IActiveChannelInfo,
 };
 export { EChatActions };
