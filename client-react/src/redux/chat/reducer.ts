@@ -238,7 +238,8 @@ const wrapChannelDates = (channel: IChannel) => {
   }
 
   channel.members.forEach(member => {
-    member.last_seen = new Date(member.last_seen);
+    if (!(member.last_seen instanceof Date))
+      member.last_seen = new Date(member.last_seen);
   });
 
   return channel;
