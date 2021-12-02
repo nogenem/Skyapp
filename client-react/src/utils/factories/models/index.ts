@@ -1,3 +1,4 @@
+export { default as activeChannelInfo } from './activeChannelInfo';
 export { default as attachment } from './attachment';
 export { default as channel } from './channel';
 export { default as member } from './member';
