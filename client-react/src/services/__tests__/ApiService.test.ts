@@ -11,6 +11,7 @@ import type {
   IChangeStatusCredentials,
   IChangeThoughtsCredentials,
 } from '~/redux/user/types';
+import FACTORIES from '~/utils/factories';
 
 import ApiService, { axiosInstance, END_POINTS } from '../ApiService';
 
@@ -195,13 +196,7 @@ describe('ApiService', () => {
     it('.createChannelWith', async () => {
       expect.assertions(2);
 
-      const otherUser: IOtherUser = {
-        _id: '123456',
-        nickname: 'Test',
-        thoughts: '',
-        status: USER_STATUS.ACTIVE,
-        online: true,
-      };
+      const otherUser: IOtherUser = FACTORIES.models.otherUser();
       const expectedRet = { message: 'success' };
       adapter.onPost(END_POINTS.chat.createChannelWith).reply(configs => {
         // axios-mock-adapter uses stringify on the data ;/

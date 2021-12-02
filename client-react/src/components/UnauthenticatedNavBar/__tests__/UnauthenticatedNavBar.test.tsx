@@ -4,7 +4,8 @@ import { render, fireEvent } from '@testing-library/react';
 
 import { TThemeMode } from '~/redux/theme/types';
 import { TUserState } from '~/redux/user/types';
-import { FACTORIES, getRenderWithRedux } from '~/utils/testUtils';
+import FACTORIES from '~/utils/factories';
+import { getRenderWithRedux } from '~/utils/testUtils';
 
 import {
   UnauthenticatedNavBar,
@@ -21,7 +22,7 @@ describe('UnauthenticatedNavBar', () => {
   });
 
   it('renders nothing when `isAuthenticated` is true', () => {
-    const initialUser: TUserState = FACTORIES.userState();
+    const initialUser: TUserState = FACTORIES.states.user();
     const initialState = { user: initialUser };
 
     const { queryByText } = renderWithRedux(

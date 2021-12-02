@@ -2,14 +2,14 @@ import { Socket } from 'socket.io-client';
 
 import { MESSAGE_TYPES } from '~/constants/message_types';
 import * as SOCKET_EVENTS from '~/constants/socket_events';
-import { USER_STATUS } from '~/constants/user_status';
-import { TUserState } from '~/redux/user/types';
+import type { IUser } from '~/redux/user/types';
 import ApiService from '~/services/ApiService';
 import IoService from '~/services/IoService';
 import MessageQueueService, {
   QUEUE_ACTIONS,
 } from '~/services/MessageQueueService';
-import { setupFakeSocket, getMockStore, FACTORIES } from '~/utils/testUtils';
+import FACTORIES from '~/utils/factories';
+import { setupFakeSocket, getMockStore } from '~/utils/testUtils';
 
 import {
   emitSetActiveChannel,
@@ -59,7 +59,7 @@ describe('chat actions', () => {
   });
 
   it('userSignedIn', async () => {
-    const user: TUserState = FACTORIES.userState();
+    const user: IUser = FACTORIES.models.user();
 
     const store = mockStore({});
 
@@ -81,13 +81,7 @@ describe('chat actions', () => {
 
   it('sendCreateChannelWith', async () => {
     const channelId = '1';
-    const user: IOtherUser = {
-      _id: '1',
-      nickname: 'Test 1',
-      thoughts: '',
-      status: USER_STATUS.ACTIVE,
-      online: true,
-    };
+    const user: IOtherUser = FACTORIES.models.otherUser();
     const apiResponse = { channel_id: channelId };
 
     const expectedActions = [
@@ -261,14 +255,10 @@ describe('chat actions', () => {
   });
 
   it('enqueueSendEditTextMessage', async () => {
-    const message: IMessage = {
-      _id: '1',
-      channel_id: '1',
+    const message: IMessage = FACTORIES.models.message({
       body: 'Test Message',
-      createdAt: new Date(),
-      updatedAt: new Date(),
       type: MESSAGE_TYPES.TEXT,
-    };
+    });
     const newBody = 'New Test Message';
 
     const expectedCredentials: IEditMessageCredentials = {
@@ -288,14 +278,7 @@ describe('chat actions', () => {
   });
 
   it('enqueueSendDeleteMessage', async () => {
-    const message: IMessage = {
-      _id: '1',
-      channel_id: '1',
-      body: 'Test Message',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      type: MESSAGE_TYPES.TEXT,
-    };
+    const message: IMessage = FACTORIES.models.message();
 
     const expectedCredentials: IDeleteMessageCredentials = {
       message,

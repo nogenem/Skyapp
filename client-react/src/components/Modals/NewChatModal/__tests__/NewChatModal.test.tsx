@@ -4,6 +4,8 @@ import { fireEvent, waitFor } from '@testing-library/react';
 
 import { USER_STATUS } from '~/constants/user_status';
 import { IOtherUser } from '~/redux/chat/types';
+import { IAppState } from '~/redux/store';
+import FACTORIES from '~/utils/factories';
 import { getRenderWithRedux } from '~/utils/testUtils';
 
 import {
@@ -15,23 +17,22 @@ const renderWithRedux = getRenderWithRedux();
 
 describe('Connected NewChatModal', () => {
   it('renders correctly', () => {
-    const otherUser: IOtherUser = {
-      _id: '123456',
+    const otherUser: IOtherUser = FACTORIES.models.otherUser({
       nickname: 'Test',
       thoughts: '',
       status: USER_STATUS.ACTIVE,
       online: true,
+      channel_id: undefined,
+    });
+    const initialState: Partial<IAppState> = {
+      chat: FACTORIES.states.chat({
+        users: { [otherUser._id]: otherUser },
+      }),
     };
+
     const { getByRole } = renderWithRedux(
       <ConnectedNewChatModal isOpen onClose={() => {}} />,
-      {
-        chat: {
-          users: {
-            [otherUser._id]: otherUser,
-          },
-          channels: {},
-        },
-      },
+      initialState,
     );
 
     expect(getByRole('presentation')).toMatchSnapshot();
@@ -40,13 +41,7 @@ describe('Connected NewChatModal', () => {
 
 describe('Unconnected NewChatModal', () => {
   it('handles start chatting with other people', async () => {
-    const otherUser: IOtherUser = {
-      _id: '123456',
-      nickname: 'Test',
-      thoughts: '',
-      status: USER_STATUS.ACTIVE,
-      online: true,
-    };
+    const otherUser: IOtherUser = FACTORIES.models.otherUser();
     const users = [otherUser];
     const onClose = jest.fn(() => {});
     const sendCreateChannelWith = jest.fn(() => Promise.resolve());
@@ -66,7 +61,6 @@ describe('Unconnected NewChatModal', () => {
 
     await waitFor(() => expect(onClose).toHaveBeenCalled());
 
-    expect(sendCreateChannelWith).toHaveBeenCalled();
-    expect(onClose).toHaveBeenCalled();
+    expect(sendCreateChannelWith).toHaveBeenCalledWith(otherUser);
   });
 });

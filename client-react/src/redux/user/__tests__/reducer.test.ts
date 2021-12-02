@@ -1,20 +1,20 @@
 import { USER_STATUS } from '~/constants/user_status';
-import { FACTORIES } from '~/utils/testUtils';
+import FACTORIES from '~/utils/factories';
 
 import userReducer, { initialState } from '../reducer';
-import { EUserActions } from '../types';
+import { EUserActions, IUser } from '../types';
 import type { TUserAction, TUserState } from '../types';
 
 describe('user reducer', () => {
   it('should handle SIGNED_IN', () => {
-    const user: TUserState = FACTORIES.userState();
+    const user: IUser = FACTORIES.models.user();
     const action: TUserAction = { type: EUserActions.SIGNED_IN, payload: user };
 
     expect(userReducer(undefined, action)).toEqual(action.payload);
   });
 
   it('should handle SIGNED_OUT', () => {
-    const user: TUserState = FACTORIES.userState();
+    const user: TUserState = FACTORIES.models.user();
     const action: TUserAction = {
       type: EUserActions.SIGNED_OUT,
       payload: null,
@@ -24,7 +24,7 @@ describe('user reducer', () => {
   });
 
   it('should handle CHANGED_STATUS', () => {
-    const user: TUserState = FACTORIES.userState({
+    const user: TUserState = FACTORIES.models.user({
       status: USER_STATUS.ACTIVE,
     });
     const action: TUserAction = {
@@ -37,7 +37,7 @@ describe('user reducer', () => {
   });
 
   it('should handle CHANGED_THOUGHTS', () => {
-    const user: TUserState = FACTORIES.userState({
+    const user: TUserState = FACTORIES.models.user({
       thoughts: 'hello',
     });
     const action: TUserAction = {

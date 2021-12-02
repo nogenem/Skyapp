@@ -2,7 +2,8 @@ import { LOCAL_STORAGE_TOKEN } from '~/constants/localStorageKeys';
 import { USER_STATUS } from '~/constants/user_status';
 import ApiService from '~/services/ApiService';
 import IoService from '~/services/IoService';
-import { FACTORIES, getMockStore, setupFakeSocket } from '~/utils/testUtils';
+import FACTORIES from '~/utils/factories';
+import { getMockStore, setupFakeSocket } from '~/utils/testUtils';
 
 import {
   userSignedIn,
@@ -28,7 +29,7 @@ import type {
   IResetPasswordCredentials,
   IChangeStatusCredentials,
   IChangeThoughtsCredentials,
-  TUserState,
+  IUser,
 } from '../types';
 
 jest.mock('../../../utils/setAuthorizationHeader', () => ({
@@ -57,7 +58,7 @@ describe('auth actions', () => {
   });
 
   it('userSignedIn__not confirmed', async () => {
-    const user: TUserState = FACTORIES.userState({
+    const user: IUser = FACTORIES.models.user({
       token: VALID_TOKEN,
       confirmed: false,
     });
@@ -75,7 +76,7 @@ describe('auth actions', () => {
   });
 
   it('userSignedIn__confirmed', async () => {
-    const user: TUserState = FACTORIES.userState({
+    const user: IUser = FACTORIES.models.user({
       token: VALID_TOKEN,
       confirmed: true,
     });
@@ -93,7 +94,7 @@ describe('auth actions', () => {
   });
 
   it('userSignedOut__confirmed', async () => {
-    const user: TUserState = FACTORIES.userState({
+    const user: IUser = FACTORIES.models.user({
       token: VALID_TOKEN,
       confirmed: true,
     });
@@ -113,7 +114,7 @@ describe('auth actions', () => {
   });
 
   it('sendSignUp', async () => {
-    const user: TUserState = FACTORIES.userState({
+    const user: IUser = FACTORIES.models.user({
       token: VALID_TOKEN,
     });
     const credentials: ISignUpCredentials = {
@@ -140,7 +141,7 @@ describe('auth actions', () => {
   });
 
   it('sendSignIn', async () => {
-    const user: TUserState = FACTORIES.userState({
+    const user: IUser = FACTORIES.models.user({
       token: VALID_TOKEN,
     });
     const credentials: ISignInCredentials = {
@@ -166,7 +167,7 @@ describe('auth actions', () => {
   });
 
   it('sendConfirmation', async () => {
-    const user: TUserState = FACTORIES.userState({
+    const user: IUser = FACTORIES.models.user({
       token: VALID_TOKEN,
     });
     const credentials: ITokenCredentials = {
@@ -206,7 +207,7 @@ describe('auth actions', () => {
   });
 
   it('sendValidateToken', async () => {
-    const user: TUserState = FACTORIES.userState({
+    const user: IUser = FACTORIES.models.user({
       token: VALID_TOKEN,
     });
     const credentials: ITokenCredentials = {
@@ -246,7 +247,7 @@ describe('auth actions', () => {
   });
 
   it('sendResetPassword', async () => {
-    const user: TUserState = FACTORIES.userState({
+    const user: IUser = FACTORIES.models.user({
       token: VALID_TOKEN,
     });
     const credentials: IResetPasswordCredentials = {

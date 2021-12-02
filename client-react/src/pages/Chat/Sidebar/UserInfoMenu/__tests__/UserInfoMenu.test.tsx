@@ -1,7 +1,9 @@
 import React from 'react';
 
-import type { IUser } from '~/redux/user/types';
-import { FACTORIES, getRenderWithRedux } from '~/utils/testUtils';
+import { USER_STATUS } from '~/constants/user_status';
+import type { TUserState } from '~/redux/user/types';
+import FACTORIES from '~/utils/factories';
+import { getRenderWithRedux } from '~/utils/testUtils';
 
 import { UserInfoMenu } from '../index';
 
@@ -11,8 +13,10 @@ const renderWithRedux = getRenderWithRedux();
 // ./Menus is already testing the interactions
 describe('Connected UserInfoMenu', () => {
   it('renders correctly', () => {
-    const initialUser: IUser = FACTORIES.userState({
+    const initialUser: TUserState = FACTORIES.states.user({
+      nickname: 'Test User',
       thoughts: 'Some thoughts...',
+      status: USER_STATUS.ACTIVE,
     });
     const initialState = { user: initialUser };
 
