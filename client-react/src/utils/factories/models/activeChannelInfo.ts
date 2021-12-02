@@ -1,4 +1,3 @@
-import merge from 'deepmerge';
 import faker from 'faker/locale/en_US';
 
 import type { IActiveChannelInfo } from '~/redux/chat/types';
@@ -32,15 +31,13 @@ export default (
     messageFactory({ channel_id: id }),
   );
 
-  return merge(
-    {
-      _id: id,
-      messages,
-      totalMessages: messagesLen,
-      queue,
-    } as IActiveChannelInfo,
-    override || {},
-  );
+  return {
+    _id: id,
+    messages,
+    totalMessages: messagesLen,
+    queue,
+    ...(override || {}),
+  } as IActiveChannelInfo;
 };
 
 export type { IOptions };

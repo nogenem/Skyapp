@@ -1,4 +1,3 @@
-import merge from 'deepmerge';
 import faker from 'faker/locale/en_US';
 
 import { initialState } from '~/redux/chat/reducer';
@@ -40,17 +39,15 @@ export default (
     return prev;
   }, {} as IChannels);
 
-  return merge(
-    options?.useInitialState
-      ? initialState
-      : ({
-          users,
-          channels,
-          activeChannelInfo:
-            Math.random() < 0.5 ? undefined : activeChannelInfoFactory({}),
-        } as TChatState),
-    override || {},
-  );
+  return options?.useInitialState
+    ? initialState
+    : ({
+        users,
+        channels,
+        activeChannelInfo:
+          Math.random() < 0.5 ? undefined : activeChannelInfoFactory({}),
+        ...(override || {}),
+      } as TChatState);
 };
 
 export type { IOptions };

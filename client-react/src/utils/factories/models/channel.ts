@@ -1,4 +1,3 @@
-import merge from 'deepmerge';
 import faker from 'faker/locale/en_US';
 
 import type { IChannel } from '~/redux/chat/types';
@@ -22,21 +21,19 @@ export default (
   const isGroup = membersLen > 2;
   const id = faker.datatype.uuid();
 
-  return merge(
-    {
-      _id: id,
-      name: faker.lorem.words(),
-      is_group: isGroup,
-      members: members,
-      other_member_idx: isGroup
-        ? undefined
-        : faker.datatype.number({ min: 0, max: 1 }),
-      unread_msgs: faker.datatype.number({ min: 0, max: 99 }),
-      lastMessage:
-        Math.random() < 0.5 ? undefined : messageFactory({ channel_id: id }),
-    } as IChannel,
-    override || {},
-  );
+  return {
+    _id: id,
+    name: faker.lorem.words(),
+    is_group: isGroup,
+    members: members,
+    other_member_idx: isGroup
+      ? undefined
+      : faker.datatype.number({ min: 0, max: 1 }),
+    unread_msgs: faker.datatype.number({ min: 0, max: 99 }),
+    lastMessage:
+      Math.random() < 0.5 ? undefined : messageFactory({ channel_id: id }),
+    ...(override || {}),
+  } as IChannel;
 };
 
 export type { IOptions };

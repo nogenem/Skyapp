@@ -1,4 +1,3 @@
-import merge from 'deepmerge';
 import faker from 'faker/locale/en_US';
 
 import { MESSAGE_TYPES } from '~/constants/message_types';
@@ -15,18 +14,16 @@ export default (override?: Partial<IMessage>): IMessage => {
   let isDeleting = false;
   if (!isUpdating) isDeleting = Math.random() < 0.2;
 
-  return merge(
-    {
-      _id: faker.datatype.uuid(),
-      channel_id: faker.datatype.uuid(),
-      from_id: Math.random() < 0.2 ? undefined : faker.datatype.uuid(),
-      body: isTextMessage ? faker.lorem.paragraph() : attachmentFactory({}),
-      type: messageType,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      isUpdating,
-      isDeleting,
-    } as IMessage,
-    override || {},
-  );
+  return {
+    _id: faker.datatype.uuid(),
+    channel_id: faker.datatype.uuid(),
+    from_id: Math.random() < 0.2 ? undefined : faker.datatype.uuid(),
+    body: isTextMessage ? faker.lorem.paragraph() : attachmentFactory({}),
+    type: messageType,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    isUpdating,
+    isDeleting,
+    ...(override || {}),
+  } as IMessage;
 };
