@@ -23,6 +23,7 @@ const chat = (
       case EChatActions.INITIAL_DATA_LOADED: {
         draft.users = action.payload.users;
         draft.channels = wrapChannelsDates(action.payload.channels);
+        draft.activeChannelInfo = undefined;
         return draft;
       }
       case EChatActions.USER_ONLINE_STATUS_CHANGED: {
