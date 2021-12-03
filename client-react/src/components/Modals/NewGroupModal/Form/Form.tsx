@@ -198,7 +198,12 @@ const Label = ({ user, isAdmin, onClick }: ILabelProps) => {
     <span className={classes.checkboxLabel}>
       <Tooltip title={tooltip} classes={{ tooltip: classes.tooltip }} arrow>
         <span>
-          <IconButton aria-label={tooltip} onClick={onClick} color={color}>
+          <IconButton
+            aria-label={tooltip}
+            onClick={onClick}
+            color={color}
+            data-testid="user-avatar"
+          >
             <ChatAvatar
               online={user.online}
               status={user.status}

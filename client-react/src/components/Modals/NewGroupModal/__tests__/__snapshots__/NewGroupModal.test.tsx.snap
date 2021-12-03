@@ -1,0 +1,275 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Connected NewGroupModal renders correctly 1`] = `
+<div
+  class="MuiDialog-root"
+  role="presentation"
+  style="position: fixed; z-index: 1300; right: 0px; bottom: 0px; top: 0px; left: 0px;"
+>
+  <div
+    aria-hidden="true"
+    class="MuiBackdrop-root"
+    style="opacity: 1; webkit-transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;"
+  />
+  <div
+    data-test="sentinelStart"
+    tabindex="0"
+  />
+  <div
+    class="MuiDialog-container MuiDialog-scrollPaper"
+    role="none presentation"
+    style="opacity: 1; webkit-transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;"
+    tabindex="-1"
+  >
+    <div
+      aria-labelledby="new-group-modal-title"
+      class="MuiPaper-root MuiDialog-paper MuiDialog-paperScrollPaper MuiDialog-paperWidthSm MuiDialog-paperFullWidth MuiPaper-elevation24 MuiPaper-rounded"
+      role="dialog"
+    >
+      <div
+        class="MuiDialogTitle-root"
+        id="new-group-modal-title"
+      >
+        <h2
+          class="MuiTypography-root MuiTypography-h6"
+        >
+          Messages:Create a group
+        </h2>
+      </div>
+      <div
+        class="MuiDialogContent-root MuiDialogContent-dividers"
+      >
+        <form>
+          <div
+            class="MuiFormControl-root MuiTextField-root makeStyles-textInput-10 MuiFormControl-marginNormal MuiFormControl-fullWidth"
+          >
+            <label
+              class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined Mui-required Mui-required"
+              data-shrink="false"
+              for="new-group-modal-form-name"
+              id="new-group-modal-form-name-label"
+            >
+              Common:Group Name
+              <span
+                aria-hidden="true"
+                class="MuiFormLabel-asterisk MuiInputLabel-asterisk"
+              >
+                 
+                *
+              </span>
+            </label>
+            <div
+              class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-fullWidth MuiInputBase-formControl"
+            >
+              <input
+                aria-invalid="false"
+                class="MuiInputBase-input MuiOutlinedInput-input"
+                id="new-group-modal-form-name"
+                name="name"
+                required=""
+                type="text"
+                value=""
+              />
+              <fieldset
+                aria-hidden="true"
+                class="PrivateNotchedOutline-root-11 MuiOutlinedInput-notchedOutline"
+              >
+                <legend
+                  class="PrivateNotchedOutline-legendLabelled-13"
+                >
+                  <span>
+                    Common:Group Name
+                     *
+                  </span>
+                </legend>
+              </fieldset>
+            </div>
+          </div>
+          <fieldset
+            class="MuiFormControl-root makeStyles-formControl-2"
+            id="members_wrapper"
+          >
+            <legend
+              class="MuiFormLabel-root makeStyles-formLegend-4"
+            >
+              Messages:Select Members
+            </legend>
+            <div
+              class="MuiFormControl-root MuiTextField-root makeStyles-textInput-10 MuiFormControl-marginNormal MuiFormControl-fullWidth"
+              style="margin-top: 5px;"
+            >
+              <label
+                class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated"
+                data-shrink="false"
+                for="new-group-modal-form-filter"
+                id="new-group-modal-form-filter-label"
+              >
+                Common:Filter
+              </label>
+              <div
+                class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-fullWidth MuiInput-fullWidth MuiInputBase-formControl MuiInput-formControl"
+              >
+                <input
+                  aria-invalid="false"
+                  class="MuiInputBase-input MuiInput-input"
+                  id="new-group-modal-form-filter"
+                  name="filter"
+                  type="text"
+                  value=""
+                />
+              </div>
+            </div>
+            <p
+              class="MuiFormHelperText-root"
+            >
+              Messages:Click on user's image to toggle admin status
+            </p>
+            <div
+              class="MuiFormGroup-root makeStyles-formGroup-3"
+            >
+              <label
+                class="MuiFormControlLabel-root makeStyles-checkboxWrapper-6 MuiFormControlLabel-labelPlacementStart"
+              >
+                <span
+                  aria-disabled="false"
+                  class="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-15 MuiCheckbox-root MuiCheckbox-colorSecondary MuiIconButton-colorSecondary"
+                >
+                  <span
+                    class="MuiIconButton-label"
+                  >
+                    <input
+                      class="PrivateSwitchBase-input-18"
+                      data-indeterminate="false"
+                      name="1"
+                      type="checkbox"
+                      value=""
+                    />
+                    <svg
+                      aria-hidden="true"
+                      class="MuiSvgIcon-root"
+                      focusable="false"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
+                      />
+                    </svg>
+                  </span>
+                  <span
+                    class="MuiTouchRipple-root"
+                  />
+                </span>
+                <span
+                  class="MuiTypography-root MuiFormControlLabel-label MuiTypography-body1"
+                >
+                  <span
+                    class="makeStyles-checkboxLabel-7"
+                  >
+                    <span
+                      class=""
+                      title="Messages:Turn into Admin"
+                    >
+                      <button
+                        aria-label="Messages:Turn into Admin"
+                        class="MuiButtonBase-root MuiIconButton-root MuiIconButton-colorInherit"
+                        data-testid="user-avatar"
+                        tabindex="0"
+                        type="button"
+                      >
+                        <span
+                          class="MuiIconButton-label"
+                        >
+                          <div
+                            class="makeStyles-container-19"
+                          >
+                            <div
+                              class="MuiAvatar-root MuiAvatar-circular MuiAvatar-colorDefault"
+                            >
+                              <svg
+                                aria-hidden="true"
+                                class="MuiSvgIcon-root makeStyles-icon-20"
+                                focusable="false"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"
+                                />
+                              </svg>
+                            </div>
+                            <span
+                              class="makeStyles-dotContainer-21"
+                            >
+                              <span
+                                class="makeStyles-dot-22 makeStyles-dot_active-23 "
+                                title="Common:Active"
+                              />
+                            </span>
+                          </div>
+                        </span>
+                        <span
+                          class="MuiTouchRipple-root"
+                        />
+                      </button>
+                    </span>
+                    <span>
+                      Test
+                    </span>
+                  </span>
+                </span>
+              </label>
+            </div>
+            <p
+              class="MuiFormHelperText-root makeStyles-formHelperText-5"
+            />
+          </fieldset>
+        </form>
+      </div>
+      <div
+        class="MuiDialogActions-root MuiDialogActions-spacing"
+      >
+        <button
+          class="MuiButtonBase-root MuiButton-root MuiButton-text"
+          tabindex="0"
+          type="button"
+        >
+          <span
+            class="MuiButton-label"
+          >
+            Common:Cancel
+          </span>
+          <span
+            class="MuiTouchRipple-root"
+          />
+        </button>
+        <button
+          class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textSecondary Mui-focusVisible Mui-focusVisible"
+          tabindex="0"
+          type="button"
+        >
+          <span
+            class="MuiButton-label"
+          >
+            Common:Confirm
+          </span>
+          <span
+            class="MuiTouchRipple-root"
+          >
+            <span
+              class="MuiTouchRipple-ripple MuiTouchRipple-rippleVisible MuiTouchRipple-ripplePulsate"
+              style="width: 1px; height: 1px; top: -0.5px; left: -0.5px;"
+            >
+              <span
+                class="MuiTouchRipple-child MuiTouchRipple-childPulsate"
+              />
+            </span>
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div
+    data-test="sentinelEnd"
+    tabindex="0"
+  />
+</div>
+`;

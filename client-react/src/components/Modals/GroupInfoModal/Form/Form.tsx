@@ -216,6 +216,7 @@ const Label = ({ user, isAdmin, disabled, onClick }: ILabelProps) => {
             onClick={onClick}
             color={color}
             disabled={disabled}
+            data-testid="user-avatar"
           >
             <ChatAvatar
               online={user.online}

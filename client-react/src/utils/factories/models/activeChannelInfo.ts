@@ -9,6 +9,9 @@ interface IOptions {
   queueLen: number;
 }
 
+// TODO: Make all factories NOT use random values, or at least give an option for that
+//    - Its quite annoying having to explicit set values for the override
+//      when i'm using `toMatchSnapshot` ...
 export default (
   override?: Partial<IActiveChannelInfo>,
   options?: Partial<IOptions>,

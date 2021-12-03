@@ -19,6 +19,7 @@ import {
   Translate as TranslateIcon,
   ExpandMore as ExpandMoreIcon,
 } from '@material-ui/icons';
+import i18n from 'i18next';
 
 import { SUPPORTED_LANGUAGES } from '~/i18n';
 import type { IAppState } from '~/redux/store';
@@ -46,7 +47,7 @@ const UnauthenticatedNavBar = ({
   themeModeSwitched,
 }: TProps) => {
   const [langMenu, setLangMenu] = React.useState<Element | null>(null);
-  const { t: trans, i18n } = useTranslation(['Messages']);
+  const { t: trans } = useTranslation(['Messages']);
   const classes = useStyles();
 
   const handleToggleTheme = () => {
