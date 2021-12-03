@@ -1,4 +1,7 @@
+import { Socket } from 'socket.io-client';
+
 import { LOCAL_STORAGE_TOKEN } from '~/constants/localStorageKeys';
+import * as SOCKET_EVENTS from '~/constants/socket_events';
 import { USER_STATUS } from '~/constants/user_status';
 import ApiService from '~/services/ApiService';
 import IoService from '~/services/IoService';
@@ -18,6 +21,7 @@ import {
   sendResetPassword,
   sendChangeStatus,
   sendChangeThoughts,
+  emitUserStatusChanged,
 } from '../actions';
 import { EUserActions } from '../types';
 import type {
@@ -93,7 +97,7 @@ describe('auth actions', () => {
     expect(ioServer.socket!.connected).toBe(true);
   });
 
-  it('userSignedOut__confirmed', async () => {
+  it('userSignedOut', async () => {
     const user: IUser = FACTORIES.models.user({
       token: VALID_TOKEN,
       confirmed: true,
@@ -320,6 +324,31 @@ describe('auth actions', () => {
     await sendChangeThoughts(credentials)(store.dispatch);
 
     expect(spy).toHaveBeenCalledWith(credentials);
+    expect(store.getActions()).toEqual(expectedActions);
+  });
+
+  it('emitUserStatusChanged', () => {
+    const newStatus = USER_STATUS.AWAY;
+
+    ioServer.connect();
+    const socket = ioServer.socket as Socket;
+
+    const expectedActions = [
+      {
+        type: EUserActions.STATUS_CHANGED,
+        payload: newStatus,
+      },
+    ];
+    const spy = jest.spyOn(socket, 'emit').mockImplementationOnce(() => {
+      return socket;
+    });
+    const store = mockStore({});
+
+    emitUserStatusChanged(newStatus)(store.dispatch);
+
+    expect(spy).toHaveBeenCalledWith(SOCKET_EVENTS.IO_USER_STATUS_CHANGED, {
+      newStatus,
+    });
     expect(store.getActions()).toEqual(expectedActions);
   });
 });

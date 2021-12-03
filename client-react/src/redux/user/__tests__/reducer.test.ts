@@ -14,17 +14,17 @@ describe('user reducer', () => {
   });
 
   it('should handle SIGNED_OUT', () => {
-    const user: TUserState = FACTORIES.models.user();
+    const state: TUserState = FACTORIES.states.user();
     const action: TUserAction = {
       type: EUserActions.SIGNED_OUT,
       payload: null,
     };
 
-    expect(userReducer(user, action)).toEqual(initialState);
+    expect(userReducer(state, action)).toEqual(initialState);
   });
 
-  it('should handle CHANGED_STATUS', () => {
-    const user: TUserState = FACTORIES.models.user({
+  it('should handle STATUS_CHANGED', () => {
+    const state: TUserState = FACTORIES.states.user({
       status: USER_STATUS.ACTIVE,
     });
     const action: TUserAction = {
@@ -32,12 +32,12 @@ describe('user reducer', () => {
       payload: USER_STATUS.AWAY,
     };
 
-    const newState = userReducer(user, action);
+    const newState = userReducer(state, action);
     expect(newState.status).toEqual(action.payload);
   });
 
-  it('should handle CHANGED_THOUGHTS', () => {
-    const user: TUserState = FACTORIES.models.user({
+  it('should handle THOUGHTS_CHANGED', () => {
+    const state: TUserState = FACTORIES.states.user({
       thoughts: 'hello',
     });
     const action: TUserAction = {
@@ -45,7 +45,7 @@ describe('user reducer', () => {
       payload: 'hello world',
     };
 
-    const newState = userReducer(user, action);
+    const newState = userReducer(state, action);
     expect(newState.thoughts).toEqual(action.payload);
   });
 });
