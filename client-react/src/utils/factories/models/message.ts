@@ -1,29 +1,67 @@
 import faker from 'faker/locale/en_US';
 
 import { MESSAGE_TYPES } from '~/constants/message_types';
-import type { IMessage } from '~/redux/chat/types';
+import type { IAttachment, IMessage } from '~/redux/chat/types';
 
 import attachmentFactory from './attachment';
 
-export default (override?: Partial<IMessage>): IMessage => {
-  const isTextMessage = Math.random() < 0.5;
+interface IOptions {
+  useConstValues: boolean;
+}
+
+export default (
+  override?: Partial<IMessage>,
+  options?: Partial<IOptions>,
+): IMessage => {
+  let messageId = faker.datatype.uuid();
+  if (options?.useConstValues) messageId = 'message-1';
+
+  let channelId = faker.datatype.uuid();
+  if (options?.useConstValues) channelId = 'channel-1';
+
+  let fromId = Math.random() < 0.2 ? undefined : faker.datatype.uuid();
+  if (options?.useConstValues) fromId = undefined;
+
+  let isTextMessage = Math.random() < 0.5;
+  if (options?.useConstValues) isTextMessage = true;
+
   const messageType = isTextMessage
     ? MESSAGE_TYPES.TEXT
     : MESSAGE_TYPES.UPLOADED_FILE;
-  const isUpdating = Math.random() < 0.2;
-  let isDeleting = false;
-  if (!isUpdating) isDeleting = Math.random() < 0.2;
+
+  let body: string | IAttachment = '';
+  if (isTextMessage) {
+    if (!options?.useConstValues) body = faker.lorem.paragraph();
+    else body = 'Test message 1';
+  } else {
+    if (!options?.useConstValues) body = attachmentFactory();
+    else body = attachmentFactory({}, { useConstValues: true });
+  }
+
+  let createdAt = new Date();
+  if (options?.useConstValues) createdAt = new Date('2021-12-04T13:33:19.037Z');
+
+  let updatedAt = new Date();
+  if (options?.useConstValues) updatedAt = new Date('2021-12-04T13:33:19.037Z');
+
+  let isUpdating = Math.random() < 0.2;
+  if (options?.useConstValues) isUpdating = false;
+
+  let isDeleting = !isUpdating ? Math.random() < 0.2 : false;
+  if (options?.useConstValues) isDeleting = false;
 
   return {
-    _id: faker.datatype.uuid(),
-    channel_id: faker.datatype.uuid(),
-    from_id: Math.random() < 0.2 ? undefined : faker.datatype.uuid(),
-    body: isTextMessage ? faker.lorem.paragraph() : attachmentFactory({}),
+    _id: messageId,
+    channel_id: channelId,
+    from_id: fromId,
+    body,
     type: messageType,
-    createdAt: new Date(),
-    updatedAt: new Date(),
+    createdAt,
+    updatedAt,
     isUpdating,
     isDeleting,
     ...(override || {}),
   } as IMessage;
 };
+
+export type { IOptions };
