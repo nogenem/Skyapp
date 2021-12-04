@@ -9,12 +9,8 @@ import { Form } from '../index';
 
 describe('GroupInfoModal > Form', () => {
   it('renders the users', async () => {
-    const otherUser1: IOtherUser = FACTORIES.models.otherUser({
-      nickname: 'Test 1',
-    });
-    const otherUser2: IOtherUser = FACTORIES.models.otherUser({
-      nickname: 'Test 2',
-    });
+    const otherUser1: IOtherUser = FACTORIES.models.otherUser();
+    const otherUser2: IOtherUser = FACTORIES.models.otherUser();
 
     const users: IOtherUser[] = [otherUser1, otherUser2];
     const groupName = 'Test Group';
@@ -44,10 +40,8 @@ describe('GroupInfoModal > Form', () => {
     expect(getByText(otherUser2.nickname)).toBeInTheDocument();
   });
 
-  it('renders the user correctly when he is already selected and an admin', async () => {
-    const otherUser: IOtherUser = FACTORIES.models.otherUser({
-      nickname: 'Test 1',
-    });
+  it('renders the user correctly when he is already selected and is an admin', async () => {
+    const otherUser: IOtherUser = FACTORIES.models.otherUser();
 
     const users: IOtherUser[] = [otherUser];
     const groupName = 'Test Group';
@@ -63,7 +57,7 @@ describe('GroupInfoModal > Form', () => {
     const toggleUserSelected = jest.fn();
     const toggleUserIsAdmin = jest.fn();
 
-    const { getByText, baseElement, getByLabelText } = render(
+    const { getByText, baseElement, queryByLabelText } = render(
       <Form
         groupName={groupName}
         selectedUsersObj={selectedUsersObj}
@@ -85,7 +79,7 @@ describe('GroupInfoModal > Form', () => {
         ) as HTMLInputElement
       ).checked,
     ).toBe(true);
-    expect(getByLabelText(/admin/i)).toBeInTheDocument();
+    expect(queryByLabelText(/turn into admin/i)).not.toBeInTheDocument();
   });
 
   it('allows to change the group name', async () => {

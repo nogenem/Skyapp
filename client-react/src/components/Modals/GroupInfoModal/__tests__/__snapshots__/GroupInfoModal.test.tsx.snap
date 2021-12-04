@@ -144,7 +144,7 @@ exports[`Connected GroupInfoModal renders correctly 1`] = `
                       class="PrivateSwitchBase-input-18"
                       data-indeterminate="false"
                       disabled=""
-                      name="1"
+                      name="other-user-1"
                       type="checkbox"
                       value=""
                     />
@@ -202,8 +202,8 @@ exports[`Connected GroupInfoModal renders correctly 1`] = `
                               class="makeStyles-dotContainer-21"
                             >
                               <span
-                                class="makeStyles-dot-22 makeStyles-dot_active-23 "
-                                title="Common:Active"
+                                class="makeStyles-dot-22 makeStyles-dot_offline-27 "
+                                title="Common:Offline"
                               />
                             </span>
                           </div>
@@ -211,7 +211,7 @@ exports[`Connected GroupInfoModal renders correctly 1`] = `
                       </button>
                     </span>
                     <span>
-                      Test
+                      Nickname 1
                     </span>
                   </span>
                 </span>

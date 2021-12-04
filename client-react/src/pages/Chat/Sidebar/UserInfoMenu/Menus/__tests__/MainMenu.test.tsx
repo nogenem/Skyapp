@@ -3,17 +3,15 @@ import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
 
 import { MENU_STATES } from '~/constants/chat_menu_states';
-import FACTORIES from '~/utils/factories';
+import { USER_STATUS } from '~/constants/user_status';
 
 import MainMenu from '../MainMenu';
 import type { TProps } from '../MainMenu';
 
 describe('MainMenu', () => {
   it('calls `handleSignOut` when clicking on `Sign Out` menu item', () => {
-    const user = FACTORIES.models.user();
-
     const props: TProps = {
-      userStatus: user.status,
+      userStatus: USER_STATUS.ACTIVE,
       anchorEl: document.body,
       themeMode: 'dark',
       handleSignOut: jest.fn(),
@@ -30,10 +28,8 @@ describe('MainMenu', () => {
   });
 
   it('calls `handleSwitchThemeMode` when clicking on `Theme Toggler` component', () => {
-    const user = FACTORIES.models.user();
-
     const props: TProps = {
-      userStatus: user.status,
+      userStatus: USER_STATUS.ACTIVE,
       anchorEl: document.body,
       themeMode: 'dark',
       handleSignOut: jest.fn(),
@@ -53,10 +49,8 @@ describe('MainMenu', () => {
   });
 
   it('calls `setMenuState` when clicking on `Lang Changer` component', () => {
-    const user = FACTORIES.models.user();
-
     const props: TProps = {
-      userStatus: user.status,
+      userStatus: USER_STATUS.ACTIVE,
       anchorEl: document.body,
       themeMode: 'dark',
       handleSignOut: jest.fn(),
@@ -76,10 +70,8 @@ describe('MainMenu', () => {
   });
 
   it('calls `setMenuState` when clicking on `User Status Changer` component', () => {
-    const user = FACTORIES.models.user();
-
     const props: TProps = {
-      userStatus: user.status,
+      userStatus: USER_STATUS.ACTIVE,
       anchorEl: document.body,
       themeMode: 'dark',
       handleSignOut: jest.fn(),

@@ -39,15 +39,15 @@ exports[`Connected UserInfoMenu renders correctly 1`] = `
     >
       <span
         class="MuiTypography-root MuiTypography-subtitle1 MuiTypography-colorInherit MuiTypography-noWrap"
-        title="Test User"
+        title="Nickname 1"
       >
-        Test User
+        Nickname 1
       </span>
       <span
         class="MuiTypography-root MuiTypography-caption MuiTypography-colorTextSecondary MuiTypography-noWrap"
-        title="Some thoughts..."
+        title="Some thoughts"
       >
-        Some thoughts...
+        Some thoughts
       </span>
     </div>
     <span

@@ -105,8 +105,8 @@ exports[`Connected NewChatModal renders correctly 1`] = `
                   class="makeStyles-dotContainer-11"
                 >
                   <span
-                    class="makeStyles-dot-12 makeStyles-dot_active-13 "
-                    title="Common:Active"
+                    class="makeStyles-dot-12 makeStyles-dot_offline-17 "
+                    title="Common:Offline"
                   />
                 </span>
               </div>
@@ -117,11 +117,13 @@ exports[`Connected NewChatModal renders correctly 1`] = `
               <span
                 class="MuiTypography-root MuiListItemText-primary MuiTypography-body1 MuiTypography-displayBlock"
               >
-                Test
+                Nickname 1
               </span>
               <p
                 class="MuiTypography-root MuiListItemText-secondary MuiTypography-body2 MuiTypography-colorTextSecondary MuiTypography-displayBlock"
-              />
+              >
+                Some thoughts
+              </p>
             </div>
             <span
               class="MuiTouchRipple-root"
