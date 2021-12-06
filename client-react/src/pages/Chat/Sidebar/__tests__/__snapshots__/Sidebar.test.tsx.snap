@@ -1,5 +1,111 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Sidebar renders correctly when \`isSmall\` is true and \`activeChannelId\` is falsy 1`] = `
+<div>
+  <div
+    class="MuiPaper-root makeStyles-container-59 expanded MuiPaper-elevation8"
+  >
+    <div
+      aria-disabled="false"
+      class="MuiButtonBase-root MuiListItem-root makeStyles-container-61 MuiListItem-button"
+      role="button"
+      tabindex="0"
+    >
+      <div
+        class="makeStyles-container-63"
+      >
+        <div
+          class="MuiAvatar-root MuiAvatar-circular MuiAvatar-colorDefault"
+        >
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-root makeStyles-icon-64"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"
+            />
+          </svg>
+        </div>
+        <span
+          class="makeStyles-dotContainer-65"
+        >
+          <span
+            class="makeStyles-dot-66 makeStyles-dot_active-67 "
+            title="Common:Active"
+          />
+        </span>
+      </div>
+      <div
+        class="makeStyles-textContainer-62"
+      >
+        <span
+          class="MuiTypography-root MuiTypography-subtitle1 MuiTypography-colorInherit MuiTypography-noWrap"
+          title=""
+        />
+      </div>
+      <span
+        class="MuiTouchRipple-root"
+      />
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Sidebar renders correctly when \`isSmall\` is true and \`activeChannelId\` is truthy 1`] = `
+<div>
+  <div
+    class="MuiPaper-root makeStyles-container-85 hidden MuiPaper-elevation8"
+  >
+    <div
+      aria-disabled="false"
+      class="MuiButtonBase-root MuiListItem-root makeStyles-container-87 MuiListItem-button"
+      role="button"
+      tabindex="0"
+    >
+      <div
+        class="makeStyles-container-89"
+      >
+        <div
+          class="MuiAvatar-root MuiAvatar-circular MuiAvatar-colorDefault"
+        >
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-root makeStyles-icon-90"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"
+            />
+          </svg>
+        </div>
+        <span
+          class="makeStyles-dotContainer-91"
+        >
+          <span
+            class="makeStyles-dot-92 makeStyles-dot_active-93 "
+            title="Common:Active"
+          />
+        </span>
+      </div>
+      <div
+        class="makeStyles-textContainer-88"
+      >
+        <span
+          class="MuiTypography-root MuiTypography-subtitle1 MuiTypography-colorInherit MuiTypography-noWrap"
+          title=""
+        />
+      </div>
+      <span
+        class="MuiTouchRipple-root"
+      />
+    </div>
+  </div>
+</div>
+`;
+
 exports[`Sidebar renders correctly when \`isUserEmailConfirmed\` is false 1`] = `
 <div>
   <div

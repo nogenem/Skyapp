@@ -59,6 +59,7 @@ export const selectFilteredChatChannelsList = createSelector(
   [selectChatChannelsList, selectFilterFromProps],
   (channelsList, filter) => {
     if (!filter) return channelsList;
+    filter = filter.toLowerCase();
     return channelsList.filter(channel =>
       channel.name.toLowerCase().includes(filter),
     );

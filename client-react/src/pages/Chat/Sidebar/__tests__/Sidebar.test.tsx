@@ -18,12 +18,37 @@ describe('Sidebar', () => {
 
     expect(container).toMatchSnapshot();
   });
+
   it('renders correctly when `isUserEmailConfirmed` is false', () => {
     const { container } = renderWithRedux(
       <Sidebar
         isUserEmailConfirmed={false}
         isSmall={false}
         activeChannelId={undefined}
+      />,
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('renders correctly when `isSmall` is true and `activeChannelId` is falsy', () => {
+    const { container } = renderWithRedux(
+      <Sidebar
+        isUserEmailConfirmed={false}
+        isSmall={true}
+        activeChannelId={undefined}
+      />,
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('renders correctly when `isSmall` is true and `activeChannelId` is truthy', () => {
+    const { container } = renderWithRedux(
+      <Sidebar
+        isUserEmailConfirmed={false}
+        isSmall={true}
+        activeChannelId={'1'}
       />,
     );
 
