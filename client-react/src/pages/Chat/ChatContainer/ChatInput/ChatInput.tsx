@@ -54,7 +54,7 @@ const ChatInput = ({
 }: TProps) => {
   const [state, setState] = useObjState(initialState);
   const inputRef = React.useRef<HTMLInputElement>();
-  const { t: trans } = useTranslation(['Messages']);
+  const { t: trans } = useTranslation(['Common', 'Messages']);
   const classes = useStyles();
 
   const onSubmit = () => {
@@ -239,7 +239,7 @@ const ChatInput = ({
           classes={{
             root: classes.iconRoot,
           }}
-          aria-label="send"
+          aria-label={trans('Common:Send')}
           disabled={state.isDisabled || state.isSubmitting}
         >
           <SendIcon />
