@@ -21,7 +21,9 @@ describe('Change_Status', () => {
   setupDB();
 
   it('should be able to change user status', async () => {
-    const user: IUserDoc = await factory.create<IUserDoc>('User');
+    const user: IUserDoc = await factory.create<IUserDoc>('User', {
+      status: USER_STATUS.ACTIVE,
+    });
     const credentials: IChangeStatusCredentials = {
       newStatus: USER_STATUS.AWAY,
     };

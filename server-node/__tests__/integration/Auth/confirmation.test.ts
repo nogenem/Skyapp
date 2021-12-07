@@ -27,6 +27,7 @@ describe('Confirmation', () => {
   it('should be able to confirm the sign up', async () => {
     const user: IUserDoc = await factory.create<IUserDoc>('User', {
       confirmationToken: VALID_TOKEN,
+      confirmed: false,
     });
     const credentials: ITokenCredentials = {
       token: user.confirmationToken as string,
@@ -43,6 +44,7 @@ describe('Confirmation', () => {
   it('should not be able to confirm with invalid token', async () => {
     const user: IUserDoc = await factory.create<IUserDoc>('User', {
       confirmationToken: INVALID_TOKEN,
+      confirmed: false,
     });
     const credentials: ITokenCredentials = {
       token: user.confirmationToken as string,
@@ -59,6 +61,7 @@ describe('Confirmation', () => {
   it('should not be able to confirm with the same token twice', async () => {
     const user: IUserDoc = await factory.create<IUserDoc>('User', {
       confirmationToken: VALID_TOKEN,
+      confirmed: false,
     });
     const credentials: ITokenCredentials = {
       token: user.confirmationToken as string,

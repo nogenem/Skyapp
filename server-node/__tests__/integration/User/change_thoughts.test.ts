@@ -20,7 +20,9 @@ describe('Change_Thoughts', () => {
   setupDB();
 
   it('should be able to change user thoughts', async () => {
-    const user: IUserDoc = await factory.create<IUserDoc>('User');
+    const user: IUserDoc = await factory.create<IUserDoc>('User', {
+      thoughts: 'Some thoughts...',
+    });
     const credentials: IChangeThoughtsCredentials = {
       newThoughts: 'hello world',
     };

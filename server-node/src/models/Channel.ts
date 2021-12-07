@@ -99,4 +99,5 @@ Channel.method('toChatChannel', function modelToChatChannel() {
 });
 
 export type { IMember, IMemberDoc, IChannel, IChannelDoc, IChatChannel };
+export { Member };
 export default mongoose.model<IChannelDoc, IChatModel>('Channel', Channel);
