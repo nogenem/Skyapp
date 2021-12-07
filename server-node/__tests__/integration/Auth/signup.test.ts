@@ -18,12 +18,13 @@ jest.mock('jsonwebtoken', () => ({
 jest.mock('bcryptjs', () => ({
   hashSync: (password: string) => password,
 }));
-jest.mock('nodemailer');
-
-const mockedNodemailer = nodemailer as jest.Mocked<typeof nodemailer>;
 
 describe('Signup', () => {
   setupDB();
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
 
   it('should be able to sign up and should send a confirmation email', async () => {
     const user: IUser = await factory.attrs<IUser>(
@@ -41,7 +42,7 @@ describe('Signup', () => {
     const mockedReturn = {
       sendMail: jest.fn(() => Promise.resolve()),
     } as unknown as Transporter;
-    mockedNodemailer.createTransport.mockReturnValueOnce(mockedReturn);
+    jest.spyOn(nodemailer, 'createTransport').mockReturnValueOnce(mockedReturn);
 
     const res = await request.post('/api/auth/signup').send(credentials);
 

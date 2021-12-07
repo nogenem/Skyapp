@@ -12,12 +12,13 @@ import { setupDB } from '../../test-setup';
 const request = supertest(app);
 
 const VALID_TOKEN = '123456789';
-jest.mock('jsonwebtoken');
-
-const mockedJsonwebtoken = jsonwebtoken as jest.Mocked<typeof jsonwebtoken>;
 
 describe('Change_Thoughts', () => {
   setupDB();
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
 
   it('should be able to change user thoughts', async () => {
     const user: IUserDoc = await factory.create<IUserDoc>('User', {
@@ -27,7 +28,7 @@ describe('Change_Thoughts', () => {
       newThoughts: 'hello world',
     };
 
-    mockedJsonwebtoken.verify.mockImplementation(token => {
+    jest.spyOn(jsonwebtoken, 'verify').mockImplementation(token => {
       if (token === VALID_TOKEN) return { _id: user._id };
       throw new Error();
     });
@@ -53,7 +54,7 @@ describe('Change_Thoughts', () => {
       newThoughts: 'hello world',
     };
 
-    mockedJsonwebtoken.verify.mockImplementation(token => {
+    jest.spyOn(jsonwebtoken, 'verify').mockImplementation(token => {
       if (token === VALID_TOKEN) return { _id: user._id };
       throw new Error();
     });

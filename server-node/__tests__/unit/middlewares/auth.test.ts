@@ -18,11 +18,7 @@ describe('Confirmation', () => {
   setupDB();
 
   it('should call `next` and set `req.currentUser` when token is valid', async () => {
-    const user: IUserDoc = await factory.create<IUserDoc>('User', {});
-    jest.spyOn(jsonwebtoken, 'verify').mockImplementationOnce(token => {
-      if (token === VALID_TOKEN) return { _id: user._id };
-      throw new Error();
-    });
+    const user: IUserDoc = await factory.create<IUserDoc>('User');
 
     const req = {
       headers: {
@@ -31,6 +27,11 @@ describe('Confirmation', () => {
     } as IAuthRequest;
     const res = {} as Response;
     const next = jest.fn() as NextFunction;
+
+    jest.spyOn(jsonwebtoken, 'verify').mockImplementationOnce(token => {
+      if (token === VALID_TOKEN) return { _id: user._id };
+      throw new Error();
+    });
     jest.spyOn(handleErrors, 'default').mockImplementationOnce(() => {
       return res;
     });
@@ -47,6 +48,7 @@ describe('Confirmation', () => {
     } as IAuthRequest;
     const res = {} as Response;
     const next = jest.fn() as NextFunction;
+
     const spy = jest
       .spyOn(handleErrors, 'default')
       .mockImplementationOnce(() => {
@@ -61,10 +63,6 @@ describe('Confirmation', () => {
 
   it('should return `invalidOrExpiredTokenError` when token in headers is invalid', async () => {
     const user: IUserDoc = await factory.create<IUserDoc>('User', {});
-    jest.spyOn(jsonwebtoken, 'verify').mockImplementationOnce(token => {
-      if (token === VALID_TOKEN) return { _id: user._id };
-      throw new Error();
-    });
 
     const req = {
       headers: {
@@ -73,6 +71,11 @@ describe('Confirmation', () => {
     } as IAuthRequest;
     const res = {} as Response;
     const next = jest.fn() as NextFunction;
+
+    jest.spyOn(jsonwebtoken, 'verify').mockImplementationOnce(token => {
+      if (token === VALID_TOKEN) return { _id: user._id };
+      throw new Error();
+    });
     const spy = jest
       .spyOn(handleErrors, 'default')
       .mockImplementationOnce(() => {
@@ -86,11 +89,6 @@ describe('Confirmation', () => {
   });
 
   it('should return `invalidOrExpiredTokenError` when the decoded token is invalid', async () => {
-    jest.spyOn(jsonwebtoken, 'verify').mockImplementationOnce(token => {
-      if (token === VALID_TOKEN) return { _id: INVALID_USER_ID };
-      throw new Error();
-    });
-
     const req = {
       headers: {
         authorization: `Bearer ${VALID_TOKEN}`,
@@ -98,6 +96,11 @@ describe('Confirmation', () => {
     } as IAuthRequest;
     const res = {} as Response;
     const next = jest.fn() as NextFunction;
+
+    jest.spyOn(jsonwebtoken, 'verify').mockImplementationOnce(token => {
+      if (token === VALID_TOKEN) return { _id: INVALID_USER_ID };
+      throw new Error();
+    });
     const spy = jest
       .spyOn(handleErrors, 'default')
       .mockImplementationOnce(() => {

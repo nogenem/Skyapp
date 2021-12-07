@@ -25,7 +25,7 @@ describe('handleErrors', () => {
 
     handleErrors(error, resMock);
 
-    expect(resMock.json.mock.calls.length).toBe(1);
+    expect(resMock.json).toHaveBeenCalled();
     const { errors } = resMock.json.mock.calls[0][0];
     expect(errors).toBeTruthy();
     expect(Object.keys(errors).length >= 1).toBe(true);
@@ -45,7 +45,7 @@ describe('handleErrors', () => {
 
     handleErrors(error, resMock);
 
-    expect(resMock.json.mock.calls.length).toBe(1);
+    expect(resMock.json).toHaveBeenCalled();
     const { errors } = resMock.json.mock.calls[0][0];
     expect(errors).toBeTruthy();
     expect(Object.keys(errors).length >= 1).toBe(true);
@@ -65,7 +65,7 @@ describe('handleErrors', () => {
       handleErrors(err as Error, resMock);
     }
 
-    expect(resMock.json.mock.calls.length).toBe(1);
+    expect(resMock.json).toHaveBeenCalled();
     const { errors } = resMock.json.mock.calls[0][0];
     expect(errors).toBeTruthy();
     expect(errors.global).toBeTruthy();
@@ -85,7 +85,7 @@ describe('handleErrors', () => {
       handleErrors(err as Error, resMock);
     }
 
-    expect(resMock.json.mock.calls.length).toBe(1);
+    expect(resMock.json).toHaveBeenCalled();
     const { errors } = resMock.json.mock.calls[0][0];
     expect(errors).toBeTruthy();
     expect(errors.email).toBeTruthy();
@@ -102,7 +102,7 @@ describe('handleErrors', () => {
 
     handleErrors(error, resMock);
 
-    expect(resMock.json.mock.calls.length).toBe(1);
+    expect(resMock.json).toHaveBeenCalled();
     const { errors } = resMock.json.mock.calls[0][0];
     expect(errors).toBeTruthy();
     expect(errors.global).toBeTruthy();

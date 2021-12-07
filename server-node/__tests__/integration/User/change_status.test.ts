@@ -13,12 +13,13 @@ import { setupDB } from '../../test-setup';
 const request = supertest(app);
 
 const VALID_TOKEN = '123456789';
-jest.mock('jsonwebtoken');
-
-const mockedJsonwebtoken = jsonwebtoken as jest.Mocked<typeof jsonwebtoken>;
 
 describe('Change_Status', () => {
   setupDB();
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
 
   it('should be able to change user status', async () => {
     const user: IUserDoc = await factory.create<IUserDoc>('User', {
@@ -28,7 +29,7 @@ describe('Change_Status', () => {
       newStatus: USER_STATUS.AWAY,
     };
 
-    mockedJsonwebtoken.verify.mockImplementation(token => {
+    jest.spyOn(jsonwebtoken, 'verify').mockImplementation(token => {
       if (token === VALID_TOKEN) return { _id: user._id };
       throw new Error();
     });
@@ -54,7 +55,7 @@ describe('Change_Status', () => {
       newStatus: USER_STATUS.AWAY,
     };
 
-    mockedJsonwebtoken.verify.mockImplementation(token => {
+    jest.spyOn(jsonwebtoken, 'verify').mockImplementation(token => {
       if (token === VALID_TOKEN) return { _id: user._id };
       throw new Error();
     });

@@ -6,14 +6,14 @@ import { MailService } from '~/services';
 import factory from '../factories';
 import { setupDB } from '../test-setup';
 
-jest.mock('nodemailer');
-
-const mockedNodemailer = nodemailer as jest.Mocked<typeof nodemailer>;
-
 const VALID_TOKEN = '123456789';
 
 describe('mailer', () => {
   setupDB();
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
 
   it('should be able to `sendConfirmationEmail`', async () => {
     const user: IUserDoc = await factory.create<IUserDoc>('User', {
@@ -21,14 +21,10 @@ describe('mailer', () => {
     });
     const host = 'http://test.com';
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const mockFn: jest.Mock<Promise<void>, any> = jest.fn(() =>
-      Promise.resolve(),
-    );
     const mockedReturn = {
-      sendMail: mockFn,
+      sendMail: jest.fn(),
     } as unknown as Transporter;
-    mockedNodemailer.createTransport.mockReturnValueOnce(mockedReturn);
+    jest.spyOn(nodemailer, 'createTransport').mockReturnValueOnce(mockedReturn);
 
     const spyGenerateConfirmationUrl = jest.spyOn(
       user,
@@ -38,9 +34,10 @@ describe('mailer', () => {
     MailService.sendConfirmationEmail(user, host);
 
     expect(spyGenerateConfirmationUrl).toHaveBeenCalled();
-    expect(mockFn).toHaveBeenCalled();
+    expect(mockedReturn.sendMail).toHaveBeenCalled();
 
-    const email = mockFn.mock.calls[0][0] as unknown as SendMailOptions;
+    const email = (mockedReturn.sendMail as jest.Mock).mock
+      .calls[0][0] as unknown as SendMailOptions;
     expect(email.from).toBeTruthy();
     expect(email.to).toBeTruthy();
     expect(email.subject).toBeTruthy();
@@ -54,14 +51,10 @@ describe('mailer', () => {
     });
     const host = 'http://test.com';
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const mockFn: jest.Mock<Promise<void>, any> = jest.fn(() =>
-      Promise.resolve(),
-    );
     const mockedReturn = {
-      sendMail: mockFn,
+      sendMail: jest.fn(),
     } as unknown as Transporter;
-    mockedNodemailer.createTransport.mockReturnValueOnce(mockedReturn);
+    jest.spyOn(nodemailer, 'createTransport').mockReturnValueOnce(mockedReturn);
 
     const spyGenerateResetPasswordUrl = jest.spyOn(
       user,
@@ -71,9 +64,10 @@ describe('mailer', () => {
     MailService.sendResetPasswordEmail(user, host);
 
     expect(spyGenerateResetPasswordUrl).toHaveBeenCalled();
-    expect(mockFn).toHaveBeenCalled();
+    expect(mockedReturn.sendMail).toHaveBeenCalled();
 
-    const email = mockFn.mock.calls[0][0] as unknown as SendMailOptions;
+    const email = (mockedReturn.sendMail as jest.Mock).mock
+      .calls[0][0] as unknown as SendMailOptions;
     expect(email.from).toBeTruthy();
     expect(email.to).toBeTruthy();
     expect(email.subject).toBeTruthy();

@@ -12,12 +12,13 @@ const request = supertest(app);
 
 const VALID_TOKEN = '123456789';
 const INVALID_TOKEN = '123456789_';
-jest.mock('jsonwebtoken');
-
-const mockedJsonwebtoken = jsonwebtoken as jest.Mocked<typeof jsonwebtoken>;
 
 describe('Validate_Token', () => {
   setupDB();
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
 
   it('should be able to validate with a valid token', async () => {
     const user: IUserDoc = await factory.create<IUserDoc>('User');
@@ -25,7 +26,7 @@ describe('Validate_Token', () => {
       token: VALID_TOKEN,
     };
 
-    mockedJsonwebtoken.verify.mockImplementation(token => {
+    jest.spyOn(jsonwebtoken, 'verify').mockImplementation(token => {
       if (token === VALID_TOKEN) return { _id: user._id };
       throw new Error();
     });
@@ -44,7 +45,7 @@ describe('Validate_Token', () => {
       token: INVALID_TOKEN,
     };
 
-    mockedJsonwebtoken.verify.mockImplementation(token => {
+    jest.spyOn(jsonwebtoken, 'verify').mockImplementation(token => {
       if (token === VALID_TOKEN) return { _id: user._id };
       throw new Error();
     });

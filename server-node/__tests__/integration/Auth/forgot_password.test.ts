@@ -21,18 +21,19 @@ jest.mock('jsonwebtoken', () => ({
     throw new Error();
   },
 }));
-jest.mock('nodemailer');
 
 const VALID_EMAIL = 'test@test.com';
 const INVALID_EMAIL = 'test2@test.com';
 
-const mockedNodemailer = nodemailer as jest.Mocked<typeof nodemailer>;
-
 describe('Forgot_Password', () => {
   setupDB();
 
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   it('should be able to send a reset password email', async () => {
-    await factory.create<IUserDoc>('User', { email: VALID_EMAIL }, {});
+    await factory.create<IUserDoc>('User', { email: VALID_EMAIL });
     const credentials: IForgotPasswordCredentials = {
       email: VALID_EMAIL,
     };
@@ -40,7 +41,7 @@ describe('Forgot_Password', () => {
     const mockedReturn = {
       sendMail: jest.fn(() => Promise.resolve()),
     } as unknown as Transporter;
-    mockedNodemailer.createTransport.mockReturnValueOnce(mockedReturn);
+    jest.spyOn(nodemailer, 'createTransport').mockReturnValueOnce(mockedReturn);
 
     const res = await request
       .post('/api/auth/forgot_password')
@@ -57,7 +58,7 @@ describe('Forgot_Password', () => {
   });
 
   it('should not be able to send a reset password email to an invalid email', async () => {
-    await factory.create<IUserDoc>('User', { email: VALID_EMAIL }, {});
+    await factory.create<IUserDoc>('User', { email: VALID_EMAIL });
     const credentials: IForgotPasswordCredentials = {
       email: INVALID_EMAIL,
     };
@@ -65,7 +66,7 @@ describe('Forgot_Password', () => {
     const mockedReturn = {
       sendMail: jest.fn(() => Promise.resolve()),
     } as unknown as Transporter;
-    mockedNodemailer.createTransport.mockReturnValueOnce(mockedReturn);
+    jest.spyOn(nodemailer, 'createTransport').mockReturnValueOnce(mockedReturn);
 
     const res = await request
       .post('/api/auth/forgot_password')
@@ -77,11 +78,10 @@ describe('Forgot_Password', () => {
   });
 
   it('should not be able to send a reset password email when already has a valid token in the database', async () => {
-    await factory.create<IUserDoc>(
-      'User',
-      { email: VALID_EMAIL, resetPasswordToken: VALID_TOKEN },
-      {},
-    );
+    await factory.create<IUserDoc>('User', {
+      email: VALID_EMAIL,
+      resetPasswordToken: VALID_TOKEN,
+    });
     const credentials: IForgotPasswordCredentials = {
       email: VALID_EMAIL,
     };
@@ -89,7 +89,7 @@ describe('Forgot_Password', () => {
     const mockedReturn = {
       sendMail: jest.fn(() => Promise.resolve()),
     } as unknown as Transporter;
-    mockedNodemailer.createTransport.mockReturnValueOnce(mockedReturn);
+    jest.spyOn(nodemailer, 'createTransport').mockReturnValueOnce(mockedReturn);
 
     const res = await request
       .post('/api/auth/forgot_password')

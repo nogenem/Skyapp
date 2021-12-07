@@ -22,19 +22,16 @@ jest.mock('jsonwebtoken', () => ({
     throw new Error();
   },
 }));
-jest.mock('nodemailer');
-
-const mockedNodemailer = nodemailer as jest.Mocked<typeof nodemailer>;
 
 describe('Resend_Confirmation_Email', () => {
   setupDB();
 
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   it('should be able to resend a confirmation email', async () => {
-    await factory.create<IUser>(
-      'User',
-      { confirmationToken: INVALID_TOKEN },
-      {},
-    );
+    await factory.create<IUser>('User', { confirmationToken: INVALID_TOKEN });
     const credentials: ITokenCredentials = {
       token: INVALID_TOKEN,
     };
@@ -42,7 +39,7 @@ describe('Resend_Confirmation_Email', () => {
     const mockedReturn = {
       sendMail: jest.fn(() => Promise.resolve()),
     } as unknown as Transporter;
-    mockedNodemailer.createTransport.mockReturnValueOnce(mockedReturn);
+    jest.spyOn(nodemailer, 'createTransport').mockReturnValueOnce(mockedReturn);
 
     const res = await request
       .post('/api/auth/resend_confirmation_email')
@@ -59,11 +56,7 @@ describe('Resend_Confirmation_Email', () => {
   });
 
   it('should not be able to resend a confirmation email with wrong token', async () => {
-    await factory.create<IUser>(
-      'User',
-      { confirmationToken: INVALID_TOKEN },
-      {},
-    );
+    await factory.create<IUser>('User', { confirmationToken: INVALID_TOKEN });
     const credentials: ITokenCredentials = {
       token: VALID_TOKEN,
     };
@@ -71,7 +64,7 @@ describe('Resend_Confirmation_Email', () => {
     const mockedReturn = {
       sendMail: jest.fn(() => Promise.resolve()),
     } as unknown as Transporter;
-    mockedNodemailer.createTransport.mockReturnValueOnce(mockedReturn);
+    jest.spyOn(nodemailer, 'createTransport').mockReturnValueOnce(mockedReturn);
 
     const res = await request
       .post('/api/auth/resend_confirmation_email')
@@ -88,7 +81,7 @@ describe('Resend_Confirmation_Email', () => {
   });
 
   it('should not be able to resend a confirmation email when already has a valid token in the database', async () => {
-    await factory.create<IUser>('User', { confirmationToken: VALID_TOKEN }, {});
+    await factory.create<IUser>('User', { confirmationToken: VALID_TOKEN });
     const credentials: ITokenCredentials = {
       token: VALID_TOKEN,
     };
@@ -96,7 +89,7 @@ describe('Resend_Confirmation_Email', () => {
     const mockedReturn = {
       sendMail: jest.fn(() => Promise.resolve()),
     } as unknown as Transporter;
-    mockedNodemailer.createTransport.mockReturnValueOnce(mockedReturn);
+    jest.spyOn(nodemailer, 'createTransport').mockReturnValueOnce(mockedReturn);
 
     const res = await request
       .post('/api/auth/resend_confirmation_email')
