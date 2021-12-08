@@ -6,9 +6,8 @@ import { USER_STATUS } from '~/constants/user_status';
 import type { IChangeStatusCredentials } from '~/controllers';
 import { User } from '~/models';
 import type { IUserDoc } from '~/models';
-
-import factory from '../../factories';
-import { setupDB } from '../../test-setup';
+import factory from '~t/factories';
+import { setupDB } from '~t/test-setup';
 
 const request = supertest(app);
 

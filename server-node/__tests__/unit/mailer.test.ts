@@ -2,9 +2,8 @@ import nodemailer, { Transporter, SendMailOptions } from 'nodemailer';
 
 import type { IUserDoc } from '~/models';
 import { MailService } from '~/services';
-
-import factory from '../factories';
-import { setupDB } from '../test-setup';
+import factory from '~t/factories';
+import { setupDB } from '~t/test-setup';
 
 const VALID_TOKEN = '123456789';
 

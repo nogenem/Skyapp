@@ -2,8 +2,7 @@ import { Result } from 'express-validator';
 
 import { CustomError } from '~/utils/errors';
 import parseValidatorErrors from '~/utils/parseValidatorErrors';
-
-import { setupDB } from '../../test-setup';
+import { setupDB } from '~t/test-setup';
 
 describe('parseValidatorErrors', () => {
   setupDB();

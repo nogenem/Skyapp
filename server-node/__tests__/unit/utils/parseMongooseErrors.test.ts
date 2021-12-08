@@ -3,8 +3,7 @@ import mongoose from 'mongoose';
 import { User } from '~/models';
 import type { IMsgObj } from '~/utils/errors';
 import parseMongooseErrors from '~/utils/parseMongooseErrors';
-
-import { setupDB } from '../../test-setup';
+import { setupDB } from '~t/test-setup';
 
 describe('parseMongooseErrors', () => {
   setupDB();

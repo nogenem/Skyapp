@@ -4,8 +4,7 @@ import { Result } from 'express-validator';
 import { User } from '~/models';
 import { CustomError } from '~/utils/errors';
 import handleErrors from '~/utils/handleErrors';
-
-import { setupDB } from '../../test-setup';
+import { setupDB } from '~t/test-setup';
 
 interface IMockResponse extends Response {
   json: jest.Mock;

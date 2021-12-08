@@ -6,9 +6,8 @@ import type { IAuthRequest } from '~/middlewares/auth';
 import type { IUserDoc } from '~/models';
 import { invalidOrExpiredTokenError, noTokenError } from '~/utils/errors';
 import * as handleErrors from '~/utils/handleErrors';
-
-import factory from '../../factories';
-import { setupDB } from '../../test-setup';
+import factory from '~t/factories';
+import { setupDB } from '~t/test-setup';
 
 const VALID_TOKEN = '123456789';
 const INVALID_TOKEN = '123456789_';

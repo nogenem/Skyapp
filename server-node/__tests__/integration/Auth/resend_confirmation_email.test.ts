@@ -5,9 +5,8 @@ import app from '~/app';
 import type { ITokenCredentials } from '~/controllers';
 import { User } from '~/models';
 import type { IUser, IUserDoc } from '~/models';
-
-import factory from '../../factories';
-import { setupDB } from '../../test-setup';
+import factory from '~t/factories';
+import { setupDB } from '~t/test-setup';
 
 const request = supertest(app);
 

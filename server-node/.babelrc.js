@@ -1,14 +1,22 @@
 module.exports = {
-  presets: ["@babel/preset-env", "@babel/preset-typescript"],
+  presets: ['@babel/preset-env', '@babel/preset-typescript'],
   plugins: [
     [
-      "babel-plugin-root-import",
+      'babel-plugin-root-import',
       {
-        rootPathPrefix: "~/",
-        rootPathSuffix: "src/",
+        paths: [
+          {
+            rootPathPrefix: '~/',
+            rootPathSuffix: 'src/',
+          },
+          {
+            rootPathPrefix: '~t/',
+            rootPathSuffix: '__tests__/',
+          },
+        ],
       },
     ],
-    "@babel/plugin-proposal-class-properties",
-    "@babel/plugin-transform-runtime",
+    '@babel/plugin-proposal-class-properties',
+    '@babel/plugin-transform-runtime',
   ],
 };

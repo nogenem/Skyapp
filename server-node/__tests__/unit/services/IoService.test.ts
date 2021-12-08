@@ -5,9 +5,8 @@ import { io as ioClient, Socket as SocketClient } from 'socket.io-client';
 import * as SOCKET_EVENTS from '~/constants/socket_events';
 import { IUserDoc } from '~/models';
 import { IoService } from '~/services';
-
-import factory from '../../factories';
-import { setupDB } from '../../test-setup';
+import factory from '~t/factories';
+import { setupDB } from '~t/test-setup';
 
 const PORT = process.env.PORT_FOR_TESTS || 5010;
 describe('IoService', () => {
