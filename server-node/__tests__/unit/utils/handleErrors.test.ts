@@ -1,5 +1,6 @@
 import { Response } from 'express';
 import { Result } from 'express-validator';
+import multer from 'multer';
 
 import { User } from '~/models';
 import { CustomError } from '~/utils/errors';
@@ -21,6 +22,23 @@ describe('handleErrors', () => {
       json: jest.fn(),
     } as unknown as IMockResponse;
     const error = new CustomError({ global: 'test' });
+
+    handleErrors(error, resMock);
+
+    expect(resMock.json).toHaveBeenCalled();
+    const { errors } = resMock.json.mock.calls[0][0];
+    expect(errors).toBeTruthy();
+    expect(Object.keys(errors).length >= 1).toBe(true);
+  });
+
+  it("should send an object with errors when passed a multer's error", () => {
+    const resMock: IMockResponse = {
+      status: function status() {
+        return this;
+      },
+      json: jest.fn(),
+    } as unknown as IMockResponse;
+    const error = new multer.MulterError('LIMIT_FILE_SIZE');
 
     handleErrors(error, resMock);
 
