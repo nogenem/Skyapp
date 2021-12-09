@@ -1,6 +1,6 @@
 export { default as User } from './User';
 export type { IUser, IUserDoc, IChatUser } from './User';
-export { default as Channel, Member } from './Channel';
+export { default as Channel } from './Channel';
 export type {
   IMember,
   IMemberDoc,

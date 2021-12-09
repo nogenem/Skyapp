@@ -1,3 +1,5 @@
+/* eslint-disable camelcase */
+/* eslint-disable class-methods-use-this */
 import { factory } from 'factory-girl';
 import faker from 'faker';
 import { Types } from 'mongoose';
@@ -9,8 +11,8 @@ import {
   Message,
   IAttachment,
   Channel,
-  Member,
   IMemberDoc,
+  IMember,
 } from '~/models';
 import type { IUser, IMessage, IChannel } from '~/models';
 
@@ -52,8 +54,30 @@ const attachmentFactory = (override?: Partial<IAttachment>): IAttachment => ({
   ...override,
 });
 
-factory.define('Member', Member, {
-  user_id: factory.assoc('User', '_id'),
+class MemberObject {
+  user_id: string;
+
+  is_adm: boolean;
+
+  last_seen: Date;
+
+  constructor(values: IMember) {
+    this.user_id = values.user_id;
+    this.is_adm = values.is_adm;
+    this.last_seen = values.last_seen;
+  }
+
+  save() {
+    //
+  }
+
+  destroy() {
+    //
+  }
+}
+
+factory.define('Member', MemberObject, {
+  user_id: factory.assoc('User', '_id', { confirmed: true }),
   is_adm: Math.random() < 0.5,
   last_seen: () => new Date(),
 });
