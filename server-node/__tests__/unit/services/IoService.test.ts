@@ -1,10 +1,14 @@
 /* eslint-disable jest/no-done-callback */
+import { Types } from 'mongoose';
 import { Socket as ServerSocket, Namespace } from 'socket.io';
 import { io as ioClient, Socket as SocketClient } from 'socket.io-client';
 
 import * as SOCKET_EVENTS from '~/constants/socket_events';
-import { IUserDoc } from '~/models';
+import { USER_STATUS } from '~/constants/user_status';
+import type { TUserStatus } from '~/constants/user_status';
+import { Channel, IChannelDoc, IMemberDoc, IUserDoc, User } from '~/models';
 import { IoService } from '~/services';
+import { IInitialData } from '~/utils/getUsersAndChannelsData';
 import factory from '~t/factories';
 import { setupDB } from '~t/test-setup';
 
@@ -63,7 +67,8 @@ describe('IoService', () => {
   });
 
   it('Should be able to connect', done => {
-    expect.assertions(3);
+    const N_ASSERTIONS = 3;
+    expect.assertions(N_ASSERTIONS);
     let assertions = 0;
 
     const onSocket0Connect = () => {
@@ -75,7 +80,7 @@ describe('IoService', () => {
       expect(ioServer.getClient(userIds[0])).toBeTruthy();
       assertions++;
 
-      if (assertions === 3) done();
+      if (assertions === N_ASSERTIONS) done();
     };
 
     sockets[1].open();
@@ -85,7 +90,7 @@ describe('IoService', () => {
         expect(data).toBe(userIds[0]);
         assertions++;
 
-        if (assertions === 3) done();
+        if (assertions === N_ASSERTIONS) done();
       });
 
       sockets[0].open();
@@ -107,6 +112,141 @@ describe('IoService', () => {
       sockets[0].open();
       sockets[0].on(SOCKET_EVENTS.SOCKET_CONNECT, () => {
         sockets[0].disconnect();
+      });
+    });
+  });
+
+  it('should be able to handle `IO_GET_INITIAL_DATA`', done => {
+    sockets[0].open();
+
+    sockets[0].on(SOCKET_EVENTS.SOCKET_CONNECT, () => {
+      sockets[0].emit(
+        SOCKET_EVENTS.IO_GET_INITIAL_DATA,
+        (data: IInitialData) => {
+          expect(data.users).toBeTruthy();
+          expect(data.channels).toBeTruthy();
+
+          done();
+        },
+      );
+    });
+  });
+
+  it('should be able to handle `IO_SET_ACTIVE_CHANNEL`', async done => {
+    const oldLastSeen = new Date('2021-12-09T12:36:34.768Z');
+    const member1 = await factory.create<IMemberDoc>('Member', {
+      user_id: userIds[0],
+      last_seen: oldLastSeen,
+    });
+    const member2 = await factory.create<IMemberDoc>('Member', {
+      user_id: userIds[1],
+      last_seen: oldLastSeen,
+    });
+    const channel = await factory.create<IChannelDoc>(
+      'Channel',
+      {
+        members: new Types.DocumentArray([member1, member2]),
+      },
+      { membersLen: 2 },
+    );
+
+    sockets[0].open();
+
+    sockets[0].on(SOCKET_EVENTS.SOCKET_CONNECT, () => {
+      sockets[0].on(SOCKET_EVENTS.IO_SET_LAST_SEEN, async data => {
+        expect(data.channel_id).toBe(channel._id.toString());
+        expect(data.user_id).toBe(userIds[1]);
+        expect(data.last_seen).toBeTruthy();
+
+        const client = ioServer.getClient(userIds[1]);
+        expect(client.currentChannelId).toBe(channel._id.toString());
+
+        const updatedChannel = (await Channel.findOne({
+          _id: channel._id,
+        })) as IChannelDoc;
+
+        expect(updatedChannel.members[1].last_seen).not.toBe(oldLastSeen);
+
+        done();
+      });
+    });
+
+    sockets[1].open();
+
+    sockets[1].on(SOCKET_EVENTS.SOCKET_CONNECT, async () => {
+      sockets[1].emit(SOCKET_EVENTS.IO_SET_ACTIVE_CHANNEL, {
+        channel_id: channel._id,
+      });
+    });
+  });
+
+  it('should be able to handle `IO_SET_LAST_SEEN`', async done => {
+    const oldLastSeen = new Date('2021-12-09T12:36:34.768Z');
+    const member1 = await factory.create<IMemberDoc>('Member', {
+      user_id: userIds[0],
+      last_seen: oldLastSeen,
+    });
+    const member2 = await factory.create<IMemberDoc>('Member', {
+      user_id: userIds[1],
+      last_seen: oldLastSeen,
+    });
+    const channel = await factory.create<IChannelDoc>(
+      'Channel',
+      {
+        members: new Types.DocumentArray([member1, member2]),
+      },
+      { membersLen: 2 },
+    );
+
+    sockets[0].open();
+
+    sockets[0].on(SOCKET_EVENTS.SOCKET_CONNECT, () => {
+      sockets[0].on(SOCKET_EVENTS.IO_SET_LAST_SEEN, async data => {
+        expect(data.channel_id).toBe(channel._id.toString());
+        expect(data.user_id).toBe(userIds[1]);
+        expect(data.last_seen).toBeTruthy();
+
+        const updatedChannel = (await Channel.findOne({
+          _id: channel._id,
+        })) as IChannelDoc;
+
+        expect(updatedChannel.members[1].last_seen).not.toBe(oldLastSeen);
+
+        done();
+      });
+    });
+
+    sockets[1].open();
+
+    sockets[1].on(SOCKET_EVENTS.SOCKET_CONNECT, async () => {
+      sockets[1].emit(SOCKET_EVENTS.IO_SET_LAST_SEEN, {
+        channel_id: channel._id,
+      });
+    });
+  });
+
+  it('should be able to handle `IO_USER_STATUS_CHANGED`', async done => {
+    const user1Status = (await User.findOne({ _id: userIds[1] }, { status: 1 }))
+      ?.status as TUserStatus;
+    const newStatus: TUserStatus = Object.values(USER_STATUS).filter(
+      status => status !== user1Status,
+    )[0];
+
+    sockets[0].open();
+
+    sockets[0].on(SOCKET_EVENTS.SOCKET_CONNECT, () => {
+      sockets[0].on(SOCKET_EVENTS.IO_USER_STATUS_CHANGED, async data => {
+        expect(data.user_id).toBe(userIds[1]);
+        expect(data.newStatus).toBe(newStatus);
+        done();
+      });
+    });
+
+    sockets[1].open();
+
+    sockets[1].on(SOCKET_EVENTS.SOCKET_CONNECT, async () => {
+      sockets[1].emit(SOCKET_EVENTS.IO_USER_STATUS_CHANGED, {
+        newStatus,
       });
     });
   });

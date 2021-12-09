@@ -1,6 +1,6 @@
-import { openConnection, getConnection, closeConnection } from '../test-setup';
+import { openConnection, getConnection, closeConnection } from '~t/test-setup';
 
-describe('db', () => {
+describe('DbService', () => {
   afterEach(async () => {
     await closeConnection();
   });

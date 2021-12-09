@@ -7,7 +7,7 @@ import { setupDB } from '~t/test-setup';
 
 const VALID_TOKEN = '123456789';
 
-describe('mailer', () => {
+describe('MailService', () => {
   setupDB();
 
   afterEach(() => {
