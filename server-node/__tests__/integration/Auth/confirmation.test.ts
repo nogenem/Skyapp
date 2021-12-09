@@ -1,9 +1,11 @@
 import supertest from 'supertest';
 
 import app from '~/app';
+import { IO_NEW_USER } from '~/constants/socket_events';
 import type { ITokenCredentials } from '~/controllers';
-import { User } from '~/models';
+import { IChatUser, User } from '~/models';
 import type { IUserDoc } from '~/models';
+import { IoService } from '~/services';
 import factory from '~t/factories';
 import { setupDB } from '~t/test-setup';
 
@@ -23,11 +25,19 @@ jest.mock('jsonwebtoken', () => ({
 describe('Confirmation', () => {
   setupDB();
 
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   it('should be able to confirm the sign up', async () => {
     const user: IUserDoc = await factory.create<IUserDoc>('User', {
       confirmationToken: VALID_TOKEN,
       confirmed: false,
     });
+
+    const io = IoService.instance();
+    const ioSpy = jest.spyOn(io, 'emit').mockReturnValueOnce(Promise.resolve());
+
     const credentials: ITokenCredentials = {
       token: user.confirmationToken as string,
     };
@@ -38,6 +48,10 @@ describe('Confirmation', () => {
     const userRecord = (await User.findOne({ email: user.email })) as IUserDoc;
     expect(userRecord.confirmationToken).toBe('');
     expect(userRecord.confirmed).toBe(true);
+
+    expect(ioSpy).toHaveBeenCalled();
+    expect(ioSpy.mock.calls[0][0]).toBe(IO_NEW_USER);
+    expect((ioSpy.mock.calls[0][1] as IChatUser)._id).toBe(user._id.toString());
   });
 
   it('should not be able to confirm with invalid token', async () => {
@@ -62,6 +76,10 @@ describe('Confirmation', () => {
       confirmationToken: VALID_TOKEN,
       confirmed: false,
     });
+
+    const io = IoService.instance();
+    jest.spyOn(io, 'emit').mockReturnValueOnce(Promise.resolve());
+
     const credentials: ITokenCredentials = {
       token: user.confirmationToken as string,
     };

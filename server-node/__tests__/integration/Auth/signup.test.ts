@@ -1,10 +1,10 @@
-import nodemailer, { Transporter } from 'nodemailer';
 import supertest from 'supertest';
 
 import app from '~/app';
 import type { ISignUpCredentials } from '~/controllers';
 import { User } from '~/models';
 import type { IUser, IUserDoc } from '~/models';
+import { MailService } from '~/services';
 import factory from '~t/factories';
 import { setupDB } from '~t/test-setup';
 
@@ -31,6 +31,11 @@ describe('Signup', () => {
       {},
       { password: '123456' },
     );
+
+    const mailSpy = jest
+      .spyOn(MailService, 'sendConfirmationEmail')
+      .mockReturnValueOnce(Promise.resolve());
+
     const credentials: ISignUpCredentials = {
       nickname: user.nickname,
       email: user.email,
@@ -38,16 +43,11 @@ describe('Signup', () => {
       passwordConfirmation: user.passwordConfirmation as string,
     };
 
-    const mockedReturn = {
-      sendMail: jest.fn(() => Promise.resolve()),
-    } as unknown as Transporter;
-    jest.spyOn(nodemailer, 'createTransport').mockReturnValueOnce(mockedReturn);
-
     const res = await request.post('/api/auth/signup').send(credentials);
 
     expect(res.status).toBe(201);
 
-    expect(mockedReturn.sendMail).toHaveBeenCalled();
+    expect(mailSpy).toHaveBeenCalled();
 
     const userRecord = (await User.findOne({ email: user.email })) as IUserDoc;
     expect(userRecord).toBeTruthy();

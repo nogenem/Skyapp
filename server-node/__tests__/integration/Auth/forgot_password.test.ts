@@ -1,10 +1,10 @@
-import nodemailer, { Transporter } from 'nodemailer';
 import supertest from 'supertest';
 
 import app from '~/app';
 import type { IForgotPasswordCredentials } from '~/controllers';
 import { User } from '~/models';
 import type { IUserDoc } from '~/models';
+import { MailService } from '~/services';
 import factory from '~t/factories';
 import { setupDB } from '~t/test-setup';
 
@@ -33,14 +33,14 @@ describe('Forgot_Password', () => {
 
   it('should be able to send a reset password email', async () => {
     await factory.create<IUserDoc>('User', { email: VALID_EMAIL });
+
+    const mailSpy = jest
+      .spyOn(MailService, 'sendResetPasswordEmail')
+      .mockReturnValueOnce(Promise.resolve());
+
     const credentials: IForgotPasswordCredentials = {
       email: VALID_EMAIL,
     };
-
-    const mockedReturn = {
-      sendMail: jest.fn(() => Promise.resolve()),
-    } as unknown as Transporter;
-    jest.spyOn(nodemailer, 'createTransport').mockReturnValueOnce(mockedReturn);
 
     const res = await request
       .post('/api/auth/forgot_password')
@@ -48,7 +48,7 @@ describe('Forgot_Password', () => {
 
     expect(res.status).toBe(200);
 
-    expect(mockedReturn.sendMail).toHaveBeenCalled();
+    expect(mailSpy).toHaveBeenCalled();
 
     const userRecord = (await User.findOne({
       resetPasswordToken: NEW_VALID_TOKEN,
@@ -58,14 +58,12 @@ describe('Forgot_Password', () => {
 
   it('should not be able to send a reset password email to an invalid email', async () => {
     await factory.create<IUserDoc>('User', { email: VALID_EMAIL });
+
+    const mailSpy = jest.spyOn(MailService, 'sendResetPasswordEmail');
+
     const credentials: IForgotPasswordCredentials = {
       email: INVALID_EMAIL,
     };
-
-    const mockedReturn = {
-      sendMail: jest.fn(() => Promise.resolve()),
-    } as unknown as Transporter;
-    jest.spyOn(nodemailer, 'createTransport').mockReturnValueOnce(mockedReturn);
 
     const res = await request
       .post('/api/auth/forgot_password')
@@ -73,7 +71,7 @@ describe('Forgot_Password', () => {
 
     expect(res.status).toBe(400);
 
-    expect(mockedReturn.sendMail).not.toHaveBeenCalled();
+    expect(mailSpy).not.toHaveBeenCalled();
   });
 
   it('should not be able to send a reset password email when already has a valid token in the database', async () => {
@@ -81,14 +79,12 @@ describe('Forgot_Password', () => {
       email: VALID_EMAIL,
       resetPasswordToken: VALID_TOKEN,
     });
+
+    const mailSpy = jest.spyOn(MailService, 'sendResetPasswordEmail');
+
     const credentials: IForgotPasswordCredentials = {
       email: VALID_EMAIL,
     };
-
-    const mockedReturn = {
-      sendMail: jest.fn(() => Promise.resolve()),
-    } as unknown as Transporter;
-    jest.spyOn(nodemailer, 'createTransport').mockReturnValueOnce(mockedReturn);
 
     const res = await request
       .post('/api/auth/forgot_password')
@@ -96,6 +92,6 @@ describe('Forgot_Password', () => {
 
     expect(res.status).toBe(400);
 
-    expect(mockedReturn.sendMail).not.toHaveBeenCalled();
+    expect(mailSpy).not.toHaveBeenCalled();
   });
 });

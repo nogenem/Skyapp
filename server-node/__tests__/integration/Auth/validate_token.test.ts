@@ -21,14 +21,15 @@ describe('Validate_Token', () => {
 
   it('should be able to validate with a valid token', async () => {
     const user: IUserDoc = await factory.create<IUserDoc>('User');
-    const credentials: ITokenCredentials = {
-      token: VALID_TOKEN,
-    };
 
     jest.spyOn(jsonwebtoken, 'verify').mockImplementation(token => {
       if (token === VALID_TOKEN) return { _id: user._id };
       throw new Error();
     });
+
+    const credentials: ITokenCredentials = {
+      token: VALID_TOKEN,
+    };
 
     const res = await request
       .post('/api/auth/validate_token')
@@ -40,14 +41,15 @@ describe('Validate_Token', () => {
 
   it('should not be able to validate with a valid token', async () => {
     const user: IUserDoc = await factory.create<IUserDoc>('User');
-    const credentials: ITokenCredentials = {
-      token: INVALID_TOKEN,
-    };
 
     jest.spyOn(jsonwebtoken, 'verify').mockImplementation(token => {
       if (token === VALID_TOKEN) return { _id: user._id };
       throw new Error();
     });
+
+    const credentials: ITokenCredentials = {
+      token: INVALID_TOKEN,
+    };
 
     const res = await request
       .post('/api/auth/validate_token')

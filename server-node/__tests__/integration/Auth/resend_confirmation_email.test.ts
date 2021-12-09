@@ -1,10 +1,10 @@
-import nodemailer, { Transporter } from 'nodemailer';
 import supertest from 'supertest';
 
 import app from '~/app';
 import type { ITokenCredentials } from '~/controllers';
 import { User } from '~/models';
 import type { IUser, IUserDoc } from '~/models';
+import { MailService } from '~/services';
 import factory from '~t/factories';
 import { setupDB } from '~t/test-setup';
 
@@ -35,10 +35,9 @@ describe('Resend_Confirmation_Email', () => {
       token: INVALID_TOKEN,
     };
 
-    const mockedReturn = {
-      sendMail: jest.fn(() => Promise.resolve()),
-    } as unknown as Transporter;
-    jest.spyOn(nodemailer, 'createTransport').mockReturnValueOnce(mockedReturn);
+    const mailSpy = jest
+      .spyOn(MailService, 'sendConfirmationEmail')
+      .mockReturnValueOnce(Promise.resolve());
 
     const res = await request
       .post('/api/auth/resend_confirmation_email')
@@ -46,7 +45,7 @@ describe('Resend_Confirmation_Email', () => {
 
     expect(res.status).toBe(200);
 
-    expect(mockedReturn.sendMail).toHaveBeenCalled();
+    expect(mailSpy).toHaveBeenCalled();
 
     const userRecord = (await User.findOne({
       confirmationToken: NEW_VALID_TOKEN,
@@ -60,10 +59,7 @@ describe('Resend_Confirmation_Email', () => {
       token: VALID_TOKEN,
     };
 
-    const mockedReturn = {
-      sendMail: jest.fn(() => Promise.resolve()),
-    } as unknown as Transporter;
-    jest.spyOn(nodemailer, 'createTransport').mockReturnValueOnce(mockedReturn);
+    const mailSpy = jest.spyOn(MailService, 'sendResetPasswordEmail');
 
     const res = await request
       .post('/api/auth/resend_confirmation_email')
@@ -71,7 +67,7 @@ describe('Resend_Confirmation_Email', () => {
 
     expect(res.status).toBe(400);
 
-    expect(mockedReturn.sendMail).not.toHaveBeenCalled();
+    expect(mailSpy).not.toHaveBeenCalled();
 
     const userRecord = (await User.findOne({
       confirmationToken: NEW_VALID_TOKEN,
@@ -85,10 +81,7 @@ describe('Resend_Confirmation_Email', () => {
       token: VALID_TOKEN,
     };
 
-    const mockedReturn = {
-      sendMail: jest.fn(() => Promise.resolve()),
-    } as unknown as Transporter;
-    jest.spyOn(nodemailer, 'createTransport').mockReturnValueOnce(mockedReturn);
+    const mailSpy = jest.spyOn(MailService, 'sendResetPasswordEmail');
 
     const res = await request
       .post('/api/auth/resend_confirmation_email')
@@ -96,7 +89,7 @@ describe('Resend_Confirmation_Email', () => {
 
     expect(res.status).toBe(400);
 
-    expect(mockedReturn.sendMail).not.toHaveBeenCalled();
+    expect(mailSpy).not.toHaveBeenCalled();
 
     const userRecord = (await User.findOne({
       confirmationToken: NEW_VALID_TOKEN,
