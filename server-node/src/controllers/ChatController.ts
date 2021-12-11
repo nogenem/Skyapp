@@ -250,7 +250,7 @@ export default {
     let channel: IChannelDoc | null = null;
     try {
       channel = await Channel.findOne({ _id: channelId });
-      if (!channel) {
+      if (!channel || !channel.is_group) {
         return handleErrors(invalidIdError(), res);
       }
 
@@ -485,6 +485,7 @@ export default {
     req: IAuthRequest,
     res: Response,
   ): Promise<Response<unknown>> {
+    const currentUser = req.currentUser as IUserDoc;
     const {
       channel_id: channelId,
       offset,
@@ -493,6 +494,15 @@ export default {
     } = req.query as unknown as IFetchMessagesCredentials;
 
     try {
+      const channelRecord = await Channel.findOne({
+        _id: channelId,
+        'members.user_id': currentUser._id,
+      });
+
+      if (!channelRecord) {
+        return handleErrors(notMemberOfGroupError(), res);
+      }
+
       const messages = await Message.paginate(
         { channel_id: channelId },
         {
@@ -627,13 +637,18 @@ export default {
     const { message_id: messageId, newBody } =
       req.body as unknown as IEditMessageCredentials;
     const currentUser = req.currentUser as IUserDoc;
+    let messageRecord: IMessageDoc | null = null;
 
-    // You can only edit YOUR TEXT message
-    const messageRecord = await Message.findOneAndUpdate(
-      { _id: messageId, from_id: currentUser._id, type: MESSAGE_TYPES.TEXT },
-      { body: newBody },
-      { new: true },
-    );
+    try {
+      // You can only edit YOUR TEXT message
+      messageRecord = await Message.findOneAndUpdate(
+        { _id: messageId, from_id: currentUser._id, type: MESSAGE_TYPES.TEXT },
+        { body: newBody },
+        { new: true },
+      );
+    } catch (err) {
+      return handleErrors(err as Error, res);
+    }
 
     if (messageRecord) {
       const messageJson = messageRecord.toChatMessage();
@@ -662,14 +677,18 @@ export default {
   ): Promise<Response<unknown>> {
     const messageId = req.params.message_id;
     const currentUser = req.currentUser as IUserDoc;
+    let messageRecord: IMessageDoc | null = null;
 
-    const messageRecord = await Message.findOne({
-      _id: messageId,
-      from_id: currentUser._id,
-    });
-
-    if (!messageRecord) {
-      return handleErrors(invalidIdError(), res);
+    try {
+      messageRecord = await Message.findOne({
+        _id: messageId,
+        from_id: currentUser._id,
+      });
+      if (!messageRecord) {
+        return handleErrors(invalidIdError(), res);
+      }
+    } catch (err) {
+      return handleErrors(err as Error, res);
     }
 
     await Message.deleteOne({ _id: messageId, from_id: currentUser._id });
@@ -709,4 +728,13 @@ export default {
       lastMessage: lastMessageJson,
     });
   },
+};
+
+export type {
+  INewGroupCredentials,
+  IUpdateGroupCredentials,
+  ILeaveGroupCredentials,
+  IFetchMessagesCredentials,
+  ISendMessageCredentials,
+  IEditMessageCredentials,
 };

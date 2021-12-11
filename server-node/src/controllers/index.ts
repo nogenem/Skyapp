@@ -8,6 +8,14 @@ export type {
 } from './AuthController';
 
 export { default as ChatController } from './ChatController';
+export type {
+  INewGroupCredentials,
+  IUpdateGroupCredentials,
+  ILeaveGroupCredentials,
+  IFetchMessagesCredentials,
+  ISendMessageCredentials,
+  IEditMessageCredentials,
+} from './ChatController';
 
 export { default as UserController } from './UserController';
 export type {
