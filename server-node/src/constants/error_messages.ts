@@ -18,8 +18,10 @@ export const NO_USER_WITH_SUCH_EMAIL = 'There is no user with such email';
 export const NO_TOKEN = 'Token not provided';
 export const INVALID_USER_STATUS = 'Invalid user status';
 export const CHANNEL_ALREADY_EXISTS = 'Channel already exists';
-export const NEED_AT_LEAST_2_MEMBERS_TO_CREATE_GROUP =
-  'You need at least 2 members to create a group';
+export const groupHasTooFewMembers = (n: number): TTranslatableError => ({
+  msg: 'You need at least {{count}} member to create a group',
+  params: { count: n },
+});
 export const USER_IS_NOT_GROUP_ADM =
   'You are not an administrator of this group';
 export const NOT_MEMBER_OF_GROUP = 'You are not a member of this group';
@@ -35,5 +37,9 @@ export const uploadHasTooManyFiles = (n: number): TTranslatableError => ({
   params: { count: n },
 });
 export const CANT_EDIT_THIS_MESSAGE = "You can't edit this message";
+export const CANT_UPDATE_THIS_GROUP_CHANNEL =
+  "You can't update this group channel";
+export const CANT_LEAVE_THIS_CHANNEL = "You can't leave this channel";
+export const CANT_DELETE_THIS_MESSAGE = "You can't delete this message";
 
 export type { TTranslatableError };

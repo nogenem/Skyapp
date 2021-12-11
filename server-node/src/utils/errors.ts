@@ -11,8 +11,13 @@ import {
   USER_IS_NOT_GROUP_ADM,
   NOT_MEMBER_OF_GROUP,
   CANT_EDIT_THIS_MESSAGE,
+  groupHasTooFewMembers,
+  CANT_UPDATE_THIS_GROUP_CHANNEL,
+  CANT_LEAVE_THIS_CHANNEL,
+  CANT_DELETE_THIS_MESSAGE,
 } from '~/constants/error_messages';
 import type { TTranslatableError } from '~/constants/error_messages';
+import { MIN_GROUP_CHANNEL_MEMBERS } from '~/constants/validation_limits';
 
 interface IMsgObj<T> {
   [x: string]: T;
@@ -89,3 +94,15 @@ export const multerErrors = (
 
 export const cantEditThisMessageError = (): CustomError =>
   new CustomError({ global: CANT_EDIT_THIS_MESSAGE });
+
+export const groupHasTooFewMembersError = (): CustomError =>
+  new CustomError({ global: groupHasTooFewMembers(MIN_GROUP_CHANNEL_MEMBERS) });
+
+export const cantUpdateThisGroupChannelError = (): CustomError =>
+  new CustomError({ global: CANT_UPDATE_THIS_GROUP_CHANNEL });
+
+export const cantLeaveThisChannelError = (): CustomError =>
+  new CustomError({ global: CANT_LEAVE_THIS_CHANNEL });
+
+export const cantDeleteThisMessageError = (): CustomError =>
+  new CustomError({ global: CANT_DELETE_THIS_MESSAGE });

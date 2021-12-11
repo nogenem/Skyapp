@@ -38,11 +38,7 @@ describe('Create_Group_Channel', () => {
 
     const credentials: INewGroupCredentials = {
       name: groupName,
-      members: [
-        user1._id.toString(),
-        user2._id.toString(),
-        user3._id.toString(),
-      ],
+      members: [user2._id.toString(), user3._id.toString()],
       admins: [user1._id.toString()],
     };
 
@@ -76,5 +72,27 @@ describe('Create_Group_Channel', () => {
     expect((ioSpy.mock.calls[0][1] as IChatChannel)._id).toBe(
       channelRecord._id.toString(),
     );
+  });
+
+  it('should not be able to create a new group channel with invalid member_ids', async () => {
+    const user: IUserDoc = await factory.create<IUserDoc>('User');
+
+    jest.spyOn(jsonwebtoken, 'verify').mockImplementation(token => {
+      if (token === VALID_TOKEN) return { _id: user._id };
+      throw new Error();
+    });
+
+    const credentials: INewGroupCredentials = {
+      name: 'Group 1',
+      members: ['some-user-id-1', 'some-user-id-2'],
+      admins: [user._id.toString()],
+    };
+
+    const res = await request
+      .post('/api/chat/group')
+      .set('authorization', `Bearer ${VALID_TOKEN}`)
+      .send(credentials);
+
+    expect(res.status).toBe(400);
   });
 });

@@ -56,4 +56,24 @@ describe('Get_Messages', () => {
 
     expect(res.status).toBe(400);
   });
+
+  it('should not be able to get the messages from a channel that you are not a member of', async () => {
+    const user: IUserDoc = await factory.create<IUserDoc>('User');
+    const channel = await factory.create<IChannelDoc>('Channel');
+    await factory.create<IMessageDoc>('Message', {
+      channel_id: channel._id.toString(),
+    });
+
+    jest.spyOn(jsonwebtoken, 'verify').mockImplementation(token => {
+      if (token === VALID_TOKEN) return { _id: user._id };
+      throw new Error();
+    });
+
+    const res = await request
+      .get(`/api/chat/messages?channel_id=${channel._id.toString()}&offset=0`)
+      .set('authorization', `Bearer ${VALID_TOKEN}`)
+      .send();
+
+    expect(res.status).toBe(400);
+  });
 });

@@ -22,6 +22,7 @@ import {
   IO_MESSAGE_EDITED,
   IO_MESSAGE_DELETED,
 } from '~/constants/socket_events';
+import { MIN_GROUP_CHANNEL_MEMBERS } from '~/constants/validation_limits';
 import type { IAuthRequest } from '~/middlewares/auth';
 import {
   Channel,
@@ -36,8 +37,12 @@ import {
 } from '~/models';
 import { IoService } from '~/services';
 import {
+  cantDeleteThisMessageError,
   cantEditThisMessageError,
+  cantLeaveThisChannelError,
+  cantUpdateThisGroupChannelError,
   channelAlreadyExistsError,
+  groupHasTooFewMembersError,
   invalidIdError,
   notMemberOfGroupError,
   userIsNotGroupAdmError,
@@ -103,29 +108,24 @@ export default {
   ): Promise<Response<unknown>> {
     const { _id } = req.body;
     const currentUser = req.currentUser as IUserDoc;
-    let user;
 
     try {
-      user = await User.findOne({ _id });
+      const user = await User.findOne({ _id });
       if (!user) {
         return handleErrors(invalidIdError(), res);
       }
 
-      const channel = await Channel.findOne({
+      const alreadyExistingChannel = await Channel.findOne({
         $and: [
           { is_group: false },
           { 'members.user_id': currentUser._id },
           { 'members.user_id': user._id },
         ],
       });
-      if (channel) {
+      if (alreadyExistingChannel) {
         return handleErrors(channelAlreadyExistsError(), res);
       }
-    } catch (err) {
-      return handleErrors(err as Error, res);
-    }
 
-    try {
       const channel = new Channel({
         name: 'private channel',
         is_group: false,
@@ -172,6 +172,13 @@ export default {
         { _id: { $in: membersIds } },
         { nickname: 1 },
       );
+
+      if (
+        !membersRecords ||
+        membersRecords.length < MIN_GROUP_CHANNEL_MEMBERS
+      ) {
+        return handleErrors(groupHasTooFewMembersError(), res);
+      }
 
       const adminsIdsObj = {} as { [id: string]: boolean };
       adminsIds.forEach(id => {
@@ -247,11 +254,10 @@ export default {
     } = req.body as IUpdateGroupCredentials;
     const currentUser = req.currentUser as IUserDoc;
 
-    let channel: IChannelDoc | null = null;
     try {
-      channel = await Channel.findOne({ _id: channelId });
+      const channel = await Channel.findOne({ _id: channelId });
       if (!channel || !channel.is_group) {
-        return handleErrors(invalidIdError(), res);
+        return handleErrors(cantUpdateThisGroupChannelError(), res);
       }
 
       const membersIdsObj = {} as { [id: string]: boolean };
@@ -308,6 +314,18 @@ export default {
         newMembers.push(id);
         if (adminsIdsObj[id]) newAdmins.push(id);
       });
+
+      // PS: - 1 cause of the user that is already updating this group
+      const updatedMembersCount =
+        (await User.countDocuments({
+          _id: { $in: members.map(member => member.user_id) },
+        })) - 1;
+      if (
+        !updatedMembersCount ||
+        updatedMembersCount < MIN_GROUP_CHANNEL_MEMBERS
+      ) {
+        return handleErrors(groupHasTooFewMembersError(), res);
+      }
 
       const membersRecords = await User.find(
         {
@@ -399,12 +417,11 @@ export default {
     const currentUser = req.currentUser as IUserDoc;
     const userId = currentUser._id.toString();
 
-    let channel: IChannelDoc | null = null;
     try {
-      channel = await Channel.findOne({ _id: channelId });
+      const channel = await Channel.findOne({ _id: channelId });
 
       if (!channel || !channel.is_group) {
-        return handleErrors(invalidIdError(), res);
+        return handleErrors(cantLeaveThisChannelError(), res);
       }
 
       let hasOtherAdm = false;
@@ -423,6 +440,8 @@ export default {
         return handleErrors(notMemberOfGroupError(), res);
       }
 
+      channel.members.pull(memberId);
+
       if (channel.members.length === 1) {
         const channelJson = channel.toChatChannel();
 
@@ -434,8 +453,6 @@ export default {
           members: [userId],
         });
       } else {
-        channel.members.pull(memberId);
-
         const newAdmins: IMemberDoc[] = [];
         if (memberIsAdm && !hasOtherAdm) {
           channel.members.forEach(m => {
@@ -515,6 +532,7 @@ export default {
       if (!messages) {
         return handleErrors(invalidIdError(), res);
       }
+
       return res.status(200).json(messages);
     } catch (err) {
       return handleErrors(err as Error, res);
@@ -527,25 +545,20 @@ export default {
     const { channel_id: channelId, body } =
       req.body as unknown as ISendMessageCredentials;
     const currentUser = req.currentUser as IUserDoc;
-    let channel: IChannelDoc | null = null;
 
     try {
-      channel = await Channel.findOne({ _id: channelId });
+      const channel = await Channel.findOne({ _id: channelId });
       if (!channel) {
         return handleErrors(invalidIdError(), res);
       }
-    } catch (err) {
-      return handleErrors(err as Error, res);
-    }
 
-    const msgObj = new Message({
-      channel_id: channelId,
-      from_id: currentUser._id,
-      body,
-      type: MESSAGE_TYPES.TEXT,
-    });
+      const msgObj = new Message({
+        channel_id: channelId,
+        from_id: currentUser._id,
+        body,
+        type: MESSAGE_TYPES.TEXT,
+      });
 
-    try {
       const channelJson = channel.toChatChannel();
       const messageRecord = (await msgObj.save()) as IMessageDoc;
       const messageJson = messageRecord.toChatMessage();
@@ -573,62 +586,63 @@ export default {
       channel_id: string;
     };
     const currentUser = req.currentUser as IUserDoc;
-    let channel: IChannelDoc | null = null;
 
     try {
-      channel = await Channel.findOne({ _id: channelId });
+      const channel = await Channel.findOne({ _id: channelId });
       if (!channel) {
         return handleErrors(invalidIdError(), res);
       }
+
+      const reqFiles = req?.files as Express.Multer.File[];
+      const files: IAttachment[] = [];
+      reqFiles.forEach(file => {
+        const path = file.path.replace(/\\/gi, '/');
+        let imageDimensions;
+        if (file.mimetype.startsWith('image/')) {
+          const dimensions = sizeOfImage(path);
+          imageDimensions = {
+            width: dimensions.width || 0,
+            height: dimensions.height || 0,
+          };
+        }
+
+        files.push({
+          originalName: file.originalname,
+          size: file.size,
+          path,
+          mimeType: file.mimetype,
+          imageDimensions,
+        });
+      });
+
+      const messages: IMessage[] = [];
+      files.forEach(file => {
+        messages.push({
+          channel_id: channel._id as string,
+          from_id: currentUser._id,
+          body: file,
+          type: MESSAGE_TYPES.UPLOADED_FILE,
+        });
+      });
+
+      const channelJson = channel.toChatChannel();
+      const messagesRecord = await insertManyMessages(messages);
+      const messageJson = messagesRecord.map(message =>
+        message.toChatMessage(),
+      );
+
+      const io = IoService.instance();
+      io.emit(IO_MESSAGES_RECEIVED, {
+        channel: channelJson,
+        messages: messageJson,
+      });
+      return res.status(200).json({
+        message: FILES_UPLOADED,
+        messagesObjs: messageJson,
+      });
     } catch (err) {
       return handleErrors(err as Error, res);
     }
-
-    const reqFiles = req?.files as Express.Multer.File[];
-    const files: IAttachment[] = [];
-    reqFiles.forEach(file => {
-      const path = file.path.replace(/\\/gi, '/');
-      let imageDimensions;
-      if (file.mimetype.startsWith('image/')) {
-        const dimensions = sizeOfImage(path);
-        imageDimensions = {
-          width: dimensions.width || 0,
-          height: dimensions.height || 0,
-        };
-      }
-
-      files.push({
-        originalName: file.originalname,
-        size: file.size,
-        path,
-        mimeType: file.mimetype,
-        imageDimensions,
-      });
-    });
-
-    const messages: IMessage[] = [];
-    files.forEach(file => {
-      messages.push({
-        channel_id: channel?._id as string,
-        from_id: currentUser._id,
-        body: file,
-        type: MESSAGE_TYPES.UPLOADED_FILE,
-      });
-    });
-
-    const channelJson = channel.toChatChannel();
-    const messagesRecord = await insertManyMessages(messages);
-    const messageJson = messagesRecord.map(message => message.toChatMessage());
-
-    const io = IoService.instance();
-    io.emit(IO_MESSAGES_RECEIVED, {
-      channel: channelJson,
-      messages: messageJson,
-    });
-    return res.status(200).json({
-      message: FILES_UPLOADED,
-      messagesObjs: messageJson,
-    });
   },
   async editMessage(
     req: IAuthRequest,
@@ -637,20 +651,18 @@ export default {
     const { message_id: messageId, newBody } =
       req.body as unknown as IEditMessageCredentials;
     const currentUser = req.currentUser as IUserDoc;
-    let messageRecord: IMessageDoc | null = null;
 
     try {
       // You can only edit YOUR TEXT message
-      messageRecord = await Message.findOneAndUpdate(
+      const messageRecord = await Message.findOneAndUpdate(
         { _id: messageId, from_id: currentUser._id, type: MESSAGE_TYPES.TEXT },
         { body: newBody },
         { new: true },
       );
-    } catch (err) {
-      return handleErrors(err as Error, res);
-    }
+      if (!messageRecord) {
+        return handleErrors(cantEditThisMessageError(), res);
+      }
 
-    if (messageRecord) {
       const messageJson = messageRecord.toChatMessage();
       const channelRecord = (await Channel.findOne({
         _id: messageJson.channel_id,
@@ -667,9 +679,9 @@ export default {
         message: MESSAGE_EDITED,
         messageObj: messageJson,
       });
+    } catch (err) {
+      return handleErrors(err as Error, res);
     }
-
-    return handleErrors(cantEditThisMessageError(), res);
   },
   async deleteMessage(
     req: IAuthRequest,
@@ -677,56 +689,55 @@ export default {
   ): Promise<Response<unknown>> {
     const messageId = req.params.message_id;
     const currentUser = req.currentUser as IUserDoc;
-    let messageRecord: IMessageDoc | null = null;
 
     try {
-      messageRecord = await Message.findOne({
+      const messageRecord = await Message.findOne({
         _id: messageId,
         from_id: currentUser._id,
       });
       if (!messageRecord) {
-        return handleErrors(invalidIdError(), res);
+        return handleErrors(cantDeleteThisMessageError(), res);
       }
+
+      await Message.deleteOne({ _id: messageId, from_id: currentUser._id });
+
+      if (messageRecord.type === MESSAGE_TYPES.UPLOADED_FILE) {
+        const body = messageRecord.body as IAttachment;
+        if (fs.existsSync(body.path)) {
+          fs.unlinkSync(body.path);
+        }
+      }
+
+      const lastMessageRecord = await Message.findOne(
+        { channel_id: messageRecord.channel_id },
+        null,
+        {
+          sort: '-createdAt',
+        },
+      );
+
+      const messageJson = messageRecord.toChatMessage();
+      const lastMessageJson = lastMessageRecord?.toChatMessage();
+      const channelRecord = (await Channel.findOne({
+        _id: messageJson.channel_id,
+      })) as IChannelDoc;
+      const channelJson = channelRecord.toChatChannel();
+
+      const io = IoService.instance();
+
+      await io.emit(IO_MESSAGE_DELETED, {
+        channel: channelJson,
+        message: messageJson,
+        lastMessage: lastMessageJson,
+      });
+      return res.status(200).json({
+        message: MESSAGE_DELETED,
+        messageObj: messageJson,
+        lastMessage: lastMessageJson,
+      });
     } catch (err) {
       return handleErrors(err as Error, res);
     }
-
-    await Message.deleteOne({ _id: messageId, from_id: currentUser._id });
-
-    if (messageRecord.type === MESSAGE_TYPES.UPLOADED_FILE) {
-      const body = messageRecord.body as IAttachment;
-      if (fs.existsSync(body.path)) {
-        fs.unlinkSync(body.path);
-      }
-    }
-
-    const lastMessageRecord = await Message.findOne(
-      { channel_id: messageRecord.channel_id },
-      null,
-      {
-        sort: '-createdAt',
-      },
-    );
-
-    const messageJson = messageRecord.toChatMessage();
-    const lastMessageJson = lastMessageRecord?.toChatMessage();
-    const channelRecord = (await Channel.findOne({
-      _id: messageJson.channel_id,
-    })) as IChannelDoc;
-    const channelJson = channelRecord.toChatChannel();
-
-    const io = IoService.instance();
-
-    await io.emit(IO_MESSAGE_DELETED, {
-      channel: channelJson,
-      message: messageJson,
-      lastMessage: lastMessageJson,
-    });
-    return res.status(200).json({
-      message: MESSAGE_DELETED,
-      messageObj: messageJson,
-      lastMessage: lastMessageJson,
-    });
   },
 };
 

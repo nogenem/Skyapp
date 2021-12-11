@@ -60,12 +60,11 @@ describe('Update_Group_Channel', () => {
       channel_id: channel._id.toString(),
       name: newGroupName, // updated name
       members: [
-        user1Id.toString(),
         user2Id.toString(),
         user4._id.toString(), // updated user
       ],
       // updated admins
-      admins: [user1Id.toString(), user4._id.toString()],
+      admins: [user4._id.toString()],
     };
 
     const res = await request
@@ -108,7 +107,7 @@ describe('Update_Group_Channel', () => {
     const credentials: IUpdateGroupCredentials = {
       channel_id: 'some-channel-id',
       name: 'Updated Group 1',
-      members: [],
+      members: ['some-member-id-1', 'some-member-id-2'],
       admins: [],
     };
 
@@ -136,7 +135,7 @@ describe('Update_Group_Channel', () => {
     const credentials: IUpdateGroupCredentials = {
       channel_id: channel._id.toString(),
       name: 'Updated Group 1',
-      members: [],
+      members: ['some-member-id-1', 'some-member-id-2'],
       admins: [],
     };
 
@@ -174,7 +173,43 @@ describe('Update_Group_Channel', () => {
     const credentials: IUpdateGroupCredentials = {
       channel_id: channel._id.toString(),
       name: 'Updated Group 1',
-      members: [],
+      members: [member2.user_id.toString(), member3.user_id.toString()],
+      admins: [],
+    };
+
+    const res = await request
+      .patch('/api/chat/group')
+      .set('authorization', `Bearer ${VALID_TOKEN}`)
+      .send(credentials);
+
+    expect(res.status).toBe(400);
+  });
+
+  it('should not be able to update a group channel with invalid member_ids', async () => {
+    const member = await factory.create<IMemberDoc>('Member', {
+      is_adm: true,
+    });
+    const channel = await factory.create<IChannelDoc>(
+      'Channel',
+      {
+        name: 'Group 1',
+        members: new Types.DocumentArray([member]),
+        is_group: true,
+      },
+      { membersLen: 0 },
+    );
+
+    const user2: IUserDoc = await factory.create<IUserDoc>('User');
+
+    jest.spyOn(jsonwebtoken, 'verify').mockImplementation(token => {
+      if (token === VALID_TOKEN) return { _id: member.user_id };
+      throw new Error();
+    });
+
+    const credentials: IUpdateGroupCredentials = {
+      channel_id: channel._id.toString(),
+      name: 'Group 1',
+      members: [user2._id.toString(), user2._id.toString()],
       admins: [],
     };
 

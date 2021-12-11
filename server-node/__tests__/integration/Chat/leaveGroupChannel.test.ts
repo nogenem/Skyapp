@@ -85,6 +85,54 @@ describe('Leave_Group_Channel', () => {
     expect(ioSpy.mock.calls[2][0]).toBe(IO_MESSAGES_RECEIVED);
   });
 
+  it('should be able to leave a group channel and if there is less than 2 members left, the channel should be deleted', async () => {
+    const member1 = await factory.create<IMemberDoc>('Member', {
+      is_adm: true,
+    });
+    const member2 = await factory.create<IMemberDoc>('Member', {
+      is_adm: false,
+    });
+
+    const channel = await factory.create<IChannelDoc>(
+      'Channel',
+      {
+        members: new Types.DocumentArray([member1, member2]),
+        is_group: true,
+      },
+      { membersLen: 0 },
+    );
+    const user1Id = member1.user_id.toString();
+    const user2Id = member2.user_id.toString();
+
+    jest.spyOn(jsonwebtoken, 'verify').mockImplementation(token => {
+      if (token === VALID_TOKEN) return { _id: user1Id };
+      throw new Error();
+    });
+
+    const io = IoService.instance();
+    const ioSpy = jest.spyOn(io, 'emit').mockReturnValueOnce(Promise.resolve());
+
+    const credentials: ILeaveGroupCredentials = {
+      channel_id: channel._id.toString(),
+    };
+
+    const res = await request
+      .post('/api/chat/group/leave')
+      .set('authorization', `Bearer ${VALID_TOKEN}`)
+      .send(credentials);
+
+    expect(res.status).toBe(200);
+
+    const channelRecord = (await Channel.findOne({
+      $and: [{ is_group: true }, { 'members.user_id': user2Id }],
+    })) as IChannelDoc;
+
+    expect(channelRecord).toBeFalsy();
+
+    expect(ioSpy).toHaveBeenCalled();
+    expect(ioSpy.mock.calls[0][0]).toBe(IO_REMOVED_FROM_GROUP_CHANNEL);
+  });
+
   it('should not be able to leave a group channel with an invalid `channel_id`', async () => {
     const user: IUserDoc = await factory.create<IUserDoc>('User');
 
@@ -135,7 +183,7 @@ describe('Leave_Group_Channel', () => {
     const channel = await factory.create<IChannelDoc>(
       'Channel',
       {},
-      { membersLen: 2 },
+      { membersLen: 3 },
     );
 
     jest.spyOn(jsonwebtoken, 'verify').mockImplementation(token => {

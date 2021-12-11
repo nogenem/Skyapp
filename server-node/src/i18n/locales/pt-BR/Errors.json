@@ -14,7 +14,8 @@
   "Token not provided": "Token não fornecido",
   "Invalid user status": "Status de usuário inválido",
   "Channel already exists": "Canal já existe",
-  "You need at least 2 members to create a group": "Você precisa de no mínimo 2 membros para criar um grupo",
+  "You need at least {{count}} member to create a group": "Você precisa de no mínimo {{count}} membro para criar um grupo",
+  "You need at least {{count}} member to create a group_plural": "Você precisa de no mínimo {{count}} membros para criar um grupo",
   "You are not an administrator of this group": "Você não é um administrador deste grupo",
   "You are not a member of this group": "Você não é um membro deste grupo",
   "`Offset` query param has to be a number greater or equal to 0": "O parâmetro de query `Offset` tem que ser um número maior ou igual a 0",
@@ -23,5 +24,8 @@
   "Can't upload files bigger than {{count}}MB_plural": "Não é possível fazer upload de arquivos maiores que {{count}}MBs",
   "Can't upload more than {{count}} file at the same time": "Não é possível fazer upload de mais de {{count}} arquivo ao mesmo tempo",
   "Can't upload more than {{count}} file at the same time_plural": "Não é possível fazer upload de mais de {{count}} arquivos ao mesmo tempo",
-  "You can't edit this message": "Você não pode editar essa mensagem"
+  "You can't edit this message": "Você não pode editar essa mensagem",
+  "You can't update this group channel": "Você não pode atualizar esse canal de grupo",
+  "You can't leave this channel": "Você não pode sair desse canal",
+  "You can't delete this message": "Você não pode deletar essa mensagem"
 }

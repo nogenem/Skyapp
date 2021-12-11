@@ -2,9 +2,10 @@ import { body, query } from 'express-validator';
 
 import {
   FIELD_CANT_BE_EMPY,
-  NEED_AT_LEAST_2_MEMBERS_TO_CREATE_GROUP,
+  groupHasTooFewMembers,
   OFFSET_HAS_TO_BE_A_NUMBER_GREATER_OR_EQUAL_TO_0,
 } from '~/constants/error_messages';
+import { MIN_GROUP_CHANNEL_MEMBERS } from '~/constants/validation_limits';
 import { invalidIdError } from '~/utils/errors';
 
 const chat = {
@@ -14,16 +15,16 @@ const chat = {
   createGroupChannel: [
     body('name').trim().not().isEmpty(),
     body('members')
-      .isArray({ min: 2 })
-      .withMessage(NEED_AT_LEAST_2_MEMBERS_TO_CREATE_GROUP),
+      .isArray({ min: MIN_GROUP_CHANNEL_MEMBERS })
+      .withMessage(groupHasTooFewMembers(MIN_GROUP_CHANNEL_MEMBERS)),
     body('admins').isArray(),
   ],
   updateGroupChannel: [
     body('channel_id').trim().not().isEmpty().withMessage(invalidIdError()),
     body('name').trim().not().isEmpty(),
     body('members')
-      .isArray({ min: 2 })
-      .withMessage(NEED_AT_LEAST_2_MEMBERS_TO_CREATE_GROUP),
+      .isArray({ min: MIN_GROUP_CHANNEL_MEMBERS })
+      .withMessage(groupHasTooFewMembers(MIN_GROUP_CHANNEL_MEMBERS)),
     body('admins').isArray(),
   ],
   leaveGroupChannel: [

@@ -14,7 +14,8 @@
   "Token not provided": "Token not provided",
   "Invalid user status": "Invalid user status",
   "Channel already exists": "Channel already exists",
-  "You need at least 2 members to create a group": "You need at least 2 members to create a group",
+  "You need at least {{count}} member to create a group": "You need at least {{count}} member to create a group",
+  "You need at least {{count}} member to create a group_plural": "You need at least {{count}} members to create a group",
   "You are not an administrator of this group": "You are not an administrator of this group",
   "You are not a member of this group": "You are not a member of this group",
   "`Offset` query param has to be a number greater or equal to 0": "`Offset` query param has to be a number greater or equal to 0",
@@ -23,5 +24,8 @@
   "Can't upload files bigger than {{count}}MB_plural": "Can't upload files bigger than {{count}}MBs",
   "Can't upload more than {{count}} file at the same time": "Can't upload more than {{count}} file at the same time",
   "Can't upload more than {{count}} file at the same time_plural": "Can't upload more than {{count}} files at the same time",
-  "You can't edit this message": "You can't edit this message"
+  "You can't edit this message": "You can't edit this message",
+  "You can't update this group channel": "You can't update this group channel",
+  "You can't leave this channel": "You can't leave this channel",
+  "You can't delete this message": "You can't delete this message"
 }
