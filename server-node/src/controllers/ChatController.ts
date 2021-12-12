@@ -149,7 +149,7 @@ export default {
       await io.emit(IO_PRIVATE_CHANNEL_CREATED, channelJson);
 
       return res.status(201).json({
-        message: CHANNEL_CREATED,
+        message: req.t(CHANNEL_CREATED),
         channel_id: channelRecord._id,
       });
     } catch (err) {
@@ -235,7 +235,7 @@ export default {
       await io.emit(IO_GROUP_CHANNEL_CREATED, channelJson);
 
       return res.status(201).json({
-        message: CHANNEL_CREATED,
+        message: req.t(CHANNEL_CREATED),
         channel_id: channelJson._id,
       });
     } catch (err) {
@@ -402,7 +402,7 @@ export default {
       });
 
       return res.status(200).json({
-        message: CHANNEL_UPDATED,
+        message: req.t(CHANNEL_UPDATED),
         channel_id: channelJson._id,
       });
     } catch (err) {
@@ -492,7 +492,7 @@ export default {
       }
 
       return res.status(200).json({
-        message: REMOVED_FROM_GROUP,
+        message: req.t(REMOVED_FROM_GROUP),
       });
     } catch (err) {
       return handleErrors(err as Error, res);
@@ -570,7 +570,7 @@ export default {
         messages: [messageJson],
       });
       return res.status(200).json({
-        message: MESSAGE_SENT,
+        message: req.t(MESSAGE_SENT),
         messageObj: messageJson,
       });
     } catch (err) {
@@ -637,7 +637,7 @@ export default {
         messages: messageJson,
       });
       return res.status(200).json({
-        message: FILES_UPLOADED,
+        message: req.t(FILES_UPLOADED),
         messagesObjs: messageJson,
       });
     } catch (err) {
@@ -676,7 +676,7 @@ export default {
         message: messageJson,
       });
       return res.status(200).json({
-        message: MESSAGE_EDITED,
+        message: req.t(MESSAGE_EDITED),
         messageObj: messageJson,
       });
     } catch (err) {
@@ -731,7 +731,7 @@ export default {
         lastMessage: lastMessageJson,
       });
       return res.status(200).json({
-        message: MESSAGE_DELETED,
+        message: req.t(MESSAGE_DELETED),
         messageObj: messageJson,
         lastMessage: lastMessageJson,
       });
