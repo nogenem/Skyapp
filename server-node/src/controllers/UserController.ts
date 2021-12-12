@@ -31,19 +31,19 @@ export default {
     const user = req.currentUser as IUserDoc;
 
     try {
-      if (user.status !== newStatus) {
-        await User.updateOne({ _id: user._id }, { status: newStatus });
-
-        const io = IoService.instance();
-
-        await io.emit(IO_USER_STATUS_CHANGED, { user_id: user._id, newStatus });
-
-        return res.status(200).json({
-          message: req.t(USER_STATUS_CHANGED),
-        });
+      if (user.status === newStatus) {
+        return res.status(304).json({});
       }
 
-      return res.status(304).json({});
+      await User.updateOne({ _id: user._id }, { status: newStatus });
+
+      const io = IoService.instance();
+
+      await io.emit(IO_USER_STATUS_CHANGED, { user_id: user._id, newStatus });
+
+      return res.status(200).json({
+        message: req.t(USER_STATUS_CHANGED),
+      });
     } catch (err) {
       return handleErrors(err as Error, res);
     }
@@ -56,22 +56,22 @@ export default {
     const user = req.currentUser as IUserDoc;
 
     try {
-      if (user.thoughts !== newThoughts) {
-        await User.updateOne({ _id: user._id }, { thoughts: newThoughts });
-
-        const io = IoService.instance();
-
-        await io.emit(IO_USER_THOUGHTS_CHANGED, {
-          user_id: user._id,
-          newThoughts,
-        });
-
-        return res.status(200).json({
-          message: req.t(USER_THOUGHTS_CHANGED),
-        });
+      if (user.thoughts === newThoughts) {
+        return res.status(304).json({});
       }
 
-      return res.status(304).json({});
+      await User.updateOne({ _id: user._id }, { thoughts: newThoughts });
+
+      const io = IoService.instance();
+
+      await io.emit(IO_USER_THOUGHTS_CHANGED, {
+        user_id: user._id,
+        newThoughts,
+      });
+
+      return res.status(200).json({
+        message: req.t(USER_THOUGHTS_CHANGED),
+      });
     } catch (err) {
       return handleErrors(err as Error, res);
     }
