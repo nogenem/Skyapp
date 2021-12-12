@@ -95,6 +95,11 @@ interface ISendMessageCredentials {
   body: string;
 }
 
+interface ISendFilesCredentials {
+  channel_id: string;
+  files: FormData;
+}
+
 interface IEditMessageCredentials {
   message: IMessage;
   newBody: string;
@@ -221,6 +226,7 @@ export type {
   ILeaveGroupCredentials,
   IFetchMessagesCredentials,
   ISendMessageCredentials,
+  ISendFilesCredentials,
   IEditMessageCredentials,
   IDeleteMessageCredentials,
   IActiveChannelInfo,

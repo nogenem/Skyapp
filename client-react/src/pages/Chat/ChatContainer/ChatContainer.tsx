@@ -86,8 +86,7 @@ const ChatContainer = ({
 
   const handleSendingFiles = (filesData: FormData) => {
     try {
-      filesData.append('channel_id', activeChannelId as string);
-      enqueueSendFileMessages(filesData);
+      enqueueSendFileMessages(activeChannelId as string, filesData);
     } catch (err) {
       console.error(err);
     }

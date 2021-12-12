@@ -164,7 +164,7 @@ describe('ApiService', () => {
         newStatus: USER_STATUS.AWAY,
       };
       const expectedRet = { message: 'success' };
-      adapter.onPost(END_POINTS.user.changeStatus).reply(configs => {
+      adapter.onPatch(END_POINTS.user.changeStatus).reply(configs => {
         // axios-mock-adapter uses stringify on the data ;/
         expect(JSON.stringify(credentials)).toBe(configs.data);
         return [200, expectedRet];
@@ -181,7 +181,7 @@ describe('ApiService', () => {
         newThoughts: 'hello world',
       };
       const expectedRet = { message: 'success' };
-      adapter.onPost(END_POINTS.user.changeThoughts).reply(configs => {
+      adapter.onPatch(END_POINTS.user.changeThoughts).reply(configs => {
         // axios-mock-adapter uses stringify on the data ;/
         expect(JSON.stringify(credentials)).toBe(configs.data);
         return [200, expectedRet];

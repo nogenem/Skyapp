@@ -14,6 +14,7 @@ import {
   IDeleteMessageCredentials,
   IEditMessageCredentials,
   IMessage,
+  ISendFilesCredentials,
   ISendMessageCredentials,
 } from '~/redux/chat/types';
 import store from '~/redux/store';
@@ -24,7 +25,7 @@ import ApiService from './ApiService';
 
 type TToSendMessage =
   | ISendMessageCredentials
-  | FormData
+  | ISendFilesCredentials
   | IEditMessageCredentials
   | IDeleteMessageCredentials;
 interface IQueueEntry {
@@ -67,8 +68,9 @@ class MessageQueueService {
     let channelId: string = '';
 
     if (queueAction === QUEUE_ACTIONS.SEND_FILE_MESSAGES) {
-      const formData = message as FormData;
-      channelId = formData.get('channel_id') as string;
+      const credentials = message as ISendFilesCredentials;
+      const formData = credentials.files;
+      channelId = credentials.channel_id;
       const dateTime = new Date().getTime();
 
       formData.getAll('files').forEach((entry, i) => {
@@ -228,7 +230,7 @@ class MessageQueueService {
     const type = queuedMsgs[0].type;
 
     if (queueAction === QUEUE_ACTIONS.SEND_FILE_MESSAGES) {
-      return ApiService.chat.sendFiles(toSendMsg as FormData);
+      return ApiService.chat.sendFiles(toSendMsg as ISendFilesCredentials);
     } else if (queueAction === QUEUE_ACTIONS.SEND_TEXT_MESSAGE) {
       return ApiService.chat.sendMessage(toSendMsg as ISendMessageCredentials);
     } else if (queueAction === QUEUE_ACTIONS.EDIT_TEXT_MESSAGE) {

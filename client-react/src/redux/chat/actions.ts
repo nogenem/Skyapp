@@ -19,6 +19,7 @@ import type {
   IMessage,
   INewGroupCredentials,
   IOtherUser,
+  ISendFilesCredentials,
   ISendMessageCredentials,
   IUpdateGroupCredentials,
 } from './types';
@@ -254,9 +255,14 @@ export const enqueueSendTextMessage =
     MessageQueueService.enqueue(credentials, QUEUE_ACTIONS.SEND_TEXT_MESSAGE);
   };
 
-export const enqueueSendFileMessages = (filesData: FormData) => () => {
-  MessageQueueService.enqueue(filesData, QUEUE_ACTIONS.SEND_FILE_MESSAGES);
-};
+export const enqueueSendFileMessages =
+  (channel_id: string, filesData: FormData) => () => {
+    const credentials: ISendFilesCredentials = {
+      channel_id,
+      files: filesData,
+    };
+    MessageQueueService.enqueue(credentials, QUEUE_ACTIONS.SEND_FILE_MESSAGES);
+  };
 
 export const enqueueSendEditTextMessage =
   (message: IMessage, newBody: string) => () => {

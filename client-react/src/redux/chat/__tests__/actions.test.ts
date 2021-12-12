@@ -35,6 +35,7 @@ import {
   IMessage,
   INewGroupCredentials,
   IOtherUser,
+  ISendFilesCredentials,
   ISendMessageCredentials,
   IUpdateGroupCredentials,
 } from '../types';
@@ -241,15 +242,21 @@ describe('chat actions', () => {
 
   it('enqueueSendFileMessages', async () => {
     const filesData = new FormData();
+    const channelId = '1';
+
+    const expectedCredentials: ISendFilesCredentials = {
+      channel_id: channelId,
+      files: filesData,
+    };
 
     const spy = jest
       .spyOn(MessageQueueService, 'enqueue')
       .mockImplementationOnce(() => {});
 
-    await enqueueSendFileMessages(filesData)();
+    await enqueueSendFileMessages(channelId, filesData)();
 
     expect(spy).toHaveBeenCalledWith(
-      filesData,
+      expectedCredentials,
       QUEUE_ACTIONS.SEND_FILE_MESSAGES,
     );
   });
