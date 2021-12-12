@@ -27,13 +27,13 @@ const multerUploader = multer({
 
 const routes = Router();
 
-routes.post(
-  '/user/change_status',
+routes.patch(
+  '/user/status',
   validate(user.changeStatus),
   UserController.changeStatus,
 );
-routes.post(
-  '/user/change_thoughts',
+routes.patch(
+  '/user/thoughts',
   validate(user.changeThoughts),
   UserController.changeThoughts,
 );
@@ -49,38 +49,38 @@ routes.post(
   ChatController.createGroupChannel,
 );
 routes.patch(
-  '/chat/group',
+  '/chat/group/:channel_id',
   validate(chat.updateGroupChannel),
   ChatController.updateGroupChannel,
 );
 routes.post(
-  '/chat/group/leave',
+  '/chat/group/:channel_id/leave',
   validate(chat.leaveGroupChannel),
   ChatController.leaveGroupChannel,
 );
 routes.get(
-  '/chat/messages',
+  '/chat/:channel_id/messages',
   validate(chat.getMessages),
   ChatController.getMessages,
 );
 routes.post(
-  '/chat/messages',
+  '/chat/:channel_id/messages',
   validate(chat.sendMessage),
   ChatController.sendMessage,
 );
 routes.post(
-  '/chat/files',
+  '/chat/:channel_id/files',
   validate(chat.sendFiles),
   multerUploader,
   ChatController.sendFiles,
 );
 routes.patch(
-  '/chat/messages',
+  '/chat/:channel_id/messages/:message_id',
   validate(chat.editMessage),
   ChatController.editMessage,
 );
 routes.delete(
-  '/chat/messages/:message_id',
+  '/chat/:channel_id/messages/:message_id',
   validate(chat.deleteMessage),
   ChatController.deleteMessage,
 );

@@ -56,35 +56,22 @@ interface INewGroupCredentials {
 }
 
 interface IUpdateGroupCredentials {
-  // eslint-disable-next-line camelcase
-  channel_id: string;
   name: string;
   members: string[];
   admins: string[];
 }
 
-interface ILeaveGroupCredentials {
-  // eslint-disable-next-line camelcase
-  channel_id: string;
-}
-
 interface IFetchMessagesCredentials {
-  // eslint-disable-next-line camelcase
-  channel_id: string;
   offset: number;
   limit?: number;
   sort?: string;
 }
 
 interface ISendMessageCredentials {
-  // eslint-disable-next-line camelcase
-  channel_id: string;
   body: string;
 }
 
 interface IEditMessageCredentials {
-  // eslint-disable-next-line camelcase
-  message_id: string;
   newBody: string;
 }
 
@@ -246,8 +233,8 @@ export default {
     req: IAuthRequest,
     res: Response,
   ): Promise<Response<unknown>> {
+    const channelId = req.params.channel_id;
     const {
-      channel_id: channelId,
       name,
       members: membersIds,
       admins: adminsIds,
@@ -413,7 +400,7 @@ export default {
     req: IAuthRequest,
     res: Response,
   ): Promise<Response<unknown>> {
-    const { channel_id: channelId } = req.body as ILeaveGroupCredentials;
+    const channelId = req.params.channel_id;
     const currentUser = req.currentUser as IUserDoc;
     const userId = currentUser._id.toString();
 
@@ -502,13 +489,13 @@ export default {
     req: IAuthRequest,
     res: Response,
   ): Promise<Response<unknown>> {
-    const currentUser = req.currentUser as IUserDoc;
+    const channelId = req.params.channel_id;
     const {
-      channel_id: channelId,
       offset,
       limit = 30,
       sort = '-createdAt',
     } = req.query as unknown as IFetchMessagesCredentials;
+    const currentUser = req.currentUser as IUserDoc;
 
     try {
       const channelRecord = await Channel.findOne({
@@ -542,8 +529,8 @@ export default {
     req: IAuthRequest,
     res: Response,
   ): Promise<Response<unknown>> {
-    const { channel_id: channelId, body } =
-      req.body as unknown as ISendMessageCredentials;
+    const channelId = req.params.channel_id;
+    const { body } = req.body as unknown as ISendMessageCredentials;
     const currentUser = req.currentUser as IUserDoc;
 
     try {
@@ -581,10 +568,7 @@ export default {
     req: IAuthRequest,
     res: Response,
   ): Promise<Response<unknown>> {
-    const { channel_id: channelId } = req.body as {
-      // eslint-disable-next-line camelcase
-      channel_id: string;
-    };
+    const channelId = req.params.channel_id;
     const currentUser = req.currentUser as IUserDoc;
 
     try {
@@ -648,14 +632,20 @@ export default {
     req: IAuthRequest,
     res: Response,
   ): Promise<Response<unknown>> {
-    const { message_id: messageId, newBody } =
-      req.body as unknown as IEditMessageCredentials;
+    const channelId = req.params.channel_id;
+    const messageId = req.params.message_id;
+    const { newBody } = req.body as unknown as IEditMessageCredentials;
     const currentUser = req.currentUser as IUserDoc;
 
     try {
       // You can only edit YOUR TEXT message
       const messageRecord = await Message.findOneAndUpdate(
-        { _id: messageId, from_id: currentUser._id, type: MESSAGE_TYPES.TEXT },
+        {
+          _id: messageId,
+          channel_id: channelId,
+          from_id: currentUser._id,
+          type: MESSAGE_TYPES.TEXT,
+        },
         { body: newBody },
         { new: true },
       );
@@ -687,12 +677,15 @@ export default {
     req: IAuthRequest,
     res: Response,
   ): Promise<Response<unknown>> {
+    const channelId = req.params.channel_id;
     const messageId = req.params.message_id;
     const currentUser = req.currentUser as IUserDoc;
 
     try {
+      // You can only edit YOUR message
       const messageRecord = await Message.findOne({
         _id: messageId,
+        channel_id: channelId,
         from_id: currentUser._id,
       });
       if (!messageRecord) {
@@ -744,7 +737,6 @@ export default {
 export type {
   INewGroupCredentials,
   IUpdateGroupCredentials,
-  ILeaveGroupCredentials,
   IFetchMessagesCredentials,
   ISendMessageCredentials,
   IEditMessageCredentials,

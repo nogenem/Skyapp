@@ -30,7 +30,7 @@ describe('Get_Messages', () => {
     });
 
     const res = await request
-      .get(`/api/chat/messages?channel_id=${channel._id.toString()}&offset=0`)
+      .get(`/api/chat/${channel._id.toString()}/messages?offset=0`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send();
 
@@ -50,7 +50,7 @@ describe('Get_Messages', () => {
     });
 
     const res = await request
-      .get(`/api/chat/messages?channel_id=some-channel-id&offset=0`)
+      .get(`/api/chat/some-channel-id/messages?offset=0`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send();
 
@@ -70,7 +70,7 @@ describe('Get_Messages', () => {
     });
 
     const res = await request
-      .get(`/api/chat/messages?channel_id=${channel._id.toString()}&offset=0`)
+      .get(`/api/chat/${channel._id.toString()}/messages?offset=0`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send();
 

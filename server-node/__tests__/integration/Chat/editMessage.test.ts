@@ -40,21 +40,23 @@ describe('Edit_Message', () => {
     const io = IoService.instance();
     const ioSpy = jest.spyOn(io, 'emit').mockReturnValueOnce(Promise.resolve());
 
+    const channelId = channel._id.toString();
+    const messageId = message._id.toString();
     const newBody = 'Some new message';
     const credentials: IEditMessageCredentials = {
-      message_id: message._id.toString(),
       newBody,
     };
 
     const res = await request
-      .patch('/api/chat/messages')
+      .patch(`/api/chat/${channelId}/messages/${messageId}`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send(credentials);
 
     expect(res.status).toBe(200);
 
     const messageRecord = await Message.findOne({
-      channel_id: channel._id.toString(),
+      _id: messageId,
+      channel_id: channelId,
       body: newBody,
     });
 
@@ -62,6 +64,35 @@ describe('Edit_Message', () => {
 
     expect(ioSpy).toHaveBeenCalled();
     expect(ioSpy.mock.calls[0][0]).toBe(IO_MESSAGE_EDITED);
+  });
+
+  it('should not be able to edit a text message with an invalid `channel_id`', async () => {
+    const channel = await factory.create<IChannelDoc>('Channel');
+    const user1Id = channel.members[0].user_id.toString();
+    const message = await factory.create<IMessageDoc>('Message', {
+      body: 'Some message',
+      type: MESSAGE_TYPES.TEXT,
+      channel_id: channel._id.toString(),
+      from_id: user1Id,
+    });
+
+    jest.spyOn(jsonwebtoken, 'verify').mockImplementation(token => {
+      if (token === VALID_TOKEN) return { _id: user1Id };
+      throw new Error();
+    });
+
+    const channelId = 'some-channel-id';
+    const messageId = message._id.toString();
+    const credentials: IEditMessageCredentials = {
+      newBody: 'Some message',
+    };
+
+    const res = await request
+      .patch(`/api/chat/${channelId}/messages/${messageId}`)
+      .set('authorization', `Bearer ${VALID_TOKEN}`)
+      .send(credentials);
+
+    expect(res.status).toBe(400);
   });
 
   it('should not be able to edit a text message with an invalid `message_id`', async () => {
@@ -79,13 +110,14 @@ describe('Edit_Message', () => {
       throw new Error();
     });
 
+    const channelId = channel._id.toString();
+    const messageId = 'some-message-id';
     const credentials: IEditMessageCredentials = {
-      message_id: 'some-message-id',
       newBody: 'Some message',
     };
 
     const res = await request
-      .patch('/api/chat/messages')
+      .patch(`/api/chat/${channelId}/messages/${messageId}`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send(credentials);
 
@@ -107,13 +139,14 @@ describe('Edit_Message', () => {
       throw new Error();
     });
 
+    const channelId = channel._id.toString();
+    const messageId = message._id.toString();
     const credentials: IEditMessageCredentials = {
-      message_id: message._id.toString(),
       newBody: 'Some message',
     };
 
     const res = await request
-      .patch('/api/chat/messages')
+      .patch(`/api/chat/${channelId}/messages/${messageId}`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send(credentials);
 
@@ -135,13 +168,14 @@ describe('Edit_Message', () => {
       throw new Error();
     });
 
+    const channelId = channel._id.toString();
+    const messageId = message._id.toString();
     const credentials: IEditMessageCredentials = {
-      message_id: message._id.toString(),
       newBody: 'Some message',
     };
 
     const res = await request
-      .patch('/api/chat/messages')
+      .patch(`/api/chat/${channelId}/messages/${messageId}`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send(credentials);
 

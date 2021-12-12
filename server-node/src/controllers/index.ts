@@ -11,7 +11,6 @@ export { default as ChatController } from './ChatController';
 export type {
   INewGroupCredentials,
   IUpdateGroupCredentials,
-  ILeaveGroupCredentials,
   IFetchMessagesCredentials,
   ISendMessageCredentials,
   IEditMessageCredentials,

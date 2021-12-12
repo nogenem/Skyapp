@@ -8,7 +8,6 @@ import {
   IO_MESSAGES_RECEIVED,
   IO_REMOVED_FROM_GROUP_CHANNEL,
 } from '~/constants/socket_events';
-import { ILeaveGroupCredentials } from '~/controllers';
 import { Channel } from '~/models';
 import type { IChannelDoc, IMemberDoc, IUserDoc } from '~/models';
 import { IoService } from '~/services';
@@ -57,14 +56,12 @@ describe('Leave_Group_Channel', () => {
     const io = IoService.instance();
     const ioSpy = jest.spyOn(io, 'emit').mockReturnValueOnce(Promise.resolve());
 
-    const credentials: ILeaveGroupCredentials = {
-      channel_id: channel._id.toString(),
-    };
+    const channelId = channel._id.toString();
 
     const res = await request
-      .post('/api/chat/group/leave')
+      .post(`/api/chat/group/${channelId}/leave`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
-      .send(credentials);
+      .send();
 
     expect(res.status).toBe(200);
 
@@ -112,14 +109,12 @@ describe('Leave_Group_Channel', () => {
     const io = IoService.instance();
     const ioSpy = jest.spyOn(io, 'emit').mockReturnValueOnce(Promise.resolve());
 
-    const credentials: ILeaveGroupCredentials = {
-      channel_id: channel._id.toString(),
-    };
+    const channelId = channel._id.toString();
 
     const res = await request
-      .post('/api/chat/group/leave')
+      .post(`/api/chat/group/${channelId}/leave`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
-      .send(credentials);
+      .send();
 
     expect(res.status).toBe(200);
 
@@ -141,14 +136,12 @@ describe('Leave_Group_Channel', () => {
       throw new Error();
     });
 
-    const credentials: ILeaveGroupCredentials = {
-      channel_id: 'some-channel-id',
-    };
+    const channelId = 'some-channel-id';
 
     const res = await request
-      .post('/api/chat/group/leave')
+      .post(`/api/chat/group/${channelId}/leave`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
-      .send(credentials);
+      .send();
 
     expect(res.status).toBe(400);
   });
@@ -166,14 +159,12 @@ describe('Leave_Group_Channel', () => {
       throw new Error();
     });
 
-    const credentials: ILeaveGroupCredentials = {
-      channel_id: channel._id.toString(),
-    };
+    const channelId = channel._id.toString();
 
     const res = await request
-      .post('/api/chat/group/leave')
+      .post(`/api/chat/group/${channelId}/leave`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
-      .send(credentials);
+      .send();
 
     expect(res.status).toBe(400);
   });
@@ -191,14 +182,12 @@ describe('Leave_Group_Channel', () => {
       throw new Error();
     });
 
-    const credentials: ILeaveGroupCredentials = {
-      channel_id: channel._id.toString(),
-    };
+    const channelId = channel._id.toString();
 
     const res = await request
-      .post('/api/chat/group/leave')
+      .post(`/api/chat/group/${channelId}/leave`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
-      .send(credentials);
+      .send();
 
     expect(res.status).toBe(400);
   });

@@ -40,7 +40,7 @@ describe('Change_Thoughts', () => {
     };
 
     const res = await request
-      .post('/api/user/change_thoughts')
+      .patch('/api/user/thoughts')
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send(credentials);
 
@@ -74,7 +74,7 @@ describe('Change_Thoughts', () => {
     };
 
     const res = await request
-      .post('/api/user/change_thoughts')
+      .patch('/api/user/thoughts')
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send(credentials);
 

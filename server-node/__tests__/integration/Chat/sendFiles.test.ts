@@ -14,7 +14,6 @@ jest.mock('multer', () => {
   const ret = () => ({
     array: () => {
       return (req: Request, res: Response, next: NextFunction) => {
-        req.body.channel_id = req.query.channel_id;
         req.files = [
           {
             originalname: 'hello.txt',
@@ -56,13 +55,10 @@ describe('Send_Files', () => {
     const io = IoService.instance();
     const ioSpy = jest.spyOn(io, 'emit').mockReturnValueOnce(Promise.resolve());
 
-    // PS: I dont know how to handle multpart requests inside my multer' mock,
-    // so i had to 'cheese' it, passing the channel_id in the query too ;/
     const channelId = channel._id.toString();
     const res = await request
-      .post(`/api/chat/files?channel_id=${channelId}`)
+      .post(`/api/chat/${channelId}/files`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
-      .field('channel_id', channelId)
       .attach('files', '__tests__/files/hello.txt');
 
     expect(res.status).toBe(200);

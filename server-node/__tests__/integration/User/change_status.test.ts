@@ -41,7 +41,7 @@ describe('Change_Status', () => {
     };
 
     const res = await request
-      .post('/api/user/change_status')
+      .patch('/api/user/status')
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send(credentials);
 
@@ -75,7 +75,7 @@ describe('Change_Status', () => {
     };
 
     const res = await request
-      .post('/api/user/change_status')
+      .patch('/api/user/status')
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send(credentials);
 

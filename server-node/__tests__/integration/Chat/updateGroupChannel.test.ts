@@ -56,8 +56,8 @@ describe('Update_Group_Channel', () => {
     const io = IoService.instance();
     const ioSpy = jest.spyOn(io, 'emit').mockReturnValueOnce(Promise.resolve());
 
+    const channelId = channel._id.toString();
     const credentials: IUpdateGroupCredentials = {
-      channel_id: channel._id.toString(),
       name: newGroupName, // updated name
       members: [
         user2Id.toString(),
@@ -68,7 +68,7 @@ describe('Update_Group_Channel', () => {
     };
 
     const res = await request
-      .patch('/api/chat/group')
+      .patch(`/api/chat/group/${channelId}`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send(credentials);
 
@@ -104,15 +104,15 @@ describe('Update_Group_Channel', () => {
       throw new Error();
     });
 
+    const channelId = 'some-channel-id';
     const credentials: IUpdateGroupCredentials = {
-      channel_id: 'some-channel-id',
       name: 'Updated Group 1',
       members: ['some-member-id-1', 'some-member-id-2'],
       admins: [],
     };
 
     const res = await request
-      .patch('/api/chat/group')
+      .patch(`/api/chat/group/${channelId}`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send(credentials);
 
@@ -132,15 +132,15 @@ describe('Update_Group_Channel', () => {
       throw new Error();
     });
 
+    const channelId = channel._id.toString();
     const credentials: IUpdateGroupCredentials = {
-      channel_id: channel._id.toString(),
       name: 'Updated Group 1',
       members: ['some-member-id-1', 'some-member-id-2'],
       admins: [],
     };
 
     const res = await request
-      .patch('/api/chat/group')
+      .patch(`/api/chat/group/${channelId}`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send(credentials);
 
@@ -170,15 +170,15 @@ describe('Update_Group_Channel', () => {
       throw new Error();
     });
 
+    const channelId = channel._id.toString();
     const credentials: IUpdateGroupCredentials = {
-      channel_id: channel._id.toString(),
       name: 'Updated Group 1',
       members: [member2.user_id.toString(), member3.user_id.toString()],
       admins: [],
     };
 
     const res = await request
-      .patch('/api/chat/group')
+      .patch(`/api/chat/group/${channelId}`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send(credentials);
 
@@ -206,15 +206,15 @@ describe('Update_Group_Channel', () => {
       throw new Error();
     });
 
+    const channelId = channel._id.toString();
     const credentials: IUpdateGroupCredentials = {
-      channel_id: channel._id.toString(),
       name: 'Group 1',
       members: [user2._id.toString(), user2._id.toString()],
       admins: [],
     };
 
     const res = await request
-      .patch('/api/chat/group')
+      .patch(`/api/chat/group/${channelId}`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send(credentials);
 

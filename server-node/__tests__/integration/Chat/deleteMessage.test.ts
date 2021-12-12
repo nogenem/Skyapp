@@ -41,7 +41,9 @@ describe('Delete_Message', () => {
     const ioSpy = jest.spyOn(io, 'emit').mockReturnValueOnce(Promise.resolve());
 
     const res = await request
-      .delete(`/api/chat/messages/${message1._id.toString()}`)
+      .delete(
+        `/api/chat/${channel._id.toString()}/messages/${message1._id.toString()}`,
+      )
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send();
 
@@ -58,8 +60,9 @@ describe('Delete_Message', () => {
     expect(ioSpy.mock.calls[0][0]).toBe(IO_MESSAGE_DELETED);
   });
 
-  it('should not be able to delete a message with an invalid `message_id`', async () => {
+  it('should not be able to delete a message with an invalid `channel_id`', async () => {
     const user: IUserDoc = await factory.create<IUserDoc>('User');
+    const message = await factory.create<IMessageDoc>('Message');
 
     jest.spyOn(jsonwebtoken, 'verify').mockImplementation(token => {
       if (token === VALID_TOKEN) return { _id: user._id };
@@ -67,7 +70,24 @@ describe('Delete_Message', () => {
     });
 
     const res = await request
-      .delete(`/api/chat/messages/some-message-id`)
+      .delete(`/api/chat/some-channel-id/messages/${message._id.toString()}`)
+      .set('authorization', `Bearer ${VALID_TOKEN}`)
+      .send();
+
+    expect(res.status).toBe(400);
+  });
+
+  it('should not be able to delete a message with an invalid `message_id`', async () => {
+    const user: IUserDoc = await factory.create<IUserDoc>('User');
+    const channel = await factory.create<IChannelDoc>('Channel');
+
+    jest.spyOn(jsonwebtoken, 'verify').mockImplementation(token => {
+      if (token === VALID_TOKEN) return { _id: user._id };
+      throw new Error();
+    });
+
+    const res = await request
+      .delete(`/api/chat/${channel._id.toString()}/messages/some-message-id`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send();
 
@@ -88,7 +108,9 @@ describe('Delete_Message', () => {
     });
 
     const res = await request
-      .delete(`/api/chat/messages/${message._id.toString()}`)
+      .delete(
+        `/api/chat/${channel._id.toString()}/messages/${message._id.toString()}`,
+      )
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send();
 

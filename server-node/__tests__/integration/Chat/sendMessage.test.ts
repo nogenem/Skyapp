@@ -34,13 +34,13 @@ describe('Send_Message', () => {
     const ioSpy = jest.spyOn(io, 'emit').mockReturnValueOnce(Promise.resolve());
 
     const message = 'Some message';
+    const channelId = channel._id.toString();
     const credentials: ISendMessageCredentials = {
-      channel_id: channel._id.toString(),
       body: message,
     };
 
     const res = await request
-      .post('/api/chat/messages')
+      .post(`/api/chat/${channelId}/messages`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send(credentials);
 
@@ -65,13 +65,13 @@ describe('Send_Message', () => {
       throw new Error();
     });
 
+    const channelId = 'some-channel-id';
     const credentials: ISendMessageCredentials = {
-      channel_id: 'some-channel-id',
       body: 'Some message',
     };
 
     const res = await request
-      .post('/api/chat/messages')
+      .post(`/api/chat/${channelId}/messages`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send(credentials);
 
