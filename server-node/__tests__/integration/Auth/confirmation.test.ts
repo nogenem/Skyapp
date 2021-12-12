@@ -64,11 +64,8 @@ describe('Confirmation', () => {
     };
 
     const res = await request.post('/api/auth/confirmation').send(credentials);
-    expect(res.status).toBe(400);
 
-    const userRecord = (await User.findOne({ email: user.email })) as IUserDoc;
-    expect(userRecord.confirmationToken).toBe(INVALID_TOKEN);
-    expect(userRecord.confirmed).toBe(false);
+    expect(res.status).toBe(400);
   });
 
   it('should not be able to confirm with the same token twice', async () => {

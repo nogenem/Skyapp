@@ -59,20 +59,11 @@ describe('Resend_Confirmation_Email', () => {
       token: VALID_TOKEN,
     };
 
-    const mailSpy = jest.spyOn(MailService, 'sendResetPasswordEmail');
-
     const res = await request
       .post('/api/auth/resend_confirmation_email')
       .send(credentials);
 
     expect(res.status).toBe(400);
-
-    expect(mailSpy).not.toHaveBeenCalled();
-
-    const userRecord = (await User.findOne({
-      confirmationToken: NEW_VALID_TOKEN,
-    })) as IUserDoc;
-    expect(userRecord).toBeFalsy();
   });
 
   it('should not be able to resend a confirmation email when already has a valid token in the database', async () => {
@@ -81,19 +72,10 @@ describe('Resend_Confirmation_Email', () => {
       token: VALID_TOKEN,
     };
 
-    const mailSpy = jest.spyOn(MailService, 'sendResetPasswordEmail');
-
     const res = await request
       .post('/api/auth/resend_confirmation_email')
       .send(credentials);
 
     expect(res.status).toBe(400);
-
-    expect(mailSpy).not.toHaveBeenCalled();
-
-    const userRecord = (await User.findOne({
-      confirmationToken: NEW_VALID_TOKEN,
-    })) as IUserDoc;
-    expect(userRecord).toBeFalsy();
   });
 });

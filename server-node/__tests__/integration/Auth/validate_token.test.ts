@@ -39,7 +39,7 @@ describe('Validate_Token', () => {
     expect(res.body.user).toBeTruthy();
   });
 
-  it('should not be able to validate with a valid token', async () => {
+  it('should not be able to validate with an invalid token', async () => {
     const user: IUserDoc = await factory.create<IUserDoc>('User');
 
     jest.spyOn(jsonwebtoken, 'verify').mockImplementation(token => {
@@ -54,6 +54,7 @@ describe('Validate_Token', () => {
     const res = await request
       .post('/api/auth/validate_token')
       .send(credentials);
+
     expect(res.status).toBe(400);
   });
 });

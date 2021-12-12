@@ -52,33 +52,6 @@ describe('Signin', () => {
     expect(res.body.user.token).toBe(TOKEN_WITH_EXPIRES_IN);
   });
 
-  it('should not be able to sign in with invalid email', async () => {
-    const credentials: ISignInCredentials = {
-      email: 'test@test.com',
-      password: VALID_PASSWORD,
-      rememberMe: false,
-    };
-
-    const res = await request.post('/api/auth/signin').send(credentials);
-    expect(res.status).toBe(400);
-  });
-
-  it('should not be able to sign in with invalid password', async () => {
-    const user: IUserDoc = await factory.create<IUserDoc>(
-      'User',
-      {},
-      { password: VALID_PASSWORD },
-    );
-    const credentials: ISignInCredentials = {
-      email: user.email,
-      password: INVALID_PASSWORD,
-      rememberMe: false,
-    };
-
-    const res = await request.post('/api/auth/signin').send(credentials);
-    expect(res.status).toBe(400);
-  });
-
   it("should be able to sign in with `rememberMe = true` and return a token that doesn't expires", async () => {
     const user: IUserDoc = await factory.create<IUserDoc>(
       'User',
@@ -96,5 +69,34 @@ describe('Signin', () => {
 
     expect(res.body.user).toBeTruthy();
     expect(res.body.user.token).toBe(TOKEN_WITHOUT_EXPIRES_IN);
+  });
+
+  it('should not be able to sign in with invalid email', async () => {
+    const credentials: ISignInCredentials = {
+      email: 'test@test.com',
+      password: VALID_PASSWORD,
+      rememberMe: false,
+    };
+
+    const res = await request.post('/api/auth/signin').send(credentials);
+
+    expect(res.status).toBe(400);
+  });
+
+  it('should not be able to sign in with invalid password', async () => {
+    const user: IUserDoc = await factory.create<IUserDoc>(
+      'User',
+      {},
+      { password: VALID_PASSWORD },
+    );
+    const credentials: ISignInCredentials = {
+      email: user.email,
+      password: INVALID_PASSWORD,
+      rememberMe: false,
+    };
+
+    const res = await request.post('/api/auth/signin').send(credentials);
+
+    expect(res.status).toBe(400);
   });
 });

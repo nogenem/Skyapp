@@ -59,8 +59,6 @@ describe('Forgot_Password', () => {
   it('should not be able to send a reset password email to an invalid email', async () => {
     await factory.create<IUserDoc>('User', { email: VALID_EMAIL });
 
-    const mailSpy = jest.spyOn(MailService, 'sendResetPasswordEmail');
-
     const credentials: IForgotPasswordCredentials = {
       email: INVALID_EMAIL,
     };
@@ -70,8 +68,6 @@ describe('Forgot_Password', () => {
       .send(credentials);
 
     expect(res.status).toBe(400);
-
-    expect(mailSpy).not.toHaveBeenCalled();
   });
 
   it('should not be able to send a reset password email when already has a valid token in the database', async () => {
@@ -79,8 +75,6 @@ describe('Forgot_Password', () => {
       email: VALID_EMAIL,
       resetPasswordToken: VALID_TOKEN,
     });
-
-    const mailSpy = jest.spyOn(MailService, 'sendResetPasswordEmail');
 
     const credentials: IForgotPasswordCredentials = {
       email: VALID_EMAIL,
@@ -91,7 +85,5 @@ describe('Forgot_Password', () => {
       .send(credentials);
 
     expect(res.status).toBe(400);
-
-    expect(mailSpy).not.toHaveBeenCalled();
   });
 });

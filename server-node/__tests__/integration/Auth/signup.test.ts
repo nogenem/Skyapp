@@ -65,14 +65,12 @@ describe('Signup', () => {
     };
 
     const res = await request.post('/api/auth/signup').send(credentials);
-    expect(res.status).toBe(400);
 
-    const userRecord = await User.findOne({ email: user.email });
-    expect(userRecord).toBeFalsy();
+    expect(res.status).toBe(400);
   });
 
   it('should not be able to sign up with an already existing email', async () => {
-    const user1: IUserDoc = await factory.create<IUserDoc>('User', {
+    await factory.create<IUserDoc>('User', {
       email: 'test@test.com',
     });
     const user: IUser = await factory.attrs<IUser>('User', {
@@ -86,9 +84,7 @@ describe('Signup', () => {
     };
 
     const res = await request.post('/api/auth/signup').send(credentials);
-    expect(res.status).toBe(400);
 
-    const userRecord = await User.find({ email: user1.email });
-    expect(userRecord.length).toBe(1);
+    expect(res.status).toBe(400);
   });
 });

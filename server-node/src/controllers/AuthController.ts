@@ -75,14 +75,14 @@ export default {
 
     try {
       const user = await User.findOne({ email });
-      if (user && user.isValidPassword(password)) {
-        return res.status(200).json({
-          message: req.t(SIGNIN_SUCCESS),
-          user: user.toAuthJSON(undefined, !rememberMe),
-        });
+      if (!user || !user.isValidPassword(password)) {
+        return handleErrors(invalidCredentialsError(), res);
       }
 
-      return handleErrors(invalidCredentialsError(), res);
+      return res.status(200).json({
+        message: req.t(SIGNIN_SUCCESS),
+        user: user.toAuthJSON(undefined, !rememberMe),
+      });
     } catch (err) {
       return handleErrors(err as Error, res);
     }
@@ -102,21 +102,20 @@ export default {
         { confirmationToken: '', confirmed: true },
         { new: true },
       );
-
-      if (user) {
-        const io = IoService.instance();
-        const newUser = user.toChatUser();
-        newUser.online = true;
-
-        await io.emit(IO_NEW_USER, newUser);
-
-        return res.json({
-          message: req.t(ACC_CONFIRMED),
-          user: user.toAuthJSON(),
-        });
+      if (!user) {
+        return handleErrors(invalidOrExpiredTokenError(), res);
       }
 
-      return handleErrors(invalidOrExpiredTokenError(), res);
+      const io = IoService.instance();
+      const newUser = user.toChatUser();
+      newUser.online = true;
+
+      await io.emit(IO_NEW_USER, newUser);
+
+      return res.json({
+        message: req.t(ACC_CONFIRMED),
+        user: user.toAuthJSON(),
+      });
     } catch (err) {
       return handleErrors(err as Error, res);
     }
@@ -130,28 +129,24 @@ export default {
 
     try {
       const user = await User.findOne({ confirmationToken: token });
-
-      if (user) {
-        let isValidToken = true;
-        try {
-          jwt.verify(user.confirmationToken as string, process.env.JWT_SECRET);
-        } catch (err) {
-          isValidToken = false;
-        }
-
-        if (isValidToken)
-          return handleErrors(lastEmailSentIsStillValidError(), res);
-
-        user.setConfirmationToken();
-
-        const userRecord = await user.save();
-        MailService.sendConfirmationEmail(userRecord, host);
-        return res.status(200).json({
-          message: req.t(CONFIRMATION_EMAIL_WAS_RESEND),
-        });
+      if (!user) {
+        return handleErrors(invalidOrExpiredTokenError(), res);
       }
 
-      return handleErrors(invalidOrExpiredTokenError(), res);
+      try {
+        jwt.verify(user.confirmationToken as string, process.env.JWT_SECRET);
+        return handleErrors(lastEmailSentIsStillValidError(), res);
+      } catch (err) {
+        //
+      }
+
+      user.setConfirmationToken();
+
+      const userRecord = await user.save();
+      MailService.sendConfirmationEmail(userRecord, host);
+      return res.status(200).json({
+        message: req.t(CONFIRMATION_EMAIL_WAS_RESEND),
+      });
     } catch (err) {
       return handleErrors(err as Error, res);
     }
@@ -161,16 +156,16 @@ export default {
 
     try {
       const { _id } = jwt.verify(token, process.env.JWT_SECRET) as ITokenData;
-      const user = await User.findOne({ _id });
 
-      if (user) {
-        return res.status(200).json({
-          message: req.t(TOKEN_IS_VALID),
-          user: user.toAuthJSON(token),
-        });
+      const user = await User.findOne({ _id });
+      if (!user) {
+        return handleErrors(invalidOrExpiredTokenError(), res);
       }
 
-      return handleErrors(invalidOrExpiredTokenError(), res);
+      return res.status(200).json({
+        message: req.t(TOKEN_IS_VALID),
+        user: user.toAuthJSON(token),
+      });
     } catch (err) {
       return handleErrors(invalidOrExpiredTokenError(), res);
     }
@@ -184,30 +179,26 @@ export default {
 
     try {
       const user = await User.findOne({ email });
-
-      if (user) {
-        if (user.resetPasswordToken) {
-          let isValidToken = true;
-          try {
-            jwt.verify(user.resetPasswordToken, process.env.JWT_SECRET);
-          } catch (err) {
-            isValidToken = false;
-          }
-
-          if (isValidToken)
-            return handleErrors(lastEmailSentIsStillValidError(), res);
-        }
-
-        user.setResetPasswordToken();
-
-        const userRecord = await user.save();
-        MailService.sendResetPasswordEmail(userRecord, host);
-        return res.status(200).json({
-          message: req.t(RESET_PASSWORD_EMAIL_SENT),
-        });
+      if (!user) {
+        return handleErrors(noUserWithSuchEmailError(), res);
       }
 
-      return handleErrors(noUserWithSuchEmailError(), res);
+      if (user.resetPasswordToken) {
+        try {
+          jwt.verify(user.resetPasswordToken, process.env.JWT_SECRET);
+          return handleErrors(lastEmailSentIsStillValidError(), res);
+        } catch (err) {
+          //
+        }
+      }
+
+      user.setResetPasswordToken();
+
+      const userRecord = await user.save();
+      MailService.sendResetPasswordEmail(userRecord, host);
+      return res.status(200).json({
+        message: req.t(RESET_PASSWORD_EMAIL_SENT),
+      });
     } catch (err) {
       return handleErrors(err as Error, res);
     }
@@ -223,19 +214,18 @@ export default {
 
     try {
       const user = await User.findOne({ resetPasswordToken: token });
-
-      if (user) {
-        user.updatePasswordHash(newPassword);
-        user.resetPasswordToken = '';
-        const userRecord = await user.save();
-
-        return res.status(200).json({
-          message: req.t(PASSWORD_CHANGED),
-          user: userRecord.toAuthJSON(),
-        });
+      if (!user) {
+        return handleErrors(invalidOrExpiredTokenError(), res);
       }
 
-      return handleErrors(invalidOrExpiredTokenError(), res);
+      user.updatePasswordHash(newPassword);
+      user.resetPasswordToken = '';
+      const userRecord = await user.save();
+
+      return res.status(200).json({
+        message: req.t(PASSWORD_CHANGED),
+        user: userRecord.toAuthJSON(),
+      });
     } catch (err) {
       return handleErrors(err as Error, res);
     }

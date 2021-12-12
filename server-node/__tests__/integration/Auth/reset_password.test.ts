@@ -50,7 +50,7 @@ describe('Reset_Password', () => {
   });
 
   it('should not be able to change password with an invalid token', async () => {
-    const user: IUserDoc = await factory.create<IUserDoc>('User', {
+    await factory.create<IUserDoc>('User', {
       passwordHash: OLD_PASSWORD,
       resetPasswordToken: VALID_TOKEN,
     });
@@ -63,15 +63,12 @@ describe('Reset_Password', () => {
     const res = await request
       .post('/api/auth/reset_password')
       .send(credentials);
-    expect(res.status).toBe(400);
 
-    const userRecord = (await User.findOne({ email: user.email })) as IUserDoc;
-    expect(userRecord.resetPasswordToken).toBe(VALID_TOKEN);
-    expect(userRecord.passwordHash).toBe(OLD_PASSWORD);
+    expect(res.status).toBe(400);
   });
 
   it('should not be able to change password with an expired token', async () => {
-    const user: IUserDoc = await factory.create<IUserDoc>('User', {
+    await factory.create<IUserDoc>('User', {
       passwordHash: OLD_PASSWORD,
       resetPasswordToken: INVALID_TOKEN,
     });
@@ -84,10 +81,7 @@ describe('Reset_Password', () => {
     const res = await request
       .post('/api/auth/reset_password')
       .send(credentials);
-    expect(res.status).toBe(400);
 
-    const userRecord = (await User.findOne({ email: user.email })) as IUserDoc;
-    expect(userRecord.resetPasswordToken).toBe(INVALID_TOKEN);
-    expect(userRecord.passwordHash).toBe(OLD_PASSWORD);
+    expect(res.status).toBe(400);
   });
 });
