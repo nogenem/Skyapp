@@ -218,7 +218,7 @@ describe('chat reducer', () => {
     let newState = userReducer(initialState, action);
     expect(newState.activeChannelInfo?.messages[0]).toEqual(message1);
     expect(newState.activeChannelInfo?.totalMessages).toEqual(2);
-    expect(newState.channels[channel._id].lastMessage).toEqual(message1);
+    expect(newState.channels[channel._id].lastMessage).toEqual(message2);
 
     // without activeChannelInfo
     initialState = FACTORIES.states.chat({

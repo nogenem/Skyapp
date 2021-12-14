@@ -108,10 +108,16 @@ const chat = (
             if (totalMessages >= 0)
               draft.activeChannelInfo.totalMessages = totalMessages;
             else draft.activeChannelInfo.totalMessages += messages.length;
+
+            draft.channels[channelId].lastMessage =
+              draft.activeChannelInfo.messages[
+                draft.activeChannelInfo.messages.length - 1
+              ];
           } else {
             draft.channels[channelId].unread_msgs += 1;
+            draft.channels[channelId].lastMessage =
+              messages[messages.length - 1];
           }
-          draft.channels[channelId].lastMessage = messages[messages.length - 1];
         }
         return draft;
       }
