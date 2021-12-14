@@ -92,7 +92,7 @@ describe('chat actions', () => {
       },
     ];
     const spy = jest
-      .spyOn(ApiService.chat, 'createChannelWith')
+      .spyOn(ApiService.channel.private, 'store')
       .mockImplementationOnce(() => {
         return Promise.resolve(apiResponse);
       });
@@ -120,7 +120,7 @@ describe('chat actions', () => {
       },
     ];
     const spy = jest
-      .spyOn(ApiService.chat, 'createGroupChannel')
+      .spyOn(ApiService.channel.group, 'store')
       .mockImplementationOnce(() => {
         return Promise.resolve(apiResponse);
       });
@@ -149,7 +149,7 @@ describe('chat actions', () => {
       },
     ];
     const spy = jest
-      .spyOn(ApiService.chat, 'updateGroupChannel')
+      .spyOn(ApiService.channel.group, 'update')
       .mockImplementationOnce(() => {
         return Promise.resolve(apiResponse);
       });
@@ -175,7 +175,7 @@ describe('chat actions', () => {
       },
     ];
     const spy = jest
-      .spyOn(ApiService.chat, 'leaveGroupChannel')
+      .spyOn(ApiService.channel.group, 'leave')
       .mockImplementationOnce(() => {
         return Promise.resolve(apiResponse);
       });
@@ -207,7 +207,7 @@ describe('chat actions', () => {
       },
     ];
     const spy = jest
-      .spyOn(ApiService.chat, 'getMessages')
+      .spyOn(ApiService.message, 'all')
       .mockImplementationOnce(() => {
         return Promise.resolve(apiResponse);
       });

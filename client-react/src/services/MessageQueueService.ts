@@ -230,15 +230,17 @@ class MessageQueueService {
     const type = queuedMsgs[0].type;
 
     if (queueAction === QUEUE_ACTIONS.SEND_FILE_MESSAGES) {
-      return ApiService.chat.sendFiles(toSendMsg as ISendFilesCredentials);
+      return ApiService.message.storeFiles(toSendMsg as ISendFilesCredentials);
     } else if (queueAction === QUEUE_ACTIONS.SEND_TEXT_MESSAGE) {
-      return ApiService.chat.sendMessage(toSendMsg as ISendMessageCredentials);
-    } else if (queueAction === QUEUE_ACTIONS.EDIT_TEXT_MESSAGE) {
-      return ApiService.chat.editMessage(toSendMsg as IEditMessageCredentials);
-    } else if (queueAction === QUEUE_ACTIONS.DELETE_MESSAGE) {
-      return ApiService.chat.deleteMessage(
-        toSendMsg as IDeleteMessageCredentials,
+      return ApiService.message.storeMessage(
+        toSendMsg as ISendMessageCredentials,
       );
+    } else if (queueAction === QUEUE_ACTIONS.EDIT_TEXT_MESSAGE) {
+      return ApiService.message.updateBody(
+        toSendMsg as IEditMessageCredentials,
+      );
+    } else if (queueAction === QUEUE_ACTIONS.DELETE_MESSAGE) {
+      return ApiService.message.delete(toSendMsg as IDeleteMessageCredentials);
     } else {
       console.error('MessageQueueService._sendMessage:> Invalid type: ', type);
       return Promise.reject({});

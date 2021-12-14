@@ -1,7 +1,18 @@
 import MockAdapter from 'axios-mock-adapter';
 
+import { MESSAGE_TYPES } from '~/constants/message_types';
 import { USER_STATUS } from '~/constants/user_status';
-import type { IOtherUser } from '~/redux/chat/types';
+import type {
+  IDeleteMessageCredentials,
+  IEditMessageCredentials,
+  IFetchMessagesCredentials,
+  ILeaveGroupCredentials,
+  INewGroupCredentials,
+  IOtherUser,
+  ISendFilesCredentials,
+  ISendMessageCredentials,
+  IUpdateGroupCredentials,
+} from '~/redux/chat/types';
 import type {
   ISignUpCredentials,
   ISignInCredentials,
@@ -11,6 +22,7 @@ import type {
   IChangeStatusCredentials,
   IChangeThoughtsCredentials,
 } from '~/redux/user/types';
+import factories from '~/utils/factories';
 import FACTORIES from '~/utils/factories';
 
 import ApiService, { axiosInstance, END_POINTS } from '../ApiService';
@@ -192,19 +204,187 @@ describe('ApiService', () => {
     });
   });
 
-  describe('.chat', () => {
-    it('.createChannelWith', async () => {
-      expect.assertions(2);
+  describe('.channel', () => {
+    describe('.private', () => {
+      it('.store', async () => {
+        expect.assertions(2);
 
-      const otherUser: IOtherUser = FACTORIES.models.otherUser();
-      const expectedRet = { message: 'success' };
-      adapter.onPost(END_POINTS.chat.createChannelWith).reply(configs => {
-        // axios-mock-adapter uses stringify on the data ;/
-        expect(JSON.stringify({ _id: otherUser._id })).toBe(configs.data);
-        return [200, expectedRet];
+        const otherUser: IOtherUser = FACTORIES.models.otherUser();
+        const expectedRet = { message: 'success' };
+        adapter.onPost(END_POINTS.channel.private.store).reply(configs => {
+          // axios-mock-adapter uses stringify on the data ;/
+          expect(JSON.stringify({ _id: otherUser._id })).toBe(configs.data);
+          return [200, expectedRet];
+        });
+
+        const ret = await ApiService.channel.private.store(otherUser);
+        expect(ret).toEqual(expectedRet);
+      });
+    });
+
+    describe('.group', () => {
+      it('.store', async () => {
+        expect.assertions(2);
+
+        const credentials: INewGroupCredentials = {
+          name: 'Group 1',
+          members: [],
+          admins: [],
+        };
+        const expectedRet = { message: 'success' };
+        adapter.onPost(END_POINTS.channel.group.store).reply(configs => {
+          // axios-mock-adapter uses stringify on the data ;/
+          expect(JSON.stringify(credentials)).toBe(configs.data);
+          return [200, expectedRet];
+        });
+
+        const ret = await ApiService.channel.group.store(credentials);
+        expect(ret).toEqual(expectedRet);
       });
 
-      const ret = await ApiService.chat.createChannelWith(otherUser);
+      it('.update', async () => {
+        expect.assertions(2);
+
+        const credentials: IUpdateGroupCredentials = {
+          channel_id: 'some-channel-id',
+          name: 'Group 1',
+          members: [],
+          admins: [],
+        };
+        const expectedRet = { message: 'success' };
+        adapter
+          .onPatch(END_POINTS.channel.group.update(credentials.channel_id))
+          .reply(configs => {
+            // axios-mock-adapter uses stringify on the data ;/
+            const { channel_id, ...data } = credentials;
+            expect(JSON.stringify(data)).toBe(configs.data);
+            return [200, expectedRet];
+          });
+
+        const ret = await ApiService.channel.group.update(credentials);
+        expect(ret).toEqual(expectedRet);
+      });
+
+      it('.leave', async () => {
+        const credentials: ILeaveGroupCredentials = {
+          channel_id: 'some-channel-id',
+        };
+        const expectedRet = { message: 'success' };
+        adapter
+          .onPost(END_POINTS.channel.group.leave(credentials.channel_id))
+          .reply(configs => {
+            return [200, expectedRet];
+          });
+
+        const ret = await ApiService.channel.group.leave(credentials);
+        expect(ret).toEqual(expectedRet);
+      });
+    });
+  });
+
+  describe('.message', () => {
+    it('.all', async () => {
+      expect.assertions(2);
+
+      const credentials: IFetchMessagesCredentials = {
+        channel_id: 'some-channel-id',
+        offset: 0,
+      };
+      const expectedRet = { message: 'success' };
+      adapter
+        .onGet(END_POINTS.message.all(credentials.channel_id))
+        .reply(configs => {
+          // axios-mock-adapter uses stringify on the data ;/
+          const { channel_id, ...data } = credentials;
+          expect(data).toEqual(configs.params);
+          return [200, expectedRet];
+        });
+
+      const ret = await ApiService.message.all(credentials);
+      expect(ret).toEqual(expectedRet);
+    });
+
+    it('.storeMessage', async () => {
+      expect.assertions(2);
+
+      const credentials: ISendMessageCredentials = {
+        channel_id: 'some-channel-id',
+        body: 'Some message',
+      };
+      const expectedRet = { message: 'success' };
+      adapter
+        .onPost(END_POINTS.message.storeMessage(credentials.channel_id))
+        .reply(configs => {
+          // axios-mock-adapter uses stringify on the data ;/
+          const { channel_id, ...data } = credentials;
+          expect(JSON.stringify(data)).toBe(configs.data);
+          return [200, expectedRet];
+        });
+
+      const ret = await ApiService.message.storeMessage(credentials);
+      expect(ret).toEqual(expectedRet);
+    });
+
+    it('.storeFiles', async () => {
+      expect.assertions(2);
+
+      const credentials: ISendFilesCredentials = {
+        channel_id: 'some-channel-id',
+        files: new FormData(),
+      };
+      const expectedRet = { message: 'success' };
+      adapter
+        .onPost(END_POINTS.message.storeFiles(credentials.channel_id))
+        .reply(configs => {
+          // axios-mock-adapter uses stringify on the data ;/
+          expect(credentials.files).toBe(configs.data);
+          return [200, expectedRet];
+        });
+
+      const ret = await ApiService.message.storeFiles(credentials);
+      expect(ret).toEqual(expectedRet);
+    });
+
+    it('.updateBody', async () => {
+      expect.assertions(2);
+
+      const message = factories.models.message({
+        body: 'Some message',
+        type: MESSAGE_TYPES.TEXT,
+      });
+      const credentials: IEditMessageCredentials = {
+        message,
+        newBody: 'Some new message',
+      };
+      const expectedRet = { message: 'success' };
+      adapter
+        .onPatch(END_POINTS.message.updateBody(message.channel_id, message._id))
+        .reply(configs => {
+          // axios-mock-adapter uses stringify on the data ;/
+          const { message, ...data } = credentials;
+          expect(JSON.stringify(data)).toBe(configs.data);
+          return [200, expectedRet];
+        });
+
+      const ret = await ApiService.message.updateBody(credentials);
+      expect(ret).toEqual(expectedRet);
+    });
+
+    it('.delete', async () => {
+      expect.assertions(1);
+
+      const message = factories.models.message();
+      const credentials: IDeleteMessageCredentials = {
+        message,
+      };
+      const expectedRet = { message: 'success' };
+      adapter
+        .onDelete(END_POINTS.message.delete(message.channel_id, message._id))
+        .reply(configs => {
+          return [200, expectedRet];
+        });
+
+      const ret = await ApiService.message.delete(credentials);
       expect(ret).toEqual(expectedRet);
     });
   });

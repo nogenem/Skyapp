@@ -35,19 +35,24 @@ export const END_POINTS = {
     changeStatus: 'api/user/status',
     changeThoughts: 'api/user/thoughts',
   },
-  chat: {
-    createChannelWith: 'api/chat/private',
-    createGroupChannel: 'api/chat/group',
-    updateGroupChannel: (channelId: string) => `api/chat/group/${channelId}`,
-    leaveGroupChannel: (channelId: string) =>
-      `api/chat/group/${channelId}/leave`,
-    getMessages: (channelId: string) => `api/chat/${channelId}/messages`,
-    sendMessage: (channelId: string) => `api/chat/${channelId}/messages`,
-    sendFiles: (channelId: string) => `api/chat/${channelId}/files`,
-    editMessage: (channelId: string, messageId: string) =>
-      `api/chat/${channelId}/messages/${messageId}`,
-    deleteMessage: (channelId: string, messageId: string) =>
-      `api/chat/${channelId}/messages/${messageId}`,
+  channel: {
+    private: {
+      store: 'api/channel/private',
+    },
+    group: {
+      store: 'api/channel/group',
+      update: (channelId: string) => `api/channel/group/${channelId}`,
+      leave: (channelId: string) => `api/channel/group/${channelId}/leave`,
+    },
+  },
+  message: {
+    all: (channelId: string) => `api/channel/${channelId}/messages`,
+    storeMessage: (channelId: string) => `api/channel/${channelId}/messages`,
+    storeFiles: (channelId: string) => `api/channel/${channelId}/files`,
+    updateBody: (channelId: string, messageId: string) =>
+      `api/channel/${channelId}/messages/${messageId}`,
+    delete: (channelId: string, messageId: string) =>
+      `api/channel/${channelId}/messages/${messageId}`,
   },
 };
 
@@ -96,55 +101,65 @@ export default {
         .patch(END_POINTS.user.changeThoughts, { ...credentials })
         .then(res => res.data),
   },
-  chat: {
-    createChannelWith: (otherUser: IOtherUser) =>
-      axiosInstance
-        .post(END_POINTS.chat.createChannelWith, { _id: otherUser._id })
-        .then(res => res.data),
-    createGroupChannel: (credentials: INewGroupCredentials) =>
-      axiosInstance
-        .post(END_POINTS.chat.createGroupChannel, { ...credentials })
-        .then(res => res.data),
-    updateGroupChannel: ({
-      channel_id: channelId,
-      ...credentials
-    }: IUpdateGroupCredentials) =>
-      axiosInstance
-        .patch(END_POINTS.chat.updateGroupChannel(channelId), {
-          ...credentials,
-        })
-        .then(res => res.data),
-    leaveGroupChannel: ({ channel_id: channelId }: ILeaveGroupCredentials) =>
-      axiosInstance
-        .post(END_POINTS.chat.leaveGroupChannel(channelId), {})
-        .then(res => res.data),
-    getMessages: ({
+  channel: {
+    private: {
+      store: (otherUser: IOtherUser) =>
+        axiosInstance
+          .post(END_POINTS.channel.private.store, { _id: otherUser._id })
+          .then(res => res.data),
+    },
+    group: {
+      store: (credentials: INewGroupCredentials) =>
+        axiosInstance
+          .post(END_POINTS.channel.group.store, { ...credentials })
+          .then(res => res.data),
+      update: ({
+        channel_id: channelId,
+        ...credentials
+      }: IUpdateGroupCredentials) =>
+        axiosInstance
+          .patch(END_POINTS.channel.group.update(channelId), {
+            ...credentials,
+          })
+          .then(res => res.data),
+      leave: ({ channel_id: channelId }: ILeaveGroupCredentials) =>
+        axiosInstance
+          .post(END_POINTS.channel.group.leave(channelId), {})
+          .then(res => res.data),
+    },
+  },
+  message: {
+    all: ({
       channel_id: channelId,
       ...credentials
     }: IFetchMessagesCredentials) =>
       axiosInstance
-        .get(END_POINTS.chat.getMessages(channelId), { params: credentials })
+        .get(END_POINTS.message.all(channelId), {
+          params: credentials,
+        })
         .then(res => res.data),
-    sendMessage: ({
+    storeMessage: ({
       channel_id: channelId,
       ...credentials
     }: ISendMessageCredentials) =>
       axiosInstance
-        .post(END_POINTS.chat.sendMessage(channelId), { ...credentials })
-        .then(res => res.data),
-    sendFiles: ({ channel_id: channelId, files }: ISendFilesCredentials) =>
-      axiosInstance
-        .post(END_POINTS.chat.sendFiles(channelId), files)
-        .then(res => res.data),
-    editMessage: ({ message, ...credentials }: IEditMessageCredentials) =>
-      axiosInstance
-        .patch(END_POINTS.chat.editMessage(message.channel_id, message._id), {
+        .post(END_POINTS.message.storeMessage(channelId), {
           ...credentials,
         })
         .then(res => res.data),
-    deleteMessage: ({ message }: IDeleteMessageCredentials) =>
+    storeFiles: ({ channel_id: channelId, files }: ISendFilesCredentials) =>
       axiosInstance
-        .delete(END_POINTS.chat.deleteMessage(message.channel_id, message._id))
+        .post(END_POINTS.message.storeFiles(channelId), files)
+        .then(res => res.data),
+    updateBody: ({ message, ...credentials }: IEditMessageCredentials) =>
+      axiosInstance
+        .patch(END_POINTS.message.updateBody(message.channel_id, message._id), {
+          ...credentials,
+        })
+        .then(res => res.data),
+    delete: ({ message }: IDeleteMessageCredentials) =>
+      axiosInstance
+        .delete(END_POINTS.message.delete(message.channel_id, message._id))
         .then(res => res.data),
   },
 };

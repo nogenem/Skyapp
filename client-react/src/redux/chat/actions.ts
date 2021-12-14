@@ -217,31 +217,31 @@ export const userSignedOut = () => () => {
 
 export const sendCreateChannelWith =
   (otherUser: IOtherUser) => (dispatch: Dispatch) =>
-    ApiService.chat.createChannelWith(otherUser).then(({ channel_id }) => {
+    ApiService.channel.private.store(otherUser).then(({ channel_id }) => {
       dispatch(activeChannelChanged(channel_id));
     });
 
 export const sendCreateGroupChannel =
   (credentials: INewGroupCredentials) => (dispatch: Dispatch) =>
-    ApiService.chat.createGroupChannel(credentials).then(({ channel_id }) => {
+    ApiService.channel.group.store(credentials).then(({ channel_id }) => {
       dispatch(activeChannelChanged(channel_id));
     });
 
 export const sendUpdateGroupChannel =
   (credentials: IUpdateGroupCredentials) => (dispatch: Dispatch) =>
-    ApiService.chat.updateGroupChannel(credentials).then(({ channel_id }) => {
+    ApiService.channel.group.update(credentials).then(({ channel_id }) => {
       dispatch(activeChannelChanged(channel_id));
     });
 
 export const sendLeaveGroupChannel =
   (credentials: ILeaveGroupCredentials) => (dispatch: Dispatch) =>
-    ApiService.chat.leaveGroupChannel(credentials).then(() => {
+    ApiService.channel.group.leave(credentials).then(() => {
       dispatch(userRemovedFromChannel(credentials.channel_id));
     });
 
 export const sendGetMessages =
   (credentials: IFetchMessagesCredentials) => (dispatch: Dispatch) =>
-    ApiService.chat.getMessages(credentials).then(({ docs, totalDocs }) => {
+    ApiService.message.all(credentials).then(({ docs, totalDocs }) => {
       docs.reverse();
       dispatch(newMessagesReceived(docs, totalDocs, true));
     });
