@@ -13,7 +13,7 @@ const request = supertest(app);
 
 const VALID_TOKEN = '123456789';
 
-describe('Delete_Message', () => {
+describe('Delete', () => {
   setupDB();
 
   afterEach(() => {
@@ -42,7 +42,7 @@ describe('Delete_Message', () => {
 
     const res = await request
       .delete(
-        `/api/chat/${channel._id.toString()}/messages/${message1._id.toString()}`,
+        `/api/channel/${channel._id.toString()}/messages/${message1._id.toString()}`,
       )
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send();
@@ -70,7 +70,7 @@ describe('Delete_Message', () => {
     });
 
     const res = await request
-      .delete(`/api/chat/some-channel-id/messages/${message._id.toString()}`)
+      .delete(`/api/channel/some-channel-id/messages/${message._id.toString()}`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send();
 
@@ -87,7 +87,7 @@ describe('Delete_Message', () => {
     });
 
     const res = await request
-      .delete(`/api/chat/${channel._id.toString()}/messages/some-message-id`)
+      .delete(`/api/channel/${channel._id.toString()}/messages/some-message-id`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send();
 
@@ -109,7 +109,7 @@ describe('Delete_Message', () => {
 
     const res = await request
       .delete(
-        `/api/chat/${channel._id.toString()}/messages/${message._id.toString()}`,
+        `/api/channel/${channel._id.toString()}/messages/${message._id.toString()}`,
       )
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send();

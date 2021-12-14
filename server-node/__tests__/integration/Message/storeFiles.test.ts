@@ -36,7 +36,7 @@ const request = supertest(app);
 
 const VALID_TOKEN = '123456789';
 
-describe('Send_Files', () => {
+describe('Store_Files', () => {
   setupDB();
 
   afterEach(() => {
@@ -57,7 +57,7 @@ describe('Send_Files', () => {
 
     const channelId = channel._id.toString();
     const res = await request
-      .post(`/api/chat/${channelId}/files`)
+      .post(`/api/channel/${channelId}/files`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .attach('files', '__tests__/files/hello.txt');
 
@@ -89,7 +89,7 @@ describe('Send_Files', () => {
   //   // so i had to 'cheese' it, by passing the channel_id in the query too ;/
   //   const channelId = 'some-channel-id';
   //   const res = await request
-  //     .post(`/api/chat/files?channel_id=${channelId}`)
+  //     .post(`/api/channel/files?channel_id=${channelId}`)
   //     .set('authorization', `Bearer ${VALID_TOKEN}`)
   //     .field('channel_id', channelId)
   //     .attach('files', '__tests__/files/hello.txt');

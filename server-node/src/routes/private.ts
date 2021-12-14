@@ -3,9 +3,13 @@ import multer from 'multer';
 import slugify from 'slugify';
 
 import fileUploadLimits from '~/constants/file_upload_limits';
-import { ChatController, UserController } from '~/controllers';
+import {
+  ChannelController,
+  MessageController,
+  UserController,
+} from '~/controllers';
 import { validate } from '~/middlewares';
-import { chat, user } from '~/validators';
+import { channel, message, user } from '~/validators';
 
 const multerStorage = multer.diskStorage({
   destination: '~/../public/uploads',
@@ -39,50 +43,50 @@ routes.patch(
 );
 
 routes.post(
-  '/chat/private',
-  validate(chat.createPrivateChannel),
-  ChatController.createPrivateChannel,
+  '/channel/private',
+  validate(channel.private.store),
+  ChannelController.private.store,
 );
 routes.post(
-  '/chat/group',
-  validate(chat.createGroupChannel),
-  ChatController.createGroupChannel,
+  '/channel/group',
+  validate(channel.group.store),
+  ChannelController.group.store,
 );
 routes.patch(
-  '/chat/group/:channel_id',
-  validate(chat.updateGroupChannel),
-  ChatController.updateGroupChannel,
+  '/channel/group/:channel_id',
+  validate(channel.group.update),
+  ChannelController.group.update,
 );
 routes.post(
-  '/chat/group/:channel_id/leave',
-  validate(chat.leaveGroupChannel),
-  ChatController.leaveGroupChannel,
+  '/channel/group/:channel_id/leave',
+  validate(channel.group.leave),
+  ChannelController.group.leave,
 );
 routes.get(
-  '/chat/:channel_id/messages',
-  validate(chat.getMessages),
-  ChatController.getMessages,
+  '/channel/:channel_id/messages',
+  validate(message.all),
+  MessageController.all,
 );
 routes.post(
-  '/chat/:channel_id/messages',
-  validate(chat.sendMessage),
-  ChatController.sendMessage,
+  '/channel/:channel_id/messages',
+  validate(message.storeMessage),
+  MessageController.storeMessage,
 );
 routes.post(
-  '/chat/:channel_id/files',
-  validate(chat.sendFiles),
+  '/channel/:channel_id/files',
+  validate(message.storeFiles),
   multerUploader,
-  ChatController.sendFiles,
+  MessageController.storeFiles,
 );
 routes.patch(
-  '/chat/:channel_id/messages/:message_id',
-  validate(chat.editMessage),
-  ChatController.editMessage,
+  '/channel/:channel_id/messages/:message_id',
+  validate(message.updateBody),
+  MessageController.updateBody,
 );
 routes.delete(
-  '/chat/:channel_id/messages/:message_id',
-  validate(chat.deleteMessage),
-  ChatController.deleteMessage,
+  '/channel/:channel_id/messages/:message_id',
+  validate(message.delete),
+  MessageController.delete,
 );
 
 export default routes;

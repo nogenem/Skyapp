@@ -7,14 +7,18 @@ export type {
   IResetPasswordCredentials,
 } from './AuthController';
 
-export { default as ChatController } from './ChatController';
+export { default as ChannelController } from './ChannelController';
 export type {
   INewGroupCredentials,
   IUpdateGroupCredentials,
+} from './ChannelController';
+
+export { default as MessageController } from './MessageController';
+export type {
   IFetchMessagesCredentials,
   ISendMessageCredentials,
   IEditMessageCredentials,
-} from './ChatController';
+} from './MessageController';
 
 export { default as UserController } from './UserController';
 export type {

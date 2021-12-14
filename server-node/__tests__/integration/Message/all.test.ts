@@ -10,7 +10,7 @@ const request = supertest(app);
 
 const VALID_TOKEN = '123456789';
 
-describe('Get_Messages', () => {
+describe('All', () => {
   setupDB();
 
   afterEach(() => {
@@ -30,7 +30,7 @@ describe('Get_Messages', () => {
     });
 
     const res = await request
-      .get(`/api/chat/${channel._id.toString()}/messages?offset=0`)
+      .get(`/api/channel/${channel._id.toString()}/messages?offset=0`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send();
 
@@ -50,7 +50,7 @@ describe('Get_Messages', () => {
     });
 
     const res = await request
-      .get(`/api/chat/some-channel-id/messages?offset=0`)
+      .get(`/api/channel/some-channel-id/messages?offset=0`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send();
 
@@ -70,7 +70,7 @@ describe('Get_Messages', () => {
     });
 
     const res = await request
-      .get(`/api/chat/${channel._id.toString()}/messages?offset=0`)
+      .get(`/api/channel/${channel._id.toString()}/messages?offset=0`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send();
 

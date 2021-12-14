@@ -18,7 +18,7 @@ const request = supertest(app);
 
 const VALID_TOKEN = '123456789';
 
-describe('Leave_Group_Channel', () => {
+describe('Group_Leave', () => {
   setupDB();
 
   afterEach(() => {
@@ -59,7 +59,7 @@ describe('Leave_Group_Channel', () => {
     const channelId = channel._id.toString();
 
     const res = await request
-      .post(`/api/chat/group/${channelId}/leave`)
+      .post(`/api/channel/group/${channelId}/leave`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send();
 
@@ -112,7 +112,7 @@ describe('Leave_Group_Channel', () => {
     const channelId = channel._id.toString();
 
     const res = await request
-      .post(`/api/chat/group/${channelId}/leave`)
+      .post(`/api/channel/group/${channelId}/leave`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send();
 
@@ -139,7 +139,7 @@ describe('Leave_Group_Channel', () => {
     const channelId = 'some-channel-id';
 
     const res = await request
-      .post(`/api/chat/group/${channelId}/leave`)
+      .post(`/api/channel/group/${channelId}/leave`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send();
 
@@ -162,7 +162,7 @@ describe('Leave_Group_Channel', () => {
     const channelId = channel._id.toString();
 
     const res = await request
-      .post(`/api/chat/group/${channelId}/leave`)
+      .post(`/api/channel/group/${channelId}/leave`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send();
 
@@ -185,7 +185,7 @@ describe('Leave_Group_Channel', () => {
     const channelId = channel._id.toString();
 
     const res = await request
-      .post(`/api/chat/group/${channelId}/leave`)
+      .post(`/api/channel/group/${channelId}/leave`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send();
 

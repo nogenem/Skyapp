@@ -14,7 +14,7 @@ const request = supertest(app);
 
 const VALID_TOKEN = '123456789';
 
-describe('Send_Message', () => {
+describe('Store_Message', () => {
   setupDB();
 
   afterEach(() => {
@@ -40,7 +40,7 @@ describe('Send_Message', () => {
     };
 
     const res = await request
-      .post(`/api/chat/${channelId}/messages`)
+      .post(`/api/channel/${channelId}/messages`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send(credentials);
 
@@ -71,7 +71,7 @@ describe('Send_Message', () => {
     };
 
     const res = await request
-      .post(`/api/chat/${channelId}/messages`)
+      .post(`/api/channel/${channelId}/messages`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send(credentials);
 

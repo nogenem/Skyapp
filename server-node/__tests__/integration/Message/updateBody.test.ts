@@ -15,7 +15,7 @@ const request = supertest(app);
 
 const VALID_TOKEN = '123456789';
 
-describe('Edit_Message', () => {
+describe('UpdateBody', () => {
   setupDB();
 
   afterEach(() => {
@@ -48,7 +48,7 @@ describe('Edit_Message', () => {
     };
 
     const res = await request
-      .patch(`/api/chat/${channelId}/messages/${messageId}`)
+      .patch(`/api/channel/${channelId}/messages/${messageId}`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send(credentials);
 
@@ -88,7 +88,7 @@ describe('Edit_Message', () => {
     };
 
     const res = await request
-      .patch(`/api/chat/${channelId}/messages/${messageId}`)
+      .patch(`/api/channel/${channelId}/messages/${messageId}`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send(credentials);
 
@@ -117,7 +117,7 @@ describe('Edit_Message', () => {
     };
 
     const res = await request
-      .patch(`/api/chat/${channelId}/messages/${messageId}`)
+      .patch(`/api/channel/${channelId}/messages/${messageId}`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send(credentials);
 
@@ -146,7 +146,7 @@ describe('Edit_Message', () => {
     };
 
     const res = await request
-      .patch(`/api/chat/${channelId}/messages/${messageId}`)
+      .patch(`/api/channel/${channelId}/messages/${messageId}`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send(credentials);
 
@@ -175,7 +175,7 @@ describe('Edit_Message', () => {
     };
 
     const res = await request
-      .patch(`/api/chat/${channelId}/messages/${messageId}`)
+      .patch(`/api/channel/${channelId}/messages/${messageId}`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send(credentials);
 

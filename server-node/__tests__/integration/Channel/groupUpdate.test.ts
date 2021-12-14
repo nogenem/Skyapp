@@ -19,7 +19,7 @@ const request = supertest(app);
 
 const VALID_TOKEN = '123456789';
 
-describe('Update_Group_Channel', () => {
+describe('Group_Update', () => {
   setupDB();
 
   afterEach(() => {
@@ -68,7 +68,7 @@ describe('Update_Group_Channel', () => {
     };
 
     const res = await request
-      .patch(`/api/chat/group/${channelId}`)
+      .patch(`/api/channel/group/${channelId}`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send(credentials);
 
@@ -112,7 +112,7 @@ describe('Update_Group_Channel', () => {
     };
 
     const res = await request
-      .patch(`/api/chat/group/${channelId}`)
+      .patch(`/api/channel/group/${channelId}`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send(credentials);
 
@@ -140,7 +140,7 @@ describe('Update_Group_Channel', () => {
     };
 
     const res = await request
-      .patch(`/api/chat/group/${channelId}`)
+      .patch(`/api/channel/group/${channelId}`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send(credentials);
 
@@ -178,7 +178,7 @@ describe('Update_Group_Channel', () => {
     };
 
     const res = await request
-      .patch(`/api/chat/group/${channelId}`)
+      .patch(`/api/channel/group/${channelId}`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send(credentials);
 
@@ -214,7 +214,7 @@ describe('Update_Group_Channel', () => {
     };
 
     const res = await request
-      .patch(`/api/chat/group/${channelId}`)
+      .patch(`/api/channel/group/${channelId}`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send(credentials);
 
