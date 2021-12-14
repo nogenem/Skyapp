@@ -32,8 +32,8 @@ export const END_POINTS = {
     resetPassword: 'api/auth/reset_password',
   },
   user: {
-    changeStatus: 'api/user/status',
-    changeThoughts: 'api/user/thoughts',
+    updateStatus: 'api/user/status',
+    updateThoughts: 'api/user/thoughts',
   },
   channel: {
     private: {
@@ -92,13 +92,13 @@ export default {
         .then(res => res.data),
   },
   user: {
-    changeStatus: (credentials: IChangeStatusCredentials) =>
+    updateStatus: (credentials: IChangeStatusCredentials) =>
       axiosInstance
-        .patch(END_POINTS.user.changeStatus, { ...credentials })
+        .patch(END_POINTS.user.updateStatus, { ...credentials })
         .then(res => res.data),
-    changeThoughts: (credentials: IChangeThoughtsCredentials) =>
+    updateThoughts: (credentials: IChangeThoughtsCredentials) =>
       axiosInstance
-        .patch(END_POINTS.user.changeThoughts, { ...credentials })
+        .patch(END_POINTS.user.updateThoughts, { ...credentials })
         .then(res => res.data),
   },
   channel: {

@@ -169,37 +169,37 @@ describe('ApiService', () => {
   });
 
   describe('.user', () => {
-    it('.changeStatus', async () => {
+    it('.updateStatus', async () => {
       expect.assertions(2);
 
       const credentials: IChangeStatusCredentials = {
         newStatus: USER_STATUS.AWAY,
       };
       const expectedRet = { message: 'success' };
-      adapter.onPatch(END_POINTS.user.changeStatus).reply(configs => {
+      adapter.onPatch(END_POINTS.user.updateStatus).reply(configs => {
         // axios-mock-adapter uses stringify on the data ;/
         expect(JSON.stringify(credentials)).toBe(configs.data);
         return [200, expectedRet];
       });
 
-      const ret = await ApiService.user.changeStatus(credentials);
+      const ret = await ApiService.user.updateStatus(credentials);
       expect(ret).toEqual(expectedRet);
     });
 
-    it('.changeThoughts', async () => {
+    it('.updateThoughts', async () => {
       expect.assertions(2);
 
       const credentials: IChangeThoughtsCredentials = {
         newThoughts: 'hello world',
       };
       const expectedRet = { message: 'success' };
-      adapter.onPatch(END_POINTS.user.changeThoughts).reply(configs => {
+      adapter.onPatch(END_POINTS.user.updateThoughts).reply(configs => {
         // axios-mock-adapter uses stringify on the data ;/
         expect(JSON.stringify(credentials)).toBe(configs.data);
         return [200, expectedRet];
       });
 
-      const ret = await ApiService.user.changeThoughts(credentials);
+      const ret = await ApiService.user.updateThoughts(credentials);
       expect(ret).toEqual(expectedRet);
     });
   });

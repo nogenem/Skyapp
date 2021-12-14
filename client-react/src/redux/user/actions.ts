@@ -100,13 +100,13 @@ export const sendResetPassword =
 
 export const sendChangeStatus =
   (credentials: IChangeStatusCredentials) => (dispatch: Dispatch) =>
-    ApiService.user.changeStatus(credentials).then(() => {
+    ApiService.user.updateStatus(credentials).then(() => {
       dispatch(userStatusChanged(credentials.newStatus));
     });
 
 export const sendChangeThoughts =
   (credentials: IChangeThoughtsCredentials) => (dispatch: Dispatch) =>
-    ApiService.user.changeThoughts(credentials).then(() => {
+    ApiService.user.updateThoughts(credentials).then(() => {
       dispatch(userThoughtsChanged(credentials.newThoughts));
     });
 

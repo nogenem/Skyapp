@@ -289,7 +289,7 @@ describe('auth actions', () => {
     ];
 
     const spy = jest
-      .spyOn(ApiService.user, 'changeStatus')
+      .spyOn(ApiService.user, 'updateStatus')
       .mockImplementationOnce(() => {
         return Promise.resolve({ message: 'success' });
       });
@@ -314,7 +314,7 @@ describe('auth actions', () => {
     ];
 
     const spy = jest
-      .spyOn(ApiService.user, 'changeThoughts')
+      .spyOn(ApiService.user, 'updateThoughts')
       .mockImplementationOnce(() => {
         return Promise.resolve({ message: 'success' });
       });
