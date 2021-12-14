@@ -14,7 +14,7 @@ const request = supertest(app);
 
 const VALID_TOKEN = '123456789';
 
-describe('Change_Thoughts', () => {
+describe('Update_Thoughts', () => {
   setupDB();
 
   afterEach(() => {

@@ -23,7 +23,7 @@ interface IChangeThoughtsCredentials {
 }
 
 export default {
-  async changeStatus(
+  async updateStatus(
     req: IAuthRequest,
     res: Response,
   ): Promise<Response<unknown>> {
@@ -48,7 +48,7 @@ export default {
       return handleErrors(err as Error, res);
     }
   },
-  async changeThoughts(
+  async updateThoughts(
     req: IAuthRequest,
     res: Response,
   ): Promise<Response<unknown>> {

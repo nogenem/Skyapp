@@ -33,13 +33,13 @@ const routes = Router();
 
 routes.patch(
   '/user/status',
-  validate(user.changeStatus),
-  UserController.changeStatus,
+  validate(user.updateStatus),
+  UserController.updateStatus,
 );
 routes.patch(
   '/user/thoughts',
-  validate(user.changeThoughts),
-  UserController.changeThoughts,
+  validate(user.updateThoughts),
+  UserController.updateThoughts,
 );
 
 routes.post(
