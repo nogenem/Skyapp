@@ -1,0 +1,22 @@
+.emoji-mart {
+  width: 400px !important;
+}
+
+.emoji-mart-scroll {
+  overflow-x: hidden;
+}
+
+.emoji-mart-category-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.emoji-mart-category .emoji-mart-emoji span {
+  cursor: pointer;
+  display: table-row !important;
+}
+
+.emoji-mart-category .emoji-mart-emoji {
+  outline: none;
+  display: table;
+}

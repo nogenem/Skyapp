@@ -42,6 +42,7 @@ const useStyles = makeStyles((theme: Theme) =>
       textDecoration: 'none',
     },
     text_message: {
+      fontSize: '1rem',
       whiteSpace: 'pre-line',
       '& a': {
         color: theme.palette.primary[getInverseThemeMode(theme.palette.type)],

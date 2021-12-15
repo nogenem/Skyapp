@@ -41,5 +41,11 @@
   "participants": "participantes",
   "Edit": "Editar",
   "Options": "Opções",
-  "Delete": "Deletar"
+  "Delete": "Deletar",
+  "Clear": "Limpar",
+  "Activity": "Atividade",
+  "Objects": "Objetos",
+  "Symbols": "Símbolos",
+  "Flags": "Bandeiras",
+  "Custom": "Personalizado"
 }

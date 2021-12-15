@@ -4,7 +4,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
       display: 'flex',
-      alignItems: 'end',
+      alignItems: 'center',
       width: '100%',
       maxHeight: `calc(30vh - ${theme.spacing(1)}px)`,
     },
@@ -74,6 +74,9 @@ const useStyles = makeStyles((theme: Theme) =>
       '&:hover': {
         backgroundColor: theme.palette.primary.dark,
       },
+    },
+    emojiMenuItem: {
+      padding: 0,
     },
   }),
 );

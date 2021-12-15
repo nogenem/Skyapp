@@ -1,18 +1,21 @@
 import React from 'react';
 
-import { render, fireEvent } from '@testing-library/react';
+import { fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { IMessage } from '~/redux/chat/types';
 import FACTORIES from '~/utils/factories';
+import { getRenderWithRedux } from '~/utils/testUtils';
 
 import { ChatInput } from '../index';
+
+const renderWithRedux = getRenderWithRedux();
 
 describe('ChatInput', () => {
   it('handles submitting a text message', () => {
     const handleSubmit = jest.fn();
 
-    const { getByLabelText } = render(
+    const { getByLabelText } = renderWithRedux(
       <ChatInput
         handleSubmit={handleSubmit}
         handleSendingFiles={(filesData: FormData) => {}}
@@ -40,7 +43,7 @@ describe('ChatInput', () => {
       { useConstValues: true },
     );
 
-    const { getByLabelText } = render(
+    const { getByLabelText } = renderWithRedux(
       <ChatInput
         editingMessage={editingMessage}
         handleSubmit={(message: string) => {}}
@@ -63,7 +66,7 @@ describe('ChatInput', () => {
     const startEditingLoggedUserLastestMessage = jest.fn();
     const stopEditingMessage = jest.fn();
 
-    const { getByLabelText } = render(
+    const { getByLabelText } = renderWithRedux(
       <ChatInput
         editingMessage={editingMessage}
         handleSubmit={handleSubmit}
@@ -94,7 +97,7 @@ describe('ChatInput', () => {
   it('shows a preview of the file to be uploaded and handles submitting it', () => {
     const handleSendingFiles = jest.fn();
 
-    const { baseElement, getByLabelText, getByText } = render(
+    const { baseElement, getByLabelText, getByText } = renderWithRedux(
       <ChatInput
         handleSubmit={(message: string) => {}}
         handleSendingFiles={handleSendingFiles}

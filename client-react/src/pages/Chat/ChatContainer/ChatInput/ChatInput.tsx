@@ -1,8 +1,11 @@
-import React, { SyntheticEvent } from 'react';
+import React, { MouseEvent, SyntheticEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { IconButton } from '@material-ui/core';
-import { Send as SendIcon } from '@material-ui/icons';
+import { IconButton, InputAdornment } from '@material-ui/core';
+import {
+  Send as SendIcon,
+  SentimentSatisfiedAlt as EmojiIcon,
+} from '@material-ui/icons';
 
 import TmpFile from '~/classes/TmpFile';
 import TmpImage from '~/classes/TmpImage';
@@ -14,9 +17,12 @@ import { IMessage } from '~/redux/chat/types';
 import { Toast } from '~/utils/Toast';
 
 import { ChatMoreOptsMenu } from '../ChatMoreOptsMenu';
+import EmojiMenu from './EmojiMenu';
 import FilePreview from './FilePreview';
 import ImagePreview from './ImagePreview';
 import useStyles from './useStyles';
+
+import './styles.css';
 
 interface IOwnState {
   message: string;
@@ -53,6 +59,7 @@ const ChatInput = ({
   stopEditingMessage,
 }: TProps) => {
   const [state, setState] = useObjState(initialState);
+  const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
   const inputRef = React.useRef<HTMLInputElement>();
   const { t: trans } = useTranslation(['Common', 'Messages']);
   const classes = useStyles();
@@ -159,6 +166,34 @@ const ChatInput = ({
     }
   };
 
+  const handleEmojiMenuOpen = (event: MouseEvent<Element>) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleEmojiMenuClose = (event: MouseEvent<Element>, reason: string) => {
+    if (!!event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
+    setAnchorEl(null);
+    setTimeout(() => {
+      const input = inputRef.current as HTMLInputElement;
+      input.selectionStart = input.selectionEnd = input.value.length;
+      input.focus();
+    }, 0);
+  };
+
+  const onSelectEmoji = (emoji: string) => {
+    setState(oldState => ({
+      message: oldState.message + emoji,
+      isDisabled: false,
+    }));
+  };
+
   const previews = React.useMemo(() => {
     const removeFile = (id: string) => {
       setState(old => ({
@@ -229,6 +264,20 @@ const ChatInput = ({
           variant="outlined"
           disabled={state.isSubmitting}
           inputRef={inputRef}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <IconButton
+                  title={trans('Messages:Add emoji')}
+                  aria-label={trans('Messages:Add emoji')}
+                  size="small"
+                  onClick={handleEmojiMenuOpen}
+                >
+                  <EmojiIcon />
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
         />
       </div>
 
@@ -248,6 +297,11 @@ const ChatInput = ({
       {!state.message && !state.files.length && (
         <ChatMoreOptsMenu addFiles={addFiles} />
       )}
+      <EmojiMenu
+        anchor={anchorEl}
+        onSelectEmoji={onSelectEmoji}
+        handleMenuClose={handleEmojiMenuClose}
+      />
     </form>
   );
 };

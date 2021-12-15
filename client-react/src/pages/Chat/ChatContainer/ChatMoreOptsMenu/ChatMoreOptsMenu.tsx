@@ -98,7 +98,7 @@ const ChatMoreOptsMenu = ({ addFiles }: TProps) => {
       <Menu
         keepMounted
         transformOrigin={{
-          vertical: 110, //60~150
+          vertical: 110,
           horizontal: 0,
         }}
         id="more-options-menu"
