@@ -246,17 +246,17 @@ describe('ApiService', () => {
         expect.assertions(2);
 
         const credentials: IUpdateGroupCredentials = {
-          channel_id: 'some-channel-id',
+          channelId: 'some-channel-id',
           name: 'Group 1',
           members: [],
           admins: [],
         };
         const expectedRet = { message: 'success' };
         adapter
-          .onPatch(END_POINTS.channel.group.update(credentials.channel_id))
+          .onPatch(END_POINTS.channel.group.update(credentials.channelId))
           .reply(configs => {
             // axios-mock-adapter uses stringify on the data ;/
-            const { channel_id, ...data } = credentials;
+            const { channelId, ...data } = credentials;
             expect(JSON.stringify(data)).toBe(configs.data);
             return [200, expectedRet];
           });
@@ -267,11 +267,11 @@ describe('ApiService', () => {
 
       it('.leave', async () => {
         const credentials: ILeaveGroupCredentials = {
-          channel_id: 'some-channel-id',
+          channelId: 'some-channel-id',
         };
         const expectedRet = { message: 'success' };
         adapter
-          .onPost(END_POINTS.channel.group.leave(credentials.channel_id))
+          .onPost(END_POINTS.channel.group.leave(credentials.channelId))
           .reply(configs => {
             return [200, expectedRet];
           });
@@ -287,15 +287,15 @@ describe('ApiService', () => {
       expect.assertions(2);
 
       const credentials: IFetchMessagesCredentials = {
-        channel_id: 'some-channel-id',
+        channelId: 'some-channel-id',
         offset: 0,
       };
       const expectedRet = { message: 'success' };
       adapter
-        .onGet(END_POINTS.message.all(credentials.channel_id))
+        .onGet(END_POINTS.message.all(credentials.channelId))
         .reply(configs => {
           // axios-mock-adapter uses stringify on the data ;/
-          const { channel_id, ...data } = credentials;
+          const { channelId, ...data } = credentials;
           expect(data).toEqual(configs.params);
           return [200, expectedRet];
         });
@@ -308,15 +308,15 @@ describe('ApiService', () => {
       expect.assertions(2);
 
       const credentials: ISendMessageCredentials = {
-        channel_id: 'some-channel-id',
+        channelId: 'some-channel-id',
         body: 'Some message',
       };
       const expectedRet = { message: 'success' };
       adapter
-        .onPost(END_POINTS.message.storeMessage(credentials.channel_id))
+        .onPost(END_POINTS.message.storeMessage(credentials.channelId))
         .reply(configs => {
           // axios-mock-adapter uses stringify on the data ;/
-          const { channel_id, ...data } = credentials;
+          const { channelId, ...data } = credentials;
           expect(JSON.stringify(data)).toBe(configs.data);
           return [200, expectedRet];
         });
@@ -329,12 +329,12 @@ describe('ApiService', () => {
       expect.assertions(2);
 
       const credentials: ISendFilesCredentials = {
-        channel_id: 'some-channel-id',
+        channelId: 'some-channel-id',
         files: new FormData(),
       };
       const expectedRet = { message: 'success' };
       adapter
-        .onPost(END_POINTS.message.storeFiles(credentials.channel_id))
+        .onPost(END_POINTS.message.storeFiles(credentials.channelId))
         .reply(configs => {
           // axios-mock-adapter uses stringify on the data ;/
           expect(credentials.files).toBe(configs.data);
@@ -358,7 +358,7 @@ describe('ApiService', () => {
       };
       const expectedRet = { message: 'success' };
       adapter
-        .onPatch(END_POINTS.message.updateBody(message.channel_id, message._id))
+        .onPatch(END_POINTS.message.updateBody(message.channelId, message._id))
         .reply(configs => {
           // axios-mock-adapter uses stringify on the data ;/
           const { message, ...data } = credentials;
@@ -379,7 +379,7 @@ describe('ApiService', () => {
       };
       const expectedRet = { message: 'success' };
       adapter
-        .onDelete(END_POINTS.message.delete(message.channel_id, message._id))
+        .onDelete(END_POINTS.message.delete(message.channelId, message._id))
         .reply(configs => {
           return [200, expectedRet];
         });

@@ -20,9 +20,9 @@ export default (
   if (options?.useConstValues) lastSeen = new Date('2021-12-04T13:33:19.037Z');
 
   return {
-    user_id: userId,
-    is_adm: isAdm,
-    last_seen: lastSeen,
+    userId,
+    isAdm,
+    lastSeen,
     ...(override || {}),
   } as IMember;
 };

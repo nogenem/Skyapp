@@ -34,16 +34,16 @@ const chat = (
       }
       case EChatActions.CHANNEL_CREATED_OR_UPDATED: {
         draft.channels[action.payload._id] = wrapChannelDates(action.payload);
-        if (!action.payload.is_group) {
-          const otherMemberIdx = action.payload.other_member_idx as number;
+        if (!action.payload.isGroup) {
+          const otherMemberIdx = action.payload.otherMemberIdx as number;
           const otherMember =
-            draft.users[action.payload.members[otherMemberIdx].user_id];
+            draft.users[action.payload.members[otherMemberIdx].userId];
 
           draft.channels[action.payload._id].name = otherMember.nickname;
 
           action.payload.members.forEach(member => {
-            if (draft.users[member.user_id]) {
-              draft.users[member.user_id].channel_id = action.payload._id;
+            if (draft.users[member.userId]) {
+              draft.users[member.userId].channelId = action.payload._id;
             }
           });
         }
@@ -62,7 +62,7 @@ const chat = (
             totalMessages: 0,
             queue: [],
           };
-          draft.channels[action.payload._id].unread_msgs = 0;
+          draft.channels[action.payload._id].unreadMsgs = 0;
         }
         return draft;
       }
@@ -84,7 +84,7 @@ const chat = (
       }
       case EChatActions.NEW_MESSAGES_RECEIVED: {
         const { messages, totalMessages, atTop } = action.payload;
-        const channelId = !!messages.length ? messages[0].channel_id : '';
+        const channelId = !!messages.length ? messages[0].channelId : '';
 
         wrapMessagesDates(messages);
 
@@ -114,7 +114,7 @@ const chat = (
                 draft.activeChannelInfo.messages.length - 1
               ];
           } else {
-            draft.channels[channelId].unread_msgs += 1;
+            draft.channels[channelId].unreadMsgs += 1;
             draft.channels[channelId].lastMessage =
               messages[messages.length - 1];
           }
@@ -124,7 +124,7 @@ const chat = (
       case EChatActions.MESSAGE_ENQUEUED: {
         if (
           draft.activeChannelInfo &&
-          draft.activeChannelInfo._id === action.payload.channel_id
+          draft.activeChannelInfo._id === action.payload.channelId
         ) {
           draft.activeChannelInfo.queue.push(action.payload);
         }
@@ -133,7 +133,7 @@ const chat = (
       case EChatActions.MESSAGE_DEQUEUED: {
         if (
           draft.activeChannelInfo &&
-          draft.activeChannelInfo._id === action.payload.channel_id
+          draft.activeChannelInfo._id === action.payload.channelId
         ) {
           draft.activeChannelInfo.queue = draft.activeChannelInfo.queue.filter(
             message => message._id !== action.payload._id,
@@ -142,23 +142,23 @@ const chat = (
         return draft;
       }
       case EChatActions.LAST_SEEN_CHANGED: {
-        const channel = draft.channels[action.payload.channel_id];
+        const channel = draft.channels[action.payload.channelId];
         channel.members.forEach(member => {
-          if (member.user_id === action.payload.user_id) {
-            member.last_seen = new Date(action.payload.last_seen);
+          if (member.userId === action.payload.userId) {
+            member.lastSeen = new Date(action.payload.lastSeen);
           }
         });
         return draft;
       }
       case EChatActions.USER_STATUS_CHANGED: {
-        if (draft.users[action.payload.user_id]) {
-          draft.users[action.payload.user_id].status = action.payload.newStatus;
+        if (draft.users[action.payload.userId]) {
+          draft.users[action.payload.userId].status = action.payload.newStatus;
         }
         return draft;
       }
       case EChatActions.USER_THOUGHTS_CHANGED: {
-        if (draft.users[action.payload.user_id]) {
-          draft.users[action.payload.user_id].thoughts =
+        if (draft.users[action.payload.userId]) {
+          draft.users[action.payload.userId].thoughts =
             action.payload.newThoughts;
         }
         return draft;
@@ -166,7 +166,7 @@ const chat = (
       case EChatActions.MESSAGE_IS_UPDATING_CHANGED: {
         if (draft.activeChannelInfo) {
           const message = draft.activeChannelInfo.messages.find(
-            msg => msg._id === action.payload.message_id,
+            msg => msg._id === action.payload.messageId,
           );
 
           if (message) {
@@ -189,18 +189,18 @@ const chat = (
         }
 
         if (
-          draft.channels[newMessage.channel_id] &&
-          draft.channels[newMessage.channel_id].lastMessage?._id ===
+          draft.channels[newMessage.channelId] &&
+          draft.channels[newMessage.channelId].lastMessage?._id ===
             newMessage._id
         ) {
-          draft.channels[newMessage.channel_id].lastMessage = newMessage;
+          draft.channels[newMessage.channelId].lastMessage = newMessage;
         }
         return draft;
       }
       case EChatActions.MESSAGE_IS_DELETING_CHANGED: {
         if (draft.activeChannelInfo) {
           const message = draft.activeChannelInfo.messages.find(
-            msg => msg._id === action.payload.message_id,
+            msg => msg._id === action.payload.messageId,
           );
 
           if (message) {
@@ -221,7 +221,7 @@ const chat = (
         if (!!lastMessage) {
           wrapMessageDates(lastMessage);
         }
-        draft.channels[action.payload.message.channel_id].lastMessage =
+        draft.channels[action.payload.message.channelId].lastMessage =
           lastMessage;
 
         return draft;
@@ -245,8 +245,8 @@ const wrapChannelDates = (channel: IChannel) => {
   }
 
   channel.members.forEach(member => {
-    if (!(member.last_seen instanceof Date))
-      member.last_seen = new Date(member.last_seen);
+    if (!(member.lastSeen instanceof Date))
+      member.lastSeen = new Date(member.lastSeen);
   });
 
   return channel;

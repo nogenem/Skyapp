@@ -24,10 +24,7 @@ describe('Connected ChatHeader', () => {
     const channel: IChannel = FACTORIES.models.channel(
       {
         members: Object.keys(users).map(userId =>
-          FACTORIES.models.member(
-            { user_id: userId },
-            { useConstValues: true },
-          ),
+          FACTORIES.models.member({ userId: userId }, { useConstValues: true }),
         ),
       },
       { useConstValues: true },
@@ -66,12 +63,9 @@ describe('Connected ChatHeader', () => {
 
     const channel: IChannel = FACTORIES.models.channel(
       {
-        is_group: true,
+        isGroup: true,
         members: Object.keys(users).map(userId =>
-          FACTORIES.models.member(
-            { user_id: userId },
-            { useConstValues: true },
-          ),
+          FACTORIES.models.member({ userId: userId }, { useConstValues: true }),
         ),
       },
       { useConstValues: true },

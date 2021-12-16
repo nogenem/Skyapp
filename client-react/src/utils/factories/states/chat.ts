@@ -37,7 +37,7 @@ export default (
   } else {
     tmpOtherUsers = Array.from({ length: usersLen }, (_, idx) =>
       otherUserFactory(
-        { _id: `other-user-${idx}`, channel_id: `channel-${idx}` },
+        { _id: `other-user-${idx}`, channelId: `channel-${idx}` },
         { useConstValues: true },
       ),
     );

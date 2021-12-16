@@ -48,22 +48,22 @@ const userRemovedFromChannel = (channelId: string) => ({
   payload: { channelId },
 });
 
-const activeChannelChanged = (channel_id: string | undefined) => ({
+const activeChannelChanged = (channelId: string | undefined) => ({
   type: EChatActions.ACTIVE_CHANNEL_CHANGED,
-  payload: { _id: channel_id },
+  payload: { _id: channelId },
 });
 
 const userLastSeenChanged = (data: {
-  channel_id: string;
-  user_id: string;
-  last_seen: string;
+  channelId: string;
+  userId: string;
+  lastSeen: string;
 }) => ({
   type: EChatActions.LAST_SEEN_CHANGED,
   payload: data,
 });
 
 const userStatusChanged = (data: {
-  user_id: string;
+  userId: string;
   newStatus: TUserStatus;
 }) => ({
   type: EChatActions.USER_STATUS_CHANGED,
@@ -71,7 +71,7 @@ const userStatusChanged = (data: {
 });
 
 const userThoughtsChanged = (data: {
-  user_id: string;
+  userId: string;
   newThoughts: string;
 }) => ({
   type: EChatActions.USER_THOUGHTS_CHANGED,
@@ -97,12 +97,12 @@ export const newMessagesReceived = (
 });
 
 export const messageIsUpdatingChanged = (
-  message_id: string,
+  messageId: string,
   value: boolean,
 ) => ({
   type: EChatActions.MESSAGE_IS_UPDATING_CHANGED,
   payload: {
-    message_id,
+    messageId,
     value,
   },
 });
@@ -113,12 +113,12 @@ export const messageUpdated = (message: IMessage) => ({
 });
 
 export const messageIsDeletingChanged = (
-  message_id: string,
+  messageId: string,
   value: boolean,
 ) => ({
   type: EChatActions.MESSAGE_IS_DELETING_CHANGED,
   payload: {
-    message_id,
+    messageId,
     value,
   },
 });
@@ -217,26 +217,26 @@ export const userSignedOut = () => () => {
 
 export const sendCreateChannelWith =
   (otherUser: IOtherUser) => (dispatch: Dispatch) =>
-    ApiService.channel.private.store(otherUser).then(({ channel_id }) => {
-      dispatch(activeChannelChanged(channel_id));
+    ApiService.channel.private.store(otherUser).then(({ channelId }) => {
+      dispatch(activeChannelChanged(channelId));
     });
 
 export const sendCreateGroupChannel =
   (credentials: INewGroupCredentials) => (dispatch: Dispatch) =>
-    ApiService.channel.group.store(credentials).then(({ channel_id }) => {
-      dispatch(activeChannelChanged(channel_id));
+    ApiService.channel.group.store(credentials).then(({ channelId }) => {
+      dispatch(activeChannelChanged(channelId));
     });
 
 export const sendUpdateGroupChannel =
   (credentials: IUpdateGroupCredentials) => (dispatch: Dispatch) =>
-    ApiService.channel.group.update(credentials).then(({ channel_id }) => {
-      dispatch(activeChannelChanged(channel_id));
+    ApiService.channel.group.update(credentials).then(({ channelId }) => {
+      dispatch(activeChannelChanged(channelId));
     });
 
 export const sendLeaveGroupChannel =
   (credentials: ILeaveGroupCredentials) => (dispatch: Dispatch) =>
     ApiService.channel.group.leave(credentials).then(() => {
-      dispatch(userRemovedFromChannel(credentials.channel_id));
+      dispatch(userRemovedFromChannel(credentials.channelId));
     });
 
 export const sendGetMessages =
@@ -247,18 +247,18 @@ export const sendGetMessages =
     });
 
 export const enqueueSendTextMessage =
-  (channel_id: string, message: string) => () => {
+  (channelId: string, message: string) => () => {
     const credentials: ISendMessageCredentials = {
-      channel_id,
+      channelId,
       body: message,
     };
     MessageQueueService.enqueue(credentials, QUEUE_ACTIONS.SEND_TEXT_MESSAGE);
   };
 
 export const enqueueSendFileMessages =
-  (channel_id: string, filesData: FormData) => () => {
+  (channelId: string, filesData: FormData) => () => {
     const credentials: ISendFilesCredentials = {
-      channel_id,
+      channelId,
       files: filesData,
     };
     MessageQueueService.enqueue(credentials, QUEUE_ACTIONS.SEND_FILE_MESSAGES);
@@ -281,14 +281,14 @@ export const enqueueSendDeleteMessage = (message: IMessage) => () => {
 };
 
 export const emitSetActiveChannel =
-  (channel_id: string | undefined) => (dispatch: Dispatch) => {
+  (channelId: string | undefined) => (dispatch: Dispatch) => {
     const instance = IoService.instance();
-    instance.socket!.emit(SOCKET_EVENTS.IO_SET_ACTIVE_CHANNEL, { channel_id });
+    instance.socket!.emit(SOCKET_EVENTS.IO_SET_ACTIVE_CHANNEL, { channelId });
 
-    dispatch(activeChannelChanged(channel_id));
+    dispatch(activeChannelChanged(channelId));
   };
 
-export const emitSetLastSeen = (channel_id: string) => () => {
+export const emitSetLastSeen = (channelId: string) => () => {
   const instance = IoService.instance();
-  instance.socket!.emit(SOCKET_EVENTS.IO_SET_LAST_SEEN, { channel_id });
+  instance.socket!.emit(SOCKET_EVENTS.IO_SET_LAST_SEEN, { channelId });
 };

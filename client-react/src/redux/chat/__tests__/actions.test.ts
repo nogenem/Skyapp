@@ -83,12 +83,12 @@ describe('chat actions', () => {
   it('sendCreateChannelWith', async () => {
     const channelId = '1';
     const user: IOtherUser = FACTORIES.models.otherUser();
-    const apiResponse = { channel_id: channelId };
+    const apiResponse = { channelId: channelId };
 
     const expectedActions = [
       {
         type: EChatActions.ACTIVE_CHANNEL_CHANGED,
-        payload: { _id: apiResponse.channel_id },
+        payload: { _id: apiResponse.channelId },
       },
     ];
     const spy = jest
@@ -111,12 +111,12 @@ describe('chat actions', () => {
       members: ['1', '2'],
       admins: ['1'],
     };
-    const apiResponse = { channel_id: channelId };
+    const apiResponse = { channelId: channelId };
 
     const expectedActions = [
       {
         type: EChatActions.ACTIVE_CHANNEL_CHANGED,
-        payload: { _id: apiResponse.channel_id },
+        payload: { _id: apiResponse.channelId },
       },
     ];
     const spy = jest
@@ -135,17 +135,17 @@ describe('chat actions', () => {
   it('sendUpdateGroupChannel', async () => {
     const channelId = '1';
     const credentials: IUpdateGroupCredentials = {
-      channel_id: channelId,
+      channelId: channelId,
       name: 'Group 1',
       members: ['1', '2'],
       admins: ['1'],
     };
-    const apiResponse = { channel_id: channelId };
+    const apiResponse = { channelId: channelId };
 
     const expectedActions = [
       {
         type: EChatActions.ACTIVE_CHANNEL_CHANGED,
-        payload: { _id: apiResponse.channel_id },
+        payload: { _id: apiResponse.channelId },
       },
     ];
     const spy = jest
@@ -164,14 +164,14 @@ describe('chat actions', () => {
   it('sendLeaveGroupChannel', async () => {
     const channelId = '1';
     const credentials: ILeaveGroupCredentials = {
-      channel_id: channelId,
+      channelId: channelId,
     };
-    const apiResponse = { channel_id: channelId };
+    const apiResponse = { channelId: channelId };
 
     const expectedActions = [
       {
         type: EChatActions.REMOVED_FROM_CHANNEL,
-        payload: { channelId: apiResponse.channel_id },
+        payload: { channelId: apiResponse.channelId },
       },
     ];
     const spy = jest
@@ -189,7 +189,7 @@ describe('chat actions', () => {
 
   it('sendGetMessages', async () => {
     const credentials: IFetchMessagesCredentials = {
-      channel_id: '1',
+      channelId: '1',
       offset: 0,
       limit: 10,
       sort: '-createdAt',
@@ -224,7 +224,7 @@ describe('chat actions', () => {
     const message = 'Test Message';
 
     const expectedCredentials: ISendMessageCredentials = {
-      channel_id: channelId,
+      channelId: channelId,
       body: message,
     };
 
@@ -245,7 +245,7 @@ describe('chat actions', () => {
     const channelId = '1';
 
     const expectedCredentials: ISendFilesCredentials = {
-      channel_id: channelId,
+      channelId: channelId,
       files: filesData,
     };
 
@@ -322,7 +322,7 @@ describe('chat actions', () => {
     emitSetActiveChannel(channelId)(store.dispatch);
 
     expect(spy).toHaveBeenCalledWith(SOCKET_EVENTS.IO_SET_ACTIVE_CHANNEL, {
-      channel_id: channelId,
+      channelId: channelId,
     });
     expect(store.getActions()).toEqual(expectedActions);
   });
@@ -340,7 +340,7 @@ describe('chat actions', () => {
     emitSetLastSeen(channelId)();
 
     expect(spy).toHaveBeenCalledWith(SOCKET_EVENTS.IO_SET_LAST_SEEN, {
-      channel_id: channelId,
+      channelId: channelId,
     });
   });
 });

@@ -28,14 +28,14 @@ export default (
   let messages: IMessage[] = [];
   if (!options?.useConstValues) {
     messages = Array.from({ length: messagesLen }, () =>
-      messageFactory({ channel_id: channelId }),
+      messageFactory({ channelId: channelId }),
     );
   } else {
     messages = Array.from({ length: messagesLen }, (_, idx) =>
       messageFactory(
         {
           _id: `message-${idx}`,
-          channel_id: channelId,
+          channelId: channelId,
           body: `Test Message ${idx}`,
           type: MESSAGE_TYPES.TEXT,
         },
@@ -54,14 +54,14 @@ export default (
   let queue: IMessage[] = [];
   if (!options?.useConstValues) {
     queue = Array.from({ length: queueLen }, () =>
-      messageFactory({ channel_id: channelId }),
+      messageFactory({ channelId: channelId }),
     );
   } else {
     queue = Array.from({ length: queueLen }, (_, idx) =>
       messageFactory(
         {
           _id: `queue-${idx}`,
-          channel_id: channelId,
+          channelId: channelId,
           body: `Queue Message ${idx}`,
           type: MESSAGE_TYPES.TEXT,
         },

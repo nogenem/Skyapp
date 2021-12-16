@@ -130,7 +130,7 @@ const ChatListItem = ({
   const onLeaveGroupModalConfirm = async (event: MouseEvent<Element>) => {
     handleMenuClose(event);
     try {
-      await sendLeaveGroupChannel({ channel_id: channel._id });
+      await sendLeaveGroupChannel({ channelId: channel._id });
       onLeaveGroupModalClose(event);
     } catch (err) {
       setState({
@@ -155,7 +155,7 @@ const ChatListItem = ({
           <ChatAvatar
             online={otherUser === undefined || !!otherUser?.online}
             status={otherUser?.status || USER_STATUS.ACTIVE}
-            isGroup={channel.is_group}
+            isGroup={channel.isGroup}
           />
         </div>
         <ListItemText
@@ -168,11 +168,11 @@ const ChatListItem = ({
           secondary={
             <SecondaryText
               lastMessage={channel.lastMessage}
-              unreadMsgs={channel.unread_msgs}
+              unreadMsgs={channel.unreadMsgs}
             />
           }
         />
-        {channel.is_group && (
+        {channel.isGroup && (
           <Menu
             id={`cli-menu-${channel._id}`}
             anchorEl={anchorEl}
@@ -189,7 +189,7 @@ const ChatListItem = ({
             </MenuItem>
           </Menu>
         )}
-        {channel.is_group && (
+        {channel.isGroup && (
           <ListItemSecondaryAction>
             <IconButton
               edge="end"
@@ -203,7 +203,7 @@ const ChatListItem = ({
           </ListItemSecondaryAction>
         )}
       </ListItem>
-      {channel.is_group && (
+      {channel.isGroup && (
         <>
           <GroupInfoModal
             isOpen={state.isGroupInfoModalOpen}

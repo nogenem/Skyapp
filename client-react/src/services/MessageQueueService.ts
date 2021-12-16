@@ -70,7 +70,7 @@ class MessageQueueService {
     if (queueAction === QUEUE_ACTIONS.SEND_FILE_MESSAGES) {
       const credentials = message as ISendFilesCredentials;
       const formData = credentials.files;
-      channelId = credentials.channel_id;
+      channelId = credentials.channelId;
       const dateTime = new Date().getTime();
 
       formData.getAll('files').forEach((entry, i) => {
@@ -83,8 +83,8 @@ class MessageQueueService {
 
         const queueMsg: IMessage = {
           _id: `${dateTime + i}`,
-          from_id: userId,
-          channel_id: channelId,
+          fromId: userId,
+          channelId: channelId,
           body: {
             originalName: file.name,
             size: file.size,
@@ -101,13 +101,13 @@ class MessageQueueService {
       });
     } else if (queueAction === QUEUE_ACTIONS.SEND_TEXT_MESSAGE) {
       const credentials = message as ISendMessageCredentials;
-      channelId = credentials.channel_id;
+      channelId = credentials.channelId;
       const date = new Date();
 
       const queueMsg: IMessage = {
         _id: `${date.getTime()}`,
-        from_id: userId,
-        channel_id: channelId,
+        fromId: userId,
+        channelId: channelId,
         body: credentials.body,
         createdAt: date,
         updatedAt: date,
@@ -118,7 +118,7 @@ class MessageQueueService {
       store.dispatch<any>(messageEnqueued(queueMsg));
     } else if (queueAction === QUEUE_ACTIONS.EDIT_TEXT_MESSAGE) {
       const credentials = message as IEditMessageCredentials;
-      channelId = credentials.message.channel_id;
+      channelId = credentials.message.channelId;
 
       const queueMsg: IMessage = {
         ...credentials.message,
@@ -131,7 +131,7 @@ class MessageQueueService {
       );
     } else if (queueAction === QUEUE_ACTIONS.DELETE_MESSAGE) {
       const credentials = message as IEditMessageCredentials;
-      channelId = credentials.message.channel_id;
+      channelId = credentials.message.channelId;
 
       const queueMsg: IMessage = credentials.message;
 

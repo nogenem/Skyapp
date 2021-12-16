@@ -81,11 +81,11 @@ describe('chat reducer', () => {
     let otherMemberIdx = 1;
     const payload1: IChannel = FACTORIES.models.channel({
       members: [
-        FACTORIES.models.member({ user_id: user1._id }),
-        FACTORIES.models.member({ user_id: user2._id }),
+        FACTORIES.models.member({ userId: user1._id }),
+        FACTORIES.models.member({ userId: user2._id }),
       ],
-      is_group: false,
-      other_member_idx: otherMemberIdx,
+      isGroup: false,
+      otherMemberIdx: otherMemberIdx,
     });
 
     let action: TChatAction = {
@@ -96,14 +96,14 @@ describe('chat reducer', () => {
     let newState = userReducer(initialState, action);
     expect(newState.channels[payload1._id]).toBeTruthy();
     expect(newState.channels[payload1._id].name).toEqual(user2.nickname);
-    expect(newState.users[user1._id].channel_id).toEqual(payload1._id);
-    expect(newState.users[user2._id].channel_id).toEqual(payload1._id);
+    expect(newState.users[user1._id].channelId).toEqual(payload1._id);
+    expect(newState.users[user2._id].channelId).toEqual(payload1._id);
 
     // update channel
     otherMemberIdx = 0;
     const payload2: IChannel = {
       ...payload1,
-      other_member_idx: otherMemberIdx,
+      otherMemberIdx: otherMemberIdx,
     };
     action = {
       type: EChatActions.CHANNEL_CREATED_OR_UPDATED,
@@ -113,16 +113,16 @@ describe('chat reducer', () => {
     newState = userReducer(initialState, action);
     expect(newState.channels[payload2._id]).toBeTruthy();
     expect(newState.channels[payload2._id].name).toEqual(user1.nickname);
-    expect(newState.channels[payload2._id].other_member_idx).toEqual(
+    expect(newState.channels[payload2._id].otherMemberIdx).toEqual(
       otherMemberIdx,
     );
-    expect(newState.users[user1._id].channel_id).toEqual(payload2._id);
-    expect(newState.users[user2._id].channel_id).toEqual(payload2._id);
+    expect(newState.users[user1._id].channelId).toEqual(payload2._id);
+    expect(newState.users[user2._id].channelId).toEqual(payload2._id);
   });
 
   it('should handle ACTIVE_CHANNEL_CHANGED', () => {
     const channel: IChannel = FACTORIES.models.channel({
-      unread_msgs: 10,
+      unreadMsgs: 10,
     });
 
     // setting the activeChannel
@@ -138,7 +138,7 @@ describe('chat reducer', () => {
     let newState = userReducer(initialState, action);
     expect(newState.activeChannelInfo).toBeTruthy();
     expect(newState.activeChannelInfo?._id).toBe(channel._id);
-    expect(newState.channels[channel._id].unread_msgs).toBe(0);
+    expect(newState.channels[channel._id].unreadMsgs).toBe(0);
 
     // resetting the activeChannel
     action = {
@@ -187,13 +187,13 @@ describe('chat reducer', () => {
 
   it('should handle NEW_MESSAGES_RECEIVED', () => {
     const channel: IChannel = FACTORIES.models.channel({
-      unread_msgs: 0,
+      unreadMsgs: 0,
     });
     const message1: IMessage = FACTORIES.models.message({
-      channel_id: channel._id,
+      channelId: channel._id,
     });
     const message2: IMessage = FACTORIES.models.message({
-      channel_id: channel._id,
+      channelId: channel._id,
     });
 
     // with activeChannelInfo
@@ -227,14 +227,14 @@ describe('chat reducer', () => {
     });
 
     newState = userReducer(initialState, action);
-    expect(newState.channels[channel._id].unread_msgs).toEqual(1);
+    expect(newState.channels[channel._id].unreadMsgs).toEqual(1);
     expect(newState.channels[channel._id].lastMessage).toEqual(message1);
   });
 
   it('should handle MESSAGE_ENQUEUED', () => {
     const channel: IChannel = FACTORIES.models.channel();
     const message: IMessage = FACTORIES.models.message({
-      channel_id: channel._id,
+      channelId: channel._id,
     });
 
     const initialState: TChatState = FACTORIES.states.chat({
@@ -257,7 +257,7 @@ describe('chat reducer', () => {
   it('should handle MESSAGE_DEQUEUED', () => {
     const channel: IChannel = FACTORIES.models.channel();
     const message: IMessage = FACTORIES.models.message({
-      channel_id: channel._id,
+      channelId: channel._id,
     });
 
     const initialState: TChatState = FACTORIES.states.chat({
@@ -282,8 +282,8 @@ describe('chat reducer', () => {
     const channel: IChannel = FACTORIES.models.channel({
       members: [
         FACTORIES.models.member({
-          user_id: user._id,
-          last_seen: new Date(),
+          userId: user._id,
+          lastSeen: new Date(),
         }),
       ],
     });
@@ -297,15 +297,15 @@ describe('chat reducer', () => {
     const action: TChatAction = {
       type: EChatActions.LAST_SEEN_CHANGED,
       payload: {
-        channel_id: channel._id,
-        user_id: user._id,
-        last_seen: '2021-11-29T14:04:06.091Z',
+        channelId: channel._id,
+        userId: user._id,
+        lastSeen: '2021-11-29T14:04:06.091Z',
       },
     };
 
     const newState = userReducer(initialState, action);
     expect(
-      newState.channels[channel._id].members[0].last_seen.toISOString(),
+      newState.channels[channel._id].members[0].lastSeen.toISOString(),
     ).toBe(newLastSeen);
   });
 
@@ -322,7 +322,7 @@ describe('chat reducer', () => {
     const action: TChatAction = {
       type: EChatActions.USER_STATUS_CHANGED,
       payload: {
-        user_id: user._id,
+        userId: user._id,
         newStatus,
       },
     };
@@ -344,7 +344,7 @@ describe('chat reducer', () => {
     const action: TChatAction = {
       type: EChatActions.USER_THOUGHTS_CHANGED,
       payload: {
-        user_id: user._id,
+        userId: user._id,
         newThoughts,
       },
     };
@@ -372,7 +372,7 @@ describe('chat reducer', () => {
     let action: TChatAction = {
       type: EChatActions.MESSAGE_IS_UPDATING_CHANGED,
       payload: {
-        message_id: message._id,
+        messageId: message._id,
         value: true,
       },
     };
@@ -384,7 +384,7 @@ describe('chat reducer', () => {
     action = {
       type: EChatActions.MESSAGE_IS_UPDATING_CHANGED,
       payload: {
-        message_id: message._id,
+        messageId: message._id,
         value: false,
       },
     };
@@ -396,7 +396,7 @@ describe('chat reducer', () => {
   it('should handle MESSAGE_UPDATED', () => {
     const channel: IChannel = FACTORIES.models.channel();
     const initialMessage: IMessage = FACTORIES.models.message({
-      channel_id: channel._id,
+      channelId: channel._id,
       body: 'Test message 1',
     });
     channel.lastMessage = initialMessage;
@@ -426,7 +426,7 @@ describe('chat reducer', () => {
   it('should handle MESSAGE_IS_DELETING_CHANGED', () => {
     const channel: IChannel = FACTORIES.models.channel();
     const message: IMessage = FACTORIES.models.message({
-      channel_id: channel._id,
+      channelId: channel._id,
       isDeleting: false,
     });
 
@@ -443,7 +443,7 @@ describe('chat reducer', () => {
     let action: TChatAction = {
       type: EChatActions.MESSAGE_IS_DELETING_CHANGED,
       payload: {
-        message_id: message._id,
+        messageId: message._id,
         value: true,
       },
     };
@@ -455,7 +455,7 @@ describe('chat reducer', () => {
     action = {
       type: EChatActions.MESSAGE_IS_DELETING_CHANGED,
       payload: {
-        message_id: message._id,
+        messageId: message._id,
         value: false,
       },
     };
@@ -467,10 +467,10 @@ describe('chat reducer', () => {
   it('should handle MESSAGE_DELETED', () => {
     const channel: IChannel = FACTORIES.models.channel();
     const message1: IMessage = FACTORIES.models.message({
-      channel_id: channel._id,
+      channelId: channel._id,
     });
     const message2: IMessage = FACTORIES.models.message({
-      channel_id: channel._id,
+      channelId: channel._id,
     });
 
     channel.lastMessage = message2;

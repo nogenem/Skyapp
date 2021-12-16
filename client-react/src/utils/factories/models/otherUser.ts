@@ -32,7 +32,7 @@ export default (
     nickname,
     status,
     thoughts,
-    channel_id: channelId,
+    channelId,
     ...(override || {}),
   } as IOtherUser;
 };

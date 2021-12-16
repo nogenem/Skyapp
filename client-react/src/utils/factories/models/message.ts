@@ -52,8 +52,8 @@ export default (
 
   return {
     _id: messageId,
-    channel_id: channelId,
-    from_id: fromId,
+    channelId,
+    fromId,
     body,
     type: messageType,
     createdAt,

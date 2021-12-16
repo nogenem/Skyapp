@@ -113,53 +113,44 @@ export default {
         axiosInstance
           .post(END_POINTS.channel.group.store, { ...credentials })
           .then(res => res.data),
-      update: ({
-        channel_id: channelId,
-        ...credentials
-      }: IUpdateGroupCredentials) =>
+      update: ({ channelId, ...credentials }: IUpdateGroupCredentials) =>
         axiosInstance
           .patch(END_POINTS.channel.group.update(channelId), {
             ...credentials,
           })
           .then(res => res.data),
-      leave: ({ channel_id: channelId }: ILeaveGroupCredentials) =>
+      leave: ({ channelId }: ILeaveGroupCredentials) =>
         axiosInstance
           .post(END_POINTS.channel.group.leave(channelId), {})
           .then(res => res.data),
     },
   },
   message: {
-    all: ({
-      channel_id: channelId,
-      ...credentials
-    }: IFetchMessagesCredentials) =>
+    all: ({ channelId, ...credentials }: IFetchMessagesCredentials) =>
       axiosInstance
         .get(END_POINTS.message.all(channelId), {
           params: credentials,
         })
         .then(res => res.data),
-    storeMessage: ({
-      channel_id: channelId,
-      ...credentials
-    }: ISendMessageCredentials) =>
+    storeMessage: ({ channelId, ...credentials }: ISendMessageCredentials) =>
       axiosInstance
         .post(END_POINTS.message.storeMessage(channelId), {
           ...credentials,
         })
         .then(res => res.data),
-    storeFiles: ({ channel_id: channelId, files }: ISendFilesCredentials) =>
+    storeFiles: ({ channelId, files }: ISendFilesCredentials) =>
       axiosInstance
         .post(END_POINTS.message.storeFiles(channelId), files)
         .then(res => res.data),
     updateBody: ({ message, ...credentials }: IEditMessageCredentials) =>
       axiosInstance
-        .patch(END_POINTS.message.updateBody(message.channel_id, message._id), {
+        .patch(END_POINTS.message.updateBody(message.channelId, message._id), {
           ...credentials,
         })
         .then(res => res.data),
     delete: ({ message }: IDeleteMessageCredentials) =>
       axiosInstance
-        .delete(END_POINTS.message.delete(message.channel_id, message._id))
+        .delete(END_POINTS.message.delete(message.channelId, message._id))
         .then(res => res.data),
   },
 };

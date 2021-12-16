@@ -13,7 +13,7 @@ describe('Connected GroupInfoModal', () => {
   it('renders correctly', () => {
     const channel = FACTORIES.models.channel({}, { useConstValues: true });
     const otherUser: IOtherUser = FACTORIES.models.otherUser(
-      { channel_id: channel._id },
+      { channelId: channel._id },
       { useConstValues: true },
     );
     const initialState: Partial<IAppState> = {

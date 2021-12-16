@@ -7,7 +7,7 @@ interface IOtherUser {
   thoughts: string;
   status: TUserStatus;
   online: boolean;
-  channel_id?: string;
+  channelId?: string;
 }
 
 interface IOtherUsers {
@@ -15,18 +15,18 @@ interface IOtherUsers {
 }
 
 interface IMember {
-  user_id: string;
-  is_adm: boolean;
-  last_seen: Date;
+  userId: string;
+  isAdm: boolean;
+  lastSeen: Date;
 }
 
 interface IChannel {
   _id: string;
   name: string;
-  is_group: boolean;
+  isGroup: boolean;
   members: IMember[];
-  other_member_idx?: number;
-  unread_msgs: number;
+  otherMemberIdx?: number;
+  unreadMsgs: number;
   lastMessage?: IMessage;
 }
 
@@ -44,8 +44,8 @@ interface IAttachment {
 
 interface IMessage {
   _id: string;
-  channel_id: string;
-  from_id?: string;
+  channelId: string;
+  fromId?: string;
   body: string | IAttachment;
   type: TMessageType;
   createdAt: Date;
@@ -73,30 +73,30 @@ interface INewGroupCredentials {
 }
 
 interface IUpdateGroupCredentials {
-  channel_id: string;
+  channelId: string;
   name: string;
   members: string[];
   admins: string[];
 }
 
 interface ILeaveGroupCredentials {
-  channel_id: string;
+  channelId: string;
 }
 
 interface IFetchMessagesCredentials {
-  channel_id: string;
+  channelId: string;
   offset: number;
   limit?: number;
   sort?: string;
 }
 
 interface ISendMessageCredentials {
-  channel_id: string;
+  channelId: string;
   body: string;
 }
 
 interface ISendFilesCredentials {
-  channel_id: string;
+  channelId: string;
   files: FormData;
 }
 
@@ -168,29 +168,29 @@ type TChatAction =
   | IChatActionType<
       typeof EChatActions.LAST_SEEN_CHANGED,
       {
-        channel_id: string;
-        user_id: string;
-        last_seen: string;
+        channelId: string;
+        userId: string;
+        lastSeen: string;
       }
     >
   | IChatActionType<
       typeof EChatActions.USER_STATUS_CHANGED,
       {
-        user_id: string;
+        userId: string;
         newStatus: TUserStatus;
       }
     >
   | IChatActionType<
       typeof EChatActions.USER_THOUGHTS_CHANGED,
       {
-        user_id: string;
+        userId: string;
         newThoughts: string;
       }
     >
   | IChatActionType<
       typeof EChatActions.MESSAGE_IS_UPDATING_CHANGED,
       {
-        message_id: string;
+        messageId: string;
         value: boolean;
       }
     >
@@ -198,7 +198,7 @@ type TChatAction =
   | IChatActionType<
       typeof EChatActions.MESSAGE_IS_DELETING_CHANGED,
       {
-        message_id: string;
+        messageId: string;
         value: boolean;
       }
     >

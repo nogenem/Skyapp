@@ -104,7 +104,7 @@ const GroupInfoModal = ({
       });
     } else {
       const credentials = {
-        channel_id: channel._id,
+        channelId: channel._id,
         name: state.groupName,
         members: [],
         admins: [],
@@ -164,9 +164,9 @@ const GroupInfoModal = ({
 
       if (!!channel.members) {
         channel.members.forEach(member => {
-          newState.selectedUsersObj[member.user_id] = true;
-          newState.isAdminObj[member.user_id] = member.is_adm;
-          if (member.user_id === loggedUserId && member.is_adm)
+          newState.selectedUsersObj[member.userId] = true;
+          newState.isAdminObj[member.userId] = member.isAdm;
+          if (member.userId === loggedUserId && member.isAdm)
             newState.isLoggedUserAdmin = true;
         });
       }

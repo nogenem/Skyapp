@@ -79,7 +79,7 @@ export const selectChatChannelById = createSelector(
 export const selectChatUsersWithoutChannelList = createSelector(
   selectChat,
   data => {
-    const users = Object.values(data.users).filter(user => !user.channel_id);
+    const users = Object.values(data.users).filter(user => !user.channelId);
     users.sort((a, b) => a.nickname.localeCompare(b.nickname));
     return users;
   },
@@ -108,7 +108,7 @@ export const selectActiveChannelLastMessage = createSelector(
 
 export const selectActiveChannelIsGroup = createSelector(
   selectActiveChannel,
-  activeChannel => activeChannel?.is_group,
+  activeChannel => activeChannel?.isGroup,
 );
 
 export const selectActiveChannelMessages = createSelector(
@@ -129,8 +129,8 @@ export const selectActiveChannelTotalMessages = createSelector(
 export const selectOtherUserFromChannel = createSelector(
   [selectChat, selectChatChannelById],
   (data, channel) => {
-    if (!!channel && !channel.is_group) {
-      return data.users[channel.members[channel.other_member_idx || 0].user_id];
+    if (!!channel && !channel.isGroup) {
+      return data.users[channel.members[channel.otherMemberIdx || 0].userId];
     }
     return undefined;
   },
@@ -142,8 +142,8 @@ export const selectOtherUsersFromActiveChannel = createSelector(
     const users: IOtherUser[] = [];
     if (channel) {
       channel.members.forEach(member => {
-        if (member.user_id !== loggedUserId) {
-          users.push(data.users[member.user_id]);
+        if (member.userId !== loggedUserId) {
+          users.push(data.users[member.userId]);
         }
       });
     }

@@ -21,7 +21,7 @@ const renderWithRedux = getRenderWithRedux();
 describe('Connected NewChatModal', () => {
   it('renders correctly', () => {
     const otherUser: IOtherUser = FACTORIES.models.otherUser(
-      { channel_id: undefined },
+      { channelId: undefined },
       { useConstValues: true },
     );
     const initialState: Partial<IAppState> = {

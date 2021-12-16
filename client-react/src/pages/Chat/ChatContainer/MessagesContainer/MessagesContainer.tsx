@@ -92,7 +92,7 @@ const MessagesContainer = ({
   const { t: trans } = useTranslation(['Common', 'Messages']);
   const classes = useStyles();
 
-  const channelId = messages[0]?.channel_id;
+  const channelId = messages[0]?.channelId;
   const isMenuOpen = Boolean(anchorEl);
 
   const handleOnMouseEnter =
@@ -112,7 +112,7 @@ const MessagesContainer = ({
     shouldShowUserInfo: boolean = false,
     isQueuedMessage: boolean = false,
   ) => {
-    const isFromLoggedUser = message.from_id === loggedUser._id;
+    const isFromLoggedUser = message.fromId === loggedUser._id;
     const wrapperExtraClassName = isFromLoggedUser
       ? classes.messageWrapperFromMe
       : classes.messageWrapperFromThem;
@@ -128,7 +128,7 @@ const MessagesContainer = ({
     else if (message.isDeleting)
       progressTitle = trans('Messages:Deleting this message');
 
-    const user = users[message.from_id || ''] || loggedUser;
+    const user = users[message.fromId || ''] || loggedUser;
     const nickname = getFirstName(user.nickname);
     const date = getTime(message.createdAt);
 
@@ -183,13 +183,13 @@ const MessagesContainer = ({
     let addedOtherLastSeen: boolean = false;
     let addedNewMsgsAlert: boolean = false;
 
-    const myLastSeen = !activeChannel?.is_group
-      ? activeChannel?.members.find(member => member.user_id === loggedUser._id)
-          ?.last_seen
+    const myLastSeen = !activeChannel?.isGroup
+      ? activeChannel?.members.find(member => member.userId === loggedUser._id)
+          ?.lastSeen
       : undefined;
-    const otherLastSeen = !activeChannel?.is_group
-      ? activeChannel?.members.find(member => member.user_id !== loggedUser._id)
-          ?.last_seen
+    const otherLastSeen = !activeChannel?.isGroup
+      ? activeChannel?.members.find(member => member.userId !== loggedUser._id)
+          ?.lastSeen
       : undefined;
 
     for (let i = 0; i < messages.length; i++) {
@@ -215,7 +215,7 @@ const MessagesContainer = ({
       ) {
         ret.push(
           <AccountCircleIcon
-            key="last_seen"
+            key="lastSeen"
             className={classes.last_seen_icon}
           />,
         );
@@ -227,13 +227,13 @@ const MessagesContainer = ({
         !addedNewMsgsAlert &&
         myLastSeen &&
         myLastSeen < message.createdAt &&
-        message.from_id !== loggedUser._id
+        message.fromId !== loggedUser._id
       ) {
         ret.push(<NewMsgsMessage key="new_messages" />);
         addedNewMsgsAlert = true;
       }
 
-      if (!message.from_id) {
+      if (!message.fromId) {
         ret.push(<SystemMessage key={message._id} message={message} />);
       } else {
         const isOtherTime =
@@ -242,21 +242,18 @@ const MessagesContainer = ({
             Math.abs(lastDate.getMinutes() - message.createdAt.getMinutes()) >=
               5);
         const shouldShowUserInfo =
-          lastUserId !== message.from_id || addedDate || isOtherTime;
+          lastUserId !== message.fromId || addedDate || isOtherTime;
         ret.push(renderMessage(message, shouldShowUserInfo));
       }
 
       lastDate = message.createdAt;
-      lastUserId = message.from_id;
+      lastUserId = message.fromId;
     }
 
     // Add 'other user' icon to demostrate his/her last seen message
     if (!addedOtherLastSeen && otherLastSeen && messages.length) {
       ret.push(
-        <AccountCircleIcon
-          key="last_seen"
-          className={classes.last_seen_icon}
-        />,
+        <AccountCircleIcon key="lastSeen" className={classes.last_seen_icon} />,
       );
     }
     return ret;

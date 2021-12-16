@@ -98,7 +98,7 @@ const ChatContainer = ({
       activeChannelInfo.messages.length < activeChannelInfo.totalMessages
     ) {
       await sendGetMessages({
-        channel_id: activeChannelInfo._id,
+        channelId: activeChannelInfo._id,
         offset: activeChannelInfo.messages.length,
       });
     }
@@ -121,7 +121,7 @@ const ChatContainer = ({
       for (let i = activeChannelInfo.messages.length - 1; i >= 0; i--) {
         const tmpMsg = activeChannelInfo.messages[i];
         if (
-          tmpMsg.from_id === loggedUser._id &&
+          tmpMsg.fromId === loggedUser._id &&
           tmpMsg.type === MESSAGE_TYPES.TEXT
         ) {
           message = tmpMsg;
@@ -152,7 +152,7 @@ const ChatContainer = ({
   React.useEffect(() => {
     const fetchData = async () => {
       if (!!activeChannelId) {
-        await sendGetMessages({ channel_id: activeChannelId, offset: 0 });
+        await sendGetMessages({ channelId: activeChannelId, offset: 0 });
       }
     };
 

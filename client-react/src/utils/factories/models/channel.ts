@@ -32,7 +32,7 @@ export default (
     members = Array.from({ length: membersLen }, () => memberFactory());
   } else {
     members = Array.from({ length: membersLen }, (_, idx) =>
-      memberFactory({ user_id: `member-${idx}` }, { useConstValues: true }),
+      memberFactory({ userId: `member-${idx}` }, { useConstValues: true }),
     );
   }
 
@@ -48,12 +48,12 @@ export default (
 
   let lastMessage = undefined;
   if (!options?.useConstValues) {
-    lastMessage = messageFactory({ channel_id: channelId });
+    lastMessage = messageFactory({ channelId });
   } else if (options?.useConstValues) {
     lastMessage = messageFactory(
       {
         _id: 'last-message-1',
-        channel_id: channelId,
+        channelId,
       },
       { useConstValues: true },
     );
@@ -62,10 +62,10 @@ export default (
   return {
     _id: channelId,
     name,
-    is_group: isGroup,
+    isGroup,
     members,
-    other_member_idx: otherMemberIdx,
-    unread_msgs: unreadMsgs,
+    otherMemberIdx,
+    unreadMsgs,
     lastMessage,
     ...(override || {}),
   } as IChannel;
