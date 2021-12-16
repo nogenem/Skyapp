@@ -9,12 +9,12 @@ const privateChannelCreated: TEmitterFunc = async (io, clients, eventData) => {
 
   channelJson.members.forEach((member, idx) => {
     const otherMemberIdx = idx === 0 ? 1 : 0;
-    const thisMemberClient = clients[member.user_id];
+    const thisMemberClient = clients[member.userId];
 
     if (thisMemberClient) {
       io.to(thisMemberClient.socketId).emit(event, {
         ...channelJson,
-        other_member_idx: otherMemberIdx,
+        otherMemberIdx,
       });
     }
   });

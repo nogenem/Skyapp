@@ -135,12 +135,12 @@ describe('IoService', () => {
   it('should be able to handle `IO_SET_ACTIVE_CHANNEL`', async done => {
     const oldLastSeen = new Date('2021-12-09T12:36:34.768Z');
     const member1 = await factory.create<IMemberDoc>('Member', {
-      user_id: userIds[0],
-      last_seen: oldLastSeen,
+      userId: userIds[0],
+      lastSeen: oldLastSeen,
     });
     const member2 = await factory.create<IMemberDoc>('Member', {
-      user_id: userIds[1],
-      last_seen: oldLastSeen,
+      userId: userIds[1],
+      lastSeen: oldLastSeen,
     });
     const channel = await factory.create<IChannelDoc>(
       'Channel',
@@ -154,9 +154,9 @@ describe('IoService', () => {
 
     sockets[0].on(SOCKET_EVENTS.SOCKET_CONNECT, () => {
       sockets[0].on(SOCKET_EVENTS.IO_SET_LAST_SEEN, async data => {
-        expect(data.channel_id).toBe(channel._id.toString());
-        expect(data.user_id).toBe(userIds[1]);
-        expect(data.last_seen).toBeTruthy();
+        expect(data.channelId).toBe(channel._id.toString());
+        expect(data.userId).toBe(userIds[1]);
+        expect(data.lastSeen).toBeTruthy();
 
         const client = ioServer.getClient(userIds[1]);
         expect(client.currentChannelId).toBe(channel._id.toString());
@@ -165,7 +165,7 @@ describe('IoService', () => {
           _id: channel._id,
         })) as IChannelDoc;
 
-        expect(updatedChannel.members[1].last_seen).not.toBe(oldLastSeen);
+        expect(updatedChannel.members[1].lastSeen).not.toBe(oldLastSeen);
 
         done();
       });
@@ -175,7 +175,7 @@ describe('IoService', () => {
 
     sockets[1].on(SOCKET_EVENTS.SOCKET_CONNECT, async () => {
       sockets[1].emit(SOCKET_EVENTS.IO_SET_ACTIVE_CHANNEL, {
-        channel_id: channel._id,
+        channelId: channel._id,
       });
     });
   });
@@ -183,12 +183,12 @@ describe('IoService', () => {
   it('should be able to handle `IO_SET_LAST_SEEN`', async done => {
     const oldLastSeen = new Date('2021-12-09T12:36:34.768Z');
     const member1 = await factory.create<IMemberDoc>('Member', {
-      user_id: userIds[0],
-      last_seen: oldLastSeen,
+      userId: userIds[0],
+      lastSeen: oldLastSeen,
     });
     const member2 = await factory.create<IMemberDoc>('Member', {
-      user_id: userIds[1],
-      last_seen: oldLastSeen,
+      userId: userIds[1],
+      lastSeen: oldLastSeen,
     });
     const channel = await factory.create<IChannelDoc>(
       'Channel',
@@ -202,15 +202,15 @@ describe('IoService', () => {
 
     sockets[0].on(SOCKET_EVENTS.SOCKET_CONNECT, () => {
       sockets[0].on(SOCKET_EVENTS.IO_SET_LAST_SEEN, async data => {
-        expect(data.channel_id).toBe(channel._id.toString());
-        expect(data.user_id).toBe(userIds[1]);
-        expect(data.last_seen).toBeTruthy();
+        expect(data.channelId).toBe(channel._id.toString());
+        expect(data.userId).toBe(userIds[1]);
+        expect(data.lastSeen).toBeTruthy();
 
         const updatedChannel = (await Channel.findOne({
           _id: channel._id,
         })) as IChannelDoc;
 
-        expect(updatedChannel.members[1].last_seen).not.toBe(oldLastSeen);
+        expect(updatedChannel.members[1].lastSeen).not.toBe(oldLastSeen);
 
         done();
       });
@@ -220,7 +220,7 @@ describe('IoService', () => {
 
     sockets[1].on(SOCKET_EVENTS.SOCKET_CONNECT, async () => {
       sockets[1].emit(SOCKET_EVENTS.IO_SET_LAST_SEEN, {
-        channel_id: channel._id,
+        channelId: channel._id,
       });
     });
   });
@@ -236,7 +236,7 @@ describe('IoService', () => {
 
     sockets[0].on(SOCKET_EVENTS.SOCKET_CONNECT, () => {
       sockets[0].on(SOCKET_EVENTS.IO_USER_STATUS_CHANGED, async data => {
-        expect(data.user_id).toBe(userIds[1]);
+        expect(data.userId).toBe(userIds[1]);
         expect(data.newStatus).toBe(newStatus);
         done();
       });

@@ -51,20 +51,20 @@ describe('Group_Store', () => {
 
     const channelRecord = (await Channel.findOne({
       $and: [
-        { is_group: true },
-        { 'members.user_id': user1._id },
-        { 'members.user_id': user2._id },
-        { 'members.user_id': user3._id },
+        { isGroup: true },
+        { 'members.userId': user1._id },
+        { 'members.userId': user2._id },
+        { 'members.userId': user3._id },
       ],
     })) as IChannelDoc;
 
     const unreadMsgs: number = await Message.countDocuments({
-      channel_id: channelRecord._id.toString(),
+      channelId: channelRecord._id.toString(),
     });
 
     expect(channelRecord).toBeTruthy();
     expect(channelRecord.name).toBe(groupName);
-    expect(channelRecord.members[0].is_adm).toBe(true);
+    expect(channelRecord.members[0].isAdm).toBe(true);
     expect(unreadMsgs >= 1).toBe(true);
 
     expect(ioSpy).toHaveBeenCalled();
@@ -74,7 +74,7 @@ describe('Group_Store', () => {
     );
   });
 
-  it('should not be able to create a new group channel with invalid member_ids', async () => {
+  it('should not be able to create a new group channel with invalid memberIds', async () => {
     const user: IUserDoc = await factory.create<IUserDoc>('User');
 
     jest.spyOn(jsonwebtoken, 'verify').mockImplementation(token => {

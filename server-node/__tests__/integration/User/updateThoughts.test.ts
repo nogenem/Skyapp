@@ -54,7 +54,7 @@ describe('Update_Thoughts', () => {
     expect(ioSpy).toHaveBeenCalled();
     expect(ioSpy.mock.calls[0][0]).toBe(IO_USER_THOUGHTS_CHANGED);
     expect(ioSpy.mock.calls[0][1]).toEqual({
-      user_id: user._id,
+      userId: user._id,
       newThoughts,
     });
   });

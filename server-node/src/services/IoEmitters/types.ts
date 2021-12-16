@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import { Namespace } from 'socket.io';
 
 import * as SOCKET_EVENTS from '~/constants/socket_events';
@@ -25,12 +24,12 @@ interface ISetLastSeen {
 }
 
 interface IUserStatusChanged {
-  user_id: string;
+  userId: string;
   newStatus: TUserStatus;
 }
 
 interface IUserThoughtsChanged {
-  user_id: string;
+  userId: string;
   newThoughts: string;
 }
 

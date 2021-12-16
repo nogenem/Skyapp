@@ -13,11 +13,11 @@ describe('getUsersAndChannelsData', () => {
       {},
       { membersLen: 2 },
     );
-    const currentUserId = channel.members[0].user_id.toString();
-    const otherMemberId = channel.members[1].user_id.toString();
+    const currentUserId = channel.members[0].userId.toString();
+    const otherMemberId = channel.members[1].userId.toString();
     const message = await factory.create<IMessageDoc>('Message', {
-      channel_id: channel._id,
-      from_id: currentUserId,
+      channelId: channel._id,
+      fromId: currentUserId,
     });
 
     const data = await getUsersAndChannelsData(currentUserId, {});

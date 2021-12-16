@@ -27,26 +27,26 @@ describe('Group_Leave', () => {
 
   it('should be able to leave a group channel', async () => {
     const member1 = await factory.create<IMemberDoc>('Member', {
-      is_adm: true,
+      isAdm: true,
     });
     const member2 = await factory.create<IMemberDoc>('Member', {
-      is_adm: false,
+      isAdm: false,
     });
     const member3 = await factory.create<IMemberDoc>('Member', {
-      is_adm: false,
+      isAdm: false,
     });
 
     const channel = await factory.create<IChannelDoc>(
       'Channel',
       {
         members: new Types.DocumentArray([member1, member2, member3]),
-        is_group: true,
+        isGroup: true,
       },
       { membersLen: 0 },
     );
-    const user1Id = member1.user_id.toString();
-    const user2Id = member2.user_id.toString();
-    const user3Id = member3.user_id.toString();
+    const user1Id = member1.userId.toString();
+    const user2Id = member2.userId.toString();
+    const user3Id = member3.userId.toString();
 
     jest.spyOn(jsonwebtoken, 'verify').mockImplementation(token => {
       if (token === VALID_TOKEN) return { _id: user1Id };
@@ -67,9 +67,9 @@ describe('Group_Leave', () => {
 
     const channelRecord = (await Channel.findOne({
       $and: [
-        { is_group: true },
-        { 'members.user_id': user2Id },
-        { 'members.user_id': user3Id },
+        { isGroup: true },
+        { 'members.userId': user2Id },
+        { 'members.userId': user3Id },
       ],
     })) as IChannelDoc;
 
@@ -84,22 +84,22 @@ describe('Group_Leave', () => {
 
   it('should be able to leave a group channel and if there is less than 2 members left, the channel should be deleted', async () => {
     const member1 = await factory.create<IMemberDoc>('Member', {
-      is_adm: true,
+      isAdm: true,
     });
     const member2 = await factory.create<IMemberDoc>('Member', {
-      is_adm: false,
+      isAdm: false,
     });
 
     const channel = await factory.create<IChannelDoc>(
       'Channel',
       {
         members: new Types.DocumentArray([member1, member2]),
-        is_group: true,
+        isGroup: true,
       },
       { membersLen: 0 },
     );
-    const user1Id = member1.user_id.toString();
-    const user2Id = member2.user_id.toString();
+    const user1Id = member1.userId.toString();
+    const user2Id = member2.userId.toString();
 
     jest.spyOn(jsonwebtoken, 'verify').mockImplementation(token => {
       if (token === VALID_TOKEN) return { _id: user1Id };
@@ -119,7 +119,7 @@ describe('Group_Leave', () => {
     expect(res.status).toBe(200);
 
     const channelRecord = (await Channel.findOne({
-      $and: [{ is_group: true }, { 'members.user_id': user2Id }],
+      $and: [{ isGroup: true }, { 'members.userId': user2Id }],
     })) as IChannelDoc;
 
     expect(channelRecord).toBeFalsy();
@@ -128,7 +128,7 @@ describe('Group_Leave', () => {
     expect(ioSpy.mock.calls[0][0]).toBe(IO_REMOVED_FROM_GROUP_CHANNEL);
   });
 
-  it('should not be able to leave a group channel with an invalid `channel_id`', async () => {
+  it('should not be able to leave a group channel with an invalid `channelId`', async () => {
     const user: IUserDoc = await factory.create<IUserDoc>('User');
 
     jest.spyOn(jsonwebtoken, 'verify').mockImplementation(token => {
@@ -152,7 +152,7 @@ describe('Group_Leave', () => {
       {},
       { membersLen: 2 },
     );
-    const user1Id = channel.members[0].user_id.toString();
+    const user1Id = channel.members[0].userId.toString();
 
     jest.spyOn(jsonwebtoken, 'verify').mockImplementation(token => {
       if (token === VALID_TOKEN) return { _id: user1Id };

@@ -28,7 +28,7 @@ export default async (
   const aggregate = Channel.aggregate<IChatChannel>([
     {
       $match: {
-        'members.user_id': objectId(currentUserId),
+        'members.userId': objectId(currentUserId),
       },
     },
     {
@@ -36,13 +36,13 @@ export default async (
         // join
         from: 'messages',
         let: {
-          channels_id: '$_id', // Channel._id
+          channelsId: '$_id', // Channel._id
         },
         pipeline: [
           {
             $match: {
-              // Message.channel_id === Channel._id
-              $expr: { $eq: ['$channel_id', '$$channels_id'] },
+              // Message.channelId === Channel._id
+              $expr: { $eq: ['$channelId', '$$channelsId'] },
             },
           },
           {
@@ -55,8 +55,8 @@ export default async (
           },
           {
             $project: {
-              channel_id: 1,
-              from_id: 1,
+              channelId: 1,
+              fromId: 1,
               body: 1,
               type: 1,
               createdAt: 1,
@@ -70,7 +70,7 @@ export default async (
     {
       $project: {
         name: 1,
-        is_group: 1,
+        isGroup: 1,
         members: 1,
         lastMessage: { $arrayElemAt: ['$messages', 0] },
       },
@@ -88,12 +88,12 @@ export default async (
 
   // Get the amount of unread messages by the currentUserId in each Channel
   const promises = tmpChannels.map(c => {
-    const member = c.members.find(m => m.user_id.toString() === currentUserId);
+    const member = c.members.find(m => m.userId.toString() === currentUserId);
 
     if (!member) return 0;
     return Message.countDocuments({
-      channel_id: c._id,
-      updatedAt: { $gt: member.last_seen },
+      channelId: c._id,
+      updatedAt: { $gt: member.lastSeen },
     });
   });
 
@@ -107,16 +107,16 @@ export default async (
     // Promise.all returns the results in order
     const channel = Channel.toChatChannel(tmpChannels[i]);
     if (channel) {
-      channel.unread_msgs = tmpUnread[i];
+      channel.unreadMsgs = tmpUnread[i];
 
-      if (!channel.is_group) {
+      if (!channel.isGroup) {
         const otherMember = channel.members.find(
-          m => m.user_id !== currentUserId,
+          m => m.userId !== currentUserId,
         );
-        channel.other_member_idx = channel.members[0] === otherMember ? 0 : 1;
+        channel.otherMemberIdx = channel.members[0] === otherMember ? 0 : 1;
 
         if (otherMember) {
-          userId2channelId[otherMember.user_id] = channel._id;
+          userId2channelId[otherMember.userId] = channel._id;
         }
       }
       channels[channel._id] = channel;
@@ -128,7 +128,7 @@ export default async (
     user.online = !!currentClients[user._id];
     if (userId2channelId[user._id]) {
       const channelId = userId2channelId[user._id];
-      user.channel_id = channelId;
+      user.channelId = channelId;
       channels[channelId].name = user.nickname;
     }
     users[user._id] = user;

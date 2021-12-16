@@ -1,29 +1,28 @@
-/* eslint-disable camelcase */
 import mongoose, { Document, Model, Types } from 'mongoose';
 
 import Message, { IChatMessage } from './Message';
 
 interface IMember {
-  user_id: string;
-  is_adm: boolean;
-  last_seen: Date;
+  userId: string;
+  isAdm: boolean;
+  lastSeen: Date;
 }
 
 interface IMemberDoc extends IMember, Types.EmbeddedDocument {}
 
 interface IChannel {
   name: string;
-  is_group: boolean;
+  isGroup: boolean;
   members: Types.DocumentArray<IMemberDoc>;
 }
 
 interface IChatChannel {
   _id: string;
   name: string;
-  is_group: boolean;
+  isGroup: boolean;
   members: IMember[];
-  other_member_idx?: number;
-  unread_msgs: number;
+  otherMemberIdx?: number;
+  unreadMsgs: number;
   lastMessage?: IChatMessage;
 }
 
@@ -41,13 +40,13 @@ interface IChatModel extends Model<IChannelDoc> {
 }
 
 const Member = new mongoose.Schema<IMemberDoc>({
-  user_id: {
+  userId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
     index: true,
   },
-  is_adm: { type: Boolean, default: false },
-  last_seen: { type: Date, default: Date.now },
+  isAdm: { type: Boolean, default: false },
+  lastSeen: { type: Date, default: Date.now },
 });
 
 const Channel = new mongoose.Schema<IChannelDoc>(
@@ -56,7 +55,7 @@ const Channel = new mongoose.Schema<IChannelDoc>(
       type: String,
       required: true,
     },
-    is_group: { type: Boolean, required: true },
+    isGroup: { type: Boolean, required: true },
     members: [Member],
   },
   { timestamps: true },
@@ -67,23 +66,23 @@ function toChatChannel(channel: IChannelDoc | IChatChannel): IChatChannel {
   return {
     _id: channel._id.toString(),
     name: channel.name,
-    is_group: channel.is_group,
+    isGroup: channel.isGroup,
     // It doesn't matter if it's `IMember` or `IMemberDoc`
     members: oldChatChannel.members.map(member => ({
-      user_id: member.user_id.toString(),
-      is_adm: member.is_adm,
-      last_seen: member.last_seen,
+      userId: member.userId.toString(),
+      isAdm: member.isAdm,
+      lastSeen: member.lastSeen,
     })),
-    other_member_idx: Number.isInteger(oldChatChannel.other_member_idx)
-      ? oldChatChannel.other_member_idx
+    otherMemberIdx: Number.isInteger(oldChatChannel.otherMemberIdx)
+      ? oldChatChannel.otherMemberIdx
       : undefined,
-    unread_msgs: oldChatChannel.unread_msgs || 0,
+    unreadMsgs: oldChatChannel.unreadMsgs || 0,
     lastMessage: Message.toChatMessage(oldChatChannel.lastMessage),
   };
 }
 
 Channel.pre('remove', async function beforeRemove() {
-  await Message.deleteMany({ channel_id: this._id });
+  await Message.deleteMany({ channelId: this._id });
 });
 
 Channel.static(

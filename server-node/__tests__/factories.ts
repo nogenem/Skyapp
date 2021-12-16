@@ -55,16 +55,16 @@ const attachmentFactory = (override?: Partial<IAttachment>): IAttachment => ({
 });
 
 class MemberObject {
-  user_id: string;
+  userId: string;
 
-  is_adm: boolean;
+  isAdm: boolean;
 
-  last_seen: Date;
+  lastSeen: Date;
 
   constructor(values: IMember) {
-    this.user_id = values.user_id;
-    this.is_adm = values.is_adm;
-    this.last_seen = values.last_seen;
+    this.userId = values.userId;
+    this.isAdm = values.isAdm;
+    this.lastSeen = values.lastSeen;
   }
 
   save() {
@@ -77,9 +77,9 @@ class MemberObject {
 }
 
 factory.define('Member', MemberObject, {
-  user_id: factory.assoc('User', '_id', { confirmed: true }),
-  is_adm: Math.random() < 0.5,
-  last_seen: () => new Date(),
+  userId: factory.assoc('User', '_id', { confirmed: true }),
+  isAdm: Math.random() < 0.5,
+  lastSeen: () => new Date(),
 });
 
 interface IChannelBuildOpts {
@@ -103,7 +103,7 @@ factory.define(
         'Member',
         membersLen,
       ) as Types.DocumentArray<IMemberDoc>,
-      is_group: isGroup,
+      isGroup,
     };
   },
 );
@@ -124,8 +124,8 @@ factory.define('Message', Message, (): IMessage => {
   return {
     body,
     type: messageType,
-    channel_id: factory.assoc('Channel', '_id'),
-    from_id: fromId,
+    channelId: factory.assoc('Channel', '_id'),
+    fromId,
   };
 });
 

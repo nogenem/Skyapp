@@ -50,7 +50,7 @@ interface IEditMessageCredentials {
 
 export default {
   async all(req: IAuthRequest, res: Response): Promise<Response<unknown>> {
-    const channelId = req.params.channel_id;
+    const { channelId } = req.params;
     const {
       offset,
       limit = 30,
@@ -61,7 +61,7 @@ export default {
     try {
       const channelRecord = await Channel.findOne({
         _id: channelId,
-        'members.user_id': currentUser._id,
+        'members.userId': currentUser._id,
       });
 
       if (!channelRecord) {
@@ -69,12 +69,12 @@ export default {
       }
 
       const messages = await Message.paginate(
-        { channel_id: channelId },
+        { channelId },
         {
           offset,
           limit,
           sort,
-          select: '_id channel_id from_id body type createdAt updatedAt',
+          select: '_id channelId fromId body type createdAt updatedAt',
         },
       );
       if (!messages) {
@@ -90,7 +90,7 @@ export default {
     req: IAuthRequest,
     res: Response,
   ): Promise<Response<unknown>> {
-    const channelId = req.params.channel_id;
+    const { channelId } = req.params;
     const { body } = req.body as unknown as ISendMessageCredentials;
     const currentUser = req.currentUser as IUserDoc;
 
@@ -101,8 +101,8 @@ export default {
       }
 
       const msgObj = new Message({
-        channel_id: channelId,
-        from_id: currentUser._id,
+        channelId,
+        fromId: currentUser._id,
         body,
         type: MESSAGE_TYPES.TEXT,
       });
@@ -129,7 +129,7 @@ export default {
     req: IAuthRequest,
     res: Response,
   ): Promise<Response<unknown>> {
-    const channelId = req.params.channel_id;
+    const { channelId } = req.params;
     const currentUser = req.currentUser as IUserDoc;
 
     try {
@@ -163,8 +163,8 @@ export default {
       const messages: IMessage[] = [];
       files.forEach(file => {
         messages.push({
-          channel_id: channel._id as string,
-          from_id: currentUser._id,
+          channelId: channel._id as string,
+          fromId: currentUser._id,
           body: file,
           type: MESSAGE_TYPES.UPLOADED_FILE,
         });
@@ -193,8 +193,8 @@ export default {
     req: IAuthRequest,
     res: Response,
   ): Promise<Response<unknown>> {
-    const channelId = req.params.channel_id;
-    const messageId = req.params.message_id;
+    const { channelId } = req.params;
+    const { messageId } = req.params;
     const { newBody } = req.body as unknown as IEditMessageCredentials;
     const currentUser = req.currentUser as IUserDoc;
 
@@ -203,8 +203,8 @@ export default {
       const messageRecord = await Message.findOneAndUpdate(
         {
           _id: messageId,
-          channel_id: channelId,
-          from_id: currentUser._id,
+          channelId,
+          fromId: currentUser._id,
           type: MESSAGE_TYPES.TEXT,
         },
         { body: newBody },
@@ -216,7 +216,7 @@ export default {
 
       const messageJson = messageRecord.toChatMessage();
       const channelRecord = (await Channel.findOne({
-        _id: messageJson.channel_id,
+        _id: messageJson.channelId,
       })) as IChannelDoc;
       const channelJson = channelRecord.toChatChannel();
 
@@ -235,22 +235,21 @@ export default {
     }
   },
   async delete(req: IAuthRequest, res: Response): Promise<Response<unknown>> {
-    const channelId = req.params.channel_id;
-    const messageId = req.params.message_id;
+    const { channelId, messageId } = req.params;
     const currentUser = req.currentUser as IUserDoc;
 
     try {
       // You can only edit YOUR message
       const messageRecord = await Message.findOne({
         _id: messageId,
-        channel_id: channelId,
-        from_id: currentUser._id,
+        channelId,
+        fromId: currentUser._id,
       });
       if (!messageRecord) {
         return handleErrors(cantDeleteThisMessageError(), res);
       }
 
-      await Message.deleteOne({ _id: messageId, from_id: currentUser._id });
+      await Message.deleteOne({ _id: messageId, fromId: currentUser._id });
 
       if (messageRecord.type === MESSAGE_TYPES.UPLOADED_FILE) {
         const body = messageRecord.body as IAttachment;
@@ -260,7 +259,7 @@ export default {
       }
 
       const lastMessageRecord = await Message.findOne(
-        { channel_id: messageRecord.channel_id },
+        { channelId: messageRecord.channelId },
         null,
         {
           sort: '-createdAt',
@@ -270,7 +269,7 @@ export default {
       const messageJson = messageRecord.toChatMessage();
       const lastMessageJson = lastMessageRecord?.toChatMessage();
       const channelRecord = (await Channel.findOne({
-        _id: messageJson.channel_id,
+        _id: messageJson.channelId,
       })) as IChannelDoc;
       const channelJson = channelRecord.toChatChannel();
 

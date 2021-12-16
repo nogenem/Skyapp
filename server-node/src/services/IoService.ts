@@ -113,12 +113,7 @@ class IoService {
 
       socket.on(
         SOCKET_EVENTS.IO_SET_ACTIVE_CHANNEL,
-        async ({
-          channel_id: channelId,
-        }: {
-          // eslint-disable-next-line camelcase
-          channel_id: string | undefined;
-        }) => {
+        async ({ channelId }: { channelId: string | undefined }) => {
           const lastSeen = new Date();
 
           // update the last channel that the user was in
@@ -126,9 +121,9 @@ class IoService {
             await Channel.updateOne(
               {
                 _id: this._clients[currentUserId].currentChannelId,
-                'members.user_id': currentUserId,
+                'members.userId': currentUserId,
               },
-              { 'members.$.last_seen': lastSeen },
+              { 'members.$.lastSeen': lastSeen },
             );
           }
 
@@ -137,8 +132,8 @@ class IoService {
           if (channelId !== undefined) {
             // update the new channel that the user is entering
             const channel = await Channel.findOneAndUpdate(
-              { _id: channelId, 'members.user_id': currentUserId },
-              { 'members.$.last_seen': lastSeen },
+              { _id: channelId, 'members.userId': currentUserId },
+              { 'members.$.lastSeen': lastSeen },
               { new: true },
             );
 
@@ -157,17 +152,12 @@ class IoService {
 
       socket.on(
         SOCKET_EVENTS.IO_SET_LAST_SEEN,
-        async ({
-          channel_id: channelId,
-        }: {
-          // eslint-disable-next-line camelcase
-          channel_id: string | undefined;
-        }) => {
+        async ({ channelId }: { channelId: string | undefined }) => {
           const lastSeen = new Date();
 
           const channel = await Channel.findOneAndUpdate(
-            { _id: channelId, 'members.user_id': currentUserId },
-            { 'members.$.last_seen': lastSeen },
+            { _id: channelId, 'members.userId': currentUserId },
+            { 'members.$.lastSeen': lastSeen },
             { new: true },
           );
 
@@ -187,7 +177,7 @@ class IoService {
         SOCKET_EVENTS.IO_USER_STATUS_CHANGED,
         async ({ newStatus }: { newStatus: TUserStatus }) => {
           this.emit(SOCKET_EVENTS.IO_USER_STATUS_CHANGED, {
-            user_id: currentUserId,
+            userId: currentUserId,
             newStatus,
           });
         },

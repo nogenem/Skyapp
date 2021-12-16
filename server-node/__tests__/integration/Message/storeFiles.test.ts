@@ -45,7 +45,7 @@ describe('Store_Files', () => {
 
   it('should be able to send a file message', async () => {
     const channel = await factory.create<IChannelDoc>('Channel');
-    const user1Id = channel.members[0].user_id.toString();
+    const user1Id = channel.members[0].userId.toString();
 
     jest.spyOn(jsonwebtoken, 'verify').mockImplementation(token => {
       if (token === VALID_TOKEN) return { _id: user1Id };
@@ -64,7 +64,7 @@ describe('Store_Files', () => {
     expect(res.status).toBe(200);
 
     const messageRecord = await Message.findOne({
-      channel_id: channelId,
+      channelId,
     });
 
     expect(messageRecord).toBeTruthy();
@@ -77,7 +77,7 @@ describe('Store_Files', () => {
   // I just keep getting a: "write ECONNABORTED" error...
 
   // eslint-disable-next-line jest/no-commented-out-tests
-  // it('should not be able to send a message with an invalid `channel_id`', async () => {
+  // it('should not be able to send a message with an invalid `channelId`', async () => {
   //   const user: IUserDoc = await factory.create<IUserDoc>('User');
 
   //   jest.spyOn(jsonwebtoken, 'verify').mockImplementation(token => {
@@ -86,12 +86,12 @@ describe('Store_Files', () => {
   //   });
 
   //   // PS: I dont know how to handle multpart requests inside my multer's mock,
-  //   // so i had to 'cheese' it, by passing the channel_id in the query too ;/
+  //   // so i had to 'cheese' it, by passing the channelId in the query too ;/
   //   const channelId = 'some-channel-id';
   //   const res = await request
-  //     .post(`/api/channel/files?channel_id=${channelId}`)
+  //     .post(`/api/channel/files?channelId=${channelId}`)
   //     .set('authorization', `Bearer ${VALID_TOKEN}`)
-  //     .field('channel_id', channelId)
+  //     .field('channelId', channelId)
   //     .attach('files', '__tests__/files/hello.txt');
 
   //   expect(res.status).toBe(400);

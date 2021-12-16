@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import mongoose, { Document, Model } from 'mongoose';
@@ -53,7 +52,7 @@ interface IChatUser {
   thoughts: string;
   status: number;
   online: boolean;
-  channel_id?: string;
+  channelId?: string;
 }
 
 interface IUserDoc extends IUser, Document {
@@ -187,7 +186,7 @@ function toChatUser(user: IUserDoc | IChatUser): IChatUser {
     thoughts: user.thoughts,
     status: user.status,
     online: oldChatUser.online || false,
-    channel_id: oldChatUser.channel_id || undefined,
+    channelId: oldChatUser.channelId || undefined,
   };
 }
 

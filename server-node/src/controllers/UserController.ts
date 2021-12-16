@@ -39,7 +39,7 @@ export default {
 
       const io = IoService.instance();
 
-      await io.emit(IO_USER_STATUS_CHANGED, { user_id: user._id, newStatus });
+      await io.emit(IO_USER_STATUS_CHANGED, { userId: user._id, newStatus });
 
       return res.status(200).json({
         message: req.t(USER_STATUS_CHANGED),
@@ -65,7 +65,7 @@ export default {
       const io = IoService.instance();
 
       await io.emit(IO_USER_THOUGHTS_CHANGED, {
-        user_id: user._id,
+        userId: user._id,
         newThoughts,
       });
 

@@ -65,9 +65,9 @@ export default {
 
         const alreadyExistingChannel = await Channel.findOne({
           $and: [
-            { is_group: false },
-            { 'members.user_id': currentUser._id },
-            { 'members.user_id': user._id },
+            { isGroup: false },
+            { 'members.userId': currentUser._id },
+            { 'members.userId': user._id },
           ],
         });
         if (alreadyExistingChannel) {
@@ -76,15 +76,15 @@ export default {
 
         const channel = new Channel({
           name: 'private channel',
-          is_group: false,
+          isGroup: false,
           members: [
             {
-              user_id: currentUser._id,
-              is_adm: false,
+              userId: currentUser._id,
+              isAdm: false,
             },
             {
-              user_id: user._id,
-              is_adm: false,
+              userId: user._id,
+              isAdm: false,
             },
           ],
         });
@@ -98,7 +98,7 @@ export default {
 
         return res.status(201).json({
           message: req.t(CHANNEL_CREATED),
-          channel_id: channelRecord._id,
+          channelId: channelRecord._id,
         });
       } catch (err) {
         return handleErrors(err as Error, res);
@@ -133,17 +133,17 @@ export default {
         });
 
         const members = membersIds.map(id => ({
-          user_id: id,
-          is_adm: !!adminsIdsObj[id],
+          userId: id,
+          isAdm: !!adminsIdsObj[id],
         }));
 
         const channel = new Channel({
           name,
-          is_group: true,
+          isGroup: true,
           members: [
             {
-              user_id: currentUser._id,
-              is_adm: true,
+              userId: currentUser._id,
+              isAdm: true,
             },
             ...members,
           ],
@@ -158,14 +158,14 @@ export default {
           const memberId = member._id.toString();
 
           newMembersMessages.push({
-            channel_id: channelRecord._id,
+            channelId: channelRecord._id,
             body: `${currentUser.nickname} added ${member.nickname}`,
             type: MESSAGE_TYPES.TEXT,
           });
 
           if (adminsIdsObj[memberId])
             newAdminsMessages.push({
-              channel_id: channelRecord._id,
+              channelId: channelRecord._id,
               body: `${member.nickname} is now an Admin`,
               type: MESSAGE_TYPES.TEXT,
             });
@@ -177,20 +177,20 @@ export default {
         const latestMessage = messagesRecord[messagesRecord.length - 1];
         const channelJson = channelRecord.toChatChannel();
         channelJson.lastMessage = latestMessage.toChatMessage();
-        channelJson.unread_msgs = messages.length;
+        channelJson.unreadMsgs = messages.length;
 
         await io.emit(IO_GROUP_CHANNEL_CREATED, channelJson);
 
         return res.status(201).json({
           message: req.t(CHANNEL_CREATED),
-          channel_id: channelJson._id,
+          channelId: channelJson._id,
         });
       } catch (err) {
         return handleErrors(err as Error, res);
       }
     },
     async update(req: IAuthRequest, res: Response): Promise<Response<unknown>> {
-      const channelId = req.params.channel_id;
+      const { channelId } = req.params;
       const {
         name,
         members: membersIds,
@@ -200,7 +200,7 @@ export default {
 
       try {
         const channel = await Channel.findOne({ _id: channelId });
-        if (!channel || !channel.is_group) {
+        if (!channel || !channel.isGroup) {
           return handleErrors(cantUpdateThisGroupChannelError(), res);
         }
 
@@ -222,27 +222,27 @@ export default {
         let isCurrentUserAdm = false;
         for (let i = 0; i < channel.members.length; i += 1) {
           const member = channel.members[i];
-          if (currentUser._id.toString() === member.user_id.toString()) {
+          if (currentUser._id.toString() === member.userId.toString()) {
             members.push(member);
-            isCurrentUserAdm = member.is_adm;
+            isCurrentUserAdm = member.isAdm;
 
-            delete membersIdsObj[member.user_id];
-            delete adminsIdsObj[member.user_id];
-          } else if (membersIdsObj[member.user_id]) {
-            const oldIsAdm = member.is_adm;
-            const newIsAdm = !!adminsIdsObj[member.user_id];
+            delete membersIdsObj[member.userId];
+            delete adminsIdsObj[member.userId];
+          } else if (membersIdsObj[member.userId]) {
+            const oldIsAdm = member.isAdm;
+            const newIsAdm = !!adminsIdsObj[member.userId];
             if (oldIsAdm !== newIsAdm) {
-              if (!newIsAdm) removedAdmins.push(member.user_id);
-              else newAdmins.push(member.user_id);
+              if (!newIsAdm) removedAdmins.push(member.userId);
+              else newAdmins.push(member.userId);
             }
 
-            member.is_adm = newIsAdm;
+            member.isAdm = newIsAdm;
             members.push(member);
 
-            delete membersIdsObj[member.user_id];
-            delete adminsIdsObj[member.user_id];
+            delete membersIdsObj[member.userId];
+            delete adminsIdsObj[member.userId];
           } else {
-            removedMembers.push(member.user_id);
+            removedMembers.push(member.userId);
           }
         }
 
@@ -252,8 +252,8 @@ export default {
 
         Object.keys(membersIdsObj).forEach(id => {
           members.push({
-            user_id: id,
-            is_adm: !!adminsIdsObj[id],
+            userId: id,
+            isAdm: !!adminsIdsObj[id],
           });
           newMembers.push(id);
           if (adminsIdsObj[id]) newAdmins.push(id);
@@ -262,7 +262,7 @@ export default {
         // PS: - 1 cause of the user that is already updating this group
         const updatedMembersCount =
           (await User.countDocuments({
-            _id: { $in: members.map(member => member.user_id) },
+            _id: { $in: members.map(member => member.userId) },
           })) - 1;
         if (
           !updatedMembersCount ||
@@ -293,28 +293,28 @@ export default {
         const messages = [] as IMessage[];
         newMembers.forEach(id => {
           messages.push({
-            channel_id: channel?._id,
+            channelId: channel?._id,
             body: `${currentUser.nickname} added ${membersRecordsObj[id]}`,
             type: MESSAGE_TYPES.TEXT,
           });
         });
         removedMembers.forEach(id => {
           messages.push({
-            channel_id: channel?._id,
+            channelId: channel?._id,
             body: `${currentUser.nickname} removed ${membersRecordsObj[id]}`,
             type: MESSAGE_TYPES.TEXT,
           });
         });
         newAdmins.forEach(id => {
           messages.push({
-            channel_id: channel?._id,
+            channelId: channel?._id,
             body: `${membersRecordsObj[id]} is now an Admin`,
             type: MESSAGE_TYPES.TEXT,
           });
         });
         removedAdmins.forEach(id => {
           messages.push({
-            channel_id: channel?._id,
+            channelId: channel?._id,
             body: `${membersRecordsObj[id]} is no longer an Admin`,
             type: MESSAGE_TYPES.TEXT,
           });
@@ -347,21 +347,21 @@ export default {
 
         return res.status(200).json({
           message: req.t(CHANNEL_UPDATED),
-          channel_id: channelJson._id,
+          channelId: channelJson._id,
         });
       } catch (err) {
         return handleErrors(err as Error, res);
       }
     },
     async leave(req: IAuthRequest, res: Response): Promise<Response<unknown>> {
-      const channelId = req.params.channel_id;
+      const { channelId } = req.params;
       const currentUser = req.currentUser as IUserDoc;
       const userId = currentUser._id.toString();
 
       try {
         const channel = await Channel.findOne({ _id: channelId });
 
-        if (!channel || !channel.is_group) {
+        if (!channel || !channel.isGroup) {
           return handleErrors(cantLeaveThisChannelError(), res);
         }
 
@@ -369,10 +369,10 @@ export default {
         let memberId = '';
         let memberIsAdm = false;
         channel.members.forEach(m => {
-          if (!memberId && m.user_id.toString() === userId) {
-            memberIsAdm = m.is_adm;
+          if (!memberId && m.userId.toString() === userId) {
+            memberIsAdm = m.isAdm;
             memberId = m._id;
-          } else if (m.is_adm) {
+          } else if (m.isAdm) {
             hasOtherAdm = true;
           }
         });
@@ -398,13 +398,13 @@ export default {
           if (memberIsAdm && !hasOtherAdm) {
             channel.members.forEach(m => {
               /* eslint-disable no-param-reassign */
-              m.is_adm = true;
+              m.isAdm = true;
               newAdmins.push(m._id);
             });
           }
 
           const message = new Message({
-            channel_id: channelId,
+            channelId,
             body: `${currentUser.nickname} left the group`,
             type: MESSAGE_TYPES.TEXT,
           });

@@ -53,38 +53,38 @@ routes.post(
   ChannelController.group.store,
 );
 routes.patch(
-  '/channel/group/:channel_id',
+  '/channel/group/:channelId',
   validate(channel.group.update),
   ChannelController.group.update,
 );
 routes.post(
-  '/channel/group/:channel_id/leave',
+  '/channel/group/:channelId/leave',
   validate(channel.group.leave),
   ChannelController.group.leave,
 );
 routes.get(
-  '/channel/:channel_id/messages',
+  '/channel/:channelId/messages',
   validate(message.all),
   MessageController.all,
 );
 routes.post(
-  '/channel/:channel_id/messages',
+  '/channel/:channelId/messages',
   validate(message.storeMessage),
   MessageController.storeMessage,
 );
 routes.post(
-  '/channel/:channel_id/files',
+  '/channel/:channelId/files',
   validate(message.storeFiles),
   multerUploader,
   MessageController.storeFiles,
 );
 routes.patch(
-  '/channel/:channel_id/messages/:message_id',
+  '/channel/:channelId/messages/:messageId',
   validate(message.updateBody),
   MessageController.updateBody,
 );
 routes.delete(
-  '/channel/:channel_id/messages/:message_id',
+  '/channel/:channelId/messages/:messageId',
   validate(message.delete),
   MessageController.delete,
 );

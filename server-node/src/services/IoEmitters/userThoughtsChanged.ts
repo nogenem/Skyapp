@@ -7,7 +7,7 @@ const userThoughtsChanged: TEmitterFunc = async (io, clients, eventData) => {
   const data = eventData as IUserThoughtsChanged;
 
   Object.keys(clients).forEach(userId => {
-    if (userId !== data.user_id) {
+    if (userId !== data.userId) {
       io.to(clients[userId].socketId).emit(event, data);
     }
   });

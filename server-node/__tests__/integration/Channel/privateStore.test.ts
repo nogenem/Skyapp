@@ -45,9 +45,9 @@ describe('Private_Store', () => {
 
     const channelRecord = (await Channel.findOne({
       $and: [
-        { is_group: false },
-        { 'members.user_id': user1._id },
-        { 'members.user_id': user2._id },
+        { isGroup: false },
+        { 'members.userId': user1._id },
+        { 'members.userId': user2._id },
       ],
     })) as IChannelDoc;
 
@@ -60,7 +60,7 @@ describe('Private_Store', () => {
     );
   });
 
-  it('should not be able to create a new private channel with an invalid `user_id`', async () => {
+  it('should not be able to create a new private channel with an invalid `userId`', async () => {
     const user1: IUserDoc = await factory.create<IUserDoc>('User');
 
     jest.spyOn(jsonwebtoken, 'verify').mockImplementation(token => {
@@ -86,8 +86,8 @@ describe('Private_Store', () => {
       {},
       { membersLen: 2 },
     );
-    const user1Id = channel.members[0].user_id.toString();
-    const user2Id = channel.members[1].user_id.toString();
+    const user1Id = channel.members[0].userId.toString();
+    const user2Id = channel.members[1].userId.toString();
 
     jest.spyOn(jsonwebtoken, 'verify').mockImplementation(token => {
       if (token === VALID_TOKEN) return { _id: user1Id };

@@ -8,13 +8,13 @@ const groupChannelUpdated: TEmitterFunc = async (io, clients, eventData) => {
   const channelJson = eventData as IChatChannel;
 
   const promises = channelJson.members.map(async member => {
-    const thisMemberClient = clients[member.user_id];
+    const thisMemberClient = clients[member.userId];
     if (thisMemberClient) {
       const unreadMsgs = await Message.countDocuments({
-        channel_id: channelJson._id,
-        updatedAt: { $gt: member.last_seen },
+        channelId: channelJson._id,
+        updatedAt: { $gt: member.lastSeen },
       });
-      channelJson.unread_msgs = unreadMsgs;
+      channelJson.unreadMsgs = unreadMsgs;
 
       io.to(thisMemberClient.socketId).emit(event, channelJson);
     }

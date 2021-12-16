@@ -8,7 +8,7 @@ const groupChannelCreated: TEmitterFunc = async (io, clients, eventData) => {
   const channelJson = eventData as IChatChannel;
 
   channelJson.members.forEach(member => {
-    const thisMemberClient = clients[member.user_id];
+    const thisMemberClient = clients[member.userId];
     if (thisMemberClient) {
       io.to(thisMemberClient.socketId).emit(event, channelJson);
     }

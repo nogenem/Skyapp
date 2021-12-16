@@ -55,7 +55,7 @@ describe('Update_Status', () => {
     expect(ioSpy).toHaveBeenCalled();
     expect(ioSpy.mock.calls[0][0]).toBe(IO_USER_STATUS_CHANGED);
     expect(ioSpy.mock.calls[0][1]).toEqual({
-      user_id: user._id,
+      userId: user._id,
       newStatus,
     });
   });

@@ -22,14 +22,14 @@ describe('Delete', () => {
 
   it('should be able to delete a message', async () => {
     const channel = await factory.create<IChannelDoc>('Channel');
-    const user1Id = channel.members[0].user_id.toString();
+    const user1Id = channel.members[0].userId.toString();
     const message1 = await factory.create<IMessageDoc>('Message', {
-      channel_id: channel._id.toString(),
-      from_id: user1Id,
+      channelId: channel._id.toString(),
+      fromId: user1Id,
     });
     const message2 = await factory.create<IMessageDoc>('Message', {
-      channel_id: channel._id.toString(),
-      from_id: user1Id,
+      channelId: channel._id.toString(),
+      fromId: user1Id,
     });
 
     jest.spyOn(jsonwebtoken, 'verify').mockImplementation(token => {
@@ -60,7 +60,7 @@ describe('Delete', () => {
     expect(ioSpy.mock.calls[0][0]).toBe(IO_MESSAGE_DELETED);
   });
 
-  it('should not be able to delete a message with an invalid `channel_id`', async () => {
+  it('should not be able to delete a message with an invalid `channelId`', async () => {
     const user: IUserDoc = await factory.create<IUserDoc>('User');
     const message = await factory.create<IMessageDoc>('Message');
 
@@ -77,7 +77,7 @@ describe('Delete', () => {
     expect(res.status).toBe(400);
   });
 
-  it('should not be able to delete a message with an invalid `message_id`', async () => {
+  it('should not be able to delete a message with an invalid `messageId`', async () => {
     const user: IUserDoc = await factory.create<IUserDoc>('User');
     const channel = await factory.create<IChannelDoc>('Channel');
 
@@ -96,10 +96,10 @@ describe('Delete', () => {
 
   it('should not be able to delete a message that is not yours', async () => {
     const channel = await factory.create<IChannelDoc>('Channel');
-    const user1Id = channel.members[0].user_id.toString();
+    const user1Id = channel.members[0].userId.toString();
     const message = await factory.create<IMessageDoc>('Message', {
-      channel_id: channel._id.toString(),
-      from_id: undefined,
+      channelId: channel._id.toString(),
+      fromId: undefined,
     });
 
     jest.spyOn(jsonwebtoken, 'verify').mockImplementation(token => {

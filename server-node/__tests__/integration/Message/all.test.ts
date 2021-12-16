@@ -20,9 +20,9 @@ describe('All', () => {
   it('should be able to get the messages from a channel', async () => {
     const channel = await factory.create<IChannelDoc>('Channel');
     const message = await factory.create<IMessageDoc>('Message', {
-      channel_id: channel._id.toString(),
+      channelId: channel._id.toString(),
     });
-    const user1Id = channel.members[0].user_id.toString();
+    const user1Id = channel.members[0].userId.toString();
 
     jest.spyOn(jsonwebtoken, 'verify').mockImplementation(token => {
       if (token === VALID_TOKEN) return { _id: user1Id };
@@ -41,7 +41,7 @@ describe('All', () => {
     expect(responseMessages[0]._id).toBe(message._id.toString());
   });
 
-  it('should not be able to get the messages with an invalid `channel_id`', async () => {
+  it('should not be able to get the messages with an invalid `channelId`', async () => {
     const user: IUserDoc = await factory.create<IUserDoc>('User');
 
     jest.spyOn(jsonwebtoken, 'verify').mockImplementation(token => {
@@ -61,7 +61,7 @@ describe('All', () => {
     const user: IUserDoc = await factory.create<IUserDoc>('User');
     const channel = await factory.create<IChannelDoc>('Channel');
     await factory.create<IMessageDoc>('Message', {
-      channel_id: channel._id.toString(),
+      channelId: channel._id.toString(),
     });
 
     jest.spyOn(jsonwebtoken, 'verify').mockImplementation(token => {

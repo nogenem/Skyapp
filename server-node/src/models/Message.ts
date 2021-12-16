@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import mongoose, { Document, Model, PaginateModel } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 
@@ -15,8 +14,8 @@ interface IAttachment {
 }
 
 interface IMessage {
-  channel_id: string;
-  from_id?: string;
+  channelId: string;
+  fromId?: string;
   body: string | IAttachment;
   type: TMessageType;
   createdAt?: Date;
@@ -25,8 +24,8 @@ interface IMessage {
 
 interface IChatMessage {
   _id: string;
-  channel_id: string;
-  from_id?: string;
+  channelId: string;
+  fromId?: string;
   body: string | IAttachment;
   type: TMessageType;
   createdAt: Date;
@@ -48,12 +47,12 @@ interface IMessageModel extends Model<IMessageDoc>, PaginateModel<IMessageDoc> {
 
 const Message = new mongoose.Schema<IMessageDoc>(
   {
-    channel_id: {
+    channelId: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
       index: true,
     },
-    from_id: {
+    fromId: {
       type: mongoose.Schema.Types.ObjectId,
       index: true,
     },
@@ -72,8 +71,8 @@ Message.pre(/'update|updateOne|findOneAndUpdate/, function preUpdate() {
 function toChatMessage(message: IMessageDoc | IChatMessage): IChatMessage {
   return {
     _id: message._id.toString(),
-    channel_id: message.channel_id.toString(),
-    from_id: message.from_id ? message.from_id.toString() : message.from_id,
+    channelId: message.channelId.toString(),
+    fromId: message.fromId ? message.fromId.toString() : message.fromId,
     body: message.body,
     type: message.type,
     createdAt: message.createdAt,
