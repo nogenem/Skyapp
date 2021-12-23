@@ -6,7 +6,9 @@
   "author": "Gilney N. Mathias <gilney_salvo@hotmail.com>",
   "license": "MIT",
   "scripts": {
-    "dev:react-node": "concurrently -n client,server -c blue,green \"cd client-react && yarn start\" \"cd server-node && yarn dev:server\""
+    "dev:react": "cd client-react && yarn start",
+    "dev:node": "cd server-node && yarn dev:server",
+    "dev:react-node": "concurrently -n client,server -c blue,green \"yarn dev:react\" \"yarn dev:node\""
   },
   "dependencies": {
     "concurrently": "^5.1.0"
