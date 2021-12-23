@@ -63,3 +63,18 @@ I decided to use `p01~XX` as alias to the subprojects names in the commit messag
 * p01 = react
 * p02 = node
 * ...
+
+## Some images from the client-react
+
+### Sign in
+![Sign in](https://user-images.githubusercontent.com/2437497/147275586-e3b9699c-41e2-4250-8eff-f58d3ae737ac.png)
+
+### Chat
+![Chat](https://user-images.githubusercontent.com/2437497/147275602-7074a3d9-9754-4066-be6b-68b54cb77167.png)
+
+### Preview files before sending
+![Preview files before sending](https://user-images.githubusercontent.com/2437497/147277442-2b0f80d0-3f90-4991-8768-beca0637d7bb.png)
+
+### Create a group modal
+![Create a group modal](https://user-images.githubusercontent.com/2437497/147275623-13e44c1e-22cd-4a79-8d52-4120935d8ed6.png)
+
