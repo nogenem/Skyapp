@@ -248,7 +248,9 @@ const ChatInput = ({
         {!!state.files.length && (
           <div className={classes.previewContainer}>
             {previews}
-            <ChatMoreOptsMenu addFiles={addFiles} />
+            <div className={classes.previewIconContainer}>
+              <ChatMoreOptsMenu addFiles={addFiles} />
+            </div>
           </div>
         )}
         <TextInput
@@ -281,22 +283,21 @@ const ChatInput = ({
         />
       </div>
 
-      {(!!state.message || !!state.files.length) && (
-        <IconButton
-          type="submit"
-          className={classes.icon}
-          classes={{
-            root: classes.iconRoot,
-          }}
-          aria-label={trans('Common:Send')}
-          disabled={state.isDisabled || state.isSubmitting}
-        >
-          <SendIcon />
-        </IconButton>
-      )}
-      {!state.message && !state.files.length && (
-        <ChatMoreOptsMenu addFiles={addFiles} />
-      )}
+      <div className={classes.inputIconContainer}>
+        {(!!state.message || !!state.files.length) && (
+          <IconButton
+            type="submit"
+            className={classes.icon}
+            aria-label={trans('Common:Send')}
+            disabled={state.isDisabled || state.isSubmitting}
+          >
+            <SendIcon />
+          </IconButton>
+        )}
+        {!state.message && !state.files.length && (
+          <ChatMoreOptsMenu addFiles={addFiles} />
+        )}
+      </div>
       <EmojiMenu
         anchor={anchorEl}
         onSelectEmoji={onSelectEmoji}

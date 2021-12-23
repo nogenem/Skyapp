@@ -85,9 +85,6 @@ const ChatMoreOptsMenu = ({ addFiles }: TProps) => {
     <>
       <IconButton
         className={classes.icon}
-        classes={{
-          root: classes.iconRoot,
-        }}
         aria-label={trans('Messages:More options')}
         title={trans('Messages:More options')}
         aria-haspopup="true"
