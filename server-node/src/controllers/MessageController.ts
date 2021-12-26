@@ -24,6 +24,16 @@ import {
   IUserDoc,
   Message,
 } from '~/models';
+import type {
+  IDeleteMessageRequestParams,
+  IFetchMessagesRequestParams,
+  IFetchMessagesRequestQuery,
+  IStoreFilesRequestParams,
+  IStoreMessageRequestBody,
+  IStoreMessageRequestParams,
+  IUpdateMessageBodyRequestBody,
+  IUpdateMessageBodyRequestParams,
+} from '~/requestsParts/message';
 import { IoService } from '~/services';
 import {
   cantDeleteThisMessageError,
@@ -34,28 +44,14 @@ import {
 import handleErrors from '~/utils/handleErrors';
 import insertManyMessages from '~/utils/insertManyMessages';
 
-interface IFetchMessagesCredentials {
-  offset: number;
-  limit?: number;
-  sort?: string;
-}
-
-interface ISendMessageCredentials {
-  body: string;
-}
-
-interface IEditMessageCredentials {
-  newBody: string;
-}
-
 export default {
   async all(req: IAuthRequest, res: Response): Promise<Response<unknown>> {
-    const { channelId } = req.params;
+    const { channelId } = req.params as unknown as IFetchMessagesRequestParams;
     const {
       offset,
       limit = 30,
       sort = '-createdAt',
-    } = req.query as unknown as IFetchMessagesCredentials;
+    } = req.query as unknown as IFetchMessagesRequestQuery;
     const currentUser = req.currentUser as IUserDoc;
 
     try {
@@ -90,8 +86,8 @@ export default {
     req: IAuthRequest,
     res: Response,
   ): Promise<Response<unknown>> {
-    const { channelId } = req.params;
-    const { body } = req.body as unknown as ISendMessageCredentials;
+    const { channelId } = req.params as unknown as IStoreMessageRequestParams;
+    const { body } = req.body as IStoreMessageRequestBody;
     const currentUser = req.currentUser as IUserDoc;
 
     try {
@@ -129,7 +125,7 @@ export default {
     req: IAuthRequest,
     res: Response,
   ): Promise<Response<unknown>> {
-    const { channelId } = req.params;
+    const { channelId } = req.params as unknown as IStoreFilesRequestParams;
     const currentUser = req.currentUser as IUserDoc;
 
     try {
@@ -193,9 +189,9 @@ export default {
     req: IAuthRequest,
     res: Response,
   ): Promise<Response<unknown>> {
-    const { channelId } = req.params;
-    const { messageId } = req.params;
-    const { newBody } = req.body as unknown as IEditMessageCredentials;
+    const { channelId, messageId } =
+      req.params as unknown as IUpdateMessageBodyRequestParams;
+    const { newBody } = req.body as unknown as IUpdateMessageBodyRequestBody;
     const currentUser = req.currentUser as IUserDoc;
 
     try {
@@ -235,7 +231,8 @@ export default {
     }
   },
   async delete(req: IAuthRequest, res: Response): Promise<Response<unknown>> {
-    const { channelId, messageId } = req.params;
+    const { channelId, messageId } =
+      req.params as unknown as IDeleteMessageRequestParams;
     const currentUser = req.currentUser as IUserDoc;
 
     try {
@@ -289,10 +286,4 @@ export default {
       return handleErrors(err as Error, res);
     }
   },
-};
-
-export type {
-  IFetchMessagesCredentials,
-  ISendMessageCredentials,
-  IEditMessageCredentials,
 };

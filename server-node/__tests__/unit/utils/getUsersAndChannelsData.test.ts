@@ -1,4 +1,4 @@
-import { IChannelDoc, IMessageDoc } from '~/models';
+import type { IChannelDoc, IMessageDoc } from '~/models';
 import getUsersAndChannelsData from '~/utils/getUsersAndChannelsData';
 import factory from '~t/factories';
 

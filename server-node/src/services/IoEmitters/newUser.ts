@@ -1,5 +1,5 @@
 import { IO_NEW_USER } from '~/constants/socket_events';
-import { IChatUser } from '~/models';
+import type { IChatUser } from '~/models';
 
 import type { TEmitterFunc } from './types';
 

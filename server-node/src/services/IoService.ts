@@ -4,7 +4,7 @@ import { Server as SocketServer, Namespace } from 'socket.io';
 import * as SOCKET_EVENTS from '~/constants/socket_events';
 import { TUserStatus } from '~/constants/user_status';
 import { Channel } from '~/models';
-import { IClientInfo, IClientMap } from '~/typescript-declarations/io.d';
+import type { IClientInfo, IClientMap } from '~/typescript-declarations/io.d';
 import getUsersAndChannelsData from '~/utils/getUsersAndChannelsData';
 
 import IO_EMITTERS from './IoEmitters';

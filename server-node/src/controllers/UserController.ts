@@ -8,26 +8,21 @@ import {
   IO_USER_STATUS_CHANGED,
   IO_USER_THOUGHTS_CHANGED,
 } from '~/constants/socket_events';
-import type { TUserStatus } from '~/constants/user_status';
 import type { IAuthRequest } from '~/middlewares/auth';
 import { User, IUserDoc } from '~/models';
+import type {
+  IChangeStatusRequestBody,
+  IChangeThoughtsRequestBody,
+} from '~/requestsParts/user';
 import { IoService } from '~/services';
 import handleErrors from '~/utils/handleErrors';
-
-interface IChangeStatusCredentials {
-  newStatus: TUserStatus;
-}
-
-interface IChangeThoughtsCredentials {
-  newThoughts: string;
-}
 
 export default {
   async updateStatus(
     req: IAuthRequest,
     res: Response,
   ): Promise<Response<unknown>> {
-    const { newStatus } = req.body as IChangeStatusCredentials;
+    const { newStatus } = req.body as IChangeStatusRequestBody;
     const user = req.currentUser as IUserDoc;
 
     try {
@@ -52,7 +47,7 @@ export default {
     req: IAuthRequest,
     res: Response,
   ): Promise<Response<unknown>> {
-    const { newThoughts } = req.body as IChangeThoughtsCredentials;
+    const { newThoughts } = req.body as IChangeThoughtsRequestBody;
     const user = req.currentUser as IUserDoc;
 
     try {
@@ -77,5 +72,3 @@ export default {
     }
   },
 };
-
-export type { IChangeStatusCredentials, IChangeThoughtsCredentials };

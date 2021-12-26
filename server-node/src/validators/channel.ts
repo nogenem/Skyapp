@@ -6,7 +6,9 @@ import { invalidIdError } from '~/utils/errors';
 
 const channel = {
   private: {
-    store: [body('_id').trim().not().isEmpty().withMessage(invalidIdError())],
+    store: [
+      body('otherUserId').trim().not().isEmpty().withMessage(invalidIdError()),
+    ],
   },
   group: {
     store: [

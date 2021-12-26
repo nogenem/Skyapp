@@ -5,6 +5,7 @@ import app from '~/app';
 import { IO_PRIVATE_CHANNEL_CREATED } from '~/constants/socket_events';
 import { Channel, IChannelDoc, IChatChannel } from '~/models';
 import type { IUserDoc } from '~/models';
+import type { IStorePrivateChannelRequestBody } from '~/requestsParts/channel';
 import { IoService } from '~/services';
 import factory from '~t/factories';
 import { setupDB } from '~t/test-setup';
@@ -32,14 +33,14 @@ describe('Private_Store', () => {
     const io = IoService.instance();
     const ioSpy = jest.spyOn(io, 'emit').mockReturnValueOnce(Promise.resolve());
 
-    const credentials = {
-      _id: user2._id.toString(),
+    const requestBody: IStorePrivateChannelRequestBody = {
+      otherUserId: user2._id.toString(),
     };
 
     const res = await request
       .post('/api/channel/private')
       .set('authorization', `Bearer ${VALID_TOKEN}`)
-      .send(credentials);
+      .send(requestBody);
 
     expect(res.status).toBe(201);
 
@@ -68,14 +69,14 @@ describe('Private_Store', () => {
       throw new Error();
     });
 
-    const credentials = {
-      _id: 'some-user-id',
+    const requestBody: IStorePrivateChannelRequestBody = {
+      otherUserId: 'some-user-id',
     };
 
     const res = await request
       .post('/api/channel/private')
       .set('authorization', `Bearer ${VALID_TOKEN}`)
-      .send(credentials);
+      .send(requestBody);
 
     expect(res.status).toBe(400);
   });
@@ -94,14 +95,14 @@ describe('Private_Store', () => {
       throw new Error();
     });
 
-    const credentials = {
-      _id: user2Id,
+    const requestBody: IStorePrivateChannelRequestBody = {
+      otherUserId: user2Id,
     };
 
     const res = await request
       .post('/api/channel/private')
       .set('authorization', `Bearer ${VALID_TOKEN}`)
-      .send(credentials);
+      .send(requestBody);
 
     expect(res.status).toBe(400);
   });

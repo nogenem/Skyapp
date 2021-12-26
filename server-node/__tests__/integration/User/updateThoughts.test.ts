@@ -3,9 +3,9 @@ import supertest from 'supertest';
 
 import app from '~/app';
 import { IO_USER_THOUGHTS_CHANGED } from '~/constants/socket_events';
-import type { IChangeThoughtsCredentials } from '~/controllers';
 import { User } from '~/models';
 import type { IUserDoc } from '~/models';
+import type { IChangeThoughtsRequestBody } from '~/requestsParts/user';
 import { IoService } from '~/services';
 import factory from '~t/factories';
 import { setupDB } from '~t/test-setup';
@@ -35,14 +35,14 @@ describe('Update_Thoughts', () => {
     const io = IoService.instance();
     const ioSpy = jest.spyOn(io, 'emit').mockReturnValueOnce(Promise.resolve());
 
-    const credentials: IChangeThoughtsCredentials = {
+    const requestBody: IChangeThoughtsRequestBody = {
       newThoughts,
     };
 
     const res = await request
       .patch('/api/user/thoughts')
       .set('authorization', `Bearer ${VALID_TOKEN}`)
-      .send(credentials);
+      .send(requestBody);
 
     expect(res.status).toBe(200);
 
@@ -69,14 +69,14 @@ describe('Update_Thoughts', () => {
       throw new Error();
     });
 
-    const credentials: IChangeThoughtsCredentials = {
+    const requestBody: IChangeThoughtsRequestBody = {
       newThoughts: 'hello world',
     };
 
     const res = await request
       .patch('/api/user/thoughts')
       .set('authorization', `Bearer ${VALID_TOKEN}`)
-      .send(credentials);
+      .send(requestBody);
 
     expect(res.status).toBe(304);
   });

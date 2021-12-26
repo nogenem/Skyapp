@@ -8,7 +8,7 @@ import { USER_STATUS } from '~/constants/user_status';
 import type { TUserStatus } from '~/constants/user_status';
 import { Channel, IChannelDoc, IMemberDoc, IUserDoc, User } from '~/models';
 import { IoService } from '~/services';
-import { IInitialData } from '~/utils/getUsersAndChannelsData';
+import type { IInitialData } from '~/utils/getUsersAndChannelsData';
 import factory from '~t/factories';
 import { setupDB } from '~t/test-setup';
 

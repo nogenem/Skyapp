@@ -1,9 +1,9 @@
 import supertest from 'supertest';
 
 import app from '~/app';
-import type { IResetPasswordCredentials } from '~/controllers';
 import { User } from '~/models';
 import type { IUserDoc } from '~/models';
+import type { IResetPasswordRequestBody } from '~/requestsParts/auth';
 import factory from '~t/factories';
 import { setupDB } from '~t/test-setup';
 
@@ -33,7 +33,7 @@ describe('Reset_Password', () => {
       passwordHash: OLD_PASSWORD,
       resetPasswordToken: VALID_TOKEN,
     });
-    const credentials: IResetPasswordCredentials = {
+    const requestBody: IResetPasswordRequestBody = {
       newPassword: NEW_PASSWORD,
       newPasswordConfirmation: NEW_PASSWORD,
       token: VALID_TOKEN,
@@ -41,7 +41,7 @@ describe('Reset_Password', () => {
 
     const res = await request
       .post('/api/auth/reset_password')
-      .send(credentials);
+      .send(requestBody);
     expect(res.status).toBe(200);
 
     const userRecord = (await User.findOne({ email: user.email })) as IUserDoc;
@@ -54,7 +54,7 @@ describe('Reset_Password', () => {
       passwordHash: OLD_PASSWORD,
       resetPasswordToken: VALID_TOKEN,
     });
-    const credentials: IResetPasswordCredentials = {
+    const requestBody: IResetPasswordRequestBody = {
       newPassword: NEW_PASSWORD,
       newPasswordConfirmation: NEW_PASSWORD,
       token: INVALID_TOKEN,
@@ -62,7 +62,7 @@ describe('Reset_Password', () => {
 
     const res = await request
       .post('/api/auth/reset_password')
-      .send(credentials);
+      .send(requestBody);
 
     expect(res.status).toBe(400);
   });
@@ -72,7 +72,7 @@ describe('Reset_Password', () => {
       passwordHash: OLD_PASSWORD,
       resetPasswordToken: INVALID_TOKEN,
     });
-    const credentials: IResetPasswordCredentials = {
+    const requestBody: IResetPasswordRequestBody = {
       newPassword: NEW_PASSWORD,
       newPasswordConfirmation: NEW_PASSWORD,
       token: INVALID_TOKEN,
@@ -80,7 +80,7 @@ describe('Reset_Password', () => {
 
     const res = await request
       .post('/api/auth/reset_password')
-      .send(credentials);
+      .send(requestBody);
 
     expect(res.status).toBe(400);
   });

@@ -12,7 +12,16 @@ import {
 } from '~/constants/return_messages';
 import { IO_NEW_USER } from '~/constants/socket_events';
 import { User } from '~/models';
-import { ITokenData } from '~/models/User';
+import type { ITokenData } from '~/models/User';
+import type {
+  IConfirmationRequestBody,
+  IForgotPasswordRequestBody,
+  IResendConfirmationRequestBody,
+  IResetPasswordRequestBody,
+  ISignInRequestBody,
+  ISignUpRequestBody,
+  IValidateTokenRequestBody,
+} from '~/requestsParts/auth';
 import { IoService, MailService } from '~/services';
 import {
   invalidCredentialsError,
@@ -23,36 +32,9 @@ import {
 import getHostName from '~/utils/getHostName';
 import handleErrors from '~/utils/handleErrors';
 
-interface ISignUpCredentials {
-  nickname: string;
-  email: string;
-  password: string;
-  passwordConfirmation: string;
-}
-
-interface ISignInCredentials {
-  email: string;
-  password: string;
-  rememberMe: boolean;
-}
-
-interface ITokenCredentials {
-  token: string;
-}
-
-interface IForgotPasswordCredentials {
-  email: string;
-}
-
-interface IResetPasswordCredentials {
-  token: string;
-  newPassword: string;
-  newPasswordConfirmation: string;
-}
-
 export default {
   async signUp(req: Request, res: Response): Promise<Response<unknown>> {
-    const { nickname, email, password } = req.body as ISignUpCredentials;
+    const { nickname, email, password } = req.body as ISignUpRequestBody;
 
     const host = getHostName(req.headers);
     const user = new User({ nickname, email, password });
@@ -71,7 +53,7 @@ export default {
     }
   },
   async signIn(req: Request, res: Response): Promise<Response<unknown>> {
-    const { email, password, rememberMe } = req.body as ISignInCredentials;
+    const { email, password, rememberMe } = req.body as ISignInRequestBody;
 
     try {
       const user = await User.findOne({ email });
@@ -88,7 +70,7 @@ export default {
     }
   },
   async confirmation(req: Request, res: Response): Promise<Response<unknown>> {
-    const { token } = req.body as ITokenCredentials;
+    const { token } = req.body as IConfirmationRequestBody;
 
     try {
       jwt.verify(token, process.env.JWT_SECRET);
@@ -124,7 +106,7 @@ export default {
     req: Request,
     res: Response,
   ): Promise<Response<unknown>> {
-    const { token } = req.body as ITokenCredentials;
+    const { token } = req.body as IResendConfirmationRequestBody;
     const host = getHostName(req.headers);
 
     try {
@@ -152,7 +134,7 @@ export default {
     }
   },
   async validateToken(req: Request, res: Response): Promise<Response<unknown>> {
-    const { token } = req.body as ITokenCredentials;
+    const { token } = req.body as IValidateTokenRequestBody;
 
     try {
       const { _id } = jwt.verify(token, process.env.JWT_SECRET) as ITokenData;
@@ -174,7 +156,7 @@ export default {
     req: Request,
     res: Response,
   ): Promise<Response<unknown>> {
-    const { email } = req.body as IForgotPasswordCredentials;
+    const { email } = req.body as IForgotPasswordRequestBody;
     const host = getHostName(req.headers);
 
     try {
@@ -204,7 +186,7 @@ export default {
     }
   },
   async resetPassword(req: Request, res: Response): Promise<Response<unknown>> {
-    const { newPassword, token } = req.body as IResetPasswordCredentials;
+    const { newPassword, token } = req.body as IResetPasswordRequestBody;
 
     try {
       jwt.verify(token, process.env.JWT_SECRET);
@@ -230,12 +212,4 @@ export default {
       return handleErrors(err as Error, res);
     }
   },
-};
-
-export type {
-  ISignInCredentials,
-  ISignUpCredentials,
-  ITokenCredentials,
-  IForgotPasswordCredentials,
-  IResetPasswordCredentials,
 };

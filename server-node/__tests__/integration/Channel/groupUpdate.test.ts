@@ -8,9 +8,12 @@ import {
   IO_MESSAGES_RECEIVED,
   IO_REMOVED_FROM_GROUP_CHANNEL,
 } from '~/constants/socket_events';
-import { IUpdateGroupCredentials } from '~/controllers';
 import { Channel, IChannelDoc, IMemberDoc } from '~/models';
 import type { IUserDoc } from '~/models';
+import type {
+  IUpdateGroupChannelRequestBody,
+  IUpdateGroupChannelRequestParams,
+} from '~/requestsParts/channel';
 import { IoService } from '~/services';
 import factory from '~t/factories';
 import { setupDB } from '~t/test-setup';
@@ -56,8 +59,10 @@ describe('Group_Update', () => {
     const io = IoService.instance();
     const ioSpy = jest.spyOn(io, 'emit').mockReturnValueOnce(Promise.resolve());
 
-    const channelId = channel._id.toString();
-    const credentials: IUpdateGroupCredentials = {
+    const requestParams: IUpdateGroupChannelRequestParams = {
+      channelId: channel._id.toString(),
+    };
+    const requestBody: IUpdateGroupChannelRequestBody = {
       name: newGroupName, // updated name
       members: [
         user2Id.toString(),
@@ -68,9 +73,9 @@ describe('Group_Update', () => {
     };
 
     const res = await request
-      .patch(`/api/channel/group/${channelId}`)
+      .patch(`/api/channel/group/${requestParams.channelId}`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
-      .send(credentials);
+      .send(requestBody);
 
     expect(res.status).toBe(200);
 
@@ -104,17 +109,19 @@ describe('Group_Update', () => {
       throw new Error();
     });
 
-    const channelId = 'some-channel-id';
-    const credentials: IUpdateGroupCredentials = {
+    const requestParams: IUpdateGroupChannelRequestParams = {
+      channelId: 'some-channel-id',
+    };
+    const requestBody: IUpdateGroupChannelRequestBody = {
       name: 'Updated Group 1',
       members: ['some-member-id-1', 'some-member-id-2'],
       admins: [],
     };
 
     const res = await request
-      .patch(`/api/channel/group/${channelId}`)
+      .patch(`/api/channel/group/${requestParams.channelId}`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
-      .send(credentials);
+      .send(requestBody);
 
     expect(res.status).toBe(400);
   });
@@ -132,17 +139,19 @@ describe('Group_Update', () => {
       throw new Error();
     });
 
-    const channelId = channel._id.toString();
-    const credentials: IUpdateGroupCredentials = {
+    const requestParams: IUpdateGroupChannelRequestParams = {
+      channelId: channel._id.toString(),
+    };
+    const requestBody: IUpdateGroupChannelRequestBody = {
       name: 'Updated Group 1',
       members: ['some-member-id-1', 'some-member-id-2'],
       admins: [],
     };
 
     const res = await request
-      .patch(`/api/channel/group/${channelId}`)
+      .patch(`/api/channel/group/${requestParams.channelId}`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
-      .send(credentials);
+      .send(requestBody);
 
     expect(res.status).toBe(400);
   });
@@ -170,17 +179,19 @@ describe('Group_Update', () => {
       throw new Error();
     });
 
-    const channelId = channel._id.toString();
-    const credentials: IUpdateGroupCredentials = {
+    const requestParams: IUpdateGroupChannelRequestParams = {
+      channelId: channel._id.toString(),
+    };
+    const requestBody: IUpdateGroupChannelRequestBody = {
       name: 'Updated Group 1',
       members: [member2.userId.toString(), member3.userId.toString()],
       admins: [],
     };
 
     const res = await request
-      .patch(`/api/channel/group/${channelId}`)
+      .patch(`/api/channel/group/${requestParams.channelId}`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
-      .send(credentials);
+      .send(requestBody);
 
     expect(res.status).toBe(400);
   });
@@ -206,17 +217,19 @@ describe('Group_Update', () => {
       throw new Error();
     });
 
-    const channelId = channel._id.toString();
-    const credentials: IUpdateGroupCredentials = {
+    const requestParams: IUpdateGroupChannelRequestParams = {
+      channelId: channel._id.toString(),
+    };
+    const requestBody: IUpdateGroupChannelRequestBody = {
       name: 'Group 1',
       members: [user2._id.toString(), user2._id.toString()],
       admins: [],
     };
 
     const res = await request
-      .patch(`/api/channel/group/${channelId}`)
+      .patch(`/api/channel/group/${requestParams.channelId}`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
-      .send(credentials);
+      .send(requestBody);
 
     expect(res.status).toBe(400);
   });

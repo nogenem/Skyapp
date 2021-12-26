@@ -4,9 +4,12 @@ import supertest from 'supertest';
 import app from '~/app';
 import { MESSAGE_TYPES } from '~/constants/message_types';
 import { IO_MESSAGE_EDITED } from '~/constants/socket_events';
-import { IEditMessageCredentials } from '~/controllers';
-import { IMessageDoc, Message } from '~/models';
-import type { IChannelDoc } from '~/models';
+import { Message } from '~/models';
+import type { IChannelDoc, IMessageDoc } from '~/models';
+import type {
+  IUpdateMessageBodyRequestBody,
+  IUpdateMessageBodyRequestParams,
+} from '~/requestsParts/message';
 import { IoService } from '~/services';
 import factory, { attachmentFactory } from '~t/factories';
 import { setupDB } from '~t/test-setup';
@@ -40,24 +43,27 @@ describe('UpdateBody', () => {
     const io = IoService.instance();
     const ioSpy = jest.spyOn(io, 'emit').mockReturnValueOnce(Promise.resolve());
 
-    const channelId = channel._id.toString();
-    const messageId = message._id.toString();
-    const newBody = 'Some new message';
-    const credentials: IEditMessageCredentials = {
-      newBody,
+    const requestParams: IUpdateMessageBodyRequestParams = {
+      channelId: channel._id.toString(),
+      messageId: message._id.toString(),
+    };
+    const requestBody: IUpdateMessageBodyRequestBody = {
+      newBody: 'Some new message',
     };
 
     const res = await request
-      .patch(`/api/channel/${channelId}/messages/${messageId}`)
+      .patch(
+        `/api/channel/${requestParams.channelId}/messages/${requestParams.messageId}`,
+      )
       .set('authorization', `Bearer ${VALID_TOKEN}`)
-      .send(credentials);
+      .send(requestBody);
 
     expect(res.status).toBe(200);
 
     const messageRecord = await Message.findOne({
-      _id: messageId,
-      channelId,
-      body: newBody,
+      _id: requestParams.messageId,
+      channelId: requestParams.channelId,
+      body: requestBody.newBody,
     });
 
     expect(messageRecord).toBeTruthy();
@@ -81,16 +87,20 @@ describe('UpdateBody', () => {
       throw new Error();
     });
 
-    const channelId = 'some-channel-id';
-    const messageId = message._id.toString();
-    const credentials: IEditMessageCredentials = {
+    const requestParams: IUpdateMessageBodyRequestParams = {
+      channelId: 'some-channel-id',
+      messageId: message._id.toString(),
+    };
+    const requestBody: IUpdateMessageBodyRequestBody = {
       newBody: 'Some message',
     };
 
     const res = await request
-      .patch(`/api/channel/${channelId}/messages/${messageId}`)
+      .patch(
+        `/api/channel/${requestParams.channelId}/messages/${requestParams.messageId}`,
+      )
       .set('authorization', `Bearer ${VALID_TOKEN}`)
-      .send(credentials);
+      .send(requestBody);
 
     expect(res.status).toBe(400);
   });
@@ -110,16 +120,20 @@ describe('UpdateBody', () => {
       throw new Error();
     });
 
-    const channelId = channel._id.toString();
-    const messageId = 'some-message-id';
-    const credentials: IEditMessageCredentials = {
+    const requestParams: IUpdateMessageBodyRequestParams = {
+      channelId: channel._id.toString(),
+      messageId: 'some-message-id',
+    };
+    const requestBody: IUpdateMessageBodyRequestBody = {
       newBody: 'Some message',
     };
 
     const res = await request
-      .patch(`/api/channel/${channelId}/messages/${messageId}`)
+      .patch(
+        `/api/channel/${requestParams.channelId}/messages/${requestParams.messageId}`,
+      )
       .set('authorization', `Bearer ${VALID_TOKEN}`)
-      .send(credentials);
+      .send(requestBody);
 
     expect(res.status).toBe(400);
   });
@@ -139,16 +153,20 @@ describe('UpdateBody', () => {
       throw new Error();
     });
 
-    const channelId = channel._id.toString();
-    const messageId = message._id.toString();
-    const credentials: IEditMessageCredentials = {
+    const requestParams: IUpdateMessageBodyRequestParams = {
+      channelId: channel._id.toString(),
+      messageId: message._id.toString(),
+    };
+    const requestBody: IUpdateMessageBodyRequestBody = {
       newBody: 'Some message',
     };
 
     const res = await request
-      .patch(`/api/channel/${channelId}/messages/${messageId}`)
+      .patch(
+        `/api/channel/${requestParams.channelId}/messages/${requestParams.messageId}`,
+      )
       .set('authorization', `Bearer ${VALID_TOKEN}`)
-      .send(credentials);
+      .send(requestBody);
 
     expect(res.status).toBe(400);
   });
@@ -168,16 +186,20 @@ describe('UpdateBody', () => {
       throw new Error();
     });
 
-    const channelId = channel._id.toString();
-    const messageId = message._id.toString();
-    const credentials: IEditMessageCredentials = {
+    const requestParams: IUpdateMessageBodyRequestParams = {
+      channelId: channel._id.toString(),
+      messageId: message._id.toString(),
+    };
+    const requestBody: IUpdateMessageBodyRequestBody = {
       newBody: 'Some message',
     };
 
     const res = await request
-      .patch(`/api/channel/${channelId}/messages/${messageId}`)
+      .patch(
+        `/api/channel/${requestParams.channelId}/messages/${requestParams.messageId}`,
+      )
       .set('authorization', `Bearer ${VALID_TOKEN}`)
-      .send(credentials);
+      .send(requestBody);
 
     expect(res.status).toBe(400);
   });

@@ -1,5 +1,5 @@
 import { IO_GROUP_CHANNEL_CREATED } from '~/constants/socket_events';
-import { IChatChannel } from '~/models';
+import type { IChatChannel } from '~/models';
 
 import type { TEmitterFunc } from './types';
 

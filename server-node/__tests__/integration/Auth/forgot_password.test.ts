@@ -1,9 +1,9 @@
 import supertest from 'supertest';
 
 import app from '~/app';
-import type { IForgotPasswordCredentials } from '~/controllers';
 import { User } from '~/models';
 import type { IUserDoc } from '~/models';
+import type { IForgotPasswordRequestBody } from '~/requestsParts/auth';
 import { MailService } from '~/services';
 import factory from '~t/factories';
 import { setupDB } from '~t/test-setup';
@@ -38,13 +38,13 @@ describe('Forgot_Password', () => {
       .spyOn(MailService, 'sendResetPasswordEmail')
       .mockReturnValueOnce(Promise.resolve());
 
-    const credentials: IForgotPasswordCredentials = {
+    const requestBody: IForgotPasswordRequestBody = {
       email: VALID_EMAIL,
     };
 
     const res = await request
       .post('/api/auth/forgot_password')
-      .send(credentials);
+      .send(requestBody);
 
     expect(res.status).toBe(200);
 
@@ -59,13 +59,13 @@ describe('Forgot_Password', () => {
   it('should not be able to send a reset password email to an invalid email', async () => {
     await factory.create<IUserDoc>('User', { email: VALID_EMAIL });
 
-    const credentials: IForgotPasswordCredentials = {
+    const requestBody: IForgotPasswordRequestBody = {
       email: INVALID_EMAIL,
     };
 
     const res = await request
       .post('/api/auth/forgot_password')
-      .send(credentials);
+      .send(requestBody);
 
     expect(res.status).toBe(400);
   });
@@ -76,13 +76,13 @@ describe('Forgot_Password', () => {
       resetPasswordToken: VALID_TOKEN,
     });
 
-    const credentials: IForgotPasswordCredentials = {
+    const requestBody: IForgotPasswordRequestBody = {
       email: VALID_EMAIL,
     };
 
     const res = await request
       .post('/api/auth/forgot_password')
-      .send(credentials);
+      .send(requestBody);
 
     expect(res.status).toBe(400);
   });

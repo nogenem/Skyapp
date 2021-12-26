@@ -3,9 +3,12 @@ import supertest from 'supertest';
 
 import app from '~/app';
 import { IO_MESSAGES_RECEIVED } from '~/constants/socket_events';
-import { ISendMessageCredentials } from '~/controllers';
-import { IUserDoc, Message } from '~/models';
-import type { IChannelDoc } from '~/models';
+import { Message } from '~/models';
+import type { IChannelDoc, IUserDoc } from '~/models';
+import type {
+  IStoreMessageRequestBody,
+  IStoreMessageRequestParams,
+} from '~/requestsParts/message';
 import { IoService } from '~/services';
 import factory from '~t/factories';
 import { setupDB } from '~t/test-setup';
@@ -33,22 +36,23 @@ describe('Store_Message', () => {
     const io = IoService.instance();
     const ioSpy = jest.spyOn(io, 'emit').mockReturnValueOnce(Promise.resolve());
 
-    const message = 'Some message';
-    const channelId = channel._id.toString();
-    const credentials: ISendMessageCredentials = {
-      body: message,
+    const requestParams: IStoreMessageRequestParams = {
+      channelId: channel._id.toString(),
+    };
+    const requestBody: IStoreMessageRequestBody = {
+      body: 'Some message',
     };
 
     const res = await request
-      .post(`/api/channel/${channelId}/messages`)
+      .post(`/api/channel/${requestParams.channelId}/messages`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
-      .send(credentials);
+      .send(requestBody);
 
     expect(res.status).toBe(200);
 
     const messageRecord = await Message.findOne({
-      channelId: channel._id.toString(),
-      body: message,
+      channelId: requestParams.channelId,
+      body: requestBody.body,
     });
 
     expect(messageRecord).toBeTruthy();
@@ -65,15 +69,17 @@ describe('Store_Message', () => {
       throw new Error();
     });
 
-    const channelId = 'some-channel-id';
-    const credentials: ISendMessageCredentials = {
+    const requestParams: IStoreMessageRequestParams = {
+      channelId: 'some-channel-id',
+    };
+    const requestBody: IStoreMessageRequestBody = {
       body: 'Some message',
     };
 
     const res = await request
-      .post(`/api/channel/${channelId}/messages`)
+      .post(`/api/channel/${requestParams.channelId}/messages`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
-      .send(credentials);
+      .send(requestBody);
 
     expect(res.status).toBe(400);
   });

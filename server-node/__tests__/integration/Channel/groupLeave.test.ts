@@ -10,6 +10,7 @@ import {
 } from '~/constants/socket_events';
 import { Channel } from '~/models';
 import type { IChannelDoc, IMemberDoc, IUserDoc } from '~/models';
+import type { ILeaveGroupChannelRequestParams } from '~/requestsParts/channel';
 import { IoService } from '~/services';
 import factory from '~t/factories';
 import { setupDB } from '~t/test-setup';
@@ -56,10 +57,12 @@ describe('Group_Leave', () => {
     const io = IoService.instance();
     const ioSpy = jest.spyOn(io, 'emit').mockReturnValueOnce(Promise.resolve());
 
-    const channelId = channel._id.toString();
+    const requestParams: ILeaveGroupChannelRequestParams = {
+      channelId: channel._id.toString(),
+    };
 
     const res = await request
-      .post(`/api/channel/group/${channelId}/leave`)
+      .post(`/api/channel/group/${requestParams.channelId}/leave`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send();
 
@@ -109,10 +112,12 @@ describe('Group_Leave', () => {
     const io = IoService.instance();
     const ioSpy = jest.spyOn(io, 'emit').mockReturnValueOnce(Promise.resolve());
 
-    const channelId = channel._id.toString();
+    const requestParams: ILeaveGroupChannelRequestParams = {
+      channelId: channel._id.toString(),
+    };
 
     const res = await request
-      .post(`/api/channel/group/${channelId}/leave`)
+      .post(`/api/channel/group/${requestParams.channelId}/leave`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send();
 
@@ -136,10 +141,12 @@ describe('Group_Leave', () => {
       throw new Error();
     });
 
-    const channelId = 'some-channel-id';
+    const requestParams: ILeaveGroupChannelRequestParams = {
+      channelId: 'some-channel-id',
+    };
 
     const res = await request
-      .post(`/api/channel/group/${channelId}/leave`)
+      .post(`/api/channel/group/${requestParams.channelId}/leave`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send();
 
@@ -159,10 +166,12 @@ describe('Group_Leave', () => {
       throw new Error();
     });
 
-    const channelId = channel._id.toString();
+    const requestParams: ILeaveGroupChannelRequestParams = {
+      channelId: channel._id.toString(),
+    };
 
     const res = await request
-      .post(`/api/channel/group/${channelId}/leave`)
+      .post(`/api/channel/group/${requestParams.channelId}/leave`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send();
 
@@ -182,10 +191,12 @@ describe('Group_Leave', () => {
       throw new Error();
     });
 
-    const channelId = channel._id.toString();
+    const requestParams: ILeaveGroupChannelRequestParams = {
+      channelId: channel._id.toString(),
+    };
 
     const res = await request
-      .post(`/api/channel/group/${channelId}/leave`)
+      .post(`/api/channel/group/${requestParams.channelId}/leave`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send();
 

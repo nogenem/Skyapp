@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 import { User, Message, Channel, IUserDoc } from '~/models';
 import type { IChatUser, IChatChannel } from '~/models';
-import { IClientMap } from '~/typescript-declarations/io.d';
+import type { IClientMap } from '~/typescript-declarations/io.d';
 
 interface IChatUsers {
   [_id: string]: IChatUser;

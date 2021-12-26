@@ -2,8 +2,8 @@ import jsonwebtoken from 'jsonwebtoken';
 import supertest from 'supertest';
 
 import app from '~/app';
-import type { ITokenCredentials } from '~/controllers';
-import { IUserDoc } from '~/models';
+import type { IUserDoc } from '~/models';
+import type { IValidateTokenRequestBody } from '~/requestsParts/auth';
 import factory from '~t/factories';
 import { setupDB } from '~t/test-setup';
 
@@ -27,13 +27,13 @@ describe('Validate_Token', () => {
       throw new Error();
     });
 
-    const credentials: ITokenCredentials = {
+    const requestBody: IValidateTokenRequestBody = {
       token: VALID_TOKEN,
     };
 
     const res = await request
       .post('/api/auth/validate_token')
-      .send(credentials);
+      .send(requestBody);
     expect(res.status).toBe(200);
 
     expect(res.body.user).toBeTruthy();
@@ -47,13 +47,13 @@ describe('Validate_Token', () => {
       throw new Error();
     });
 
-    const credentials: ITokenCredentials = {
+    const requestBody: IValidateTokenRequestBody = {
       token: INVALID_TOKEN,
     };
 
     const res = await request
       .post('/api/auth/validate_token')
-      .send(credentials);
+      .send(requestBody);
 
     expect(res.status).toBe(400);
   });

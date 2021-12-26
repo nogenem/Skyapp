@@ -26,6 +26,13 @@ import {
   Message,
   User,
 } from '~/models';
+import type {
+  ILeaveGroupChannelRequestParams,
+  IStoreGroupChannelRequestBody,
+  IStorePrivateChannelRequestBody,
+  IUpdateGroupChannelRequestBody,
+  IUpdateGroupChannelRequestParams,
+} from '~/requestsParts/channel';
 import { IoService } from '~/services';
 import {
   cantLeaveThisChannelError,
@@ -39,27 +46,15 @@ import {
 import handleErrors from '~/utils/handleErrors';
 import insertManyMessages from '~/utils/insertManyMessages';
 
-interface INewGroupCredentials {
-  name: string;
-  members: string[];
-  admins: string[];
-}
-
-interface IUpdateGroupCredentials {
-  name: string;
-  members: string[];
-  admins: string[];
-}
-
 export default {
   private: {
     async store(req: IAuthRequest, res: Response): Promise<Response<unknown>> {
-      const { _id } = req.body;
+      const { otherUserId } = req.body as IStorePrivateChannelRequestBody;
       const currentUser = req.currentUser as IUserDoc;
 
       try {
-        const user = await User.findOne({ _id });
-        if (!user) {
+        const otherUser = await User.findOne({ _id: otherUserId });
+        if (!otherUser) {
           return handleErrors(invalidIdError(), res);
         }
 
@@ -67,7 +62,7 @@ export default {
           $and: [
             { isGroup: false },
             { 'members.userId': currentUser._id },
-            { 'members.userId': user._id },
+            { 'members.userId': otherUser._id },
           ],
         });
         if (alreadyExistingChannel) {
@@ -83,7 +78,7 @@ export default {
               isAdm: false,
             },
             {
-              userId: user._id,
+              userId: otherUser._id,
               isAdm: false,
             },
           ],
@@ -111,7 +106,7 @@ export default {
         name,
         members: membersIds,
         admins: adminsIds,
-      } = req.body as INewGroupCredentials;
+      } = req.body as IStoreGroupChannelRequestBody;
       const currentUser = req.currentUser as IUserDoc;
 
       try {
@@ -190,12 +185,13 @@ export default {
       }
     },
     async update(req: IAuthRequest, res: Response): Promise<Response<unknown>> {
-      const { channelId } = req.params;
+      const { channelId } =
+        req.params as unknown as IUpdateGroupChannelRequestParams;
       const {
         name,
         members: membersIds,
         admins: adminsIds,
-      } = req.body as IUpdateGroupCredentials;
+      } = req.body as IUpdateGroupChannelRequestBody;
       const currentUser = req.currentUser as IUserDoc;
 
       try {
@@ -354,7 +350,8 @@ export default {
       }
     },
     async leave(req: IAuthRequest, res: Response): Promise<Response<unknown>> {
-      const { channelId } = req.params;
+      const { channelId } =
+        req.params as unknown as ILeaveGroupChannelRequestParams;
       const currentUser = req.currentUser as IUserDoc;
       const userId = currentUser._id.toString();
 
@@ -441,5 +438,3 @@ export default {
     },
   },
 };
-
-export type { INewGroupCredentials, IUpdateGroupCredentials };

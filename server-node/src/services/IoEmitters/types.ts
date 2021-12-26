@@ -2,8 +2,13 @@ import { Namespace } from 'socket.io';
 
 import * as SOCKET_EVENTS from '~/constants/socket_events';
 import { TUserStatus } from '~/constants/user_status';
-import { IChannelDoc, IChatChannel, IChatMessage, IChatUser } from '~/models';
-import { IClientMap } from '~/typescript-declarations/io.d';
+import type {
+  IChannelDoc,
+  IChatChannel,
+  IChatMessage,
+  IChatUser,
+} from '~/models';
+import type { IClientMap } from '~/typescript-declarations/io.d';
 
 type TSocketEvent = typeof SOCKET_EVENTS[keyof typeof SOCKET_EVENTS];
 

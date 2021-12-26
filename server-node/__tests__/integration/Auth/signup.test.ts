@@ -1,9 +1,9 @@
 import supertest from 'supertest';
 
 import app from '~/app';
-import type { ISignUpCredentials } from '~/controllers';
 import { User } from '~/models';
 import type { IUser, IUserDoc } from '~/models';
+import type { ISignUpRequestBody } from '~/requestsParts/auth';
 import { MailService } from '~/services';
 import factory from '~t/factories';
 import { setupDB } from '~t/test-setup';
@@ -36,7 +36,7 @@ describe('Signup', () => {
       .spyOn(MailService, 'sendConfirmationEmail')
       .mockReturnValueOnce(Promise.resolve());
 
-    const credentials: ISignUpCredentials = {
+    const credentials: ISignUpRequestBody = {
       nickname: user.nickname,
       email: user.email,
       password: user.password as string,
@@ -57,7 +57,7 @@ describe('Signup', () => {
 
   it('should not be able to sign up with missing credentials', async () => {
     const user: IUser = await factory.attrs<IUser>('User', { password: '' });
-    const credentials: ISignUpCredentials = {
+    const credentials: ISignUpRequestBody = {
       nickname: user.nickname,
       email: user.email,
       password: user.password as string,
@@ -76,7 +76,7 @@ describe('Signup', () => {
     const user: IUser = await factory.attrs<IUser>('User', {
       email: 'test@test.com',
     });
-    const credentials: ISignUpCredentials = {
+    const credentials: ISignUpRequestBody = {
       nickname: user.nickname,
       email: user.email,
       password: user.password as string,

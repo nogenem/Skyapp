@@ -3,9 +3,9 @@ import supertest from 'supertest';
 
 import app from '~/app';
 import { IO_GROUP_CHANNEL_CREATED } from '~/constants/socket_events';
-import type { INewGroupCredentials } from '~/controllers';
 import { Channel, IChannelDoc, IChatChannel, Message } from '~/models';
 import type { IUserDoc } from '~/models';
+import type { IStoreGroupChannelRequestBody } from '~/requestsParts/channel';
 import { IoService } from '~/services';
 import factory from '~t/factories';
 import { setupDB } from '~t/test-setup';
@@ -36,7 +36,7 @@ describe('Group_Store', () => {
     const io = IoService.instance();
     const ioSpy = jest.spyOn(io, 'emit').mockReturnValueOnce(Promise.resolve());
 
-    const credentials: INewGroupCredentials = {
+    const requestBody: IStoreGroupChannelRequestBody = {
       name: groupName,
       members: [user2._id.toString(), user3._id.toString()],
       admins: [user1._id.toString()],
@@ -45,7 +45,7 @@ describe('Group_Store', () => {
     const res = await request
       .post('/api/channel/group')
       .set('authorization', `Bearer ${VALID_TOKEN}`)
-      .send(credentials);
+      .send(requestBody);
 
     expect(res.status).toBe(201);
 
@@ -82,7 +82,7 @@ describe('Group_Store', () => {
       throw new Error();
     });
 
-    const credentials: INewGroupCredentials = {
+    const requestBody: IStoreGroupChannelRequestBody = {
       name: 'Group 1',
       members: ['some-user-id-1', 'some-user-id-2'],
       admins: [user._id.toString()],
@@ -91,7 +91,7 @@ describe('Group_Store', () => {
     const res = await request
       .post('/api/channel/group')
       .set('authorization', `Bearer ${VALID_TOKEN}`)
-      .send(credentials);
+      .send(requestBody);
 
     expect(res.status).toBe(400);
   });

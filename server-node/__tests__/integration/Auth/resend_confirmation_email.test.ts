@@ -1,9 +1,9 @@
 import supertest from 'supertest';
 
 import app from '~/app';
-import type { ITokenCredentials } from '~/controllers';
 import { User } from '~/models';
 import type { IUser, IUserDoc } from '~/models';
+import type { IResendConfirmationRequestBody } from '~/requestsParts/auth';
 import { MailService } from '~/services';
 import factory from '~t/factories';
 import { setupDB } from '~t/test-setup';
@@ -31,7 +31,7 @@ describe('Resend_Confirmation_Email', () => {
 
   it('should be able to resend a confirmation email', async () => {
     await factory.create<IUser>('User', { confirmationToken: INVALID_TOKEN });
-    const credentials: ITokenCredentials = {
+    const requestBody: IResendConfirmationRequestBody = {
       token: INVALID_TOKEN,
     };
 
@@ -41,7 +41,7 @@ describe('Resend_Confirmation_Email', () => {
 
     const res = await request
       .post('/api/auth/resend_confirmation_email')
-      .send(credentials);
+      .send(requestBody);
 
     expect(res.status).toBe(200);
 
@@ -55,26 +55,26 @@ describe('Resend_Confirmation_Email', () => {
 
   it('should not be able to resend a confirmation email with wrong token', async () => {
     await factory.create<IUser>('User', { confirmationToken: INVALID_TOKEN });
-    const credentials: ITokenCredentials = {
+    const requestBody: IResendConfirmationRequestBody = {
       token: VALID_TOKEN,
     };
 
     const res = await request
       .post('/api/auth/resend_confirmation_email')
-      .send(credentials);
+      .send(requestBody);
 
     expect(res.status).toBe(400);
   });
 
   it('should not be able to resend a confirmation email when already has a valid token in the database', async () => {
     await factory.create<IUser>('User', { confirmationToken: VALID_TOKEN });
-    const credentials: ITokenCredentials = {
+    const requestBody: IResendConfirmationRequestBody = {
       token: VALID_TOKEN,
     };
 
     const res = await request
       .post('/api/auth/resend_confirmation_email')
-      .send(credentials);
+      .send(requestBody);
 
     expect(res.status).toBe(400);
   });

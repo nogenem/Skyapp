@@ -3,8 +3,9 @@ import supertest from 'supertest';
 
 import app from '~/app';
 import { IO_MESSAGE_DELETED } from '~/constants/socket_events';
-import { IMessageDoc, IUserDoc, Message } from '~/models';
-import type { IChannelDoc } from '~/models';
+import { Message } from '~/models';
+import type { IChannelDoc, IMessageDoc, IUserDoc } from '~/models';
+import type { IDeleteMessageRequestParams } from '~/requestsParts/message';
 import { IoService } from '~/services';
 import factory from '~t/factories';
 import { setupDB } from '~t/test-setup';
@@ -40,9 +41,14 @@ describe('Delete', () => {
     const io = IoService.instance();
     const ioSpy = jest.spyOn(io, 'emit').mockReturnValueOnce(Promise.resolve());
 
+    const requestParams: IDeleteMessageRequestParams = {
+      channelId: channel._id.toString(),
+      messageId: message1._id.toString(),
+    };
+
     const res = await request
       .delete(
-        `/api/channel/${channel._id.toString()}/messages/${message1._id.toString()}`,
+        `/api/channel/${requestParams.channelId}/messages/${requestParams.messageId}`,
       )
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send();
@@ -69,8 +75,15 @@ describe('Delete', () => {
       throw new Error();
     });
 
+    const requestParams: IDeleteMessageRequestParams = {
+      channelId: 'some-channel-id',
+      messageId: message._id.toString(),
+    };
+
     const res = await request
-      .delete(`/api/channel/some-channel-id/messages/${message._id.toString()}`)
+      .delete(
+        `/api/channel/${requestParams.channelId}/messages/${requestParams.messageId}`,
+      )
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send();
 
@@ -86,8 +99,15 @@ describe('Delete', () => {
       throw new Error();
     });
 
+    const requestParams: IDeleteMessageRequestParams = {
+      channelId: channel._id.toString(),
+      messageId: 'some-message-id',
+    };
+
     const res = await request
-      .delete(`/api/channel/${channel._id.toString()}/messages/some-message-id`)
+      .delete(
+        `/api/channel/${requestParams.channelId}/messages/${requestParams.messageId}`,
+      )
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send();
 
@@ -107,9 +127,14 @@ describe('Delete', () => {
       throw new Error();
     });
 
+    const requestParams: IDeleteMessageRequestParams = {
+      channelId: channel._id.toString(),
+      messageId: message._id.toString(),
+    };
+
     const res = await request
       .delete(
-        `/api/channel/${channel._id.toString()}/messages/${message._id.toString()}`,
+        `/api/channel/${requestParams.channelId}/messages/${requestParams.messageId}`,
       )
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .send();

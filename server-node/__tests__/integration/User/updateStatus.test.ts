@@ -4,9 +4,9 @@ import supertest from 'supertest';
 import app from '~/app';
 import { IO_USER_STATUS_CHANGED } from '~/constants/socket_events';
 import { USER_STATUS } from '~/constants/user_status';
-import type { IChangeStatusCredentials } from '~/controllers';
 import { User } from '~/models';
 import type { IUserDoc } from '~/models';
+import type { IChangeStatusRequestBody } from '~/requestsParts/user';
 import { IoService } from '~/services';
 import factory from '~t/factories';
 import { setupDB } from '~t/test-setup';
@@ -36,14 +36,14 @@ describe('Update_Status', () => {
     const io = IoService.instance();
     const ioSpy = jest.spyOn(io, 'emit').mockReturnValueOnce(Promise.resolve());
 
-    const credentials: IChangeStatusCredentials = {
+    const requestBody: IChangeStatusRequestBody = {
       newStatus,
     };
 
     const res = await request
       .patch('/api/user/status')
       .set('authorization', `Bearer ${VALID_TOKEN}`)
-      .send(credentials);
+      .send(requestBody);
 
     expect(res.status).toBe(200);
 
@@ -70,14 +70,14 @@ describe('Update_Status', () => {
       throw new Error();
     });
 
-    const credentials: IChangeStatusCredentials = {
+    const requestBody: IChangeStatusRequestBody = {
       newStatus: USER_STATUS.AWAY,
     };
 
     const res = await request
       .patch('/api/user/status')
       .set('authorization', `Bearer ${VALID_TOKEN}`)
-      .send(credentials);
+      .send(requestBody);
 
     expect(res.status).toBe(304);
   });

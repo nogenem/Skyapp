@@ -2,8 +2,8 @@ import { Secret, SignOptions } from 'jsonwebtoken';
 import supertest from 'supertest';
 
 import app from '~/app';
-import type { ISignInCredentials } from '~/controllers';
 import type { IUserDoc } from '~/models';
+import type { ISignInRequestBody } from '~/requestsParts/auth';
 import factory from '~t/factories';
 import { setupDB } from '~t/test-setup';
 
@@ -39,7 +39,7 @@ describe('Signin', () => {
       {},
       { password: VALID_PASSWORD },
     );
-    const credentials: ISignInCredentials = {
+    const credentials: ISignInRequestBody = {
       email: user.email,
       password: user.password as string,
       rememberMe: false,
@@ -58,7 +58,7 @@ describe('Signin', () => {
       {},
       { password: VALID_PASSWORD },
     );
-    const credentials: ISignInCredentials = {
+    const credentials: ISignInRequestBody = {
       email: user.email,
       password: user.password as string,
       rememberMe: true,
@@ -72,7 +72,7 @@ describe('Signin', () => {
   });
 
   it('should not be able to sign in with invalid email', async () => {
-    const credentials: ISignInCredentials = {
+    const credentials: ISignInRequestBody = {
       email: 'test@test.com',
       password: VALID_PASSWORD,
       rememberMe: false,
@@ -89,7 +89,7 @@ describe('Signin', () => {
       {},
       { password: VALID_PASSWORD },
     );
-    const credentials: ISignInCredentials = {
+    const credentials: ISignInRequestBody = {
       email: user.email,
       password: INVALID_PASSWORD,
       rememberMe: false,

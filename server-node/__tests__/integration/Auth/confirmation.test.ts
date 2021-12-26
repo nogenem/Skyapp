@@ -2,9 +2,9 @@ import supertest from 'supertest';
 
 import app from '~/app';
 import { IO_NEW_USER } from '~/constants/socket_events';
-import type { ITokenCredentials } from '~/controllers';
-import { IChatUser, User } from '~/models';
-import type { IUserDoc } from '~/models';
+import { User } from '~/models';
+import type { IUserDoc, IChatUser } from '~/models';
+import type { IConfirmationRequestBody } from '~/requestsParts/auth';
 import { IoService } from '~/services';
 import factory from '~t/factories';
 import { setupDB } from '~t/test-setup';
@@ -38,11 +38,11 @@ describe('Confirmation', () => {
     const io = IoService.instance();
     const ioSpy = jest.spyOn(io, 'emit').mockReturnValueOnce(Promise.resolve());
 
-    const credentials: ITokenCredentials = {
+    const requestBody: IConfirmationRequestBody = {
       token: user.confirmationToken as string,
     };
 
-    const res = await request.post('/api/auth/confirmation').send(credentials);
+    const res = await request.post('/api/auth/confirmation').send(requestBody);
     expect(res.status).toBe(200);
 
     const userRecord = (await User.findOne({ email: user.email })) as IUserDoc;
@@ -59,11 +59,11 @@ describe('Confirmation', () => {
       confirmationToken: INVALID_TOKEN,
       confirmed: false,
     });
-    const credentials: ITokenCredentials = {
+    const requestBody: IConfirmationRequestBody = {
       token: user.confirmationToken as string,
     };
 
-    const res = await request.post('/api/auth/confirmation').send(credentials);
+    const res = await request.post('/api/auth/confirmation').send(requestBody);
 
     expect(res.status).toBe(400);
   });
@@ -77,14 +77,14 @@ describe('Confirmation', () => {
     const io = IoService.instance();
     jest.spyOn(io, 'emit').mockReturnValueOnce(Promise.resolve());
 
-    const credentials: ITokenCredentials = {
+    const requestBody: IConfirmationRequestBody = {
       token: user.confirmationToken as string,
     };
 
-    const res1 = await request.post('/api/auth/confirmation').send(credentials);
+    const res1 = await request.post('/api/auth/confirmation').send(requestBody);
     expect(res1.status).toBe(200);
 
-    const res2 = await request.post('/api/auth/confirmation').send(credentials);
+    const res2 = await request.post('/api/auth/confirmation').send(requestBody);
     expect(res2.status).toBe(400);
   });
 });

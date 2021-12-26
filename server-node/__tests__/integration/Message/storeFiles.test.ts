@@ -6,6 +6,7 @@ import app from '~/app';
 import { IO_MESSAGES_RECEIVED } from '~/constants/socket_events';
 import { Message } from '~/models';
 import type { IChannelDoc } from '~/models';
+import type { IStoreFilesRequestParams } from '~/requestsParts/message';
 import { IoService } from '~/services';
 import factory from '~t/factories';
 import { setupDB } from '~t/test-setup';
@@ -55,16 +56,19 @@ describe('Store_Files', () => {
     const io = IoService.instance();
     const ioSpy = jest.spyOn(io, 'emit').mockReturnValueOnce(Promise.resolve());
 
-    const channelId = channel._id.toString();
+    const requestParams: IStoreFilesRequestParams = {
+      channelId: channel._id.toString(),
+    };
+
     const res = await request
-      .post(`/api/channel/${channelId}/files`)
+      .post(`/api/channel/${requestParams.channelId}/files`)
       .set('authorization', `Bearer ${VALID_TOKEN}`)
       .attach('files', '__tests__/files/hello.txt');
 
     expect(res.status).toBe(200);
 
     const messageRecord = await Message.findOne({
-      channelId,
+      channelId: requestParams.channelId,
     });
 
     expect(messageRecord).toBeTruthy();
@@ -85,13 +89,13 @@ describe('Store_Files', () => {
   //     throw new Error();
   //   });
 
-  //   // PS: I dont know how to handle multpart requests inside my multer's mock,
-  //   // so i had to 'cheese' it, by passing the channelId in the query too ;/
-  //   const channelId = 'some-channel-id';
+  //   const requestParams: IStoreFilesRequestParams = {
+  //     channelId: 'some-channel-id',
+  //   };
+
   //   const res = await request
-  //     .post(`/api/channel/files?channelId=${channelId}`)
+  //     .post(`/api/channel/${requestParams.channelId}/files`)
   //     .set('authorization', `Bearer ${VALID_TOKEN}`)
-  //     .field('channelId', channelId)
   //     .attach('files', '__tests__/files/hello.txt');
 
   //   expect(res.status).toBe(400);
