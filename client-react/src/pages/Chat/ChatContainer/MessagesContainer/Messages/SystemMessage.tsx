@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Paper } from '@material-ui/core';
 
-import { IMessage } from '~/redux/chat/types';
+import type { IMessage } from '~/redux/chat/types';
 
 import useStyles from './useStyles';
 

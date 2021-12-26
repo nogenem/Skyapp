@@ -7,7 +7,10 @@ import {
   fireEvent,
 } from '@testing-library/react';
 
-import { ITokenCredentials } from '~/redux/user/types';
+import type {
+  IConfirmationRequestBody,
+  IResendConfirmationRequestBody,
+} from '~/requestsParts/auth';
 import type {
   IServerErrorsObject,
   IPartialAxiosError,
@@ -69,7 +72,7 @@ describe('Unconnected ConfirmationPage', () => {
   });
 
   it('Trys to confirm valid token and navigates to `/chat`', async () => {
-    const credentials: ITokenCredentials = { token: VALID_TOKEN };
+    const data: IConfirmationRequestBody = { token: VALID_TOKEN };
 
     const mockFunc = (async (
       to: string,
@@ -83,7 +86,7 @@ describe('Unconnected ConfirmationPage', () => {
       <UnconnectedConfirmationPage
         sendConfirmation={sendConfirmation}
         SendResendConfirmationEmail={SendResendConfirmationEmail}
-        token={credentials.token}
+        token={data.token}
       />,
     );
 
@@ -92,13 +95,13 @@ describe('Unconnected ConfirmationPage', () => {
     }); // wait for the Spinner to disappear
 
     expect(sendConfirmation).toHaveBeenCalledTimes(1);
-    expect(sendConfirmation).toHaveBeenCalledWith(credentials);
+    expect(sendConfirmation).toHaveBeenCalledWith(data);
     expect(spy).toHaveBeenCalledTimes(1);
     expect(spy).toHaveBeenCalledWith('/chat');
   });
 
   it('Trys to confirm invalid token and shows error alert', async () => {
-    const credentials: ITokenCredentials = { token: INVALID_TOKEN };
+    const data: IConfirmationRequestBody = { token: INVALID_TOKEN };
 
     const sendConfirmation = jest.fn(() =>
       Promise.reject(
@@ -113,7 +116,7 @@ describe('Unconnected ConfirmationPage', () => {
       <UnconnectedConfirmationPage
         sendConfirmation={sendConfirmation}
         SendResendConfirmationEmail={SendResendConfirmationEmail}
-        token={credentials.token}
+        token={data.token}
       />,
     );
 
@@ -124,12 +127,12 @@ describe('Unconnected ConfirmationPage', () => {
     const alert = getByRole('alert');
 
     expect(sendConfirmation).toHaveBeenCalledTimes(1);
-    expect(sendConfirmation).toHaveBeenCalledWith(credentials);
+    expect(sendConfirmation).toHaveBeenCalledWith(data);
     expect(alert).toHaveTextContent(/invalid token/i);
   });
 
   it('Trys to resend confirmation email and shows primary alert', async () => {
-    const credentials: ITokenCredentials = { token: INVALID_TOKEN };
+    const data: IResendConfirmationRequestBody = { token: INVALID_TOKEN };
 
     const sendConfirmation = jest.fn(() =>
       Promise.reject(
@@ -144,7 +147,7 @@ describe('Unconnected ConfirmationPage', () => {
       <UnconnectedConfirmationPage
         sendConfirmation={sendConfirmation}
         SendResendConfirmationEmail={SendResendConfirmationEmail}
-        token={credentials.token}
+        token={data.token}
       />,
     );
 
@@ -161,14 +164,14 @@ describe('Unconnected ConfirmationPage', () => {
     const alert = getByRole('alert');
 
     expect(SendResendConfirmationEmail).toHaveBeenCalledTimes(1);
-    expect(SendResendConfirmationEmail).toHaveBeenCalledWith(credentials);
+    expect(SendResendConfirmationEmail).toHaveBeenCalledWith(data);
     expect(alert).toHaveTextContent(
       /the confirmation email was resend! please check your email\./i,
     );
   });
 
   it('Trys to resend confirmation email and shows error alert', async () => {
-    const credentials: ITokenCredentials = { token: INVALID_TOKEN };
+    const data: IResendConfirmationRequestBody = { token: INVALID_TOKEN };
 
     const sendConfirmation = jest.fn(() =>
       Promise.reject(
@@ -189,7 +192,7 @@ describe('Unconnected ConfirmationPage', () => {
       <UnconnectedConfirmationPage
         sendConfirmation={sendConfirmation}
         SendResendConfirmationEmail={SendResendConfirmationEmail}
-        token={credentials.token}
+        token={data.token}
       />,
     );
 
@@ -206,7 +209,7 @@ describe('Unconnected ConfirmationPage', () => {
     const alert = getByRole('alert');
 
     expect(SendResendConfirmationEmail).toHaveBeenCalledTimes(1);
-    expect(SendResendConfirmationEmail).toHaveBeenCalledWith(credentials);
+    expect(SendResendConfirmationEmail).toHaveBeenCalledWith(data);
     expect(alert).toHaveTextContent(/invalid token/i);
   });
 });

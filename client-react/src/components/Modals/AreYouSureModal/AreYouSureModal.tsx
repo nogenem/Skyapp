@@ -11,7 +11,7 @@ import {
 } from '@material-ui/core';
 
 import { Alert } from '~/components';
-import { IErrors } from '~/utils/handleServerErrors';
+import type { IErrors } from '~/utils/handleServerErrors';
 
 const defaultProps = {
   body: 'Messages:Are you sure?',

@@ -19,8 +19,8 @@ import {
   selectActiveChannelLastMessage,
   selectChatUsers,
 } from '~/redux/chat/selectors';
-import { IMessage } from '~/redux/chat/types';
-import { IAppState } from '~/redux/store';
+import type { IMessage } from '~/redux/chat/types';
+import type { IAppState } from '~/redux/store';
 import { selectUser } from '~/redux/user/selectors';
 
 import { ChatHeader } from './ChatHeader';

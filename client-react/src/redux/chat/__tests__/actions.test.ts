@@ -3,6 +3,19 @@ import { Socket } from 'socket.io-client';
 import { MESSAGE_TYPES } from '~/constants/message_types';
 import * as SOCKET_EVENTS from '~/constants/socket_events';
 import type { IUser } from '~/redux/user/types';
+import type {
+  ILeaveGroupChannelRequestParams,
+  IStoreGroupChannelRequestBody,
+  IStorePrivateChannelRequestBody,
+  IUpdateGroupChannelRequest,
+} from '~/requestsParts/channel';
+import type {
+  IDeleteMessageRequestParams,
+  IFetchMessagesRequest,
+  IStoreFilesRequest,
+  IStoreMessageRequest,
+  IUpdateMessageBodyRequest,
+} from '~/requestsParts/message';
 import ApiService from '~/services/ApiService';
 import IoService from '~/services/IoService';
 import MessageQueueService, {
@@ -26,19 +39,7 @@ import {
   userSignedIn,
   userSignedOut,
 } from '../actions';
-import {
-  EChatActions,
-  IDeleteMessageCredentials,
-  IEditMessageCredentials,
-  IFetchMessagesCredentials,
-  ILeaveGroupCredentials,
-  IMessage,
-  INewGroupCredentials,
-  IOtherUser,
-  ISendFilesCredentials,
-  ISendMessageCredentials,
-  IUpdateGroupCredentials,
-} from '../types';
+import { EChatActions, IMessage, IOtherUser } from '../types';
 
 jest.mock('socket.io-client');
 
@@ -91,6 +92,9 @@ describe('chat actions', () => {
         payload: { _id: apiResponse.channelId },
       },
     ];
+    const expectedRequestBody: IStorePrivateChannelRequestBody = {
+      otherUserId: user._id,
+    };
     const spy = jest
       .spyOn(ApiService.channel.private, 'store')
       .mockImplementationOnce(() => {
@@ -100,13 +104,13 @@ describe('chat actions', () => {
 
     await sendCreateChannelWith(user)(store.dispatch);
 
-    expect(spy).toHaveBeenCalledWith(user);
+    expect(spy).toHaveBeenCalledWith(expectedRequestBody);
     expect(store.getActions()).toEqual(expectedActions);
   });
 
   it('sendCreateGroupChannel', async () => {
     const channelId = '1';
-    const credentials: INewGroupCredentials = {
+    const data: IStoreGroupChannelRequestBody = {
       name: 'Group 1',
       members: ['1', '2'],
       admins: ['1'],
@@ -126,15 +130,15 @@ describe('chat actions', () => {
       });
     const store = mockStore({});
 
-    await sendCreateGroupChannel(credentials)(store.dispatch);
+    await sendCreateGroupChannel(data)(store.dispatch);
 
-    expect(spy).toHaveBeenCalledWith(credentials);
+    expect(spy).toHaveBeenCalledWith(data);
     expect(store.getActions()).toEqual(expectedActions);
   });
 
   it('sendUpdateGroupChannel', async () => {
     const channelId = '1';
-    const credentials: IUpdateGroupCredentials = {
+    const data: IUpdateGroupChannelRequest = {
       channelId: channelId,
       name: 'Group 1',
       members: ['1', '2'],
@@ -155,15 +159,15 @@ describe('chat actions', () => {
       });
     const store = mockStore({});
 
-    await sendUpdateGroupChannel(credentials)(store.dispatch);
+    await sendUpdateGroupChannel(data)(store.dispatch);
 
-    expect(spy).toHaveBeenCalledWith(credentials);
+    expect(spy).toHaveBeenCalledWith(data);
     expect(store.getActions()).toEqual(expectedActions);
   });
 
   it('sendLeaveGroupChannel', async () => {
     const channelId = '1';
-    const credentials: ILeaveGroupCredentials = {
+    const data: ILeaveGroupChannelRequestParams = {
       channelId: channelId,
     };
     const apiResponse = { channelId: channelId };
@@ -181,14 +185,14 @@ describe('chat actions', () => {
       });
     const store = mockStore({});
 
-    await sendLeaveGroupChannel(credentials)(store.dispatch);
+    await sendLeaveGroupChannel(data)(store.dispatch);
 
-    expect(spy).toHaveBeenCalledWith(credentials);
+    expect(spy).toHaveBeenCalledWith(data);
     expect(store.getActions()).toEqual(expectedActions);
   });
 
   it('sendGetMessages', async () => {
-    const credentials: IFetchMessagesCredentials = {
+    const data: IFetchMessagesRequest = {
       channelId: '1',
       offset: 0,
       limit: 10,
@@ -213,9 +217,9 @@ describe('chat actions', () => {
       });
     const store = mockStore({});
 
-    await sendGetMessages(credentials)(store.dispatch);
+    await sendGetMessages(data)(store.dispatch);
 
-    expect(spy).toHaveBeenCalledWith(credentials);
+    expect(spy).toHaveBeenCalledWith(data);
     expect(store.getActions()).toEqual(expectedActions);
   });
 
@@ -223,7 +227,7 @@ describe('chat actions', () => {
     const channelId = '1';
     const message = 'Test Message';
 
-    const expectedCredentials: ISendMessageCredentials = {
+    const data: IStoreMessageRequest = {
       channelId: channelId,
       body: message,
     };
@@ -234,17 +238,14 @@ describe('chat actions', () => {
 
     await enqueueSendTextMessage(channelId, message)();
 
-    expect(spy).toHaveBeenCalledWith(
-      expectedCredentials,
-      QUEUE_ACTIONS.SEND_TEXT_MESSAGE,
-    );
+    expect(spy).toHaveBeenCalledWith(data, QUEUE_ACTIONS.SEND_TEXT_MESSAGE);
   });
 
   it('enqueueSendFileMessages', async () => {
     const filesData = new FormData();
     const channelId = '1';
 
-    const expectedCredentials: ISendFilesCredentials = {
+    const data: IStoreFilesRequest = {
       channelId: channelId,
       files: filesData,
     };
@@ -255,10 +256,7 @@ describe('chat actions', () => {
 
     await enqueueSendFileMessages(channelId, filesData)();
 
-    expect(spy).toHaveBeenCalledWith(
-      expectedCredentials,
-      QUEUE_ACTIONS.SEND_FILE_MESSAGES,
-    );
+    expect(spy).toHaveBeenCalledWith(data, QUEUE_ACTIONS.SEND_FILE_MESSAGES);
   });
 
   it('enqueueSendEditTextMessage', async () => {
@@ -268,7 +266,7 @@ describe('chat actions', () => {
     });
     const newBody = 'New Test Message';
 
-    const expectedCredentials: IEditMessageCredentials = {
+    const data: IUpdateMessageBodyRequest = {
       message,
       newBody,
     };
@@ -278,16 +276,13 @@ describe('chat actions', () => {
 
     await enqueueSendEditTextMessage(message, newBody)();
 
-    expect(spy).toHaveBeenCalledWith(
-      expectedCredentials,
-      QUEUE_ACTIONS.EDIT_TEXT_MESSAGE,
-    );
+    expect(spy).toHaveBeenCalledWith(data, QUEUE_ACTIONS.EDIT_TEXT_MESSAGE);
   });
 
   it('enqueueSendDeleteMessage', async () => {
     const message: IMessage = FACTORIES.models.message();
 
-    const expectedCredentials: IDeleteMessageCredentials = {
+    const data: IDeleteMessageRequestParams = {
       message,
     };
     const spy = jest
@@ -296,10 +291,7 @@ describe('chat actions', () => {
 
     await enqueueSendDeleteMessage(message)();
 
-    expect(spy).toHaveBeenCalledWith(
-      expectedCredentials,
-      QUEUE_ACTIONS.DELETE_MESSAGE,
-    );
+    expect(spy).toHaveBeenCalledWith(data, QUEUE_ACTIONS.DELETE_MESSAGE);
   });
 
   it('emitSetActiveChannel', () => {

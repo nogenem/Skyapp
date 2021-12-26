@@ -12,14 +12,14 @@ import type {
   TState as TBaseFormState,
 } from '~/components/Form';
 import { INVALID_EMAIL } from '~/constants/errors';
-import type { IForgotPasswordCredentials } from '~/redux/user/types';
+import type { IForgotPasswordRequestBody } from '~/requestsParts/auth';
 
 import useStyles from './useStyles';
 
 const FORM_ID = 'forgot-password-form';
 
 interface IOwnProps {
-  submit: (data: IForgotPasswordCredentials) => Promise<void>;
+  submit: (data: IForgotPasswordRequestBody) => Promise<void>;
 }
 
 type TProps = IOwnProps;
@@ -30,11 +30,11 @@ const Form = ({ submit }: TProps) => {
 
   const getData = (
     getInputByName: IGetInputByName,
-  ): IForgotPasswordCredentials => ({
+  ): IForgotPasswordRequestBody => ({
     email: getInputByName('email').value.trim(),
   });
 
-  const validate = (data: IForgotPasswordCredentials) => {
+  const validate = (data: IForgotPasswordRequestBody) => {
     const errors = {} as IErrors;
 
     if (!isEmail(data.email)) errors.email = trans(INVALID_EMAIL);
@@ -72,7 +72,7 @@ const Form = ({ submit }: TProps) => {
   );
 
   return (
-    <BaseForm<IForgotPasswordCredentials>
+    <BaseForm<IForgotPasswordRequestBody>
       id={FORM_ID}
       submit={submit}
       getData={getData}

@@ -11,7 +11,7 @@ import {
   selectActiveChannelIsGroup,
   selectOtherUsersFromActiveChannel,
 } from '~/redux/chat/selectors';
-import { IAppState } from '~/redux/store';
+import type { IAppState } from '~/redux/store';
 
 import useStyles from './useStyles';
 

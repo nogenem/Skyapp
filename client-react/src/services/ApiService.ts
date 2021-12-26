@@ -1,25 +1,41 @@
 import axios from 'axios';
 
 import type {
-  IDeleteMessageCredentials,
-  IEditMessageCredentials,
-  IFetchMessagesCredentials,
-  ILeaveGroupCredentials,
-  INewGroupCredentials,
-  IOtherUser,
-  ISendFilesCredentials,
-  ISendMessageCredentials,
-  IUpdateGroupCredentials,
-} from '~/redux/chat/types';
+  IConfirmationRequestBody,
+  IForgotPasswordRequestBody,
+  IResendConfirmationRequestBody,
+  IResetPasswordRequestBody,
+  ISignInRequestBody,
+  ISignUpRequestBody,
+  IValidateTokenRequestBody,
+} from '~/requestsParts/auth';
 import type {
-  ISignUpCredentials,
-  ISignInCredentials,
-  ITokenCredentials,
-  IForgotPasswordCredentials,
-  IResetPasswordCredentials,
-  IChangeStatusCredentials,
-  IChangeThoughtsCredentials,
-} from '~/redux/user/types';
+  ILeaveGroupChannelRequestParams,
+  IStoreGroupChannelRequestBody,
+  IStorePrivateChannelRequestBody,
+  IUpdateGroupChannelRequest,
+  IUpdateGroupChannelRequestBody,
+  IUpdateGroupChannelRequestParams,
+} from '~/requestsParts/channel';
+import type {
+  IDeleteMessageRequestParams,
+  IFetchMessagesRequest,
+  IFetchMessagesRequestParams,
+  IFetchMessagesRequestQuery,
+  IStoreFilesRequest,
+  IStoreFilesRequestBody,
+  IStoreFilesRequestParams,
+  IStoreMessageRequest,
+  IStoreMessageRequestBody,
+  IStoreMessageRequestParams,
+  IUpdateMessageBodyRequest,
+  IUpdateMessageBodyRequestBody,
+  IUpdateMessageBodyRequestParams,
+} from '~/requestsParts/message';
+import type {
+  IChangeStatusRequestBody,
+  IChangeThoughtsRequestBody,
+} from '~/requestsParts/user';
 
 export const END_POINTS = {
   auth: {
@@ -41,18 +57,23 @@ export const END_POINTS = {
     },
     group: {
       store: 'api/channel/group',
-      update: (channelId: string) => `api/channel/group/${channelId}`,
-      leave: (channelId: string) => `api/channel/group/${channelId}/leave`,
+      update: ({ channelId }: IUpdateGroupChannelRequestParams) =>
+        `api/channel/group/${channelId}`,
+      leave: ({ channelId }: ILeaveGroupChannelRequestParams) =>
+        `api/channel/group/${channelId}/leave`,
     },
   },
   message: {
-    all: (channelId: string) => `api/channel/${channelId}/messages`,
-    storeMessage: (channelId: string) => `api/channel/${channelId}/messages`,
-    storeFiles: (channelId: string) => `api/channel/${channelId}/files`,
-    updateBody: (channelId: string, messageId: string) =>
-      `api/channel/${channelId}/messages/${messageId}`,
-    delete: (channelId: string, messageId: string) =>
-      `api/channel/${channelId}/messages/${messageId}`,
+    all: ({ channelId }: IFetchMessagesRequestParams) =>
+      `api/channel/${channelId}/messages`,
+    storeMessage: ({ channelId }: IStoreMessageRequestParams) =>
+      `api/channel/${channelId}/messages`,
+    storeFiles: ({ channelId }: IStoreFilesRequestParams) =>
+      `api/channel/${channelId}/files`,
+    updateBody: ({ message }: IUpdateMessageBodyRequestParams) =>
+      `api/channel/${message.channelId}/messages/${message._id}`,
+    delete: ({ message }: IDeleteMessageRequestParams) =>
+      `api/channel/${message.channelId}/messages/${message._id}`,
   },
 };
 
@@ -62,95 +83,120 @@ export const axiosInstance = axios.create({
 
 export default {
   auth: {
-    signUp: (credentials: ISignUpCredentials) =>
+    signUp: (requestBody: ISignUpRequestBody) =>
       axiosInstance
-        .post(END_POINTS.auth.signUp, { ...credentials })
+        .post(END_POINTS.auth.signUp, { ...requestBody })
         .then(res => res.data),
-    signIn: (credentials: ISignInCredentials) =>
+    signIn: (requestBody: ISignInRequestBody) =>
       axiosInstance
-        .post(END_POINTS.auth.signIn, { ...credentials })
+        .post(END_POINTS.auth.signIn, { ...requestBody })
         .then(res => res.data),
-    confirmation: (credentials: ITokenCredentials) =>
+    confirmation: (requestBody: IConfirmationRequestBody) =>
       axiosInstance
-        .post(END_POINTS.auth.confirmation, { ...credentials })
+        .post(END_POINTS.auth.confirmation, { ...requestBody })
         .then(res => res.data),
-    resendConfirmationEmail: (credentials: ITokenCredentials) =>
+    resendConfirmationEmail: (requestBody: IResendConfirmationRequestBody) =>
       axiosInstance
-        .post(END_POINTS.auth.resendConfirmationEmail, { ...credentials })
+        .post(END_POINTS.auth.resendConfirmationEmail, { ...requestBody })
         .then(res => res.data),
-    validateToken: (credentials: ITokenCredentials) =>
+    validateToken: (requestBody: IValidateTokenRequestBody) =>
       axiosInstance
-        .post(END_POINTS.auth.validateToken, { ...credentials })
+        .post(END_POINTS.auth.validateToken, { ...requestBody })
         .then(res => res.data),
-    forgotPassword: (credentials: IForgotPasswordCredentials) =>
+    forgotPassword: (requestBody: IForgotPasswordRequestBody) =>
       axiosInstance
-        .post(END_POINTS.auth.forgotPassword, { ...credentials })
+        .post(END_POINTS.auth.forgotPassword, { ...requestBody })
         .then(res => res.data),
-    resetPassword: (credentials: IResetPasswordCredentials) =>
+    resetPassword: (requestBody: IResetPasswordRequestBody) =>
       axiosInstance
-        .post(END_POINTS.auth.resetPassword, { ...credentials })
+        .post(END_POINTS.auth.resetPassword, { ...requestBody })
         .then(res => res.data),
   },
   user: {
-    updateStatus: (credentials: IChangeStatusCredentials) =>
+    updateStatus: (requestBody: IChangeStatusRequestBody) =>
       axiosInstance
-        .patch(END_POINTS.user.updateStatus, { ...credentials })
+        .patch(END_POINTS.user.updateStatus, { ...requestBody })
         .then(res => res.data),
-    updateThoughts: (credentials: IChangeThoughtsCredentials) =>
+    updateThoughts: (requestBody: IChangeThoughtsRequestBody) =>
       axiosInstance
-        .patch(END_POINTS.user.updateThoughts, { ...credentials })
+        .patch(END_POINTS.user.updateThoughts, { ...requestBody })
         .then(res => res.data),
   },
   channel: {
     private: {
-      store: (otherUser: IOtherUser) =>
+      store: (requestBody: IStorePrivateChannelRequestBody) =>
         axiosInstance
-          .post(END_POINTS.channel.private.store, { _id: otherUser._id })
+          .post(END_POINTS.channel.private.store, { ...requestBody })
           .then(res => res.data),
     },
     group: {
-      store: (credentials: INewGroupCredentials) =>
+      store: (requestBody: IStoreGroupChannelRequestBody) =>
         axiosInstance
-          .post(END_POINTS.channel.group.store, { ...credentials })
+          .post(END_POINTS.channel.group.store, { ...requestBody })
           .then(res => res.data),
-      update: ({ channelId, ...credentials }: IUpdateGroupCredentials) =>
-        axiosInstance
-          .patch(END_POINTS.channel.group.update(channelId), {
-            ...credentials,
+      update: ({ channelId, ...rest }: IUpdateGroupChannelRequest) => {
+        const requestParams: IUpdateGroupChannelRequestParams = { channelId };
+        const requestBody: IUpdateGroupChannelRequestBody = {
+          ...rest,
+        };
+        return axiosInstance
+          .patch(END_POINTS.channel.group.update(requestParams), {
+            ...requestBody,
           })
-          .then(res => res.data),
-      leave: ({ channelId }: ILeaveGroupCredentials) =>
+          .then(res => res.data);
+      },
+      leave: (requestParams: ILeaveGroupChannelRequestParams) =>
         axiosInstance
-          .post(END_POINTS.channel.group.leave(channelId), {})
+          .post(END_POINTS.channel.group.leave(requestParams), {})
           .then(res => res.data),
     },
   },
   message: {
-    all: ({ channelId, ...credentials }: IFetchMessagesCredentials) =>
-      axiosInstance
-        .get(END_POINTS.message.all(channelId), {
-          params: credentials,
+    all: ({ channelId, ...rest }: IFetchMessagesRequest) => {
+      const requestParams: IFetchMessagesRequestParams = { channelId };
+      const requestQuery: IFetchMessagesRequestQuery = {
+        ...rest,
+      };
+      return axiosInstance
+        .get(END_POINTS.message.all(requestParams), {
+          params: requestQuery,
         })
-        .then(res => res.data),
-    storeMessage: ({ channelId, ...credentials }: ISendMessageCredentials) =>
-      axiosInstance
-        .post(END_POINTS.message.storeMessage(channelId), {
-          ...credentials,
+        .then(res => res.data);
+    },
+    storeMessage: ({ channelId, ...rest }: IStoreMessageRequest) => {
+      const requestParams: IStoreMessageRequestParams = { channelId };
+      const requestBody: IStoreMessageRequestBody = {
+        ...rest,
+      };
+      return axiosInstance
+        .post(END_POINTS.message.storeMessage(requestParams), {
+          ...requestBody,
         })
-        .then(res => res.data),
-    storeFiles: ({ channelId, files }: ISendFilesCredentials) =>
-      axiosInstance
-        .post(END_POINTS.message.storeFiles(channelId), files)
-        .then(res => res.data),
-    updateBody: ({ message, ...credentials }: IEditMessageCredentials) =>
-      axiosInstance
-        .patch(END_POINTS.message.updateBody(message.channelId, message._id), {
-          ...credentials,
+        .then(res => res.data);
+    },
+    storeFiles: ({ channelId, ...rest }: IStoreFilesRequest) => {
+      const requestParams: IStoreFilesRequestParams = { channelId };
+      const requestBody: IStoreFilesRequestBody = {
+        ...rest,
+      };
+      return axiosInstance
+        .post(END_POINTS.message.storeFiles(requestParams), requestBody.files)
+        .then(res => res.data);
+    },
+    updateBody: ({ message, ...rest }: IUpdateMessageBodyRequest) => {
+      const requestParams: IUpdateMessageBodyRequestParams = { message };
+      const requestBody: IUpdateMessageBodyRequestBody = {
+        ...rest,
+      };
+      return axiosInstance
+        .patch(END_POINTS.message.updateBody(requestParams), {
+          ...requestBody,
         })
-        .then(res => res.data),
-    delete: ({ message }: IDeleteMessageCredentials) =>
+        .then(res => res.data);
+    },
+    delete: (requestParams: IDeleteMessageRequestParams) =>
       axiosInstance
-        .delete(END_POINTS.message.delete(message.channelId, message._id))
+        .delete(END_POINTS.message.delete(requestParams))
         .then(res => res.data),
   },
 };

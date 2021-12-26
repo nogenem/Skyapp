@@ -16,14 +16,14 @@ import {
   FIELD_IS_TOO_SHORT,
 } from '~/constants/errors';
 import { MIN_PASSWORD_LEN } from '~/constants/validation_limits';
-import type { IResetPasswordCredentials } from '~/redux/user/types';
+import type { IResetPasswordRequestBody } from '~/requestsParts/auth';
 
 import useStyles from './useStyles';
 
 const FORM_ID = 'reset-password-form';
 
 interface IOwnProps {
-  submit: (data: IResetPasswordCredentials) => Promise<void>;
+  submit: (data: IResetPasswordRequestBody) => Promise<void>;
 }
 
 type TProps = IOwnProps;
@@ -34,7 +34,7 @@ const Form = ({ submit }: TProps) => {
 
   const getData = (
     getInputByName: IGetInputByName,
-  ): IResetPasswordCredentials => ({
+  ): IResetPasswordRequestBody => ({
     newPassword: getInputByName('newPassword').value.trim(),
     newPasswordConfirmation: getInputByName(
       'newPasswordConfirmation',
@@ -42,7 +42,7 @@ const Form = ({ submit }: TProps) => {
     token: '',
   });
 
-  const validate = (data: IResetPasswordCredentials) => {
+  const validate = (data: IResetPasswordRequestBody) => {
     const errors = {} as IErrors;
 
     if (!data.newPassword) errors.newPassword = trans(CANT_BE_BLANK);
@@ -106,7 +106,7 @@ const Form = ({ submit }: TProps) => {
   );
 
   return (
-    <BaseForm<IResetPasswordCredentials>
+    <BaseForm<IResetPasswordRequestBody>
       id={FORM_ID}
       submit={submit}
       getData={getData}

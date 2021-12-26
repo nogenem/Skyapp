@@ -66,49 +66,6 @@ interface IActiveChannelInfo {
   queue: IMessage[];
 }
 
-interface INewGroupCredentials {
-  name: string;
-  members: string[];
-  admins: string[];
-}
-
-interface IUpdateGroupCredentials {
-  channelId: string;
-  name: string;
-  members: string[];
-  admins: string[];
-}
-
-interface ILeaveGroupCredentials {
-  channelId: string;
-}
-
-interface IFetchMessagesCredentials {
-  channelId: string;
-  offset: number;
-  limit?: number;
-  sort?: string;
-}
-
-interface ISendMessageCredentials {
-  channelId: string;
-  body: string;
-}
-
-interface ISendFilesCredentials {
-  channelId: string;
-  files: FormData;
-}
-
-interface IEditMessageCredentials {
-  message: IMessage;
-  newBody: string;
-}
-
-interface IDeleteMessageCredentials {
-  message: IMessage;
-}
-
 type TChatState = {
   users: IOtherUsers;
   channels: IChannels;
@@ -221,14 +178,6 @@ export type {
   IMember,
   IMessage,
   IAttachment,
-  INewGroupCredentials,
-  IUpdateGroupCredentials,
-  ILeaveGroupCredentials,
-  IFetchMessagesCredentials,
-  ISendMessageCredentials,
-  ISendFilesCredentials,
-  IEditMessageCredentials,
-  IDeleteMessageCredentials,
   IActiveChannelInfo,
 };
 export { EChatActions };

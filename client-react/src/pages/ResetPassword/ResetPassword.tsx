@@ -11,7 +11,7 @@ import {
 
 import { AuthContainer } from '~/components';
 import { sendResetPassword as sendResetPasswordAction } from '~/redux/user/actions';
-import type { IResetPasswordCredentials } from '~/redux/user/types';
+import type { IResetPasswordRequestBody } from '~/requestsParts/auth';
 
 import { Form } from './Form';
 
@@ -31,8 +31,8 @@ type TProps = TPropsFromRedux & OwnProps;
 const ResetPassword = ({ token, sendResetPassword }: TProps) => {
   const { t: trans } = useTranslation(['Common', 'Messages']);
 
-  const submit = async (credentials: IResetPasswordCredentials) => {
-    await sendResetPassword({ ...credentials, token: token as string });
+  const submit = async (data: IResetPasswordRequestBody) => {
+    await sendResetPassword({ ...data, token: token as string });
     navigate('/chat');
   };
 

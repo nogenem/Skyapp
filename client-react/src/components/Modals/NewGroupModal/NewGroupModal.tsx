@@ -11,13 +11,13 @@ import {
 } from '@material-ui/core';
 import { AxiosError } from 'axios';
 
-import { IErrors } from '~/components/Form';
+import type { IErrors } from '~/components/Form';
 import { CANT_BE_BLANK, NEED_ATLEAST_2_MEMBERS } from '~/constants/errors';
 import useObjState from '~/hooks/useObjState';
 import { sendCreateGroupChannel as sendCreateGroupChannelAction } from '~/redux/chat/actions';
 import { selectChatUsersList } from '~/redux/chat/selectors';
-import { INewGroupCredentials } from '~/redux/chat/types';
-import { IAppState } from '~/redux/store';
+import type { IAppState } from '~/redux/store';
+import type { IStoreGroupChannelRequestBody } from '~/requestsParts/channel';
 import handleServerErrors from '~/utils/handleServerErrors';
 
 import { Form } from './Form';
@@ -94,23 +94,23 @@ const NewGroupModal = ({
         errors,
       });
     } else {
-      const credentials = {
+      const data = {
         name: state.groupName,
         members: [],
         admins: [],
-      } as INewGroupCredentials;
+      } as IStoreGroupChannelRequestBody;
 
       Object.entries(state.selectedUsersObj).forEach(([userId, isSelected]) => {
         if (isSelected) {
-          credentials.members.push(userId);
+          data.members.push(userId);
           if (state.isAdminObj[userId]) {
-            credentials.admins.push(userId);
+            data.admins.push(userId);
           }
         }
       });
 
       try {
-        await sendCreateGroupChannel(credentials);
+        await sendCreateGroupChannel(data);
         setState(initialState);
         onClose();
       } catch (err) {

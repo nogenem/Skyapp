@@ -3,6 +3,19 @@ import { Dispatch } from 'redux';
 import { LOCAL_STORAGE_TOKEN } from '~/constants/localStorageKeys';
 import * as SOCKET_EVENTS from '~/constants/socket_events';
 import { TUserStatus } from '~/constants/user_status';
+import type {
+  IConfirmationRequestBody,
+  IForgotPasswordRequestBody,
+  IResendConfirmationRequestBody,
+  IResetPasswordRequestBody,
+  ISignInRequestBody,
+  ISignUpRequestBody,
+  IValidateTokenRequestBody,
+} from '~/requestsParts/auth';
+import type {
+  IChangeStatusRequestBody,
+  IChangeThoughtsRequestBody,
+} from '~/requestsParts/user';
 import ApiService from '~/services/ApiService';
 import IoService from '~/services/IoService';
 import setAuthorizationHeader from '~/utils/setAuthorizationHeader';
@@ -12,17 +25,7 @@ import {
   userSignedOut as chatUserSignedOut,
 } from '../chat/actions';
 import { EUserActions } from './types';
-import type {
-  ISignUpCredentials,
-  ISignInCredentials,
-  ITokenCredentials,
-  IForgotPasswordCredentials,
-  IResetPasswordCredentials,
-  IChangeStatusCredentials,
-  IChangeThoughtsCredentials,
-  IUser,
-  TUserAction,
-} from './types';
+import type { IUser, TUserAction } from './types';
 
 export const userSignedIn = (user: IUser) => (dispatch: Dispatch) => {
   localStorage.setItem(LOCAL_STORAGE_TOKEN, user.token as string);
@@ -60,54 +63,51 @@ export const userSignedOut = () => (dispatch: Dispatch) => {
   });
 };
 
-export const sendSignUp =
-  (credentials: ISignUpCredentials) => (dispatch: Dispatch) =>
-    ApiService.auth.signUp(credentials).then(({ user }) => {
-      userSignedIn(user)(dispatch);
-    });
+export const sendSignUp = (data: ISignUpRequestBody) => (dispatch: Dispatch) =>
+  ApiService.auth.signUp(data).then(({ user }) => {
+    userSignedIn(user)(dispatch);
+  });
 
-export const sendSignIn =
-  (credentials: ISignInCredentials) => (dispatch: Dispatch) =>
-    ApiService.auth.signIn(credentials).then(({ user }) => {
-      userSignedIn(user)(dispatch);
-    });
+export const sendSignIn = (data: ISignInRequestBody) => (dispatch: Dispatch) =>
+  ApiService.auth.signIn(data).then(({ user }) => {
+    userSignedIn(user)(dispatch);
+  });
 
 export const sendConfirmation =
-  (credentials: ITokenCredentials) => (dispatch: Dispatch) =>
-    ApiService.auth.confirmation(credentials).then(({ user }) => {
+  (data: IConfirmationRequestBody) => (dispatch: Dispatch) =>
+    ApiService.auth.confirmation(data).then(({ user }) => {
       userSignedIn(user)(dispatch);
     });
 
 export const SendResendConfirmationEmail =
-  (credentials: ITokenCredentials) => () =>
-    ApiService.auth.resendConfirmationEmail(credentials);
+  (data: IResendConfirmationRequestBody) => () =>
+    ApiService.auth.resendConfirmationEmail(data);
 
 export const sendValidateToken =
-  (credentials: ITokenCredentials) => (dispatch: Dispatch) =>
-    ApiService.auth.validateToken(credentials).then(({ user }) => {
+  (data: IValidateTokenRequestBody) => (dispatch: Dispatch) =>
+    ApiService.auth.validateToken(data).then(({ user }) => {
       userSignedIn(user)(dispatch);
     });
 
-export const sendForgotPassword =
-  (credentials: IForgotPasswordCredentials) => () =>
-    ApiService.auth.forgotPassword(credentials);
+export const sendForgotPassword = (data: IForgotPasswordRequestBody) => () =>
+  ApiService.auth.forgotPassword(data);
 
 export const sendResetPassword =
-  (credentials: IResetPasswordCredentials) => (dispatch: Dispatch) =>
-    ApiService.auth.resetPassword(credentials).then(({ user }) => {
+  (data: IResetPasswordRequestBody) => (dispatch: Dispatch) =>
+    ApiService.auth.resetPassword(data).then(({ user }) => {
       userSignedIn(user)(dispatch);
     });
 
 export const sendChangeStatus =
-  (credentials: IChangeStatusCredentials) => (dispatch: Dispatch) =>
-    ApiService.user.updateStatus(credentials).then(() => {
-      dispatch(userStatusChanged(credentials.newStatus));
+  (data: IChangeStatusRequestBody) => (dispatch: Dispatch) =>
+    ApiService.user.updateStatus(data).then(() => {
+      dispatch(userStatusChanged(data.newStatus));
     });
 
 export const sendChangeThoughts =
-  (credentials: IChangeThoughtsCredentials) => (dispatch: Dispatch) =>
-    ApiService.user.updateThoughts(credentials).then(() => {
-      dispatch(userThoughtsChanged(credentials.newThoughts));
+  (data: IChangeThoughtsRequestBody) => (dispatch: Dispatch) =>
+    ApiService.user.updateThoughts(data).then(() => {
+      dispatch(userThoughtsChanged(data.newThoughts));
     });
 
 export const emitUserStatusChanged =

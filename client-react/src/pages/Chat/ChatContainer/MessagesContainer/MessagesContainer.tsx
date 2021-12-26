@@ -21,9 +21,9 @@ import type { TMessageType } from '~/constants/message_types';
 import useObjState from '~/hooks/useObjState';
 import useScrollState, { EScrollStates } from '~/hooks/useScrollState';
 import { selectActiveChannel } from '~/redux/chat/selectors';
-import { IAttachment, IMessage, IOtherUsers } from '~/redux/chat/types';
-import { IAppState } from '~/redux/store';
-import { IUser } from '~/redux/user/types';
+import type { IAttachment, IMessage, IOtherUsers } from '~/redux/chat/types';
+import type { IAppState } from '~/redux/store';
+import type { IUser } from '~/redux/user/types';
 
 import {
   DateMessage,

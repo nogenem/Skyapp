@@ -11,14 +11,15 @@ import {
 } from '@material-ui/core';
 import { AxiosError } from 'axios';
 
-import { IErrors } from '~/components/Form';
+import type { IErrors } from '~/components/Form';
 import { CANT_BE_BLANK, NEED_ATLEAST_2_MEMBERS } from '~/constants/errors';
 import useObjState from '~/hooks/useObjState';
 import { sendUpdateGroupChannel as sendUpdateGroupChannelAction } from '~/redux/chat/actions';
 import { selectChatUsersList } from '~/redux/chat/selectors';
-import { IChannel, IUpdateGroupCredentials } from '~/redux/chat/types';
-import { IAppState } from '~/redux/store';
+import type { IChannel } from '~/redux/chat/types';
+import type { IAppState } from '~/redux/store';
 import { selectUserId } from '~/redux/user/selectors';
+import type { IUpdateGroupChannelRequest } from '~/requestsParts/channel';
 import handleServerErrors from '~/utils/handleServerErrors';
 
 import { Form } from './Form';
@@ -103,24 +104,24 @@ const GroupInfoModal = ({
         errors,
       });
     } else {
-      const credentials = {
+      const data = {
         channelId: channel._id,
         name: state.groupName,
         members: [],
         admins: [],
-      } as IUpdateGroupCredentials;
+      } as IUpdateGroupChannelRequest;
 
       Object.entries(state.selectedUsersObj).forEach(([userId, isSelected]) => {
         if (isSelected) {
-          credentials.members.push(userId);
+          data.members.push(userId);
           if (state.isAdminObj[userId]) {
-            credentials.admins.push(userId);
+            data.admins.push(userId);
           }
         }
       });
 
       try {
-        await sendUpdateGroupChannel(credentials);
+        await sendUpdateGroupChannel(data);
         setState(initialState);
         onClose();
       } catch (err) {

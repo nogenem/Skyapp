@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { IOtherUser } from '~/redux/chat/types';
-import { IAppState } from '~/redux/store';
+import type { IOtherUser } from '~/redux/chat/types';
+import type { IAppState } from '~/redux/store';
 import FACTORIES from '~/utils/factories';
 import { getRenderWithRedux } from '~/utils/testUtils';
 

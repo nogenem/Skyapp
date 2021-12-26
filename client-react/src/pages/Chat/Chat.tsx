@@ -8,7 +8,7 @@ import { USER_STATUS } from '~/constants/user_status';
 import useMediaQuery from '~/hooks/useMediaQuery';
 import useVisibility from '~/hooks/useVisibility';
 import { selectActiveChannelId } from '~/redux/chat/selectors';
-import { IAppState } from '~/redux/store';
+import type { IAppState } from '~/redux/store';
 import { emitUserStatusChanged as emitUserStatusChangedAction } from '~/redux/user/actions';
 import { selectUserConfirmed, selectUserStatus } from '~/redux/user/selectors';
 

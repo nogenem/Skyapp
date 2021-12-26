@@ -3,26 +3,26 @@ import { Dispatch } from 'redux';
 import * as SOCKET_EVENTS from '~/constants/socket_events';
 import { TUserStatus } from '~/constants/user_status';
 import type { IUser } from '~/redux/user/types';
+import type {
+  ILeaveGroupChannelRequestParams,
+  IStoreGroupChannelRequestBody,
+  IStorePrivateChannelRequestBody,
+  IUpdateGroupChannelRequest,
+} from '~/requestsParts/channel';
+import type {
+  IFetchMessagesRequest,
+  IStoreFilesRequest,
+  IStoreMessageRequest,
+  IUpdateMessageBodyRequest,
+  IDeleteMessageRequestParams,
+} from '~/requestsParts/message';
 import ApiService from '~/services/ApiService';
 import IoService from '~/services/IoService';
 import MessageQueueService, {
   QUEUE_ACTIONS,
 } from '~/services/MessageQueueService';
 
-import type {
-  IChannel,
-  IDeleteMessageCredentials,
-  IEditMessageCredentials,
-  IFetchMessagesCredentials,
-  IInitialData,
-  ILeaveGroupCredentials,
-  IMessage,
-  INewGroupCredentials,
-  IOtherUser,
-  ISendFilesCredentials,
-  ISendMessageCredentials,
-  IUpdateGroupCredentials,
-} from './types';
+import type { IChannel, IInitialData, IMessage, IOtherUser } from './types';
 import { EChatActions } from './types';
 
 const chatInitialDataLoaded = (data: IInitialData) => ({
@@ -216,65 +216,69 @@ export const userSignedOut = () => () => {
 };
 
 export const sendCreateChannelWith =
-  (otherUser: IOtherUser) => (dispatch: Dispatch) =>
-    ApiService.channel.private.store(otherUser).then(({ channelId }) => {
+  (otherUser: IOtherUser) => (dispatch: Dispatch) => {
+    const data: IStorePrivateChannelRequestBody = {
+      otherUserId: otherUser._id,
+    };
+    return ApiService.channel.private.store(data).then(({ channelId }) => {
       dispatch(activeChannelChanged(channelId));
     });
+  };
 
 export const sendCreateGroupChannel =
-  (credentials: INewGroupCredentials) => (dispatch: Dispatch) =>
-    ApiService.channel.group.store(credentials).then(({ channelId }) => {
+  (data: IStoreGroupChannelRequestBody) => (dispatch: Dispatch) =>
+    ApiService.channel.group.store(data).then(({ channelId }) => {
       dispatch(activeChannelChanged(channelId));
     });
 
 export const sendUpdateGroupChannel =
-  (credentials: IUpdateGroupCredentials) => (dispatch: Dispatch) =>
-    ApiService.channel.group.update(credentials).then(({ channelId }) => {
+  (data: IUpdateGroupChannelRequest) => (dispatch: Dispatch) =>
+    ApiService.channel.group.update(data).then(({ channelId }) => {
       dispatch(activeChannelChanged(channelId));
     });
 
 export const sendLeaveGroupChannel =
-  (credentials: ILeaveGroupCredentials) => (dispatch: Dispatch) =>
-    ApiService.channel.group.leave(credentials).then(() => {
-      dispatch(userRemovedFromChannel(credentials.channelId));
+  (data: ILeaveGroupChannelRequestParams) => (dispatch: Dispatch) =>
+    ApiService.channel.group.leave(data).then(() => {
+      dispatch(userRemovedFromChannel(data.channelId));
     });
 
 export const sendGetMessages =
-  (credentials: IFetchMessagesCredentials) => (dispatch: Dispatch) =>
-    ApiService.message.all(credentials).then(({ docs, totalDocs }) => {
+  (data: IFetchMessagesRequest) => (dispatch: Dispatch) =>
+    ApiService.message.all(data).then(({ docs, totalDocs }) => {
       docs.reverse();
       dispatch(newMessagesReceived(docs, totalDocs, true));
     });
 
 export const enqueueSendTextMessage =
   (channelId: string, message: string) => () => {
-    const credentials: ISendMessageCredentials = {
+    const data: IStoreMessageRequest = {
       channelId,
       body: message,
     };
-    MessageQueueService.enqueue(credentials, QUEUE_ACTIONS.SEND_TEXT_MESSAGE);
+    MessageQueueService.enqueue(data, QUEUE_ACTIONS.SEND_TEXT_MESSAGE);
   };
 
 export const enqueueSendFileMessages =
   (channelId: string, filesData: FormData) => () => {
-    const credentials: ISendFilesCredentials = {
+    const data: IStoreFilesRequest = {
       channelId,
       files: filesData,
     };
-    MessageQueueService.enqueue(credentials, QUEUE_ACTIONS.SEND_FILE_MESSAGES);
+    MessageQueueService.enqueue(data, QUEUE_ACTIONS.SEND_FILE_MESSAGES);
   };
 
 export const enqueueSendEditTextMessage =
   (message: IMessage, newBody: string) => () => {
-    const credentials: IEditMessageCredentials = {
+    const data: IUpdateMessageBodyRequest = {
       message,
       newBody,
     };
-    MessageQueueService.enqueue(credentials, QUEUE_ACTIONS.EDIT_TEXT_MESSAGE);
+    MessageQueueService.enqueue(data, QUEUE_ACTIONS.EDIT_TEXT_MESSAGE);
   };
 
 export const enqueueSendDeleteMessage = (message: IMessage) => () => {
-  const credentials: IDeleteMessageCredentials = {
+  const credentials: IDeleteMessageRequestParams = {
     message,
   };
   MessageQueueService.enqueue(credentials, QUEUE_ACTIONS.DELETE_MESSAGE);

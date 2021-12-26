@@ -20,7 +20,7 @@ import useObjState from '~/hooks/useObjState';
 import { sendCreateChannelWith as sendCreateChannelWithAction } from '~/redux/chat/actions';
 import { selectChatUsersWithoutChannelList } from '~/redux/chat/selectors';
 import type { IOtherUser } from '~/redux/chat/types';
-import { IAppState } from '~/redux/store';
+import type { IAppState } from '~/redux/store';
 import handleServerErrors, { IErrors } from '~/utils/handleServerErrors';
 
 import useStyles from './useStyles';

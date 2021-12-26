@@ -5,7 +5,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { Menu, MenuItem } from '@material-ui/core';
 import { BaseEmoji, CategoryName, Picker } from 'emoji-mart';
 
-import { IAppState } from '~/redux/store';
+import type { IAppState } from '~/redux/store';
 import { selectThemeMode } from '~/redux/theme/selectors';
 
 import useStyles from './useStyles';

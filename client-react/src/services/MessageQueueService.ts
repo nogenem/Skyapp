@@ -10,24 +10,24 @@ import {
   messageIsUpdatingChanged,
   messageUpdated,
 } from '~/redux/chat/actions';
-import {
-  IDeleteMessageCredentials,
-  IEditMessageCredentials,
-  IMessage,
-  ISendFilesCredentials,
-  ISendMessageCredentials,
-} from '~/redux/chat/types';
+import type { IMessage } from '~/redux/chat/types';
 import store from '~/redux/store';
 import { selectUserId } from '~/redux/user/selectors';
+import type {
+  IDeleteMessageRequestParams,
+  IStoreFilesRequest,
+  IStoreMessageRequest,
+  IUpdateMessageBodyRequest,
+} from '~/requestsParts/message';
 import { Toast } from '~/utils/Toast';
 
 import ApiService from './ApiService';
 
 type TToSendMessage =
-  | ISendMessageCredentials
-  | ISendFilesCredentials
-  | IEditMessageCredentials
-  | IDeleteMessageCredentials;
+  | IStoreMessageRequest
+  | IStoreFilesRequest
+  | IUpdateMessageBodyRequest
+  | IDeleteMessageRequestParams;
 interface IQueueEntry {
   queueAction: TQueueAction;
   queuedMsgs: IMessage[];
@@ -68,9 +68,9 @@ class MessageQueueService {
     let channelId: string = '';
 
     if (queueAction === QUEUE_ACTIONS.SEND_FILE_MESSAGES) {
-      const credentials = message as ISendFilesCredentials;
-      const formData = credentials.files;
-      channelId = credentials.channelId;
+      const data = message as IStoreFilesRequest;
+      const formData = data.files;
+      channelId = data.channelId;
       const dateTime = new Date().getTime();
 
       formData.getAll('files').forEach((entry, i) => {
@@ -100,15 +100,15 @@ class MessageQueueService {
         store.dispatch<any>(messageEnqueued(queueMsg));
       });
     } else if (queueAction === QUEUE_ACTIONS.SEND_TEXT_MESSAGE) {
-      const credentials = message as ISendMessageCredentials;
-      channelId = credentials.channelId;
+      const data = message as IStoreMessageRequest;
+      channelId = data.channelId;
       const date = new Date();
 
       const queueMsg: IMessage = {
         _id: `${date.getTime()}`,
         fromId: userId,
         channelId: channelId,
-        body: credentials.body,
+        body: data.body,
         createdAt: date,
         updatedAt: date,
         type: MESSAGE_TYPES.TEXT,
@@ -117,28 +117,24 @@ class MessageQueueService {
       queuedMsgs.push(queueMsg);
       store.dispatch<any>(messageEnqueued(queueMsg));
     } else if (queueAction === QUEUE_ACTIONS.EDIT_TEXT_MESSAGE) {
-      const credentials = message as IEditMessageCredentials;
-      channelId = credentials.message.channelId;
+      const data = message as IUpdateMessageBodyRequest;
+      channelId = data.message.channelId;
 
       const queueMsg: IMessage = {
-        ...credentials.message,
-        body: credentials.newBody,
+        ...data.message,
+        body: data.newBody,
       };
 
       queuedMsgs.push(queueMsg);
-      store.dispatch<any>(
-        messageIsUpdatingChanged(credentials.message._id, true),
-      );
+      store.dispatch<any>(messageIsUpdatingChanged(data.message._id, true));
     } else if (queueAction === QUEUE_ACTIONS.DELETE_MESSAGE) {
-      const credentials = message as IEditMessageCredentials;
-      channelId = credentials.message.channelId;
+      const data = message as IDeleteMessageRequestParams;
+      channelId = data.message.channelId;
 
-      const queueMsg: IMessage = credentials.message;
+      const queueMsg: IMessage = data.message;
 
       queuedMsgs.push(queueMsg);
-      store.dispatch<any>(
-        messageIsDeletingChanged(credentials.message._id, true),
-      );
+      store.dispatch<any>(messageIsDeletingChanged(data.message._id, true));
     }
 
     if (queuedMsgs.length && channelId) {
@@ -205,14 +201,14 @@ class MessageQueueService {
           }
         } else {
           if (queueAction === QUEUE_ACTIONS.EDIT_TEXT_MESSAGE) {
-            const message = toSendMsg as IEditMessageCredentials;
+            const data = toSendMsg as IUpdateMessageBodyRequest;
             store.dispatch<any>(
-              messageIsUpdatingChanged(message.message._id, false),
+              messageIsUpdatingChanged(data.message._id, false),
             );
           } else if (queueAction === QUEUE_ACTIONS.DELETE_MESSAGE) {
-            const message = toSendMsg as IDeleteMessageCredentials;
+            const data = toSendMsg as IDeleteMessageRequestParams;
             store.dispatch<any>(
-              messageIsDeletingChanged(message.message._id, false),
+              messageIsDeletingChanged(data.message._id, false),
             );
           }
           this._onError(queuedMsgs);
@@ -230,17 +226,17 @@ class MessageQueueService {
     const type = queuedMsgs[0].type;
 
     if (queueAction === QUEUE_ACTIONS.SEND_FILE_MESSAGES) {
-      return ApiService.message.storeFiles(toSendMsg as ISendFilesCredentials);
+      return ApiService.message.storeFiles(toSendMsg as IStoreFilesRequest);
     } else if (queueAction === QUEUE_ACTIONS.SEND_TEXT_MESSAGE) {
-      return ApiService.message.storeMessage(
-        toSendMsg as ISendMessageCredentials,
-      );
+      return ApiService.message.storeMessage(toSendMsg as IStoreMessageRequest);
     } else if (queueAction === QUEUE_ACTIONS.EDIT_TEXT_MESSAGE) {
       return ApiService.message.updateBody(
-        toSendMsg as IEditMessageCredentials,
+        toSendMsg as IUpdateMessageBodyRequest,
       );
     } else if (queueAction === QUEUE_ACTIONS.DELETE_MESSAGE) {
-      return ApiService.message.delete(toSendMsg as IDeleteMessageCredentials);
+      return ApiService.message.delete(
+        toSendMsg as IDeleteMessageRequestParams,
+      );
     } else {
       console.error('MessageQueueService._sendMessage:> Invalid type: ', type);
       return Promise.reject({});

@@ -3,7 +3,7 @@ import Linkify from 'react-linkify';
 
 import { Typography, Link } from '@material-ui/core';
 
-import { IMessage } from '~/redux/chat/types';
+import type { IMessage } from '~/redux/chat/types';
 
 import useStyles from './useStyles';
 

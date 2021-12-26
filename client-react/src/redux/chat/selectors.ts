@@ -3,8 +3,7 @@ import { createSelector } from 'reselect';
 import type { IAppState } from '../store';
 import { selectUserId } from '../user/selectors';
 import { initialState } from './reducer';
-import { IOtherUser } from './types';
-import type { IChannel } from './types';
+import type { IOtherUser, IChannel } from './types';
 
 export const selectChat = (state: IAppState) => state.chat || initialState;
 

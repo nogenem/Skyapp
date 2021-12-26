@@ -13,7 +13,7 @@ import { TextInput } from '~/components';
 import { HAS_TOO_MANY_FILES, UPLOAD_FILE_IS_TOO_BIG } from '~/constants/errors';
 import FILE_UPLOAD_LIMITS from '~/constants/file_upload_limits';
 import useObjState from '~/hooks/useObjState';
-import { IMessage } from '~/redux/chat/types';
+import type { IMessage } from '~/redux/chat/types';
 import { Toast } from '~/utils/Toast';
 
 import { ChatMoreOptsMenu } from '../ChatMoreOptsMenu';

@@ -5,7 +5,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { Typography, List } from '@material-ui/core';
 
 import { selectFilteredChatChannelsIdsList } from '~/redux/chat/selectors';
-import { IAppState } from '~/redux/store';
+import type { IAppState } from '~/redux/store';
 
 import { ChatListItem } from './ChatListItem';
 import useStyles from './useStyles';

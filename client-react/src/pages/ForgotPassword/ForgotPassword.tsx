@@ -7,7 +7,7 @@ import { Link as ReachLink, RouteComponentProps } from '@reach/router';
 
 import { Alert, AuthContainer } from '~/components';
 import { sendForgotPassword as sendForgotPasswordAction } from '~/redux/user/actions';
-import type { IForgotPasswordCredentials } from '~/redux/user/types';
+import type { IForgotPasswordRequestBody } from '~/requestsParts/auth';
 
 import { Form } from './Form';
 
@@ -24,9 +24,9 @@ const ForgotPassword = ({ sendForgotPassword }: TProps) => {
   const [success, setSuccess] = React.useState(false);
   const { t: trans } = useTranslation(['Common', 'Messages']);
 
-  const submit = async (credentials: IForgotPasswordCredentials) => {
+  const submit = async (data: IForgotPasswordRequestBody) => {
     try {
-      await sendForgotPassword(credentials);
+      await sendForgotPassword(data);
       setSuccess(true);
     } catch (err) {
       setSuccess(false);

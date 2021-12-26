@@ -3,7 +3,7 @@ import React from 'react';
 import { fireEvent } from '@testing-library/dom';
 import { render } from '@testing-library/react';
 
-import { IChannel } from '~/redux/chat/types';
+import type { IChannel } from '~/redux/chat/types';
 import FACTORIES from '~/utils/factories';
 import { getRenderWithRedux } from '~/utils/testUtils';
 

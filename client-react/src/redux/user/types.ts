@@ -1,40 +1,5 @@
 import type { TUserStatus } from '~/constants/user_status';
 
-interface ISignUpCredentials {
-  nickname: string;
-  email: string;
-  password: string;
-  passwordConfirmation: string;
-}
-
-interface ISignInCredentials {
-  email: string;
-  password: string;
-  rememberMe: boolean;
-}
-
-interface ITokenCredentials {
-  token: string;
-}
-
-interface IForgotPasswordCredentials {
-  email: string;
-}
-
-interface IResetPasswordCredentials {
-  newPassword: string;
-  newPasswordConfirmation: string;
-  token: string;
-}
-
-interface IChangeStatusCredentials {
-  newStatus: TUserStatus;
-}
-
-interface IChangeThoughtsCredentials {
-  newThoughts: string;
-}
-
 interface IUser {
   _id: string;
   nickname: string;
@@ -65,16 +30,5 @@ type TUserAction =
   | IUserActionType<typeof EUserActions.STATUS_CHANGED, TUserStatus>
   | IUserActionType<typeof EUserActions.THOUGHTS_CHANGED, string>;
 
-export type {
-  ISignUpCredentials,
-  ISignInCredentials,
-  ITokenCredentials,
-  IForgotPasswordCredentials,
-  IResetPasswordCredentials,
-  IChangeStatusCredentials,
-  IChangeThoughtsCredentials,
-  IUser,
-  TUserState,
-  TUserAction,
-};
+export type { IUser, TUserState, TUserAction };
 export { EUserActions };

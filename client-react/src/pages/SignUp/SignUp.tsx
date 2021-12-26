@@ -11,7 +11,7 @@ import {
 
 import { AuthContainer } from '~/components';
 import { sendSignUp as sendSignUpAction } from '~/redux/user/actions';
-import type { ISignUpCredentials } from '~/redux/user/types';
+import type { ISignUpRequestBody } from '~/requestsParts/auth';
 
 import { Form } from './Form';
 
@@ -27,8 +27,8 @@ type TProps = RouteComponentProps & TPropsFromRedux;
 const SignUp = ({ sendSignUp }: TProps) => {
   const { t: trans } = useTranslation(['Common', 'Messages']);
 
-  const submit = async (credentials: ISignUpCredentials) => {
-    await sendSignUp(credentials);
+  const submit = async (data: ISignUpRequestBody) => {
+    await sendSignUp(data);
     navigate('/chat');
   };
 

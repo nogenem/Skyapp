@@ -3,7 +3,7 @@ import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { IMessage } from '~/redux/chat/types';
+import type { IMessage } from '~/redux/chat/types';
 import FACTORIES from '~/utils/factories';
 import { getRenderWithRedux } from '~/utils/testUtils';
 

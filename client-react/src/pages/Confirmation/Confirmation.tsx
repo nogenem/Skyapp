@@ -13,7 +13,10 @@ import {
   sendConfirmation as sendConfirmationAction,
   SendResendConfirmationEmail as SendResendConfirmationEmailAction,
 } from '~/redux/user/actions';
-import type { ITokenCredentials } from '~/redux/user/types';
+import type {
+  IConfirmationRequestBody,
+  IResendConfirmationRequestBody,
+} from '~/requestsParts/auth';
 import handleServerErrors from '~/utils/handleServerErrors';
 
 const STATES = {
@@ -61,10 +64,10 @@ const Confirmation = ({
   const handleResendEmail = async () => {
     try {
       setState({ resendingEmail: STATES.SENDING, errors: {} });
-      const credentials: ITokenCredentials = {
+      const data: IResendConfirmationRequestBody = {
         token: token as string,
       };
-      await SendResendConfirmationEmail(credentials);
+      await SendResendConfirmationEmail(data);
       setState({ resendingEmail: STATES.COMPLETED, errors: {} });
     } catch (err) {
       setState({
@@ -84,10 +87,10 @@ const Confirmation = ({
   React.useEffect(() => {
     const confirm = async () => {
       try {
-        const credentials: ITokenCredentials = {
+        const data: IConfirmationRequestBody = {
           token: token as string,
         };
-        await sendConfirmation(credentials);
+        await sendConfirmation(data);
         setState(() => {
           if (isMounted.current)
             return { validatingToken: STATES.COMPLETED, errors: {} };

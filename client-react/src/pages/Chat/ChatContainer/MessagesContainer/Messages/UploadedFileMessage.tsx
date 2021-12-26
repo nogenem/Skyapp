@@ -3,7 +3,7 @@ import React from 'react';
 import { Typography } from '@material-ui/core';
 import { InsertDriveFile as InsertDriveFileIcon } from '@material-ui/icons';
 
-import { IAttachment, IMessage } from '~/redux/chat/types';
+import type { IAttachment, IMessage } from '~/redux/chat/types';
 
 import useStyles from './useStyles';
 

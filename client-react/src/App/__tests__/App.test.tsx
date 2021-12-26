@@ -3,7 +3,7 @@ import React from 'react';
 import { waitForElementToBeRemoved } from '@testing-library/react';
 
 import { LOCAL_STORAGE_TOKEN } from '~/constants/localStorageKeys';
-import { ITokenCredentials } from '~/redux/user/types';
+import type { IValidateTokenRequestBody } from '~/requestsParts/auth';
 import { getRenderWithRedux } from '~/utils/testUtils';
 
 import { App, UnconnectedApp } from '../index';
@@ -34,7 +34,7 @@ describe('Connected App', () => {
 
 describe('Unconnected App', () => {
   it('Trys to confirm token', async () => {
-    const credentials: ITokenCredentials = { token: VALID_TOKEN };
+    const data: IValidateTokenRequestBody = { token: VALID_TOKEN };
     const sendValidateToken = jest.fn(() => Promise.resolve());
 
     localStorage.setItem(LOCAL_STORAGE_TOKEN, VALID_TOKEN);
@@ -47,6 +47,6 @@ describe('Unconnected App', () => {
     }); // wait for the Spinner to disappear
 
     expect(sendValidateToken).toHaveBeenCalledTimes(1);
-    expect(sendValidateToken).toHaveBeenCalledWith(credentials);
+    expect(sendValidateToken).toHaveBeenCalledWith(data);
   });
 });

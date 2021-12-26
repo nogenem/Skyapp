@@ -2,7 +2,7 @@ import React from 'react';
 
 import { fireEvent, waitFor, render } from '@testing-library/react';
 
-import { IOtherUser } from '~/redux/chat/types';
+import type { IOtherUser } from '~/redux/chat/types';
 import FACTORIES from '~/utils/factories';
 
 import { Form } from '../index';

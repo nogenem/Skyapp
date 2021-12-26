@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { IAttachment, IMessage } from '~/redux/chat/types';
+import type { IAttachment, IMessage } from '~/redux/chat/types';
 
 import useStyles from './useStyles';
 

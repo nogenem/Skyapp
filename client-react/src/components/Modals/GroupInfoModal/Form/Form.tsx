@@ -16,7 +16,7 @@ import { Alert, ChatAvatar, TextInput } from '~/components';
 import type { IErrors } from '~/components/Form';
 import useDebounce from '~/hooks/useDebounce';
 import useObjState from '~/hooks/useObjState';
-import { IOtherUser } from '~/redux/chat/types';
+import type { IOtherUser } from '~/redux/chat/types';
 
 import useStyles from './useStyles';
 

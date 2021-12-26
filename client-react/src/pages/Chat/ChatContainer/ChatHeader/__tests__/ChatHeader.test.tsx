@@ -2,7 +2,7 @@ import React from 'react';
 
 import { render, fireEvent } from '@testing-library/react';
 
-import { IChannel, IOtherUser, IOtherUsers } from '~/redux/chat/types';
+import type { IChannel, IOtherUser, IOtherUsers } from '~/redux/chat/types';
 import FACTORIES from '~/utils/factories';
 import { getRenderWithRedux } from '~/utils/testUtils';
 

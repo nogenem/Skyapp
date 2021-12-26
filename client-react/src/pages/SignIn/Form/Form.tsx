@@ -17,14 +17,14 @@ import {
   FIELD_IS_TOO_SHORT,
 } from '~/constants/errors';
 import { MIN_PASSWORD_LEN } from '~/constants/validation_limits';
-import type { ISignInCredentials } from '~/redux/user/types';
+import type { ISignInRequestBody } from '~/requestsParts/auth';
 
 import useStyles from './useStyles';
 
 const FORM_ID = 'sign-in-form';
 
 interface IOwnProps {
-  submit: (data: ISignInCredentials) => Promise<void>;
+  submit: (data: ISignInRequestBody) => Promise<void>;
 }
 
 type TProps = IOwnProps;
@@ -33,13 +33,13 @@ const Form = ({ submit }: TProps) => {
   const { t: trans } = useTranslation(['Common', 'Errors']);
   const classes = useStyles();
 
-  const getData = (getInputByName: IGetInputByName): ISignInCredentials => ({
+  const getData = (getInputByName: IGetInputByName): ISignInRequestBody => ({
     email: getInputByName('email').value.trim(),
     password: getInputByName('password').value.trim(),
     rememberMe: getInputByName('remember_me').checked,
   });
 
-  const validate = (data: ISignInCredentials) => {
+  const validate = (data: ISignInRequestBody) => {
     const errors = {} as IErrors;
 
     if (!isEmail(data.email)) errors.email = trans(INVALID_EMAIL);
@@ -101,7 +101,7 @@ const Form = ({ submit }: TProps) => {
   );
 
   return (
-    <BaseForm<ISignInCredentials>
+    <BaseForm<ISignInRequestBody>
       id={FORM_ID}
       submit={submit}
       getData={getData}

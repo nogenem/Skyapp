@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactAudioPlayer from 'react-audio-player';
 
-import { IAttachment, IMessage } from '~/redux/chat/types';
+import type { IAttachment, IMessage } from '~/redux/chat/types';
 
 import useStyles from './useStyles';
 

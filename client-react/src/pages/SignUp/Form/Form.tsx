@@ -18,14 +18,14 @@ import {
   FIELD_IS_TOO_SHORT,
 } from '~/constants/errors';
 import { MIN_PASSWORD_LEN } from '~/constants/validation_limits';
-import type { ISignUpCredentials } from '~/redux/user/types';
+import type { ISignUpRequestBody } from '~/requestsParts/auth';
 
 import useStyles from './useStyles';
 
 const FORM_ID = 'sign-up-form';
 
 interface IOwnProps {
-  submit: (data: ISignUpCredentials) => Promise<void>;
+  submit: (data: ISignUpRequestBody) => Promise<void>;
 }
 
 type TProps = IOwnProps;
@@ -34,14 +34,14 @@ const Form = ({ submit }: TProps) => {
   const { t: trans } = useTranslation(['Common', 'Errors']);
   const classes = useStyles();
 
-  const getData = (getInputByName: IGetInputByName): ISignUpCredentials => ({
+  const getData = (getInputByName: IGetInputByName): ISignUpRequestBody => ({
     nickname: getInputByName('nickname').value.trim(),
     email: getInputByName('email').value.trim(),
     password: getInputByName('password').value.trim(),
     passwordConfirmation: getInputByName('passwordConfirmation').value.trim(),
   });
 
-  const validate = (data: ISignUpCredentials) => {
+  const validate = (data: ISignUpRequestBody) => {
     const errors = {} as IErrors;
 
     if (!data.nickname) errors.nickname = trans(CANT_BE_BLANK);
@@ -132,7 +132,7 @@ const Form = ({ submit }: TProps) => {
   );
 
   return (
-    <BaseForm<ISignUpCredentials>
+    <BaseForm<ISignUpRequestBody>
       id={FORM_ID}
       submit={submit}
       getData={getData}

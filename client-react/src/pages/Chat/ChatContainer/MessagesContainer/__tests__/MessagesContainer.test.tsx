@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { IMessage } from '~/redux/chat/types';
+import type { IMessage } from '~/redux/chat/types';
 import FACTORIES from '~/utils/factories';
 import { getRenderWithRedux } from '~/utils/testUtils';
 
