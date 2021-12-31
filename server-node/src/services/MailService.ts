@@ -60,7 +60,7 @@ class MailService {
       to: `${user.email} <${user.email}>`,
       subject: 'Reset Password',
       html: `
-      <h2>Simple-Chat</h2>
+      <h2>Skyapp</h2>
       <p>
         To reset your password, please click on the link below.</br>
         <a href="${url}" target="_blank">${url}</a>
