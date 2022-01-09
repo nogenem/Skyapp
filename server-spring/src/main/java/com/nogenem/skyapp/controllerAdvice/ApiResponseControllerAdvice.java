@@ -20,7 +20,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class ApiResponseControllerAdvice implements ResponseBodyAdvice<ApiResponse> {
 
-  private final ICUMessageSource messageSource;
+  private ICUMessageSource messageSource;
 
   @Override
   public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {

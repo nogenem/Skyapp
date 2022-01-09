@@ -28,7 +28,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class ExceptionControllerAdvice {
 
-  private final ICUMessageSource messageSource;
+  private ICUMessageSource messageSource;
 
   @ExceptionHandler({ ConstraintViolationException.class })
   @ResponseStatus(HttpStatus.BAD_REQUEST)
