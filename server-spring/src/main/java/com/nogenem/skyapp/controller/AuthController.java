@@ -9,6 +9,7 @@ import com.nogenem.skyapp.model.User;
 import com.nogenem.skyapp.requestBody.auth.SignUpRequestBody;
 import com.nogenem.skyapp.response.auth.SignUpResponse;
 import com.nogenem.skyapp.service.AuthService;
+import com.nogenem.skyapp.service.TokenService;
 
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,7 @@ import lombok.AllArgsConstructor;
 public class AuthController {
 
   private AuthService authService;
+  private TokenService tokenService;
 
   @PostMapping("/signup")
   @ResponseStatus(HttpStatus.CREATED)
@@ -40,7 +42,7 @@ public class AuthController {
 
     // TODO: Send confirmation email
 
-    return new SignUpResponse(new UserDTO(user));
+    return new SignUpResponse(new UserDTO(user, tokenService.generateToken(user, true)));
   }
 
 }

@@ -18,6 +18,7 @@ public class AuthService {
 
   private UserRepository userRepository;
   private BCryptPasswordEncoder bCryptPasswordEncoder;
+  private TokenService tokenService;
 
   public User findByEmail(String email) {
     return userRepository.findByEmail(email);
@@ -29,8 +30,7 @@ public class AuthService {
     user.setEmail(requestBody.getEmail());
     user.setPasswordHash(bCryptPasswordEncoder.encode(requestBody.getPassword()));
     user.setConfirmed(false);
-    // TODO: Set confirmation token
-    user.setConfirmationToken("");
+    user.setConfirmationToken(tokenService.generateToken(user, true));
     user.setResetPasswordToken("");
     user.setStatus(UserStatus.ACTIVE);
     user.setThoughts("");
