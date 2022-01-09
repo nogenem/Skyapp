@@ -6,6 +6,8 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -14,21 +16,33 @@ import lombok.ToString;
 @Setter
 @ToString
 @JsonIgnoreProperties(value = { "cause", "stackTrace", "message", "suppressed", "localizedMessage" })
-public class ApiException extends Exception {
-
+public class TranslatableApiException extends Exception {
   public static final String GLOBAL_KEY = "global";
 
-  private HashMap<String, List<String>> errors;
+  private HashMap<String, List<TranslatableEntry>> errors;
 
-  public ApiException() {
+  public TranslatableApiException() {
+    super();
+
     this.errors = new HashMap<>();
   }
 
   public void put(String key, String message) {
+    this.put(key, message, null);
+  }
+
+  public void put(String key, String message, Object[] args) {
     if (!this.errors.containsKey(key)) {
       this.errors.put(key, new ArrayList<>());
     }
 
-    this.errors.get(key).add(message);
+    this.errors.get(key).add(new TranslatableEntry(message, args));
+  }
+
+  @Data
+  @AllArgsConstructor
+  public class TranslatableEntry {
+    private String message;
+    private Object[] args;
   }
 }

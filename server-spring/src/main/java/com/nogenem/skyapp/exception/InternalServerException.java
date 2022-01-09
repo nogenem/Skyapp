@@ -1,12 +1,11 @@
 package com.nogenem.skyapp.exception;
 
-public class InternalServerException extends ApiException {
+public class InternalServerException extends TranslatableApiException {
 
   public InternalServerException() {
     super();
 
-    // TODO: Add i18n
-    this.put(ApiException.GLOBAL_KEY, "Internal server error");
+    this.put(ApiException.GLOBAL_KEY, "errors.internal_server_error");
   }
 
 }

@@ -3,8 +3,8 @@ package com.nogenem.skyapp.controller;
 import javax.validation.Valid;
 
 import com.nogenem.skyapp.DTO.UserDTO;
-import com.nogenem.skyapp.exception.ApiException;
 import com.nogenem.skyapp.exception.EmailAlreadyTakenException;
+import com.nogenem.skyapp.exception.TranslatableApiException;
 import com.nogenem.skyapp.model.User;
 import com.nogenem.skyapp.requestBody.auth.SignUpRequestBody;
 import com.nogenem.skyapp.response.auth.SignUpResponse;
@@ -32,7 +32,7 @@ public class AuthController {
   @PostMapping("/signup")
   @ResponseStatus(HttpStatus.CREATED)
   public SignUpResponse signup(@Valid @RequestBody SignUpRequestBody requestBody)
-      throws ApiException {
+      throws TranslatableApiException {
     User user = null;
     try {
       user = authService.save(requestBody);

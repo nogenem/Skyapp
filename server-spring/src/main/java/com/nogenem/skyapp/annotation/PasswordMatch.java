@@ -16,8 +16,7 @@ import com.nogenem.skyapp.validator.PasswordMatchValidator;
 @Constraint(validatedBy = PasswordMatchValidator.class)
 @Documented
 public @interface PasswordMatch {
-  // TODO: Add i18n
-  String message() default "Passwords must match";
+  String message() default "errors.passwords_must_match";
 
   Class<?>[] groups() default {};
 

@@ -16,21 +16,20 @@ import lombok.Data;
 @PasswordMatch
 public class SignUpRequestBody implements IHasPasswordAndConfirmation {
 
-  // TODO: Add i18n
-  @NotBlank(message = "This field can't be blank")
-  @Length(min = 4, message = "This field must have at least 4 characters")
+  @NotBlank(message = "errors.cant_be_blank")
+  @Length(min = 4, message = "errors.field_is_too_short")
   private String nickname;
 
-  @NotBlank(message = "This field can't be blank")
-  @Email(message = "Invalid email")
+  @NotBlank(message = "errors.cant_be_blank")
+  @Email(message = "errors.invalid_email")
   private String email;
 
-  @NotBlank(message = "This field can't be blank")
-  @Length(min = 6, message = "This field must have at least 6 characters")
+  @NotBlank(message = "errors.cant_be_blank")
+  @Length(min = 6, message = "errors.field_is_too_short")
   private String password;
 
-  @NotBlank(message = "This field can't be blank")
-  @Length(min = 6, message = "This field must have at least 6 characters")
+  @NotBlank(message = "errors.cant_be_blank")
+  @Length(min = 6, message = "errors.field_is_too_short")
   private String passwordConfirmation;
 
 }

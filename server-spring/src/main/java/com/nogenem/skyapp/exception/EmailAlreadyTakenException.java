@@ -1,12 +1,11 @@
 package com.nogenem.skyapp.exception;
 
-public class EmailAlreadyTakenException extends ApiException {
+public class EmailAlreadyTakenException extends TranslatableApiException {
 
   public EmailAlreadyTakenException() {
     super();
 
-    // TODO: Add i18n
-    this.put("email", "This email is already taken");
+    this.put("email", "errors.email_already_taken");
   }
 
 }
