@@ -51,8 +51,19 @@ public class TokenService {
       return false;
     }
 
-    String userId = getUserIdFromToken(token);
-    return userId != null && !userId.isEmpty();
+    try {
+      Algorithm algorithm = Algorithm.HMAC256(secret);
+      JWTVerifier verifier = JWT.require(algorithm)
+          .withIssuer(issuer)
+          .build();
+
+      verifier.verify(token);
+
+      return true;
+    } catch (JWTVerificationException exception) {
+      log.info("Error while trying to validate token: " + exception.getMessage());
+      return false;
+    }
   }
 
   public String getUserIdFromToken(String token) {

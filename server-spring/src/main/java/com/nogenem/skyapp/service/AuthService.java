@@ -44,4 +44,12 @@ public class AuthService {
     return bCryptPasswordEncoder.matches(requestPassword, userPassword);
   }
 
+  public User findByConfirmationToken(String confirmationToken) {
+    return userRepository.findByConfirmationToken(confirmationToken);
+  }
+
+  public User update(User user) {
+    return userRepository.save(user);
+  }
+
 }
