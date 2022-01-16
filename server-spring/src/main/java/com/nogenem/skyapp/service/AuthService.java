@@ -1,6 +1,7 @@
 package com.nogenem.skyapp.service;
 
 import java.time.Instant;
+import java.util.Optional;
 
 import com.nogenem.skyapp.enums.UserStatus;
 import com.nogenem.skyapp.model.User;
@@ -52,4 +53,12 @@ public class AuthService {
     return userRepository.save(user);
   }
 
+  public User findById(String id) {
+    Optional<User> optUser = userRepository.findById(id);
+    if (optUser.isPresent()) {
+      return optUser.get();
+    } else {
+      return null;
+    }
+  }
 }

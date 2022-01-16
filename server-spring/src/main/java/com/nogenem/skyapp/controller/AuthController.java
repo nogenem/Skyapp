@@ -14,10 +14,12 @@ import com.nogenem.skyapp.requestBody.auth.ConfirmationRequestBody;
 import com.nogenem.skyapp.requestBody.auth.ResendConfirmationEmailRequestBody;
 import com.nogenem.skyapp.requestBody.auth.SignInRequestBody;
 import com.nogenem.skyapp.requestBody.auth.SignUpRequestBody;
+import com.nogenem.skyapp.requestBody.auth.ValidateTokenRequestBody;
 import com.nogenem.skyapp.response.auth.ConfirmationResponse;
 import com.nogenem.skyapp.response.auth.ResendConfirmationEmailResponse;
 import com.nogenem.skyapp.response.auth.SignInResponse;
 import com.nogenem.skyapp.response.auth.SignUpResponse;
+import com.nogenem.skyapp.response.auth.ValidateTokenResponse;
 import com.nogenem.skyapp.service.AuthService;
 import com.nogenem.skyapp.service.MailService;
 import com.nogenem.skyapp.service.TokenService;
@@ -104,7 +106,7 @@ public class AuthController {
   }
 
   @PostMapping("/resend_confirmation_email")
-  public ResendConfirmationEmailResponse confirmation(
+  public ResendConfirmationEmailResponse resendConfirmationEmail(
       @Valid @RequestBody ResendConfirmationEmailRequestBody requestBody,
       @RequestHeader HttpHeaders headers)
       throws TranslatableApiException {
@@ -131,5 +133,24 @@ public class AuthController {
     }
 
     return new ResendConfirmationEmailResponse(new UserDTO(user, tokenService.generateToken(user, true)));
+  }
+
+  @PostMapping("/validate_token")
+  public ValidateTokenResponse validateToken(
+      @Valid @RequestBody ValidateTokenRequestBody requestBody,
+      @RequestHeader HttpHeaders headers)
+      throws TranslatableApiException {
+
+    String userId = tokenService.getUserIdFromToken(requestBody.getToken());
+    if (userId == null || userId.isEmpty()) {
+      throw new InvalidOrExpiredTokenException();
+    }
+
+    User user = authService.findById(userId);
+    if (user == null) {
+      throw new InvalidOrExpiredTokenException();
+    }
+
+    return new ValidateTokenResponse(new UserDTO(user, requestBody.getToken()));
   }
 }
