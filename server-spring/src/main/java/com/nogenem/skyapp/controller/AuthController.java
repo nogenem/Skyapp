@@ -136,7 +136,7 @@ public class AuthController {
       throw new UnableToSendConfirmationEmailException();
     }
 
-    return new ResendConfirmationEmailResponse(new UserDTO(user, tokenService.generateToken(user, true)));
+    return new ResendConfirmationEmailResponse();
   }
 
   @PostMapping("/validate_token")

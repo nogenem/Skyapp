@@ -1,6 +1,5 @@
 package com.nogenem.skyapp.response.auth;
 
-import com.nogenem.skyapp.DTO.UserDTO;
 import com.nogenem.skyapp.response.ApiResponse;
 
 import lombok.Getter;
@@ -12,12 +11,8 @@ import lombok.ToString;
 @ToString
 public class ResendConfirmationEmailResponse extends ApiResponse {
 
-  private UserDTO user;
-
-  public ResendConfirmationEmailResponse(UserDTO user) {
+  public ResendConfirmationEmailResponse() {
     super("messages.confirmation_email_was_resend");
-
-    this.user = user;
   }
 
 }
