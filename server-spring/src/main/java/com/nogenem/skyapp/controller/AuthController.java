@@ -6,13 +6,16 @@ import com.nogenem.skyapp.DTO.UserDTO;
 import com.nogenem.skyapp.exception.EmailAlreadyTakenException;
 import com.nogenem.skyapp.exception.InvalidCredentialsException;
 import com.nogenem.skyapp.exception.InvalidOrExpiredTokenException;
+import com.nogenem.skyapp.exception.LastEmailSentIsStillValidException;
 import com.nogenem.skyapp.exception.TranslatableApiException;
 import com.nogenem.skyapp.exception.UnableToSendConfirmationEmailException;
 import com.nogenem.skyapp.model.User;
 import com.nogenem.skyapp.requestBody.auth.ConfirmationRequestBody;
+import com.nogenem.skyapp.requestBody.auth.ResendConfirmationEmailRequestBody;
 import com.nogenem.skyapp.requestBody.auth.SignInRequestBody;
 import com.nogenem.skyapp.requestBody.auth.SignUpRequestBody;
 import com.nogenem.skyapp.response.auth.ConfirmationResponse;
+import com.nogenem.skyapp.response.auth.ResendConfirmationEmailResponse;
 import com.nogenem.skyapp.response.auth.SignInResponse;
 import com.nogenem.skyapp.response.auth.SignUpResponse;
 import com.nogenem.skyapp.service.AuthService;
@@ -98,5 +101,35 @@ public class AuthController {
     // TODO: Send socket message
 
     return new ConfirmationResponse(new UserDTO(user, tokenService.generateToken(user, true)));
+  }
+
+  @PostMapping("/resend_confirmation_email")
+  public ResendConfirmationEmailResponse confirmation(
+      @Valid @RequestBody ResendConfirmationEmailRequestBody requestBody,
+      @RequestHeader HttpHeaders headers)
+      throws TranslatableApiException {
+
+    User user = authService.findByConfirmationToken(requestBody.getToken());
+    if (user == null) {
+      throw new InvalidOrExpiredTokenException();
+    }
+
+    if (tokenService.isValidToken(requestBody.getToken())) {
+      throw new LastEmailSentIsStillValidException();
+    }
+
+    user.setConfirmationToken(tokenService.generateToken(user, true));
+
+    user = authService.update(user);
+
+    try {
+      String origin = Utils.getOriginFromHeaders(headers);
+      mailService.sendConfirmationEmail(user.getEmail(), user.getConfirmationToken(), origin);
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new UnableToSendConfirmationEmailException();
+    }
+
+    return new ResendConfirmationEmailResponse(new UserDTO(user, tokenService.generateToken(user, true)));
   }
 }
