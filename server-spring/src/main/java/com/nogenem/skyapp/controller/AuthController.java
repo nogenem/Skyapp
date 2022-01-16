@@ -7,15 +7,19 @@ import com.nogenem.skyapp.exception.EmailAlreadyTakenException;
 import com.nogenem.skyapp.exception.InvalidCredentialsException;
 import com.nogenem.skyapp.exception.InvalidOrExpiredTokenException;
 import com.nogenem.skyapp.exception.LastEmailSentIsStillValidException;
+import com.nogenem.skyapp.exception.NoUserWithSuchEmailException;
 import com.nogenem.skyapp.exception.TranslatableApiException;
 import com.nogenem.skyapp.exception.UnableToSendConfirmationEmailException;
+import com.nogenem.skyapp.exception.UnableToSendResetPasswordEmailException;
 import com.nogenem.skyapp.model.User;
 import com.nogenem.skyapp.requestBody.auth.ConfirmationRequestBody;
+import com.nogenem.skyapp.requestBody.auth.ForgotPasswordRequestBody;
 import com.nogenem.skyapp.requestBody.auth.ResendConfirmationEmailRequestBody;
 import com.nogenem.skyapp.requestBody.auth.SignInRequestBody;
 import com.nogenem.skyapp.requestBody.auth.SignUpRequestBody;
 import com.nogenem.skyapp.requestBody.auth.ValidateTokenRequestBody;
 import com.nogenem.skyapp.response.auth.ConfirmationResponse;
+import com.nogenem.skyapp.response.auth.ForgotPasswordResponse;
 import com.nogenem.skyapp.response.auth.ResendConfirmationEmailResponse;
 import com.nogenem.skyapp.response.auth.SignInResponse;
 import com.nogenem.skyapp.response.auth.SignUpResponse;
@@ -152,5 +156,38 @@ public class AuthController {
     }
 
     return new ValidateTokenResponse(new UserDTO(user, requestBody.getToken()));
+  }
+
+  @PostMapping("/forgot_password")
+  public ForgotPasswordResponse forgotPassword(
+      @Valid @RequestBody ForgotPasswordRequestBody requestBody,
+      @RequestHeader HttpHeaders headers)
+      throws TranslatableApiException {
+
+    User user = authService.findByEmail(requestBody.getEmail());
+    if (user == null) {
+      throw new NoUserWithSuchEmailException();
+    }
+
+    String resetPasswordToken = user.getResetPasswordToken();
+    if (resetPasswordToken != null && !resetPasswordToken.isEmpty()) {
+      if (tokenService.isValidToken(resetPasswordToken)) {
+        throw new LastEmailSentIsStillValidException();
+      }
+    }
+
+    user.setResetPasswordToken(tokenService.generateToken(user, true));
+
+    user = authService.update(user);
+
+    try {
+      String origin = Utils.getOriginFromHeaders(headers);
+      mailService.sendResetPasswordEmail(user.getEmail(), user.getResetPasswordToken(), origin);
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new UnableToSendResetPasswordEmailException();
+    }
+
+    return new ForgotPasswordResponse();
   }
 }

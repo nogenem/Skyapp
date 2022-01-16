@@ -93,6 +93,19 @@ public class MailService {
     this.sendSimpleHtmlMail(toEmail, subject, this.geContentFromTemplate("confirmation-email.flth", model));
   }
 
+  public void sendResetPasswordEmail(@NonNull String toEmail, @NonNull String token, @NonNull String origin)
+      throws TemplateNotFoundException, MalformedTemplateNameException,
+      ParseException, MessagingException, IOException, TemplateException {
+
+    Object[] args = null;
+    String subject = messageSource.getMessage("messages.reset_password", args, LocaleContextHolder.getLocale());
+
+    Map<String, Object> model = new HashMap<>();
+    model.put("url", origin + "/reset_password/" + token);
+
+    this.sendSimpleHtmlMail(toEmail, subject, this.geContentFromTemplate("reset_password-email.flth", model));
+  }
+
   private String geContentFromTemplate(String templatePath, Map<String, Object> model)
       throws TemplateNotFoundException, MalformedTemplateNameException, ParseException, IOException, TemplateException {
 
