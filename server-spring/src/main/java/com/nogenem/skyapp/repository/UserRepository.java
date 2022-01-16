@@ -12,4 +12,6 @@ public interface UserRepository extends MongoRepository<User, String> {
 
   public User findByConfirmationToken(String confirmationToken);
 
+  public User findByResetPasswordToken(String resetPasswordToken);
+
 }

@@ -15,12 +15,14 @@ import com.nogenem.skyapp.model.User;
 import com.nogenem.skyapp.requestBody.auth.ConfirmationRequestBody;
 import com.nogenem.skyapp.requestBody.auth.ForgotPasswordRequestBody;
 import com.nogenem.skyapp.requestBody.auth.ResendConfirmationEmailRequestBody;
+import com.nogenem.skyapp.requestBody.auth.ResetPasswordRequestBody;
 import com.nogenem.skyapp.requestBody.auth.SignInRequestBody;
 import com.nogenem.skyapp.requestBody.auth.SignUpRequestBody;
 import com.nogenem.skyapp.requestBody.auth.ValidateTokenRequestBody;
 import com.nogenem.skyapp.response.auth.ConfirmationResponse;
 import com.nogenem.skyapp.response.auth.ForgotPasswordResponse;
 import com.nogenem.skyapp.response.auth.ResendConfirmationEmailResponse;
+import com.nogenem.skyapp.response.auth.ResetPasswordResponse;
 import com.nogenem.skyapp.response.auth.SignInResponse;
 import com.nogenem.skyapp.response.auth.SignUpResponse;
 import com.nogenem.skyapp.response.auth.ValidateTokenResponse;
@@ -189,5 +191,28 @@ public class AuthController {
     }
 
     return new ForgotPasswordResponse();
+  }
+
+  @PostMapping("/reset_password")
+  public ResetPasswordResponse resetPassword(
+      @Valid @RequestBody ResetPasswordRequestBody requestBody,
+      @RequestHeader HttpHeaders headers)
+      throws TranslatableApiException {
+
+    if (!tokenService.isValidToken(requestBody.getToken())) {
+      throw new InvalidOrExpiredTokenException();
+    }
+
+    User user = authService.findByResetPasswordToken(requestBody.getToken());
+    if (user == null) {
+      throw new InvalidOrExpiredTokenException();
+    }
+
+    authService.updatePasswordHash(user, requestBody.getNewPassword());
+    user.setResetPasswordToken("");
+
+    user = authService.update(user);
+
+    return new ResetPasswordResponse(new UserDTO(user, tokenService.generateToken(user, true)));
   }
 }

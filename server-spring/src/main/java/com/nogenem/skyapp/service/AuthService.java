@@ -61,4 +61,12 @@ public class AuthService {
       return null;
     }
   }
+
+  public User findByResetPasswordToken(String resetPasswordToken) {
+    return userRepository.findByResetPasswordToken(resetPasswordToken);
+  }
+
+  public void updatePasswordHash(User user, String newPassword) {
+    user.setPasswordHash(bCryptPasswordEncoder.encode(newPassword));
+  }
 }
