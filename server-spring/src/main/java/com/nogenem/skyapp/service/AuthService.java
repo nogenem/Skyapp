@@ -40,4 +40,8 @@ public class AuthService {
     return userRepository.save(user);
   }
 
+  public boolean isValidPassword(String userPassword, String requestPassword) {
+    return bCryptPasswordEncoder.matches(requestPassword, userPassword);
+  }
+
 }

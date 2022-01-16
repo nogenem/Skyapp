@@ -4,10 +4,13 @@ import javax.validation.Valid;
 
 import com.nogenem.skyapp.DTO.UserDTO;
 import com.nogenem.skyapp.exception.EmailAlreadyTakenException;
+import com.nogenem.skyapp.exception.InvalidCredentialsException;
 import com.nogenem.skyapp.exception.TranslatableApiException;
 import com.nogenem.skyapp.exception.UnableToSendConfirmationEmailException;
 import com.nogenem.skyapp.model.User;
+import com.nogenem.skyapp.requestBody.auth.SignInRequestBody;
 import com.nogenem.skyapp.requestBody.auth.SignUpRequestBody;
+import com.nogenem.skyapp.response.auth.SignInResponse;
 import com.nogenem.skyapp.response.auth.SignUpResponse;
 import com.nogenem.skyapp.service.AuthService;
 import com.nogenem.skyapp.service.MailService;
@@ -42,7 +45,6 @@ public class AuthController {
 
     User user = null;
     try {
-      // TODO: Find a way to use transaction !?
       user = authService.save(requestBody);
     } catch (DuplicateKeyException ex) {
       throw new EmailAlreadyTakenException();
@@ -59,4 +61,15 @@ public class AuthController {
     return new SignUpResponse(new UserDTO(user, tokenService.generateToken(user, true)));
   }
 
+  @PostMapping("/signin")
+  public SignInResponse signin(@Valid @RequestBody SignInRequestBody requestBody, @RequestHeader HttpHeaders headers)
+      throws TranslatableApiException {
+
+    User user = authService.findByEmail(requestBody.getEmail());
+    if (user == null || !authService.isValidPassword(user.getPasswordHash(), requestBody.getPassword())) {
+      throw new InvalidCredentialsException();
+    }
+
+    return new SignInResponse(new UserDTO(user, tokenService.generateToken(user, !requestBody.isRememberMe())));
+  }
 }
