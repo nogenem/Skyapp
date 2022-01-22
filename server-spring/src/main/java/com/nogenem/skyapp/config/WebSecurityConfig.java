@@ -1,5 +1,7 @@
 package com.nogenem.skyapp.config;
 
+import java.util.Collections;
+
 import com.nogenem.skyapp.filters.TokenAuthenticationFilter;
 import com.nogenem.skyapp.repository.UserRepository;
 import com.nogenem.skyapp.service.TokenService;
@@ -11,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
 
 import lombok.AllArgsConstructor;
 
@@ -24,7 +27,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Override
   protected void configure(HttpSecurity httpSecurity) throws Exception {
+    CorsConfiguration corsConfiguration = new CorsConfiguration();
+    corsConfiguration.applyPermitDefaultValues();
+    corsConfiguration.setAllowedOriginPatterns(Collections.singletonList("*"));
+    corsConfiguration.setAllowCredentials(true);
+
     httpSecurity
+        .cors()
+        .configurationSource(request -> corsConfiguration)
+        .and()
         .csrf().disable()
         .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()

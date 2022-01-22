@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import io.socket.engineio.server.EngineIoServer;
+import io.socket.engineio.server.EngineIoServerOptions;
 import io.socket.socketio.server.SocketIoNamespace;
 import io.socket.socketio.server.SocketIoServer;
 import io.socket.socketio.server.SocketIoSocket;
@@ -31,7 +32,9 @@ public class SocketIoService {
 
   @PostConstruct
   public void init() {
-    this.engineIoServer = new EngineIoServer();
+    this.engineIoServer = new EngineIoServer(
+        EngineIoServerOptions.newFromDefault()
+            .setCorsHandlingDisabled(true));
     this.socketIoServer = new SocketIoServer(this.engineIoServer);
     this.socketIoNamespace = socketIoServer.namespace(this.namespace);
 
