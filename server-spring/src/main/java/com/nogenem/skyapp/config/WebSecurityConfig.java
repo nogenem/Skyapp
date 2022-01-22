@@ -36,6 +36,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .antMatchers(HttpMethod.POST, "/api/auth/validate_token").permitAll()
         .antMatchers(HttpMethod.POST, "/api/auth/forgot_password").permitAll()
         .antMatchers(HttpMethod.POST, "/api/auth/reset_password").permitAll()
+        .antMatchers("/socket.io/*").permitAll()
         .anyRequest().authenticated()
         .and()
         .addFilterBefore(
