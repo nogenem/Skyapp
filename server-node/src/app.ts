@@ -25,7 +25,10 @@ class AppController {
   generalMiddlewares(): void {
     this.app.use(
       cors({
-        origin: '*',
+        origin: (requestOrigin, callback) => {
+          callback(null, requestOrigin);
+        },
+        credentials: true,
       }),
     );
     this.app.use(express.json());
