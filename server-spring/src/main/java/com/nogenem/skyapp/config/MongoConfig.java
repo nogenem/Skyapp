@@ -2,6 +2,7 @@ package com.nogenem.skyapp.config;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
+import com.nogenem.skyapp.convertor.MessageTypeConverters;
 import com.nogenem.skyapp.convertor.UserStatusConverters;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -39,6 +40,8 @@ public class MongoConfig extends AbstractMongoClientConfiguration {
   protected void configureConverters(MongoConverterConfigurationAdapter adapter) {
     adapter.registerConverter(new UserStatusConverters.UserStatusWritingConverter());
     adapter.registerConverter(new UserStatusConverters.UserStatusReadingConverter());
+    adapter.registerConverter(new MessageTypeConverters.MessageTypeWritingConverter());
+    adapter.registerConverter(new MessageTypeConverters.MessageTypeReadingConverter());
   }
 
   // remove _class
