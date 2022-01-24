@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 
 import com.nogenem.skyapp.constants.SocketEvents;
+import com.nogenem.skyapp.response.ChatInitialData;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,8 @@ import io.socket.socketio.server.SocketIoNamespace;
 import io.socket.socketio.server.SocketIoServer;
 import io.socket.socketio.server.SocketIoSocket;
 import lombok.Getter;
+
+// https://github.com/marcodiri/java_socketio_chatroom
 
 @Service
 public class SocketIoService {
@@ -28,7 +31,13 @@ public class SocketIoService {
   private SocketIoServer socketIoServer;
   private SocketIoNamespace socketIoNamespace;
 
+  private final ChatService chatService;
+
   private HashMap<String, String> currentUsersChannelsIds = new HashMap<>();
+
+  public SocketIoService(ChatService chatService) {
+    this.chatService = chatService;
+  }
 
   @PostConstruct
   public void init() {
@@ -51,6 +60,17 @@ public class SocketIoService {
         this.currentUsersChannelsIds.put(currentUserId, "");
         socket.joinRoom(currentUserId);
       }
+
+      socket.on(SocketEvents.IO_GET_INITIAL_DATA, (Object... args2) -> {
+        try {
+          ChatInitialData initialData = chatService.getChatInitialData(currentUserId, this.currentUsersChannelsIds);
+
+          SocketIoSocket.ReceivedByLocalAcknowledgementCallback func = (SocketIoSocket.ReceivedByLocalAcknowledgementCallback) args2[0];
+          func.sendAcknowledgement(initialData.toJSON());
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+      });
 
       socket.on(SocketEvents.SOCKET_DISCONNECT, (Object... args2) -> {
         //

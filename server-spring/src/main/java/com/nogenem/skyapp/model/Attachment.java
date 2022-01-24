@@ -1,5 +1,7 @@
 package com.nogenem.skyapp.model;
 
+import org.json.JSONObject;
+
 import lombok.Data;
 
 @Data
@@ -16,10 +18,19 @@ public class Attachment {
   private ImageDimensions imageDimensions;
 
   @Data
-  private class ImageDimensions {
+  public class ImageDimensions {
 
     private int width;
     private int height;
+
+    public JSONObject toJSON() {
+      JSONObject obj = new JSONObject();
+
+      obj.put("width", this.getWidth());
+      obj.put("height", this.getHeight());
+
+      return obj;
+    }
 
   }
 

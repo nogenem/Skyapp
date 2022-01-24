@@ -10,7 +10,7 @@ import com.mongodb.lang.NonNull;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.annotation.Transient;
+import org.springframework.data.annotation.ReadOnlyProperty;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Data;
@@ -38,7 +38,8 @@ public class Channel {
   @LastModifiedDate
   private Instant updatedAt;
 
-  @Transient
+  // @Transient // was causing problems while loading the doc from the database...
+  @ReadOnlyProperty
   private Message lastMessage;
 
 }

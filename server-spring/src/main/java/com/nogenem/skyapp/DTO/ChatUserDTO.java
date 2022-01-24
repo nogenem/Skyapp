@@ -10,24 +10,22 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class UserDTO {
+public class ChatUserDTO {
 
   private String _id;
   private String nickname;
-  private String email;
-  private Boolean confirmed;
-  private UserStatus status;
   private String thoughts;
-  private String token;
+  private UserStatus status;
+  private Boolean online;
+  private String channelId;
 
-  public UserDTO(User user, String token) {
+  public ChatUserDTO(User user, Boolean online, String channelId) {
     this._id = user.getId();
     this.nickname = user.getNickname();
-    this.email = user.getEmail();
-    this.confirmed = user.getConfirmed();
     this.status = user.getStatus();
     this.thoughts = user.getThoughts();
-    this.token = token;
+    this.online = online;
+    this.channelId = channelId;
   }
 
   public JSONObject toJSON() {
@@ -35,11 +33,10 @@ public class UserDTO {
 
     obj.put("_id", this.get_id());
     obj.put("nickname", this.getNickname());
-    obj.put("email", this.getEmail());
-    obj.put("confirmed", this.getConfirmed());
     obj.put("status", this.getStatus().getValue());
     obj.put("thoughts", this.getThoughts());
-    obj.put("token", this.getToken());
+    obj.put("online", this.getOnline());
+    obj.put("channelId", this.getChannelId());
 
     return obj;
   }
