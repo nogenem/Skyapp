@@ -1,6 +1,7 @@
 package com.nogenem.skyapp.DTO;
 
 import com.nogenem.skyapp.enums.UserStatus;
+import com.nogenem.skyapp.interfaces.ISocketEventData;
 import com.nogenem.skyapp.model.User;
 
 import org.json.JSONObject;
@@ -10,7 +11,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class UserDTO {
+public class UserDTO implements ISocketEventData {
 
   private String _id;
   private String nickname;

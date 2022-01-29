@@ -3,6 +3,7 @@ package com.nogenem.skyapp.controller;
 import javax.validation.Valid;
 
 import com.nogenem.skyapp.DTO.UserDTO;
+import com.nogenem.skyapp.constants.SocketEvents;
 import com.nogenem.skyapp.exception.EmailAlreadyTakenException;
 import com.nogenem.skyapp.exception.InvalidCredentialsException;
 import com.nogenem.skyapp.exception.InvalidOrExpiredTokenException;
@@ -28,6 +29,7 @@ import com.nogenem.skyapp.response.auth.SignUpResponse;
 import com.nogenem.skyapp.response.auth.ValidateTokenResponse;
 import com.nogenem.skyapp.service.AuthService;
 import com.nogenem.skyapp.service.MailService;
+import com.nogenem.skyapp.service.SocketIoService;
 import com.nogenem.skyapp.service.TokenService;
 import com.nogenem.skyapp.utils.Utils;
 
@@ -51,6 +53,7 @@ public class AuthController {
   private AuthService authService;
   private TokenService tokenService;
   private MailService mailService;
+  private SocketIoService socketIoService;
 
   @PostMapping("/signup")
   @ResponseStatus(HttpStatus.CREATED)
@@ -105,10 +108,11 @@ public class AuthController {
     user.setConfirmed(true);
 
     user = authService.update(user);
+    UserDTO userDTO = new UserDTO(user, tokenService.generateToken(user, true));
 
-    // TODO: Send socket message
+    this.socketIoService.emit(SocketEvents.IO_NEW_USER, userDTO);
 
-    return new ConfirmationResponse(new UserDTO(user, tokenService.generateToken(user, true)));
+    return new ConfirmationResponse(userDTO);
   }
 
   @PostMapping("/resend_confirmation_email")

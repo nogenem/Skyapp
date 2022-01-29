@@ -6,7 +6,10 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 
 import com.nogenem.skyapp.constants.SocketEvents;
+import com.nogenem.skyapp.interfaces.ISocketEmitter;
+import com.nogenem.skyapp.interfaces.ISocketEventData;
 import com.nogenem.skyapp.response.ChatInitialData;
+import com.nogenem.skyapp.socketEmitters.NewUserEmitter;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -33,10 +36,16 @@ public class SocketIoService {
 
   private final ChatService chatService;
 
-  private HashMap<String, String> currentUsersChannelsIds = new HashMap<>();
+  private HashMap<String, String> currentUsersChannelsIds;
+  private HashMap<String, ISocketEmitter> emitters;
 
   public SocketIoService(ChatService chatService) {
     this.chatService = chatService;
+
+    this.currentUsersChannelsIds = new HashMap<>();
+    this.emitters = new HashMap<>();
+
+    this.emitters.put(SocketEvents.IO_NEW_USER, new NewUserEmitter());
   }
 
   @PostConstruct
@@ -76,5 +85,12 @@ public class SocketIoService {
         //
       });
     });
+  }
+
+  public void emit(String event, ISocketEventData data) {
+    ISocketEmitter emitter = this.emitters.get(event);
+    if (emitter != null) {
+      emitter.emit(this.socketIoNamespace, this.currentUsersChannelsIds.keySet(), data);
+    }
   }
 }
