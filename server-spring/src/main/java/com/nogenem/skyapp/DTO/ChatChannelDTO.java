@@ -3,6 +3,7 @@ package com.nogenem.skyapp.DTO;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.nogenem.skyapp.interfaces.ISocketEventData;
 import com.nogenem.skyapp.model.Channel;
 import com.nogenem.skyapp.model.Member;
 
@@ -14,7 +15,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class ChatChannelDTO {
+public class ChatChannelDTO implements ISocketEventData {
 
   private String _id;
   private String name;

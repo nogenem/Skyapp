@@ -19,4 +19,13 @@ public class ChannelService {
     return this.channelRepository.findAll();
   }
 
+  public Channel save(Channel channel) {
+    return this.channelRepository.save(channel);
+  }
+
+  public Boolean privateChannelExists(String userId1, String userId2) {
+    Channel channel = this.channelRepository.getPrivateChannel(userId1, userId2);
+    return channel != null;
+  }
+
 }

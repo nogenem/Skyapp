@@ -5,6 +5,7 @@ import com.nogenem.skyapp.model.Channel;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -73,4 +74,15 @@ public interface ChannelRepository extends MongoRepository<Channel, String> {
   })
   AggregationResults<Channel> getUserChannelsWithLastMessage(String userId);
 
+
+  @Query(
+    "{"+
+    "  $and: ["+
+    "    { isGroup: false },"+
+    "    { 'members.userId': ?0 },"+
+    "    { 'members.userId': ?1 },"+
+    "  ]"+
+    "}"
+  )
+  Channel getPrivateChannel(String userId1, String userId2);
 }
