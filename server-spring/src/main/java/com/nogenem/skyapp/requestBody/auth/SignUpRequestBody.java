@@ -4,6 +4,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 import com.nogenem.skyapp.annotation.PasswordMatch;
+import com.nogenem.skyapp.constants.ValidationLimits;
 import com.nogenem.skyapp.interfaces.IHasPasswordAndConfirmation;
 
 import org.hibernate.validator.constraints.Length;
@@ -17,7 +18,7 @@ import lombok.Data;
 public class SignUpRequestBody implements IHasPasswordAndConfirmation {
 
   @NotBlank(message = "errors.cant_be_blank")
-  @Length(min = 4, message = "errors.field_is_too_short")
+  @Length(min = ValidationLimits.MIN_NICKNAME_LEN, message = "errors.field_is_too_short")
   private String nickname;
 
   @NotBlank(message = "errors.cant_be_blank")
@@ -25,11 +26,11 @@ public class SignUpRequestBody implements IHasPasswordAndConfirmation {
   private String email;
 
   @NotBlank(message = "errors.cant_be_blank")
-  @Length(min = 6, message = "errors.field_is_too_short")
+  @Length(min = ValidationLimits.MIN_PASSWORD_LEN, message = "errors.field_is_too_short")
   private String password;
 
   @NotBlank(message = "errors.cant_be_blank")
-  @Length(min = 6, message = "errors.field_is_too_short")
+  @Length(min = ValidationLimits.MIN_PASSWORD_LEN, message = "errors.field_is_too_short")
   private String passwordConfirmation;
 
 }
