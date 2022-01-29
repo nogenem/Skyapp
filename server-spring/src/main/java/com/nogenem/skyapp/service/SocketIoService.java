@@ -9,6 +9,7 @@ import com.nogenem.skyapp.constants.SocketEvents;
 import com.nogenem.skyapp.interfaces.ISocketEmitter;
 import com.nogenem.skyapp.interfaces.ISocketEventData;
 import com.nogenem.skyapp.response.ChatInitialData;
+import com.nogenem.skyapp.socketEmitters.GroupChannelCreatedEmitter;
 import com.nogenem.skyapp.socketEmitters.NewUserEmitter;
 import com.nogenem.skyapp.socketEmitters.PrivateChannelCreatedEmitter;
 
@@ -48,6 +49,7 @@ public class SocketIoService {
 
     this.emitters.put(SocketEvents.IO_NEW_USER, new NewUserEmitter());
     this.emitters.put(SocketEvents.IO_PRIVATE_CHANNEL_CREATED, new PrivateChannelCreatedEmitter());
+    this.emitters.put(SocketEvents.IO_GROUP_CHANNEL_CREATED, new GroupChannelCreatedEmitter());
   }
 
   @PostConstruct

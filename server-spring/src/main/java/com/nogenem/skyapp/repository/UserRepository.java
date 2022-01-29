@@ -20,4 +20,7 @@ public interface UserRepository extends MongoRepository<User, String> {
   @Query(value = "{ '_id': { $ne: ?0 }, 'confirmed': true }", fields = "{ '_id': 1, 'nickname': 1, 'thoughts': 1, 'status': 1 }")
   List<User> getOtherUsers(String userId);
 
+  @Query(value = "{ '_id': { $in: ?0 } }", fields = "{ '_id': 1, 'nickname': 1 }")
+  List<User> getUsersNickname(String[] usersIds);
+
 }

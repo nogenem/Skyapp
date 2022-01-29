@@ -9,11 +9,11 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class PrivateStoreResponse extends ApiResponse {
+public class ChannelStoreResponse extends ApiResponse {
 
   private String channelId;
 
-  public PrivateStoreResponse(String channelId) {
+  public ChannelStoreResponse(String channelId) {
     super("messages.channel_created");
 
     this.channelId = channelId;

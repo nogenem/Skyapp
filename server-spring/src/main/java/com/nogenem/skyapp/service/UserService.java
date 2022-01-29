@@ -21,6 +21,10 @@ public class UserService {
     return userRepository.findAll();
   }
 
+  public List<User> getUsersNickname(String[] usersIds) {
+    return userRepository.getUsersNickname(usersIds);
+  }
+
   public User findById(String id) {
     Optional<User> user = userRepository.findById(id);
     if (user.isPresent()) {

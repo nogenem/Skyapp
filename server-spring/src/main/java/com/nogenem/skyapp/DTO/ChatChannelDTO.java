@@ -57,7 +57,11 @@ public class ChatChannelDTO implements ISocketEventData {
     }
     obj.put("members", members);
 
-    obj.put("otherMemberIdx", this.getOtherMemberIdx());
+    if (this.getOtherMemberIdx() != null) {
+      obj.put("otherMemberIdx", this.getOtherMemberIdx());
+    } else {
+      obj.put("otherMemberIdx", JSONObject.NULL);
+    }
     obj.put("unreadMsgs", this.getUnreadMsgs());
 
     if (this.getLastMessage() != null) {
