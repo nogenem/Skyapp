@@ -21,8 +21,12 @@ public class UserService {
     return userRepository.findAll();
   }
 
-  public List<User> getUsersNickname(String[] usersIds) {
+  public List<User> getUsersNickname(Object[] usersIds) {
     return userRepository.getUsersNickname(usersIds);
+  }
+
+  public Integer countUsersIn(Object[] usersIds) {
+    return userRepository.countUsersIn(usersIds);
   }
 
   public User findById(String id) {

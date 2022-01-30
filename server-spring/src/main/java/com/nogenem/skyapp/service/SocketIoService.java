@@ -10,8 +10,11 @@ import com.nogenem.skyapp.interfaces.ISocketEmitter;
 import com.nogenem.skyapp.interfaces.ISocketEventData;
 import com.nogenem.skyapp.response.ChatInitialData;
 import com.nogenem.skyapp.socketEmitters.GroupChannelCreatedEmitter;
+import com.nogenem.skyapp.socketEmitters.GroupChannelUpdatedEmitter;
+import com.nogenem.skyapp.socketEmitters.MessagesReceivedEmitter;
 import com.nogenem.skyapp.socketEmitters.NewUserEmitter;
 import com.nogenem.skyapp.socketEmitters.PrivateChannelCreatedEmitter;
+import com.nogenem.skyapp.socketEmitters.RemovedFromGroupChannelEmitter;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -50,6 +53,9 @@ public class SocketIoService {
     this.emitters.put(SocketEvents.IO_NEW_USER, new NewUserEmitter());
     this.emitters.put(SocketEvents.IO_PRIVATE_CHANNEL_CREATED, new PrivateChannelCreatedEmitter());
     this.emitters.put(SocketEvents.IO_GROUP_CHANNEL_CREATED, new GroupChannelCreatedEmitter());
+    this.emitters.put(SocketEvents.IO_REMOVED_FROM_GROUP_CHANNEL, new RemovedFromGroupChannelEmitter());
+    this.emitters.put(SocketEvents.IO_GROUP_CHANNEL_UPDATED, new GroupChannelUpdatedEmitter());
+    this.emitters.put(SocketEvents.IO_MESSAGES_RECEIVED, new MessagesReceivedEmitter());
   }
 
   @PostConstruct

@@ -25,6 +25,10 @@ public class MessageService {
     return this.messageRepository.save(message);
   }
 
+  public Integer countUnreadMessages(String channelId, Instant memberLastSeen) {
+    return this.messageRepository.countUnreadMessages(channelId, memberLastSeen);
+  }
+
   public List<Message> saveAll(List<Message> messages) {
     Instant now = Instant.now();
 

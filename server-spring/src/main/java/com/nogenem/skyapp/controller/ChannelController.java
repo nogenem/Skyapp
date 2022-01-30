@@ -11,27 +11,37 @@ import java.util.stream.Stream;
 import javax.validation.Valid;
 
 import com.nogenem.skyapp.DTO.ChatChannelDTO;
+import com.nogenem.skyapp.DTO.ChatMessageDTO;
 import com.nogenem.skyapp.constants.SocketEvents;
 import com.nogenem.skyapp.constants.ValidationLimits;
 import com.nogenem.skyapp.enums.MessageType;
+import com.nogenem.skyapp.exception.CantUpdateThisGroupChannelException;
 import com.nogenem.skyapp.exception.ChannelAlreadyExistsException;
 import com.nogenem.skyapp.exception.GroupHasTooFewMembersException;
 import com.nogenem.skyapp.exception.InvalidIdException;
 import com.nogenem.skyapp.exception.TranslatableApiException;
+import com.nogenem.skyapp.exception.UserIsNotGroupAdmException;
 import com.nogenem.skyapp.model.Channel;
 import com.nogenem.skyapp.model.Member;
 import com.nogenem.skyapp.model.Message;
 import com.nogenem.skyapp.model.User;
 import com.nogenem.skyapp.requestBody.channel.StoreGroupChannelRequestBody;
 import com.nogenem.skyapp.requestBody.channel.StorePrivateChannelRequestBody;
+import com.nogenem.skyapp.requestBody.channel.UpdateGroupChannelRequestBody;
 import com.nogenem.skyapp.response.channel.ChannelStoreResponse;
+import com.nogenem.skyapp.response.channel.ChannelUpdateResponse;
 import com.nogenem.skyapp.service.ChannelService;
 import com.nogenem.skyapp.service.MessageService;
 import com.nogenem.skyapp.service.SocketIoService;
 import com.nogenem.skyapp.service.UserService;
+import com.nogenem.skyapp.socketEventData.GroupChannelUpdated;
+import com.nogenem.skyapp.socketEventData.MessagesReceived;
+import com.nogenem.skyapp.socketEventData.RemovedFromGroupChannel;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -155,5 +165,168 @@ public class ChannelController {
         new ChatChannelDTO(channel, null, messages.size()));
 
     return new ChannelStoreResponse(channel.getId());
+  }
+
+  @PatchMapping("/group/{channelId}")
+  public ChannelUpdateResponse groupUpdate(@PathVariable("channelId") String channelId,
+      @Valid @RequestBody UpdateGroupChannelRequestBody requestBody,
+      @RequestHeader HttpHeaders headers) throws TranslatableApiException {
+
+    String[] membersIds = requestBody.getMembers();
+    String[] adminsIds = requestBody.getAdmins();
+
+    User loggedInUser = userService.getLoggedInUser();
+    Instant now = Instant.now();
+
+    Channel channel = channelService.findById(channelId);
+    if (channel == null) {
+      throw new CantUpdateThisGroupChannelException();
+    }
+
+    HashMap<String, Boolean> membersIdsHash = new HashMap<>();
+    for (int i = 0; i < membersIds.length; i++) {
+      membersIdsHash.put(membersIds[i], true);
+    }
+
+    HashMap<String, Boolean> adminsIdsHash = new HashMap<>();
+    for (int i = 0; i < adminsIds.length; i++) {
+      adminsIdsHash.put(adminsIds[i], true);
+    }
+
+    List<Member> members = new ArrayList<>();
+    List<String> newMembers = new ArrayList<>();
+    List<String> removedMembers = new ArrayList<>();
+    List<String> newAdmins = new ArrayList<>();
+    List<String> removedAdmins = new ArrayList<>();
+    Boolean isCurrentUserAdm = false;
+
+    System.out.println();
+    for (int i = 0; i < channel.getMembers().size(); i += 1) {
+      Member member = channel.getMembers().get(i);
+      if (loggedInUser.getId().toString().equals(member.getUserId().toString())) {
+        members.add(member);
+        isCurrentUserAdm = member.getIsAdm();
+
+        membersIdsHash.remove(member.getUserId());
+        adminsIdsHash.remove(member.getUserId());
+      } else if (membersIdsHash.containsKey(member.getUserId())) {
+        Boolean oldIsAdm = member.getIsAdm();
+        Boolean newIsAdm = adminsIdsHash.containsKey(member.getUserId());
+
+        if (oldIsAdm != newIsAdm) {
+          if (!newIsAdm)
+            removedAdmins.add(member.getUserId());
+          else
+            newAdmins.add(member.getUserId());
+        }
+
+        member.setIsAdm(newIsAdm);
+        members.add(member);
+
+        membersIdsHash.remove(member.getUserId());
+        adminsIdsHash.remove(member.getUserId());
+      } else {
+        removedMembers.add(member.getUserId());
+      }
+    }
+    System.out.println();
+
+    if (!isCurrentUserAdm) {
+      throw new UserIsNotGroupAdmException();
+    }
+
+    for (String userId : membersIdsHash.keySet()) {
+      members.add(new Member(userId, adminsIdsHash.containsKey(userId), now));
+      newMembers.add(userId);
+      if (adminsIdsHash.containsKey(userId)) {
+        newAdmins.add(userId);
+      }
+    }
+
+    Object[] toUpdateMembersIds = members.stream()
+        .map(member -> member.getUserId())
+        .collect(Collectors.toList())
+        .toArray();
+    Integer toUpdateMembersCount = userService.countUsersIn(toUpdateMembersIds);
+    // PS: - 1 cause of the user that is already updating this group
+    if (toUpdateMembersCount == null || (toUpdateMembersCount - 1) < ValidationLimits.MIN_GROUP_CHANNEL_MEMBERS) {
+      throw new GroupHasTooFewMembersException(ValidationLimits.MIN_GROUP_CHANNEL_MEMBERS);
+    }
+
+    Object[] allMembersIds = Stream.of(newMembers, removedMembers, newAdmins, removedAdmins)
+        .flatMap(Collection::stream)
+        .collect(Collectors.toList())
+        .toArray();
+    List<User> membersRecords = userService.getUsersNickname(allMembersIds);
+
+    HashMap<String, String> membersRecordsHash = new HashMap<>();
+    for (int i = 0; i < membersRecords.size(); i++) {
+      User member = membersRecords.get(i);
+      membersRecordsHash.put(member.getId(), member.getNickname());
+    }
+
+    List<Message> messages = new ArrayList<>();
+    for (String userId : newMembers) {
+      Message tmp = new Message();
+      tmp.setChannelId(channel.getId());
+      tmp.setBody(String.format("%s added %s", loggedInUser.getNickname(), membersRecordsHash.get(userId)));
+      tmp.setType(MessageType.TEXT);
+
+      messages.add(tmp);
+    }
+    for (String userId : removedMembers) {
+      Message tmp = new Message();
+      tmp.setChannelId(channel.getId());
+      tmp.setBody(String.format("%s removed %s", loggedInUser.getNickname(), membersRecordsHash.get(userId)));
+      tmp.setType(MessageType.TEXT);
+
+      messages.add(tmp);
+    }
+    for (String userId : newAdmins) {
+      Message tmp = new Message();
+      tmp.setChannelId(channel.getId());
+      tmp.setBody(String.format("%s is now an Admin", membersRecordsHash.get(userId)));
+      tmp.setType(MessageType.TEXT);
+
+      messages.add(tmp);
+    }
+    for (String userId : removedAdmins) {
+      Message tmp = new Message();
+      tmp.setChannelId(channel.getId());
+      tmp.setBody(String.format("%s is no longer an Admin", membersRecordsHash.get(userId)));
+      tmp.setType(MessageType.TEXT);
+
+      messages.add(tmp);
+    }
+
+    channel.setName(requestBody.getName());
+    channel.setMembers(members);
+
+    channel = channelService.save(channel);
+    messages = messageService.saveAll(messages);
+
+    Message lastMessage = messages.get(messages.size() - 1);
+    channel.setLastMessage(lastMessage);
+
+    ChatChannelDTO channelDTO = new ChatChannelDTO(channel, null, 0);
+    List<ChatMessageDTO> messagesDTOs = messages.stream()
+        .map(message -> new ChatMessageDTO(message))
+        .collect(Collectors.toList());
+
+    HashMap<String, Integer> unreadMessagesHash = new HashMap<>();
+    for (Member member : channel.getMembers()) {
+      unreadMessagesHash.put(
+          member.getUserId(),
+          messageService.countUnreadMessages(channel.getId(), member.getLastSeen()));
+    }
+
+    this.socketIoService.emit(SocketEvents.IO_REMOVED_FROM_GROUP_CHANNEL,
+        new RemovedFromGroupChannel(channelDTO, removedMembers));
+    this.socketIoService.emit(SocketEvents.IO_GROUP_CHANNEL_UPDATED,
+        new GroupChannelUpdated(channelDTO, unreadMessagesHash));
+    this.socketIoService.emit(SocketEvents.IO_MESSAGES_RECEIVED,
+        new MessagesReceived(channelDTO, messagesDTOs));
+
+    return new ChannelUpdateResponse(channel.getId());
   }
 }
