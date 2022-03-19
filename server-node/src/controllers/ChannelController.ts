@@ -40,7 +40,7 @@ import {
   channelAlreadyExistsError,
   groupHasTooFewMembersError,
   invalidIdError,
-  notMemberOfGroupError,
+  notMemberOfChannelError,
   userIsNotGroupAdmError,
 } from '~/utils/errors';
 import handleErrors from '~/utils/handleErrors';
@@ -375,7 +375,7 @@ export default {
         });
 
         if (!memberId) {
-          return handleErrors(notMemberOfGroupError(), res);
+          return handleErrors(notMemberOfChannelError(), res);
         }
 
         channel.members.pull(memberId);

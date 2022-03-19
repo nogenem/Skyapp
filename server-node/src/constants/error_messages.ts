@@ -24,7 +24,7 @@ export const groupHasTooFewMembers = (n: number): TTranslatableError => ({
 });
 export const USER_IS_NOT_GROUP_ADM =
   'You are not an administrator of this group';
-export const NOT_MEMBER_OF_GROUP = 'You are not a member of this group';
+export const NOT_MEMBER_OF_CHANNEL = 'You are not a member of this channel';
 export const OFFSET_HAS_TO_BE_A_NUMBER_GREATER_OR_EQUAL_TO_0 =
   '`Offset` query param has to be a number greater or equal to 0';
 export const FIELD_CANT_BE_EMPY = 'Field cant be empty';

@@ -17,7 +17,7 @@
   "You need at least {{count}} member to create a group": "You need at least {{count}} member to create a group",
   "You need at least {{count}} member to create a group_plural": "You need at least {{count}} members to create a group",
   "You are not an administrator of this group": "You are not an administrator of this group",
-  "You are not a member of this group": "You are not a member of this group",
+  "You are not a member of this channel": "You are not a member of this channel",
   "`Offset` query param has to be a number greater or equal to 0": "`Offset` query param has to be a number greater or equal to 0",
   "Field cant be empty": "Field cant be empty",
   "Can't upload files bigger than {{count}}MB": "Can't upload files bigger than {{count}}MB",

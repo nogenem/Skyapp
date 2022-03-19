@@ -39,7 +39,7 @@ import {
   cantDeleteThisMessageError,
   cantEditThisMessageError,
   invalidIdError,
-  notMemberOfGroupError,
+  notMemberOfChannelError,
 } from '~/utils/errors';
 import handleErrors from '~/utils/handleErrors';
 import insertManyMessages from '~/utils/insertManyMessages';
@@ -61,7 +61,7 @@ export default {
       });
 
       if (!channelRecord) {
-        return handleErrors(notMemberOfGroupError(), res);
+        return handleErrors(notMemberOfChannelError(), res);
       }
 
       const messages = await Message.paginate(

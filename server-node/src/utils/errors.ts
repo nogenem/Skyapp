@@ -9,7 +9,7 @@ import {
   NO_TOKEN,
   CHANNEL_ALREADY_EXISTS,
   USER_IS_NOT_GROUP_ADM,
-  NOT_MEMBER_OF_GROUP,
+  NOT_MEMBER_OF_CHANNEL,
   CANT_EDIT_THIS_MESSAGE,
   groupHasTooFewMembers,
   CANT_UPDATE_THIS_GROUP_CHANNEL,
@@ -85,8 +85,8 @@ export const channelAlreadyExistsError = (): CustomError =>
 export const userIsNotGroupAdmError = (): CustomError =>
   new CustomError({ global: USER_IS_NOT_GROUP_ADM });
 
-export const notMemberOfGroupError = (): CustomError =>
-  new CustomError({ global: NOT_MEMBER_OF_GROUP });
+export const notMemberOfChannelError = (): CustomError =>
+  new CustomError({ global: NOT_MEMBER_OF_CHANNEL });
 
 export const multerErrors = (
   errs: [msgObj: IMsgObj<TMsgObjTypes>, status?: number],
