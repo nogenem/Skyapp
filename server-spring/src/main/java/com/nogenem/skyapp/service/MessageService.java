@@ -7,6 +7,8 @@ import java.util.List;
 import com.nogenem.skyapp.model.Message;
 import com.nogenem.skyapp.repository.MessageRepository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import lombok.AllArgsConstructor;
@@ -19,6 +21,10 @@ public class MessageService {
 
   public List<Message> findAll() {
     return this.messageRepository.findAll();
+  }
+
+  public Page<Message> findPageByChannelId(String channelId, Pageable paging) {
+    return this.messageRepository.findPageByChannelId(channelId, paging);
   }
 
   public Message save(Message message) {

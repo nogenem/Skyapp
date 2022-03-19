@@ -78,11 +78,21 @@ public interface ChannelRepository extends MongoRepository<Channel, String> {
   @Query(
     "{"+
     "  $and: ["+
-    "    { isGroup: false },"+
+    "    { 'isGroup': false },"+
     "    { 'members.userId': ?0 },"+
     "    { 'members.userId': ?1 },"+
     "  ]"+
     "}"
   )
   Channel getPrivateChannel(String userId1, String userId2);
+
+  @Query(
+    "{"+
+    "  $and: ["+
+    "    { '_id': ?0 },"+
+    "    { 'members.userId': ?1 },"+
+    "  ]"+
+    "}"
+  )
+  Channel getChannelByIdAndUserId(String channelId, String userId);
 }

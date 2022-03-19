@@ -29,6 +29,10 @@ public class ChannelService {
     }
   }
 
+  public Channel getChannelByIdAndUserId(String channelId, String userId) {
+    return this.channelRepository.getChannelByIdAndUserId(channelId, userId);
+  }
+
   public Channel save(Channel channel) {
     return this.channelRepository.save(channel);
   }

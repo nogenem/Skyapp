@@ -20,7 +20,7 @@ import com.nogenem.skyapp.exception.CantUpdateThisGroupChannelException;
 import com.nogenem.skyapp.exception.ChannelAlreadyExistsException;
 import com.nogenem.skyapp.exception.GroupHasTooFewMembersException;
 import com.nogenem.skyapp.exception.InvalidIdException;
-import com.nogenem.skyapp.exception.NotMemberOfGroupException;
+import com.nogenem.skyapp.exception.NotMemberOfChannelException;
 import com.nogenem.skyapp.exception.TranslatableApiException;
 import com.nogenem.skyapp.exception.UserIsNotGroupAdmException;
 import com.nogenem.skyapp.model.Channel;
@@ -357,7 +357,7 @@ public class ChannelController {
     }
 
     if(loggedInMember == null) {
-      throw new NotMemberOfGroupException();
+      throw new NotMemberOfChannelException();
     }
 
     channel.getMembers().remove(loggedInMember);
