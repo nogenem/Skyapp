@@ -22,6 +22,12 @@ public class MessageService {
   }
 
   public Message save(Message message) {
+    Instant now = Instant.now();
+    if(message.getCreatedAt() == null) {
+      message.setCreatedAt(now);
+    }
+    message.setUpdatedAt(now);
+
     return this.messageRepository.save(message);
   }
 
