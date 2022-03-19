@@ -38,4 +38,8 @@ public class ChannelService {
     return channel != null;
   }
 
+  public void delete(Channel channel) {
+    this.channelRepository.delete(channel);
+  }
+
 }

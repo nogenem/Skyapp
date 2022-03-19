@@ -15,10 +15,12 @@ import com.nogenem.skyapp.DTO.ChatMessageDTO;
 import com.nogenem.skyapp.constants.SocketEvents;
 import com.nogenem.skyapp.constants.ValidationLimits;
 import com.nogenem.skyapp.enums.MessageType;
+import com.nogenem.skyapp.exception.CantLeaveThisChannelException;
 import com.nogenem.skyapp.exception.CantUpdateThisGroupChannelException;
 import com.nogenem.skyapp.exception.ChannelAlreadyExistsException;
 import com.nogenem.skyapp.exception.GroupHasTooFewMembersException;
 import com.nogenem.skyapp.exception.InvalidIdException;
+import com.nogenem.skyapp.exception.NotMemberOfGroupException;
 import com.nogenem.skyapp.exception.TranslatableApiException;
 import com.nogenem.skyapp.exception.UserIsNotGroupAdmException;
 import com.nogenem.skyapp.model.Channel;
@@ -28,6 +30,7 @@ import com.nogenem.skyapp.model.User;
 import com.nogenem.skyapp.requestBody.channel.StoreGroupChannelRequestBody;
 import com.nogenem.skyapp.requestBody.channel.StorePrivateChannelRequestBody;
 import com.nogenem.skyapp.requestBody.channel.UpdateGroupChannelRequestBody;
+import com.nogenem.skyapp.response.channel.ChannelLeaveResponse;
 import com.nogenem.skyapp.response.channel.ChannelStoreResponse;
 import com.nogenem.skyapp.response.channel.ChannelUpdateResponse;
 import com.nogenem.skyapp.service.ChannelService;
@@ -200,7 +203,6 @@ public class ChannelController {
     List<String> removedAdmins = new ArrayList<>();
     Boolean isCurrentUserAdm = false;
 
-    System.out.println();
     for (int i = 0; i < channel.getMembers().size(); i += 1) {
       Member member = channel.getMembers().get(i);
       if (loggedInUser.getId().toString().equals(member.getUserId().toString())) {
@@ -229,7 +231,6 @@ public class ChannelController {
         removedMembers.add(member.getUserId());
       }
     }
-    System.out.println();
 
     if (!isCurrentUserAdm) {
       throw new UserIsNotGroupAdmException();
@@ -328,5 +329,86 @@ public class ChannelController {
         new MessagesReceived(channelDTO, messagesDTOs));
 
     return new ChannelUpdateResponse(channel.getId());
+  }
+
+  @PostMapping("/group/{channelId}/leave")
+  public ChannelLeaveResponse groupLeave(@PathVariable("channelId") String channelId,
+      @RequestHeader HttpHeaders headers) throws TranslatableApiException {
+
+    User loggedInUser = userService.getLoggedInUser();
+    String loggedInUserId = loggedInUser.getId().toString();
+
+    Channel channel = channelService.findById(channelId);
+    if (channel == null || !channel.getIsGroup()) {
+      throw new CantLeaveThisChannelException();
+    }
+
+    Boolean hasOtherAdm = false;
+    Member loggedInMember = null;
+    Boolean loggedInMemberIsAdm = false;
+
+    for(Member member : channel.getMembers()) {
+      if(loggedInMember == null && member.getUserId().toString().equals(loggedInUserId)) {
+        loggedInMemberIsAdm = member.getIsAdm();
+        loggedInMember = member;
+      } else if(member.getIsAdm()) {
+        hasOtherAdm = true;
+      }
+    }
+
+    if(loggedInMember == null) {
+      throw new NotMemberOfGroupException();
+    }
+
+    channel.getMembers().remove(loggedInMember);
+
+    if(channel.getMembers().size() == 1) {
+      ChatChannelDTO channelDTO = new ChatChannelDTO(channel, null, 0);
+
+      // Remove the last member too and delete the channel
+      String lastMemberId = channel.getMembers().get(0).getUserId();
+      List<String> removedMembers = List.of(loggedInUserId, lastMemberId);
+
+      channelService.delete(channel);
+
+      this.socketIoService.emit(SocketEvents.IO_REMOVED_FROM_GROUP_CHANNEL,
+        new RemovedFromGroupChannel(channelDTO, removedMembers));
+    } else {
+      if(loggedInMemberIsAdm && !hasOtherAdm) {
+        for(Member member : channel.getMembers()) {
+          member.setIsAdm(true);
+        }
+      }
+
+      Message message = new Message();
+      message.setChannelId(channel.getId());
+      message.setBody(String.format("%s left the group", loggedInUser.getNickname()));
+      message.setType(MessageType.TEXT);
+
+      message = messageService.save(message);
+      channel = channelService.save(channel);
+
+      channel.setLastMessage(message);
+
+      ChatChannelDTO channelDTO = new ChatChannelDTO(channel, null, 0);
+      List<String> removedMembers = List.of(loggedInUserId);
+      List<ChatMessageDTO> messagesDTOs = List.of(new ChatMessageDTO(message));
+
+      HashMap<String, Integer> unreadMessagesHash = new HashMap<>();
+      for (Member member : channel.getMembers()) {
+        unreadMessagesHash.put(
+            member.getUserId(),
+            messageService.countUnreadMessages(channel.getId(), member.getLastSeen()));
+      }
+
+      this.socketIoService.emit(SocketEvents.IO_REMOVED_FROM_GROUP_CHANNEL,
+        new RemovedFromGroupChannel(channelDTO, removedMembers));
+      this.socketIoService.emit(SocketEvents.IO_GROUP_CHANNEL_UPDATED,
+        new GroupChannelUpdated(channelDTO, unreadMessagesHash));
+      this.socketIoService.emit(SocketEvents.IO_MESSAGES_RECEIVED,
+        new MessagesReceived(channelDTO, messagesDTOs));
+    }
+
+    return new ChannelLeaveResponse();
   }
 }
