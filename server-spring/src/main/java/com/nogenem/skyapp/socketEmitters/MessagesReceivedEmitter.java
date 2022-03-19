@@ -33,7 +33,7 @@ public class MessagesReceivedEmitter implements ISocketEmitter {
     List<ChatMemberDTO> members = channel.getMembers();
     for (int i = 0; i < members.size(); i++) {
       String userId = members.get(i).getUserId();
-      if (fromId == null || fromId.isEmpty() || fromId != userId) {
+      if (fromId == null || fromId.isEmpty() || !fromId.equals(userId)) {
         namespace.broadcast(
             userId,
             SocketEvents.IO_MESSAGES_RECEIVED,
