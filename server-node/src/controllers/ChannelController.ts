@@ -382,13 +382,14 @@ export default {
 
         if (channel.members.length === 1) {
           const channelJson = channel.toChatChannel();
+          const lastMember = channel.members[channel.members.length - 1];
 
           await channel.delete();
 
           const io = IoService.instance();
           await io.emit(IO_REMOVED_FROM_GROUP_CHANNEL, {
             channel: channelJson,
-            members: [userId],
+            members: [userId, lastMember.userId],
           });
         } else {
           const newAdmins: IMemberDoc[] = [];
