@@ -2,8 +2,11 @@ package com.nogenem.skyapp.model;
 
 import java.time.Instant;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mongodb.lang.NonNull;
 
+import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.FieldType;
@@ -15,6 +18,10 @@ import lombok.Data;
 @AllArgsConstructor
 public class Member {
 
+  @Id
+  @JsonProperty("_id")
+  private String id;
+
   @NonNull
   @Indexed(unique = true, name = "members.userId_1")
   @Field(targetType = FieldType.OBJECT_ID)
@@ -23,5 +30,16 @@ public class Member {
   private Boolean isAdm = false;
 
   private Instant lastSeen;
+
+  public Member() {
+    this.id = new ObjectId().toString();
+  }
+
+  public Member(String userId, Boolean isAdm, Instant lastSeen) {
+    this.id = new ObjectId().toString();
+    this.userId = userId;
+    this.isAdm = isAdm;
+    this.lastSeen = lastSeen;
+  }
 
 }
