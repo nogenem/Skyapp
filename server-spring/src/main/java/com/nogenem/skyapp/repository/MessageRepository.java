@@ -18,4 +18,14 @@ public interface MessageRepository extends MongoRepository<Message, String> {
 
   Page<Message> findPageByChannelId(String channelId, Pageable paging);
 
+  @Query("{" +
+      "  $and: [" +
+      "    { '_id': ?0 }," +
+      "    { 'channelId': ?1 }," +
+      "    { 'fromId': ?2 }," +
+      "    { 'type': ?3 }," +
+      "  ]" +
+      "}")
+  public Message findMessageToEdit(String id, String channelId, String fromId, int type);
+
 }

@@ -11,6 +11,7 @@ import com.nogenem.skyapp.interfaces.ISocketEventData;
 import com.nogenem.skyapp.response.ChatInitialData;
 import com.nogenem.skyapp.socketEmitters.GroupChannelCreatedEmitter;
 import com.nogenem.skyapp.socketEmitters.GroupChannelUpdatedEmitter;
+import com.nogenem.skyapp.socketEmitters.MessageEditedEmitter;
 import com.nogenem.skyapp.socketEmitters.MessagesReceivedEmitter;
 import com.nogenem.skyapp.socketEmitters.NewUserEmitter;
 import com.nogenem.skyapp.socketEmitters.PrivateChannelCreatedEmitter;
@@ -56,6 +57,7 @@ public class SocketIoService {
     this.emitters.put(SocketEvents.IO_REMOVED_FROM_GROUP_CHANNEL, new RemovedFromGroupChannelEmitter());
     this.emitters.put(SocketEvents.IO_GROUP_CHANNEL_UPDATED, new GroupChannelUpdatedEmitter());
     this.emitters.put(SocketEvents.IO_MESSAGES_RECEIVED, new MessagesReceivedEmitter());
+    this.emitters.put(SocketEvents.IO_MESSAGE_EDITED, new MessageEditedEmitter());
   }
 
   @PostConstruct

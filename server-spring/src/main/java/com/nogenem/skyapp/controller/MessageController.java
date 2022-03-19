@@ -9,18 +9,21 @@ import com.nogenem.skyapp.DTO.ChatChannelDTO;
 import com.nogenem.skyapp.DTO.ChatMessageDTO;
 import com.nogenem.skyapp.constants.SocketEvents;
 import com.nogenem.skyapp.enums.MessageType;
+import com.nogenem.skyapp.exception.CantEditThisMessageException;
 import com.nogenem.skyapp.exception.NotMemberOfChannelException;
 import com.nogenem.skyapp.exception.TranslatableApiException;
 import com.nogenem.skyapp.model.Channel;
 import com.nogenem.skyapp.model.Message;
 import com.nogenem.skyapp.model.User;
 import com.nogenem.skyapp.requestBody.message.StoreMessageRequestBody;
+import com.nogenem.skyapp.requestBody.message.UpdateMessageRequestBody;
 import com.nogenem.skyapp.response.message.MessageStoreResponse;
 import com.nogenem.skyapp.response.message.PaginatedMessagesResponse;
 import com.nogenem.skyapp.service.ChannelService;
 import com.nogenem.skyapp.service.MessageService;
 import com.nogenem.skyapp.service.SocketIoService;
 import com.nogenem.skyapp.service.UserService;
+import com.nogenem.skyapp.socketEventData.MessageEdited;
 import com.nogenem.skyapp.socketEventData.MessagesReceived;
 
 import org.springframework.data.domain.Page;
@@ -30,6 +33,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -61,7 +65,7 @@ public class MessageController {
     User loggedInUser = userService.getLoggedInUser();
 
     Channel channel = this.channelService.getChannelByIdAndUserId(channelId, loggedInUser.getId());
-    if(channel == null) {
+    if (channel == null) {
       throw new NotMemberOfChannelException();
     }
 
@@ -81,7 +85,7 @@ public class MessageController {
     User loggedInUser = userService.getLoggedInUser();
 
     Channel channel = this.channelService.getChannelByIdAndUserId(channelId, loggedInUser.getId());
-    if(channel == null) {
+    if (channel == null) {
       throw new NotMemberOfChannelException();
     }
 
@@ -104,10 +108,41 @@ public class MessageController {
     return new MessageStoreResponse(messagesDTOs.get(0));
   }
 
+  @PatchMapping("/{channelId}/messages/{messageId}")
+  public MessageStoreResponse messageUpdate(@PathVariable("channelId") String channelId,
+      @PathVariable("messageId") String messageId,
+      @Valid @RequestBody UpdateMessageRequestBody requestBody,
+      @RequestHeader HttpHeaders headers) throws TranslatableApiException {
+
+    User loggedInUser = userService.getLoggedInUser();
+
+    Channel channel = this.channelService.getChannelByIdAndUserId(channelId, loggedInUser.getId());
+    if (channel == null) {
+      throw new NotMemberOfChannelException();
+    }
+
+    Message message = this.messageService.findMessageToEdit(
+        messageId, channelId, loggedInUser.getId(), MessageType.TEXT);
+    if (message == null) {
+      throw new CantEditThisMessageException();
+    }
+
+    message.setBody(requestBody.getNewBody());
+    this.messageService.save(message);
+
+    ChatMessageDTO messageDTO = new ChatMessageDTO(message);
+    ChatChannelDTO channelDTO = new ChatChannelDTO(channel, null, -1);
+
+    this.socketIoService.emit(SocketEvents.IO_MESSAGE_EDITED,
+        new MessageEdited(channelDTO, messageDTO));
+
+    return new MessageStoreResponse(messageDTO);
+  }
+
   private Sort getSortBy(String sort) {
     // This is how it works on moongoosejs [ex: -createdAt]
     Sort.Direction dir = Sort.Direction.ASC;
-    if(sort.startsWith("-")) {
+    if (sort.startsWith("-")) {
       dir = Sort.Direction.DESC;
     }
 

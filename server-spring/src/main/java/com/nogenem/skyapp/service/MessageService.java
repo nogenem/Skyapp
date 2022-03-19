@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
+import com.nogenem.skyapp.enums.MessageType;
 import com.nogenem.skyapp.model.Message;
 import com.nogenem.skyapp.repository.MessageRepository;
 
@@ -27,9 +28,13 @@ public class MessageService {
     return this.messageRepository.findPageByChannelId(channelId, paging);
   }
 
+  public Message findMessageToEdit(String id, String channelId, String fromId, MessageType type) {
+    return this.messageRepository.findMessageToEdit(id, channelId, fromId, type.getValue());
+  }
+
   public Message save(Message message) {
     Instant now = Instant.now();
-    if(message.getCreatedAt() == null) {
+    if (message.getCreatedAt() == null) {
       message.setCreatedAt(now);
     }
     message.setUpdatedAt(now);
