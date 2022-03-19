@@ -5,7 +5,7 @@ public class CantUpdateThisGroupChannelException extends TranslatableApiExceptio
   public CantUpdateThisGroupChannelException() {
     super();
 
-    this.put(TranslatableApiException.GLOBAL_KEY, "errors.can_update_this_group_channel");
+    this.put(TranslatableApiException.GLOBAL_KEY, "errors.cant_update_this_group_channel");
   }
 
 }
