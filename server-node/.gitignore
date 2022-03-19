@@ -27,3 +27,6 @@ yarn-error.log*
 
 # uploads
 /public/uploads
+
+### VS Code ###
+.vscode/
