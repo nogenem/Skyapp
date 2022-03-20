@@ -13,7 +13,7 @@ import lombok.Data;
 public class ChatAttachmentDTO {
 
   private String originalName;
-  private int size;
+  private long size;
   private String path;
   private String mimeType;
   private ImageDimensions imageDimensions;

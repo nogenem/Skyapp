@@ -1,6 +1,7 @@
 package com.nogenem.skyapp.model;
 
 import java.time.Instant;
+import java.util.LinkedHashMap;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -48,12 +49,36 @@ public class Message {
   @LastModifiedDate
   private Instant updatedAt;
 
-  public void setBody(String body) {
-    this.body = body;
+  public Object getBody() {
+    this.updateBodyValueIfNeeded();
+    return this.body;
   }
 
-  public void setBody(Attachment body) {
-    this.body = body;
+  private void updateBodyValueIfNeeded() {
+    // Database loads a LinkedHashMap, since i'm using Object ;/
+    if (this.body.getClass() == LinkedHashMap.class) {
+      @SuppressWarnings("unchecked")
+      LinkedHashMap<String, Object> tmpHashMap = (LinkedHashMap<String, Object>) this.body;
+
+      Attachment attachment = new Attachment();
+      attachment.setOriginalName((String) tmpHashMap.get("originalName"));
+      attachment.setMimeType((String) tmpHashMap.get("mimeType"));
+      attachment.setSize((long) tmpHashMap.get("size"));
+      attachment.setPath((String) tmpHashMap.get("path"));
+
+      if (tmpHashMap.containsKey("imageDimensions")) {
+        @SuppressWarnings("unchecked")
+        LinkedHashMap<String, Object> tmpDimentions = (LinkedHashMap<String, Object>) tmpHashMap.get("imageDimensions");
+
+        Attachment.ImageDimensions dim = attachment.new ImageDimensions();
+        dim.setWidth((int) tmpDimentions.get("width"));
+        dim.setHeight((int) tmpDimentions.get("height"));
+
+        attachment.setImageDimensions(dim);
+      }
+
+      this.body = attachment;
+    }
   }
 
 }

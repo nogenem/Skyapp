@@ -14,6 +14,7 @@ import com.nogenem.skyapp.exception.TranslatableApiException.TranslatableEntry;
 import com.transferwise.icu.ICUMessageSource;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import lombok.AllArgsConstructor;
 
@@ -81,6 +83,11 @@ public class ExceptionControllerAdvice {
   ApiException onException(Exception e, Locale locale) {
     e.printStackTrace();
     return this.convertToApiException(new InternalServerException(), locale);
+  }
+
+  @ExceptionHandler({ ResponseStatusException.class })
+  ResponseEntity<?> onResponseStatusException(ResponseStatusException e) {
+    return new ResponseEntity<>(e.getStatus());
   }
 
   private ApiException convertToApiException(TranslatableApiException e, Locale locale) {

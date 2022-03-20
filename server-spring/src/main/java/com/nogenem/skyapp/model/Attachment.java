@@ -9,7 +9,7 @@ public class Attachment {
 
   private String originalName;
 
-  private int size;
+  private long size;
 
   private String path;
 
