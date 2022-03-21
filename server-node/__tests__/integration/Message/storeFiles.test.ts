@@ -100,4 +100,26 @@ describe('Store_Files', () => {
 
   //   expect(res.status).toBe(400);
   // });
+
+  // eslint-disable-next-line jest/no-commented-out-tests
+  // it('should not be able to send a message to a channel that you are not a member of', async () => {
+  //   const someUserId = 'some-user-id';
+  //   const channel = await factory.create<IChannelDoc>('Channel');
+
+  //   jest.spyOn(jsonwebtoken, 'verify').mockImplementation(token => {
+  //     if (token === VALID_TOKEN) return { _id: someUserId };
+  //     throw new Error();
+  //   });
+
+  //   const requestParams: IStoreFilesRequestParams = {
+  //     channelId: channel._id,
+  //   };
+
+  //   const res = await request
+  //     .post(`/api/channel/${requestParams.channelId}/files`)
+  //     .set('authorization', `Bearer ${VALID_TOKEN}`)
+  //     .attach('files', '__tests__/files/hello.txt');
+
+  //   expect(res.status).toBe(400);
+  // });
 });

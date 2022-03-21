@@ -83,4 +83,28 @@ describe('Store_Message', () => {
 
     expect(res.status).toBe(400);
   });
+
+  it('should not be able to send a text message to a channel that you are not a member of', async () => {
+    const someUserId = 'some-user-id';
+    const channel = await factory.create<IChannelDoc>('Channel');
+
+    jest.spyOn(jsonwebtoken, 'verify').mockImplementation(token => {
+      if (token === VALID_TOKEN) return { _id: someUserId };
+      throw new Error();
+    });
+
+    const requestParams: IStoreMessageRequestParams = {
+      channelId: channel._id,
+    };
+    const requestBody: IStoreMessageRequestBody = {
+      body: 'Some message',
+    };
+
+    const res = await request
+      .post(`/api/channel/${requestParams.channelId}/messages`)
+      .set('authorization', `Bearer ${VALID_TOKEN}`)
+      .send(requestBody);
+
+    expect(res.status).toBe(400);
+  });
 });

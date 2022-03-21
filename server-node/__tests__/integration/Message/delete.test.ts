@@ -141,4 +141,32 @@ describe('Delete', () => {
 
     expect(res.status).toBe(400);
   });
+
+  it('should not be able to delete a message on a channel that you are not a member of', async () => {
+    const channel = await factory.create<IChannelDoc>('Channel');
+    const user1Id = 'some-user-id';
+    const message = await factory.create<IMessageDoc>('Message', {
+      channelId: channel._id.toString(),
+      fromId: user1Id,
+    });
+
+    jest.spyOn(jsonwebtoken, 'verify').mockImplementation(token => {
+      if (token === VALID_TOKEN) return { _id: user1Id };
+      throw new Error();
+    });
+
+    const requestParams: IDeleteMessageRequestParams = {
+      channelId: channel._id.toString(),
+      messageId: message._id.toString(),
+    };
+
+    const res = await request
+      .delete(
+        `/api/channel/${requestParams.channelId}/messages/${requestParams.messageId}`,
+      )
+      .set('authorization', `Bearer ${VALID_TOKEN}`)
+      .send();
+
+    expect(res.status).toBe(400);
+  });
 });

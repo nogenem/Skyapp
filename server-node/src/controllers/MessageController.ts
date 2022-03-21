@@ -18,7 +18,6 @@ import type { IAuthRequest } from '~/middlewares/auth';
 import {
   Channel,
   IAttachment,
-  IChannelDoc,
   IMessage,
   IMessageDoc,
   IUserDoc,
@@ -91,9 +90,13 @@ export default {
     const currentUser = req.currentUser as IUserDoc;
 
     try {
-      const channel = await Channel.findOne({ _id: channelId });
+      const channel = await Channel.findOne({
+        _id: channelId,
+        'members.userId': currentUser._id,
+      });
+
       if (!channel) {
-        return handleErrors(invalidIdError(), res);
+        return handleErrors(notMemberOfChannelError(), res);
       }
 
       const msgObj = new Message({
@@ -129,9 +132,13 @@ export default {
     const currentUser = req.currentUser as IUserDoc;
 
     try {
-      const channel = await Channel.findOne({ _id: channelId });
+      const channel = await Channel.findOne({
+        _id: channelId,
+        'members.userId': currentUser._id,
+      });
+
       if (!channel) {
-        return handleErrors(invalidIdError(), res);
+        return handleErrors(notMemberOfChannelError(), res);
       }
 
       const reqFiles = req?.files as Express.Multer.File[];
@@ -195,6 +202,15 @@ export default {
     const currentUser = req.currentUser as IUserDoc;
 
     try {
+      const channelRecord = await Channel.findOne({
+        _id: channelId,
+        'members.userId': currentUser._id,
+      });
+
+      if (!channelRecord) {
+        return handleErrors(notMemberOfChannelError(), res);
+      }
+
       // You can only edit YOUR TEXT message
       const messageRecord = await Message.findOneAndUpdate(
         {
@@ -211,9 +227,6 @@ export default {
       }
 
       const messageJson = messageRecord.toChatMessage();
-      const channelRecord = (await Channel.findOne({
-        _id: messageJson.channelId,
-      })) as IChannelDoc;
       const channelJson = channelRecord.toChatChannel();
 
       const io = IoService.instance();
@@ -236,6 +249,15 @@ export default {
     const currentUser = req.currentUser as IUserDoc;
 
     try {
+      const channelRecord = await Channel.findOne({
+        _id: channelId,
+        'members.userId': currentUser._id,
+      });
+
+      if (!channelRecord) {
+        return handleErrors(notMemberOfChannelError(), res);
+      }
+
       // You can only edit YOUR message
       const messageRecord = await Message.findOne({
         _id: messageId,
@@ -265,9 +287,6 @@ export default {
 
       const messageJson = messageRecord.toChatMessage();
       const lastMessageJson = lastMessageRecord?.toChatMessage();
-      const channelRecord = (await Channel.findOne({
-        _id: messageJson.channelId,
-      })) as IChannelDoc;
       const channelJson = channelRecord.toChatChannel();
 
       const io = IoService.instance();

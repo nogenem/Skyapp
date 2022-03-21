@@ -203,4 +203,37 @@ describe('UpdateBody', () => {
 
     expect(res.status).toBe(400);
   });
+
+  it('should not be able to edit a text message on a channel that you are not a member of', async () => {
+    const channel = await factory.create<IChannelDoc>('Channel');
+    const user1Id = 'some-user-id';
+    const message = await factory.create<IMessageDoc>('Message', {
+      body: 'Some message',
+      type: MESSAGE_TYPES.TEXT,
+      channelId: channel._id.toString(),
+      fromId: user1Id,
+    });
+
+    jest.spyOn(jsonwebtoken, 'verify').mockImplementation(token => {
+      if (token === VALID_TOKEN) return { _id: user1Id };
+      throw new Error();
+    });
+
+    const requestParams: IUpdateMessageBodyRequestParams = {
+      channelId: 'some-channel-id',
+      messageId: message._id.toString(),
+    };
+    const requestBody: IUpdateMessageBodyRequestBody = {
+      newBody: 'Some message',
+    };
+
+    const res = await request
+      .patch(
+        `/api/channel/${requestParams.channelId}/messages/${requestParams.messageId}`,
+      )
+      .set('authorization', `Bearer ${VALID_TOKEN}`)
+      .send(requestBody);
+
+    expect(res.status).toBe(400);
+  });
 });
