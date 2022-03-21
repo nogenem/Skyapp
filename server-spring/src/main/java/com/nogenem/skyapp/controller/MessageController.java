@@ -14,6 +14,7 @@ import com.nogenem.skyapp.DTO.ChatChannelDTO;
 import com.nogenem.skyapp.DTO.ChatMessageDTO;
 import com.nogenem.skyapp.constants.SocketEvents;
 import com.nogenem.skyapp.enums.MessageType;
+import com.nogenem.skyapp.exception.CantDeleteThisMessageException;
 import com.nogenem.skyapp.exception.CantEditThisMessageException;
 import com.nogenem.skyapp.exception.NotMemberOfChannelException;
 import com.nogenem.skyapp.exception.TranslatableApiException;
@@ -24,6 +25,7 @@ import com.nogenem.skyapp.model.User;
 import com.nogenem.skyapp.requestBody.message.StoreMessageRequestBody;
 import com.nogenem.skyapp.requestBody.message.UpdateMessageRequestBody;
 import com.nogenem.skyapp.response.message.FilesStoreResponse;
+import com.nogenem.skyapp.response.message.MessageDeleteResponse;
 import com.nogenem.skyapp.response.message.MessageStoreResponse;
 import com.nogenem.skyapp.response.message.PaginatedMessagesResponse;
 import com.nogenem.skyapp.service.ChannelService;
@@ -31,6 +33,7 @@ import com.nogenem.skyapp.service.FilesStorageService;
 import com.nogenem.skyapp.service.MessageService;
 import com.nogenem.skyapp.service.SocketIoService;
 import com.nogenem.skyapp.service.UserService;
+import com.nogenem.skyapp.socketEventData.MessageDeleted;
 import com.nogenem.skyapp.socketEventData.MessageEdited;
 import com.nogenem.skyapp.socketEventData.MessagesReceived;
 
@@ -40,6 +43,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -214,6 +218,43 @@ public class MessageController {
         new MessagesReceived(channelDTO, messagesDTOs));
 
     return new FilesStoreResponse(messagesDTOs);
+  }
+
+  @DeleteMapping("/{channelId}/messages/{messageId}")
+  public MessageDeleteResponse messageDelete(@PathVariable("channelId") String channelId,
+      @PathVariable("messageId") String messageId,
+      @RequestHeader HttpHeaders headers) throws TranslatableApiException {
+
+    User loggedInUser = userService.getLoggedInUser();
+
+    Channel channel = this.channelService.getChannelByIdAndUserId(channelId, loggedInUser.getId());
+    if (channel == null) {
+      throw new NotMemberOfChannelException();
+    }
+
+    Message message = this.messageService.findMessageToDelete(
+        messageId, channelId, loggedInUser.getId());
+    if (message == null) {
+      throw new CantDeleteThisMessageException();
+    }
+
+    this.messageService.delete(message);
+
+    if (message.getType() == MessageType.UPLOADED_FILE) {
+      Attachment attachment = (Attachment) message.getBody();
+      this.filesStorageService.delete(attachment.getPath());
+    }
+
+    Message lastMessageRecord = this.messageService.getLastMessage(channelId);
+
+    ChatChannelDTO channelDTO = new ChatChannelDTO(channel, null, 0);
+    ChatMessageDTO messageDTO = new ChatMessageDTO(message);
+    ChatMessageDTO lastMessageDTO = lastMessageRecord != null ? new ChatMessageDTO(lastMessageRecord) : null;
+
+    this.socketIoService.emit(SocketEvents.IO_MESSAGE_DELETED,
+        new MessageDeleted(channelDTO, messageDTO, lastMessageDTO));
+
+    return new MessageDeleteResponse(messageDTO, lastMessageDTO);
   }
 
   private Sort getSortBy(String sort) {

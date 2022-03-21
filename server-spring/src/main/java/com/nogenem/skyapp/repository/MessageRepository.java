@@ -1,6 +1,7 @@
 package com.nogenem.skyapp.repository;
 
 import java.time.Instant;
+import java.util.stream.Stream;
 
 import com.nogenem.skyapp.model.Message;
 
@@ -28,4 +29,15 @@ public interface MessageRepository extends MongoRepository<Message, String> {
       "}")
   public Message findMessageToEdit(String id, String channelId, String fromId, int type);
 
+  @Query("{" +
+      "  $and: [" +
+      "    { '_id': ?0 }," +
+      "    { 'channelId': ?1 }," +
+      "    { 'fromId': ?2 }," +
+      "  ]" +
+      "}")
+  public Message findMessageToDelete(String id, String channelId, String fromId);
+
+  @Query(value = "{ 'channelId': ?0 }", sort = "{ 'createdAt': -1 }")
+  public Stream<Message> getStreamOfLatestMessages(String channelId);
 }

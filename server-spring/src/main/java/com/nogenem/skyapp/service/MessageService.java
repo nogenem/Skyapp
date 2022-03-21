@@ -32,6 +32,10 @@ public class MessageService {
     return this.messageRepository.findMessageToEdit(id, channelId, fromId, type.getValue());
   }
 
+  public Message findMessageToDelete(String id, String channelId, String fromId) {
+    return this.messageRepository.findMessageToDelete(id, channelId, fromId);
+  }
+
   public Message save(Message message) {
     Instant now = Instant.now();
     if (message.getCreatedAt() == null) {
@@ -60,6 +64,16 @@ public class MessageService {
     }
 
     return this.messageRepository.saveAll(messages);
+  }
+
+  public void delete(Message message) {
+    this.messageRepository.delete(message);
+  }
+
+  public Message getLastMessage(String channelId) {
+    return this.messageRepository.getStreamOfLatestMessages(channelId)
+        .findFirst()
+        .orElse(null);
   }
 
 }

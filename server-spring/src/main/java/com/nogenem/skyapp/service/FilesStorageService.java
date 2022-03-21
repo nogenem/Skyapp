@@ -1,5 +1,6 @@
 package com.nogenem.skyapp.service;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -71,6 +72,17 @@ public class FilesStorageService {
 
   public void deleteAll() {
     FileSystemUtils.deleteRecursively(ROOT.toFile());
+  }
+
+  public boolean delete(String filePath) {
+    Path path = Paths.get(filePath);
+    File file = path.toFile();
+
+    if (file.exists()) {
+      return file.delete();
+    } else {
+      return false;
+    }
   }
 
   public Stream<Path> loadAll() {
