@@ -54,4 +54,8 @@ public class UserService {
       return null;
     }
   }
+
+  public User save(User user) {
+    return this.userRepository.save(user);
+  }
 }

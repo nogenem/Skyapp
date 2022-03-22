@@ -17,6 +17,7 @@ import com.nogenem.skyapp.socketEmitters.MessagesReceivedEmitter;
 import com.nogenem.skyapp.socketEmitters.NewUserEmitter;
 import com.nogenem.skyapp.socketEmitters.PrivateChannelCreatedEmitter;
 import com.nogenem.skyapp.socketEmitters.RemovedFromGroupChannelEmitter;
+import com.nogenem.skyapp.socketEmitters.UserStatusChangedEmitter;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -60,6 +61,7 @@ public class SocketIoService {
     this.emitters.put(SocketEvents.IO_MESSAGES_RECEIVED, new MessagesReceivedEmitter());
     this.emitters.put(SocketEvents.IO_MESSAGE_EDITED, new MessageEditedEmitter());
     this.emitters.put(SocketEvents.IO_MESSAGE_DELETED, new MessageDeletedEmitter());
+    this.emitters.put(SocketEvents.IO_USER_STATUS_CHANGED, new UserStatusChangedEmitter());
   }
 
   @PostConstruct
