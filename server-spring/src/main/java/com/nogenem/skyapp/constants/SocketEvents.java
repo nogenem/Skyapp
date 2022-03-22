@@ -5,6 +5,7 @@ public interface SocketEvents {
   public static final String SOCKET_DISCONNECT = "disconnect";
 
   public static final String IO_SIGNIN = "AUTH:SIGNIN";
+  public static final String IO_SIGNOUT = "AUTH:SIGNOUT";
   public static final String IO_NEW_USER = "AUTH:NEW_USER";
 
   public static final String IO_GET_INITIAL_DATA = "CHAT:GET_INITIAL_DATA";
