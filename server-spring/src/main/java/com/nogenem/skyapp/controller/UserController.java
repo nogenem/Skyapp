@@ -7,10 +7,13 @@ import com.nogenem.skyapp.enums.UserStatus;
 import com.nogenem.skyapp.exception.TranslatableApiException;
 import com.nogenem.skyapp.model.User;
 import com.nogenem.skyapp.requestBody.user.UpdateStatusRequestBody;
+import com.nogenem.skyapp.requestBody.user.UpdateThoughtsRequestBody;
 import com.nogenem.skyapp.response.user.StatusUpdateResponse;
+import com.nogenem.skyapp.response.user.ThoughtsUpdateResponse;
 import com.nogenem.skyapp.service.SocketIoService;
 import com.nogenem.skyapp.service.UserService;
 import com.nogenem.skyapp.socketEventData.UserStatusChanged;
+import com.nogenem.skyapp.socketEventData.UserThoughtsChanged;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -51,6 +54,28 @@ public class UserController {
         new UserStatusChanged(loggedInUser.getId(), newStatus));
 
     return new StatusUpdateResponse();
+  }
+
+  @PatchMapping("/thoughts")
+  public ThoughtsUpdateResponse thoughtsUpdate(
+      @Valid @RequestBody UpdateThoughtsRequestBody requestBody,
+      @RequestHeader HttpHeaders headers) throws TranslatableApiException {
+
+    User loggedInUser = userService.getLoggedInUser();
+    String newThoughts = requestBody.getNewThoughts();
+
+    if(loggedInUser.getThoughts().equals(newThoughts)) {
+      throw new ResponseStatusException(HttpStatus.NOT_MODIFIED);
+    }
+
+    loggedInUser.setThoughts(newThoughts);
+
+    loggedInUser = this.userService.save(loggedInUser);
+
+    this.socketIoService.emit(SocketEvents.IO_USER_THOUGHTS_CHANGED,
+        new UserThoughtsChanged(loggedInUser.getId(), newThoughts));
+
+    return new ThoughtsUpdateResponse();
   }
 
 }

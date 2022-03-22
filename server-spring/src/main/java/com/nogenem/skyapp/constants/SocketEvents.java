@@ -14,4 +14,5 @@ public interface SocketEvents {
   public static final String IO_MESSAGE_EDITED = "CHAT:MESSAGE_EDITED";
   public static final String IO_MESSAGE_DELETED = "CHAT:MESSAGE_DELETED";
   public static final String IO_USER_STATUS_CHANGED = "CHAT:USER_STATUS_CHANGED";
+  public static final String IO_USER_THOUGHTS_CHANGED = "CHAT:USER_THOUGHTS_CHANGED";
 }
