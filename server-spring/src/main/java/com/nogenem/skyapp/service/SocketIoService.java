@@ -17,8 +17,10 @@ import com.nogenem.skyapp.socketEmitters.MessagesReceivedEmitter;
 import com.nogenem.skyapp.socketEmitters.NewUserEmitter;
 import com.nogenem.skyapp.socketEmitters.PrivateChannelCreatedEmitter;
 import com.nogenem.skyapp.socketEmitters.RemovedFromGroupChannelEmitter;
+import com.nogenem.skyapp.socketEmitters.UserSignedInEmitter;
 import com.nogenem.skyapp.socketEmitters.UserStatusChangedEmitter;
 import com.nogenem.skyapp.socketEmitters.UserThoughtsChangedEmitter;
+import com.nogenem.skyapp.socketEventData.UserSignedIn;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -64,6 +66,7 @@ public class SocketIoService {
     this.emitters.put(SocketEvents.IO_MESSAGE_DELETED, new MessageDeletedEmitter());
     this.emitters.put(SocketEvents.IO_USER_STATUS_CHANGED, new UserStatusChangedEmitter());
     this.emitters.put(SocketEvents.IO_USER_THOUGHTS_CHANGED, new UserThoughtsChangedEmitter());
+    this.emitters.put(SocketEvents.IO_SIGNIN, new UserSignedInEmitter());
   }
 
   @PostConstruct
@@ -86,6 +89,8 @@ public class SocketIoService {
       if (currentUserId != null && !currentUserId.isEmpty()) {
         this.currentUsersChannelsIds.put(currentUserId, "");
         socket.joinRoom(currentUserId);
+
+        this.emit(SocketEvents.IO_SIGNIN, new UserSignedIn(currentUserId));
       }
 
       socket.on(SocketEvents.IO_GET_INITIAL_DATA, (Object... args2) -> {
