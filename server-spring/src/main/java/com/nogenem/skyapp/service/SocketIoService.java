@@ -1,13 +1,16 @@
 package com.nogenem.skyapp.service;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
+import com.nogenem.skyapp.DTO.ChatChannelDTO;
 import com.nogenem.skyapp.constants.SocketEvents;
 import com.nogenem.skyapp.interfaces.ISocketEmitter;
 import com.nogenem.skyapp.interfaces.ISocketEventData;
+import com.nogenem.skyapp.model.Channel;
 import com.nogenem.skyapp.response.ChatInitialData;
 import com.nogenem.skyapp.socketEmitters.GroupChannelCreatedEmitter;
 import com.nogenem.skyapp.socketEmitters.GroupChannelUpdatedEmitter;
@@ -17,13 +20,16 @@ import com.nogenem.skyapp.socketEmitters.MessagesReceivedEmitter;
 import com.nogenem.skyapp.socketEmitters.NewUserEmitter;
 import com.nogenem.skyapp.socketEmitters.PrivateChannelCreatedEmitter;
 import com.nogenem.skyapp.socketEmitters.RemovedFromGroupChannelEmitter;
+import com.nogenem.skyapp.socketEmitters.SetLastSeenEmitter;
 import com.nogenem.skyapp.socketEmitters.UserSignedInEmitter;
 import com.nogenem.skyapp.socketEmitters.UserSignedOutEmitter;
 import com.nogenem.skyapp.socketEmitters.UserStatusChangedEmitter;
 import com.nogenem.skyapp.socketEmitters.UserThoughtsChangedEmitter;
+import com.nogenem.skyapp.socketEventData.MemberLastSeenChanged;
 import com.nogenem.skyapp.socketEventData.UserSignedIn;
 import com.nogenem.skyapp.socketEventData.UserSignedOut;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -48,12 +54,14 @@ public class SocketIoService {
   private SocketIoNamespace socketIoNamespace;
 
   private final ChatService chatService;
+  private final ChannelService channelService;
 
   private HashMap<String, String> currentUsersChannelsIds;
   private HashMap<String, ISocketEmitter> emitters;
 
-  public SocketIoService(ChatService chatService) {
+  public SocketIoService(ChatService chatService, ChannelService channelService) {
     this.chatService = chatService;
+    this.channelService = channelService;
 
     this.currentUsersChannelsIds = new HashMap<>();
     this.emitters = new HashMap<>();
@@ -70,6 +78,7 @@ public class SocketIoService {
     this.emitters.put(SocketEvents.IO_USER_THOUGHTS_CHANGED, new UserThoughtsChangedEmitter());
     this.emitters.put(SocketEvents.IO_SIGNIN, new UserSignedInEmitter());
     this.emitters.put(SocketEvents.IO_SIGNOUT, new UserSignedOutEmitter());
+    this.emitters.put(SocketEvents.IO_SET_LAST_SEEN, new SetLastSeenEmitter());
   }
 
   @PostConstruct
@@ -110,9 +119,35 @@ public class SocketIoService {
       socket.on(SocketEvents.SOCKET_DISCONNECT, (Object... args2) -> {
         this.emit(SocketEvents.IO_SIGNOUT, new UserSignedOut(currentUserId));
 
-        if(this.currentUsersChannelsIds.containsKey(currentUserId)) {
+        if (this.currentUsersChannelsIds.containsKey(currentUserId)) {
           this.currentUsersChannelsIds.remove(currentUserId);
           socket.leaveRoom(currentUserId);
+        }
+      });
+
+      socket.on(SocketEvents.IO_SET_ACTIVE_CHANNEL, (Object... args2) -> {
+        JSONObject tmp = (JSONObject) args2[0];
+        String channelId = tmp.getString("channelId");
+        Instant lastSeen = Instant.now();
+
+        // update the last channel that the user was in
+        String currentChannelId = this.currentUsersChannelsIds.get(currentUserId);
+        if (this.currentUsersChannelsIds.containsKey(currentUserId)
+            && currentChannelId != null && !currentChannelId.isEmpty()) {
+          this.channelService.updateMemberLastSeen(
+              this.currentUsersChannelsIds.get(currentUserId), currentUserId, lastSeen);
+        }
+
+        this.currentUsersChannelsIds.put(currentUserId, channelId);
+
+        if (channelId != null && !channelId.isEmpty()) {
+          Channel channel = this.channelService.updateMemberLastSeen(channelId, currentUserId, lastSeen);
+          if (channel != null) {
+            ChatChannelDTO channelDTO = new ChatChannelDTO(channel, null, 0);
+
+            this.emit(SocketEvents.IO_SET_LAST_SEEN,
+                new MemberLastSeenChanged(channelDTO, currentUserId, lastSeen));
+          }
         }
       });
     });
