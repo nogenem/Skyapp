@@ -150,6 +150,22 @@ public class SocketIoService {
           }
         }
       });
+
+      socket.on(SocketEvents.IO_SET_LAST_SEEN, (Object... args2) -> {
+        JSONObject tmp = (JSONObject) args2[0];
+        String channelId = tmp.getString("channelId");
+        Instant lastSeen = Instant.now();
+
+        if (channelId != null && !channelId.isEmpty()) {
+          Channel channel = this.channelService.updateMemberLastSeen(channelId, currentUserId, lastSeen);
+          if (channel != null) {
+            ChatChannelDTO channelDTO = new ChatChannelDTO(channel, null, 0);
+
+            this.emit(SocketEvents.IO_SET_LAST_SEEN,
+                new MemberLastSeenChanged(channelDTO, currentUserId, lastSeen));
+          }
+        }
+      });
     });
   }
 
