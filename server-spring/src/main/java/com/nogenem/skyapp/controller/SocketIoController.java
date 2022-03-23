@@ -33,7 +33,7 @@ public class SocketIoController implements HandshakeInterceptor, WebSocketHandle
   private static final String ATTRIBUTE_ENGINEIO_BRIDGE = "socketIo.bridge";
   private static final String ATTRIBUTE_ENGINEIO_QUERY = "socketIo.query";
 
-  private SocketIoService socketIoService;
+  private final SocketIoService socketIoService;
 
   @RequestMapping(value = "/socket.io/*", method = { RequestMethod.GET, RequestMethod.POST,
       RequestMethod.OPTIONS }, headers = "Connection!=Upgrade")

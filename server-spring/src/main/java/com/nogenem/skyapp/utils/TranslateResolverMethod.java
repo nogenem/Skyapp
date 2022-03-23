@@ -12,8 +12,8 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class TranslateResolverMethod implements TemplateMethodModelEx {
 
-  private ICUMessageSource messageSource;
-  private Locale locale;
+  private final ICUMessageSource messageSource;
+  private final Locale locale;
 
   @SuppressWarnings("rawtypes")
   @Override

@@ -22,8 +22,8 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-  private TokenService tokenService;
-  private UserRepository userRepository;
+  private final TokenService tokenService;
+  private final UserRepository userRepository;
 
   @Override
   protected void configure(HttpSecurity httpSecurity) throws Exception {

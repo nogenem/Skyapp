@@ -21,9 +21,9 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class ChatService {
 
-  private ChannelRepository channelRepository;
-  private UserRepository userRepository;
-  private MessageRepository messageRepository;
+  private final ChannelRepository channelRepository;
+  private final UserRepository userRepository;
+  private final MessageRepository messageRepository;
 
   public List<Channel> getUserChannelsWithLastMessage(String userId) {
     return this.channelRepository.getUserChannelsWithLastMessage(userId).getMappedResults();

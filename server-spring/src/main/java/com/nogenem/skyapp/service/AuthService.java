@@ -17,9 +17,9 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class AuthService {
 
-  private UserRepository userRepository;
-  private BCryptPasswordEncoder bCryptPasswordEncoder;
-  private TokenService tokenService;
+  private final UserRepository userRepository;
+  private final BCryptPasswordEncoder bCryptPasswordEncoder;
+  private final TokenService tokenService;
 
   public User findByEmail(String email) {
     return userRepository.findByEmail(email);

@@ -20,8 +20,8 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class ChannelService {
 
-  private ChannelRepository channelRepository;
-  private MongoTemplate template;
+  private final ChannelRepository channelRepository;
+  private final MongoTemplate template;
 
   public List<Channel> findAll() {
     return this.channelRepository.findAll();

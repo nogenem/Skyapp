@@ -30,8 +30,8 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class UserController {
 
-  private UserService userService;
-  private SocketIoService socketIoService;
+  private final UserService userService;
+  private final SocketIoService socketIoService;
 
   @PatchMapping("/status")
   public StatusUpdateResponse statusUpdate(

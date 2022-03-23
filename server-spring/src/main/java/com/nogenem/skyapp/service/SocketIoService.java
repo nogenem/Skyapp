@@ -50,14 +50,13 @@ public class SocketIoService {
   @Getter
   private String namespace;
 
+  private final ChatService chatService;
+  private final ChannelService channelService;
+
   @Getter
   private EngineIoServer engineIoServer;
   private SocketIoServer socketIoServer;
   private SocketIoNamespace socketIoNamespace;
-
-  private final ChatService chatService;
-  private final ChannelService channelService;
-
   private HashMap<String, String> currentUsersChannelsIds;
   private HashMap<String, ISocketEmitter> emitters;
 

@@ -18,7 +18,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class MessageService {
 
-  private MessageRepository messageRepository;
+  private final MessageRepository messageRepository;
 
   public List<Message> findAll() {
     return this.messageRepository.findAll();

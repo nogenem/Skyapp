@@ -58,10 +58,10 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class ChannelController {
 
-  private UserService userService;
-  private ChannelService channelService;
-  private SocketIoService socketIoService;
-  private MessageService messageService;
+  private final UserService userService;
+  private final ChannelService channelService;
+  private final SocketIoService socketIoService;
+  private final MessageService messageService;
 
   @PostMapping("/private")
   @ResponseStatus(HttpStatus.CREATED)

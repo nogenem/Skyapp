@@ -16,7 +16,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class PublicController {
 
-  private FilesStorageService filesStorageService;
+  private final FilesStorageService filesStorageService;
 
   @GetMapping("/uploads/{filename:.+}")
   @ResponseBody

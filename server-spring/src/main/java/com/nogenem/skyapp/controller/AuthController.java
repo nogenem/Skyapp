@@ -49,10 +49,10 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class AuthController {
 
-  private AuthService authService;
-  private TokenService tokenService;
-  private MailService mailService;
-  private SocketIoService socketIoService;
+  private final AuthService authService;
+  private final TokenService tokenService;
+  private final MailService mailService;
+  private final SocketIoService socketIoService;
 
   @PostMapping("/signup")
   @ResponseStatus(HttpStatus.CREATED)

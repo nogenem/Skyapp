@@ -62,11 +62,11 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class MessageController {
 
-  private UserService userService;
-  private ChannelService channelService;
-  private MessageService messageService;
-  private SocketIoService socketIoService;
-  private FilesStorageService filesStorageService;
+  private final UserService userService;
+  private final ChannelService channelService;
+  private final MessageService messageService;
+  private final SocketIoService socketIoService;
+  private final FilesStorageService filesStorageService;
 
   @GetMapping("/{channelId}/messages")
   public PaginatedMessagesResponse all(@PathVariable("channelId") String channelId,

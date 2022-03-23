@@ -35,9 +35,9 @@ public class MailService {
   @Value("${spring.mail.username}")
   private String emailUsername;
 
-  private ICUMessageSource messageSource;
-  private JavaMailSender mailSender;
-  private FreeMarkerConfigurer freeMarker;
+  private final ICUMessageSource messageSource;
+  private final JavaMailSender mailSender;
+  private final FreeMarkerConfigurer freeMarker;
   private final ScheduledExecutorService quickService = Executors.newScheduledThreadPool(N_THREADS);
 
   public MailService(JavaMailSender mailSender, FreeMarkerConfigurer freeMarker, ICUMessageSource messageSource) {
