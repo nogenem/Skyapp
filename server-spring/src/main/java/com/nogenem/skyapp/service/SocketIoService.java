@@ -8,6 +8,7 @@ import javax.annotation.PostConstruct;
 
 import com.nogenem.skyapp.DTO.ChatChannelDTO;
 import com.nogenem.skyapp.constants.SocketEvents;
+import com.nogenem.skyapp.enums.UserStatus;
 import com.nogenem.skyapp.interfaces.ISocketEmitter;
 import com.nogenem.skyapp.interfaces.ISocketEventData;
 import com.nogenem.skyapp.model.Channel;
@@ -28,6 +29,7 @@ import com.nogenem.skyapp.socketEmitters.UserThoughtsChangedEmitter;
 import com.nogenem.skyapp.socketEventData.MemberLastSeenChanged;
 import com.nogenem.skyapp.socketEventData.UserSignedIn;
 import com.nogenem.skyapp.socketEventData.UserSignedOut;
+import com.nogenem.skyapp.socketEventData.UserStatusChanged;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
@@ -165,6 +167,14 @@ public class SocketIoService {
                 new MemberLastSeenChanged(channelDTO, currentUserId, lastSeen));
           }
         }
+      });
+
+      socket.on(SocketEvents.IO_USER_STATUS_CHANGED, (Object... args2) -> {
+        JSONObject tmp = (JSONObject) args2[0];
+        UserStatus newStatus = UserStatus.fromInt(tmp.getInt("newStatus"));
+
+        this.emit(SocketEvents.IO_USER_STATUS_CHANGED,
+            new UserStatusChanged(currentUserId, newStatus));
       });
     });
   }

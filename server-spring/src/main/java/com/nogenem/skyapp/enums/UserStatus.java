@@ -13,6 +13,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter(onMethod = @__({ @JsonValue }))
 public enum UserStatus {
+  TMP_AWAY(-1),
   ACTIVE(1),
   AWAY(2),
   DO_NOT_DISTURB(3),
