@@ -16,7 +16,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @JsonIgnoreProperties(value = { "cause", "stackTrace", "message", "suppressed", "localizedMessage" })
-public class TranslatableApiException extends Exception {
+public class TranslatableApiException extends RuntimeException {
   public static final String GLOBAL_KEY = "global";
 
   private HashMap<String, List<TranslatableEntry>> errors;

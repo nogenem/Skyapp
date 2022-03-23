@@ -4,7 +4,6 @@ import javax.validation.Valid;
 
 import com.nogenem.skyapp.constants.SocketEvents;
 import com.nogenem.skyapp.enums.UserStatus;
-import com.nogenem.skyapp.exception.TranslatableApiException;
 import com.nogenem.skyapp.model.User;
 import com.nogenem.skyapp.requestBody.user.UpdateStatusRequestBody;
 import com.nogenem.skyapp.requestBody.user.UpdateThoughtsRequestBody;
@@ -37,12 +36,12 @@ public class UserController {
   @PatchMapping("/status")
   public StatusUpdateResponse statusUpdate(
       @Valid @RequestBody UpdateStatusRequestBody requestBody,
-      @RequestHeader HttpHeaders headers) throws TranslatableApiException {
+      @RequestHeader HttpHeaders headers) {
 
     User loggedInUser = userService.getLoggedInUser();
     UserStatus newStatus = requestBody.getNewStatus();
 
-    if(loggedInUser.getStatus() == newStatus) {
+    if (loggedInUser.getStatus() == newStatus) {
       throw new ResponseStatusException(HttpStatus.NOT_MODIFIED);
     }
 
@@ -59,12 +58,12 @@ public class UserController {
   @PatchMapping("/thoughts")
   public ThoughtsUpdateResponse thoughtsUpdate(
       @Valid @RequestBody UpdateThoughtsRequestBody requestBody,
-      @RequestHeader HttpHeaders headers) throws TranslatableApiException {
+      @RequestHeader HttpHeaders headers) {
 
     User loggedInUser = userService.getLoggedInUser();
     String newThoughts = requestBody.getNewThoughts();
 
-    if(loggedInUser.getThoughts().equals(newThoughts)) {
+    if (loggedInUser.getThoughts().equals(newThoughts)) {
       throw new ResponseStatusException(HttpStatus.NOT_MODIFIED);
     }
 

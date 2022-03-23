@@ -17,7 +17,6 @@ import com.nogenem.skyapp.enums.MessageType;
 import com.nogenem.skyapp.exception.CantDeleteThisMessageException;
 import com.nogenem.skyapp.exception.CantEditThisMessageException;
 import com.nogenem.skyapp.exception.NotMemberOfChannelException;
-import com.nogenem.skyapp.exception.TranslatableApiException;
 import com.nogenem.skyapp.model.Attachment;
 import com.nogenem.skyapp.model.Channel;
 import com.nogenem.skyapp.model.Message;
@@ -74,7 +73,7 @@ public class MessageController {
       @RequestParam(defaultValue = "0") int offset,
       @RequestParam(defaultValue = "30") int limit,
       @RequestParam(defaultValue = "-createdAt") String sort,
-      @RequestHeader HttpHeaders headers) throws TranslatableApiException {
+      @RequestHeader HttpHeaders headers) {
 
     User loggedInUser = userService.getLoggedInUser();
 
@@ -94,7 +93,7 @@ public class MessageController {
   @ResponseStatus(HttpStatus.CREATED)
   public MessageStoreResponse messageStore(@PathVariable("channelId") String channelId,
       @Valid @RequestBody StoreMessageRequestBody requestBody,
-      @RequestHeader HttpHeaders headers) throws TranslatableApiException {
+      @RequestHeader HttpHeaders headers) {
 
     User loggedInUser = userService.getLoggedInUser();
 
@@ -126,7 +125,7 @@ public class MessageController {
   public MessageStoreResponse messageUpdate(@PathVariable("channelId") String channelId,
       @PathVariable("messageId") String messageId,
       @Valid @RequestBody UpdateMessageRequestBody requestBody,
-      @RequestHeader HttpHeaders headers) throws TranslatableApiException {
+      @RequestHeader HttpHeaders headers) {
 
     User loggedInUser = userService.getLoggedInUser();
 
@@ -156,7 +155,7 @@ public class MessageController {
   @PostMapping("/{channelId}/files")
   public FilesStoreResponse filesStore(@PathVariable("channelId") String channelId,
       @RequestParam("files") MultipartFile[] files,
-      @RequestHeader HttpHeaders headers) throws TranslatableApiException {
+      @RequestHeader HttpHeaders headers) {
 
     User loggedInUser = userService.getLoggedInUser();
 
@@ -223,7 +222,7 @@ public class MessageController {
   @DeleteMapping("/{channelId}/messages/{messageId}")
   public MessageDeleteResponse messageDelete(@PathVariable("channelId") String channelId,
       @PathVariable("messageId") String messageId,
-      @RequestHeader HttpHeaders headers) throws TranslatableApiException {
+      @RequestHeader HttpHeaders headers) {
 
     User loggedInUser = userService.getLoggedInUser();
 

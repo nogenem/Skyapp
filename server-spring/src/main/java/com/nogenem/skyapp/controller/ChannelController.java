@@ -21,7 +21,6 @@ import com.nogenem.skyapp.exception.ChannelAlreadyExistsException;
 import com.nogenem.skyapp.exception.GroupHasTooFewMembersException;
 import com.nogenem.skyapp.exception.InvalidIdException;
 import com.nogenem.skyapp.exception.NotMemberOfChannelException;
-import com.nogenem.skyapp.exception.TranslatableApiException;
 import com.nogenem.skyapp.exception.UserIsNotGroupAdmException;
 import com.nogenem.skyapp.model.Channel;
 import com.nogenem.skyapp.model.Member;
@@ -67,7 +66,7 @@ public class ChannelController {
   @PostMapping("/private")
   @ResponseStatus(HttpStatus.CREATED)
   public ChannelStoreResponse privateStore(@Valid @RequestBody StorePrivateChannelRequestBody requestBody,
-      @RequestHeader HttpHeaders headers) throws TranslatableApiException {
+      @RequestHeader HttpHeaders headers) {
 
     String otherUserId = requestBody.getOtherUserId();
     User loggedInUser = userService.getLoggedInUser();
@@ -103,7 +102,7 @@ public class ChannelController {
   @PostMapping("/group")
   @ResponseStatus(HttpStatus.CREATED)
   public ChannelStoreResponse groupStore(@Valid @RequestBody StoreGroupChannelRequestBody requestBody,
-      @RequestHeader HttpHeaders headers) throws TranslatableApiException {
+      @RequestHeader HttpHeaders headers) {
 
     String[] membersIds = requestBody.getMembers();
     String[] adminsIds = requestBody.getAdmins();
@@ -173,7 +172,7 @@ public class ChannelController {
   @PatchMapping("/group/{channelId}")
   public ChannelUpdateResponse groupUpdate(@PathVariable("channelId") String channelId,
       @Valid @RequestBody UpdateGroupChannelRequestBody requestBody,
-      @RequestHeader HttpHeaders headers) throws TranslatableApiException {
+      @RequestHeader HttpHeaders headers) {
 
     String[] membersIds = requestBody.getMembers();
     String[] adminsIds = requestBody.getAdmins();
@@ -333,7 +332,7 @@ public class ChannelController {
 
   @PostMapping("/group/{channelId}/leave")
   public ChannelLeaveResponse groupLeave(@PathVariable("channelId") String channelId,
-      @RequestHeader HttpHeaders headers) throws TranslatableApiException {
+      @RequestHeader HttpHeaders headers) {
 
     User loggedInUser = userService.getLoggedInUser();
     String loggedInUserId = loggedInUser.getId().toString();
@@ -347,22 +346,22 @@ public class ChannelController {
     Member loggedInMember = null;
     Boolean loggedInMemberIsAdm = false;
 
-    for(Member member : channel.getMembers()) {
-      if(loggedInMember == null && member.getUserId().toString().equals(loggedInUserId)) {
+    for (Member member : channel.getMembers()) {
+      if (loggedInMember == null && member.getUserId().toString().equals(loggedInUserId)) {
         loggedInMemberIsAdm = member.getIsAdm();
         loggedInMember = member;
-      } else if(member.getIsAdm()) {
+      } else if (member.getIsAdm()) {
         hasOtherAdm = true;
       }
     }
 
-    if(loggedInMember == null) {
+    if (loggedInMember == null) {
       throw new NotMemberOfChannelException();
     }
 
     channel.getMembers().remove(loggedInMember);
 
-    if(channel.getMembers().size() == 1) {
+    if (channel.getMembers().size() == 1) {
       ChatChannelDTO channelDTO = new ChatChannelDTO(channel, null, 0);
 
       // Remove the last member too and delete the channel
@@ -372,10 +371,10 @@ public class ChannelController {
       channelService.delete(channel);
 
       this.socketIoService.emit(SocketEvents.IO_REMOVED_FROM_GROUP_CHANNEL,
-        new RemovedFromGroupChannel(channelDTO, removedMembers));
+          new RemovedFromGroupChannel(channelDTO, removedMembers));
     } else {
-      if(loggedInMemberIsAdm && !hasOtherAdm) {
-        for(Member member : channel.getMembers()) {
+      if (loggedInMemberIsAdm && !hasOtherAdm) {
+        for (Member member : channel.getMembers()) {
           member.setIsAdm(true);
         }
       }
@@ -402,11 +401,11 @@ public class ChannelController {
       }
 
       this.socketIoService.emit(SocketEvents.IO_REMOVED_FROM_GROUP_CHANNEL,
-        new RemovedFromGroupChannel(channelDTO, removedMembers));
+          new RemovedFromGroupChannel(channelDTO, removedMembers));
       this.socketIoService.emit(SocketEvents.IO_GROUP_CHANNEL_UPDATED,
-        new GroupChannelUpdated(channelDTO, unreadMessagesHash));
+          new GroupChannelUpdated(channelDTO, unreadMessagesHash));
       this.socketIoService.emit(SocketEvents.IO_MESSAGES_RECEIVED,
-        new MessagesReceived(channelDTO, messagesDTOs));
+          new MessagesReceived(channelDTO, messagesDTOs));
     }
 
     return new ChannelLeaveResponse();

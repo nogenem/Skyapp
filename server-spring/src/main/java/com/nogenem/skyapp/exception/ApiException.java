@@ -14,7 +14,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @JsonIgnoreProperties(value = { "cause", "stackTrace", "message", "suppressed", "localizedMessage" })
-public class ApiException extends Exception {
+public class ApiException extends RuntimeException {
 
   public static final String GLOBAL_KEY = "global";
 

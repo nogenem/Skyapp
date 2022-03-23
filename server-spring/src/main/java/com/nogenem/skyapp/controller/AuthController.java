@@ -9,7 +9,6 @@ import com.nogenem.skyapp.exception.InvalidCredentialsException;
 import com.nogenem.skyapp.exception.InvalidOrExpiredTokenException;
 import com.nogenem.skyapp.exception.LastEmailSentIsStillValidException;
 import com.nogenem.skyapp.exception.NoUserWithSuchEmailException;
-import com.nogenem.skyapp.exception.TranslatableApiException;
 import com.nogenem.skyapp.exception.UnableToSendConfirmationEmailException;
 import com.nogenem.skyapp.exception.UnableToSendResetPasswordEmailException;
 import com.nogenem.skyapp.model.User;
@@ -57,8 +56,7 @@ public class AuthController {
 
   @PostMapping("/signup")
   @ResponseStatus(HttpStatus.CREATED)
-  public SignUpResponse signup(@Valid @RequestBody SignUpRequestBody requestBody, @RequestHeader HttpHeaders headers)
-      throws TranslatableApiException {
+  public SignUpResponse signup(@Valid @RequestBody SignUpRequestBody requestBody, @RequestHeader HttpHeaders headers) {
 
     User user = null;
     try {
@@ -79,8 +77,7 @@ public class AuthController {
   }
 
   @PostMapping("/signin")
-  public SignInResponse signin(@Valid @RequestBody SignInRequestBody requestBody, @RequestHeader HttpHeaders headers)
-      throws TranslatableApiException {
+  public SignInResponse signin(@Valid @RequestBody SignInRequestBody requestBody, @RequestHeader HttpHeaders headers) {
 
     User user = authService.findByEmail(requestBody.getEmail());
     if (user == null || !authService.isValidPassword(user.getPasswordHash(), requestBody.getPassword())) {
@@ -92,8 +89,7 @@ public class AuthController {
 
   @PostMapping("/confirmation")
   public ConfirmationResponse confirmation(@Valid @RequestBody ConfirmationRequestBody requestBody,
-      @RequestHeader HttpHeaders headers)
-      throws TranslatableApiException {
+      @RequestHeader HttpHeaders headers) {
 
     if (!tokenService.isValidToken(requestBody.getToken())) {
       throw new InvalidOrExpiredTokenException();
@@ -118,8 +114,7 @@ public class AuthController {
   @PostMapping("/resend_confirmation_email")
   public ResendConfirmationEmailResponse resendConfirmationEmail(
       @Valid @RequestBody ResendConfirmationEmailRequestBody requestBody,
-      @RequestHeader HttpHeaders headers)
-      throws TranslatableApiException {
+      @RequestHeader HttpHeaders headers) {
 
     User user = authService.findByConfirmationToken(requestBody.getToken());
     if (user == null) {
@@ -148,8 +143,7 @@ public class AuthController {
   @PostMapping("/validate_token")
   public ValidateTokenResponse validateToken(
       @Valid @RequestBody ValidateTokenRequestBody requestBody,
-      @RequestHeader HttpHeaders headers)
-      throws TranslatableApiException {
+      @RequestHeader HttpHeaders headers) {
 
     String userId = tokenService.getUserIdFromToken(requestBody.getToken());
     if (userId == null || userId.isEmpty()) {
@@ -167,8 +161,7 @@ public class AuthController {
   @PostMapping("/forgot_password")
   public ForgotPasswordResponse forgotPassword(
       @Valid @RequestBody ForgotPasswordRequestBody requestBody,
-      @RequestHeader HttpHeaders headers)
-      throws TranslatableApiException {
+      @RequestHeader HttpHeaders headers) {
 
     User user = authService.findByEmail(requestBody.getEmail());
     if (user == null) {
@@ -200,8 +193,7 @@ public class AuthController {
   @PostMapping("/reset_password")
   public ResetPasswordResponse resetPassword(
       @Valid @RequestBody ResetPasswordRequestBody requestBody,
-      @RequestHeader HttpHeaders headers)
-      throws TranslatableApiException {
+      @RequestHeader HttpHeaders headers) {
 
     if (!tokenService.isValidToken(requestBody.getToken())) {
       throw new InvalidOrExpiredTokenException();
