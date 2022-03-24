@@ -11,6 +11,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class RemovedFromGroupChannel implements ISocketEventData {
-  private ChatChannelDTO channel;
-  private List<String> members;
+  private ChatChannelDTO channelDTO;
+  private List<String> membersIds;
 }

@@ -88,7 +88,7 @@ public class SocketIoService {
         EngineIoServerOptions.newFromDefault()
             .setCorsHandlingDisabled(true));
     this.socketIoServer = new SocketIoServer(this.engineIoServer);
-    this.socketIoNamespace = socketIoServer.namespace(this.namespace);
+    this.socketIoNamespace = this.socketIoServer.namespace(this.namespace);
 
     this.initEventHandlers();
   }
@@ -108,7 +108,8 @@ public class SocketIoService {
 
       socket.on(SocketEvents.IO_GET_INITIAL_DATA, (Object... args2) -> {
         try {
-          ChatInitialData initialData = chatService.getChatInitialData(currentUserId, this.currentUsersChannelsIds);
+          ChatInitialData initialData = this.chatService.getChatInitialData(currentUserId,
+              this.currentUsersChannelsIds);
 
           SocketIoSocket.ReceivedByLocalAcknowledgementCallback func = (SocketIoSocket.ReceivedByLocalAcknowledgementCallback) args2[0];
           func.sendAcknowledgement(initialData.toJSON());
@@ -144,7 +145,7 @@ public class SocketIoService {
         if (channelId != null && !channelId.isEmpty()) {
           Channel channel = this.channelService.updateMemberLastSeen(channelId, currentUserId, lastSeen);
           if (channel != null) {
-            ChatChannelDTO channelDTO = new ChatChannelDTO(channel, null, 0);
+            ChatChannelDTO channelDTO = new ChatChannelDTO(channel);
 
             this.emit(SocketEvents.IO_SET_LAST_SEEN,
                 new MemberLastSeenChanged(channelDTO, currentUserId, lastSeen));
@@ -160,7 +161,7 @@ public class SocketIoService {
         if (channelId != null && !channelId.isEmpty()) {
           Channel channel = this.channelService.updateMemberLastSeen(channelId, currentUserId, lastSeen);
           if (channel != null) {
-            ChatChannelDTO channelDTO = new ChatChannelDTO(channel, null, 0);
+            ChatChannelDTO channelDTO = new ChatChannelDTO(channel);
 
             this.emit(SocketEvents.IO_SET_LAST_SEEN,
                 new MemberLastSeenChanged(channelDTO, currentUserId, lastSeen));

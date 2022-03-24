@@ -10,7 +10,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class MessageDeleted implements ISocketEventData {
-  private ChatChannelDTO channel;
-  private ChatMessageDTO message;
-  private ChatMessageDTO lastMessage;
+  private ChatChannelDTO channelDTO;
+  private ChatMessageDTO messageDTO;
+  private ChatMessageDTO lastMessageDTO;
 }

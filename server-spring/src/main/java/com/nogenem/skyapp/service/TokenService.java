@@ -31,11 +31,11 @@ public class TokenService {
   private String issuer;
 
   public String generateToken(@NonNull User user, Boolean tokenExpires) {
-    Algorithm algorithmHS = Algorithm.HMAC256(secret);
+    Algorithm algorithmHS = Algorithm.HMAC256(this.secret);
     Date now = new Date();
 
     JWTCreator.Builder builder = JWT.create()
-        .withIssuer(issuer)
+        .withIssuer(this.issuer)
         .withClaim(TOKEN_CLAIM_KEY, user.getId())
         .withIssuedAt(now);
 
@@ -52,9 +52,9 @@ public class TokenService {
     }
 
     try {
-      Algorithm algorithm = Algorithm.HMAC256(secret);
+      Algorithm algorithm = Algorithm.HMAC256(this.secret);
       JWTVerifier verifier = JWT.require(algorithm)
-          .withIssuer(issuer)
+          .withIssuer(this.issuer)
           .build();
 
       verifier.verify(token);
@@ -72,9 +72,9 @@ public class TokenService {
     }
 
     try {
-      Algorithm algorithm = Algorithm.HMAC256(secret);
+      Algorithm algorithm = Algorithm.HMAC256(this.secret);
       JWTVerifier verifier = JWT.require(algorithm)
-          .withIssuer(issuer)
+          .withIssuer(this.issuer)
           .build();
       DecodedJWT jwt = verifier.verify(token);
 

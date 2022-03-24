@@ -12,6 +12,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class MessagesReceived implements ISocketEventData {
-  private ChatChannelDTO channel;
-  private List<ChatMessageDTO> messages;
+  private ChatChannelDTO channelDTO;
+  private List<ChatMessageDTO> messagesDTOs;
 }

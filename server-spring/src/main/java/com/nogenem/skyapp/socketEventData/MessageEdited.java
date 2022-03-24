@@ -10,6 +10,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class MessageEdited implements ISocketEventData {
-  private ChatChannelDTO channel;
-  private ChatMessageDTO message;
+  private ChatChannelDTO channelDTO;
+  private ChatMessageDTO messageDTO;
 }

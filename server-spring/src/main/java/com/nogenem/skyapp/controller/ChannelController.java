@@ -69,32 +69,21 @@ public class ChannelController {
       @RequestHeader HttpHeaders headers) {
 
     String otherUserId = requestBody.getOtherUserId();
-    User loggedInUser = userService.getLoggedInUser();
+    User loggedInUser = this.userService.getLoggedInUser();
 
-    User otherUser = userService.findById(otherUserId);
+    User otherUser = this.userService.findById(otherUserId);
     if (otherUser == null) {
       throw new InvalidIdException();
     }
 
-    if (channelService.privateChannelExists(loggedInUser.getId(), otherUserId)) {
+    if (this.channelService.privateChannelExists(loggedInUser.getId(), otherUserId)) {
       throw new ChannelAlreadyExistsException();
     }
 
-    Instant now = Instant.now();
-    List<Member> members = new ArrayList<>();
-    members.add(new Member(loggedInUser.getId(), false, now));
-    members.add(new Member(otherUserId, false, now));
+    Channel channel = this.channelService.createPrivateChannel(loggedInUser.getId(), otherUserId);
 
-    Channel channel = new Channel();
-    channel.setName("private channel");
-    channel.setIsGroup(false);
-    channel.setMembers(members);
-    channel.setCreatedAt(now);
-    channel.setUpdatedAt(now);
-
-    channel = this.channelService.save(channel);
-
-    this.socketIoService.emit(SocketEvents.IO_PRIVATE_CHANNEL_CREATED, new ChatChannelDTO(channel, -1, 0));
+    this.socketIoService.emit(SocketEvents.IO_PRIVATE_CHANNEL_CREATED,
+        new ChatChannelDTO(channel));
 
     return new ChannelStoreResponse(channel.getId());
   }
@@ -107,10 +96,9 @@ public class ChannelController {
     String[] membersIds = requestBody.getMembers();
     String[] adminsIds = requestBody.getAdmins();
 
-    User loggedInUser = userService.getLoggedInUser();
-    Instant now = Instant.now();
+    User loggedInUser = this.userService.getLoggedInUser();
 
-    List<User> membersRecords = userService.getUsersNickname(requestBody.getMembers());
+    List<User> membersRecords = this.userService.findUsersNickname(requestBody.getMembers());
     if (membersRecords == null || membersRecords.size() < ValidationLimits.MIN_GROUP_CHANNEL_MEMBERS) {
       throw new GroupHasTooFewMembersException(ValidationLimits.MIN_GROUP_CHANNEL_MEMBERS);
     }
@@ -120,45 +108,11 @@ public class ChannelController {
       adminsIdsHash.put(adminsIds[i], true);
     }
 
-    List<Member> members = new ArrayList<>();
-    members.add(new Member(loggedInUser.getId(), true, now));
-    for (int i = 0; i < membersIds.length; i++) {
-      members.add(new Member(membersIds[i], adminsIdsHash.containsKey(membersIds[i]), now));
-    }
+    Channel channel = this.channelService.createGroupChannel(requestBody.getName(), membersIds, adminsIdsHash,
+        loggedInUser.getId());
 
-    Channel channel = new Channel();
-    channel.setName(requestBody.getName());
-    channel.setIsGroup(true);
-    channel.setMembers(members);
-    channel.setCreatedAt(now);
-    channel.setUpdatedAt(now);
-
-    channel = this.channelService.save(channel);
-
-    List<Message> newMembersMessages = new ArrayList<>();
-    List<Message> newAdminsMessages = new ArrayList<>();
-    for (User member : membersRecords) {
-      Message tmp = new Message();
-      tmp.setChannelId(channel.getId());
-      tmp.setBody(String.format("%s added %s", loggedInUser.getNickname(), member.getNickname()));
-      tmp.setType(MessageType.TEXT);
-
-      newMembersMessages.add(tmp);
-
-      if (adminsIdsHash.containsKey(member.getId())) {
-        tmp = new Message();
-        tmp.setChannelId(channel.getId());
-        tmp.setBody(String.format("%s is now an Admin", member.getNickname()));
-        tmp.setType(MessageType.TEXT);
-
-        newAdminsMessages.add(tmp);
-      }
-    }
-
-    List<Message> messages = Stream.of(newMembersMessages, newAdminsMessages)
-        .flatMap(Collection::stream)
-        .collect(Collectors.toList());
-    messages = messageService.saveAll(messages);
+    List<Message> messages = this.messageService.createNewMembersAndNewAdminsMessages(channel.getId(), membersRecords,
+        adminsIdsHash, loggedInUser.getNickname());
 
     Message lastMessage = messages.get(messages.size() - 1);
     channel.setLastMessage(lastMessage);
@@ -177,11 +131,11 @@ public class ChannelController {
     String[] membersIds = requestBody.getMembers();
     String[] adminsIds = requestBody.getAdmins();
 
-    User loggedInUser = userService.getLoggedInUser();
+    User loggedInUser = this.userService.getLoggedInUser();
     Instant now = Instant.now();
 
-    Channel channel = channelService.findById(channelId);
-    if (channel == null) {
+    Channel channel = this.channelService.findById(channelId);
+    if (channel == null || !channel.getIsGroup()) {
       throw new CantUpdateThisGroupChannelException();
     }
 
@@ -202,9 +156,8 @@ public class ChannelController {
     List<String> removedAdmins = new ArrayList<>();
     Boolean isCurrentUserAdm = false;
 
-    for (int i = 0; i < channel.getMembers().size(); i += 1) {
-      Member member = channel.getMembers().get(i);
-      if (loggedInUser.getId().toString().equals(member.getUserId().toString())) {
+    for (Member member : channel.getMembers()) {
+      if (loggedInUser.getId().equals(member.getUserId())) {
         members.add(member);
         isCurrentUserAdm = member.getIsAdm();
 
@@ -247,7 +200,7 @@ public class ChannelController {
         .map(member -> member.getUserId())
         .collect(Collectors.toList())
         .toArray();
-    Integer toUpdateMembersCount = userService.countUsersIn(toUpdateMembersIds);
+    Integer toUpdateMembersCount = this.userService.countUsersIn(toUpdateMembersIds);
     // PS: - 1 cause of the user that is already updating this group
     if (toUpdateMembersCount == null || (toUpdateMembersCount - 1) < ValidationLimits.MIN_GROUP_CHANNEL_MEMBERS) {
       throw new GroupHasTooFewMembersException(ValidationLimits.MIN_GROUP_CHANNEL_MEMBERS);
@@ -257,7 +210,7 @@ public class ChannelController {
         .flatMap(Collection::stream)
         .collect(Collectors.toList())
         .toArray();
-    List<User> membersRecords = userService.getUsersNickname(allMembersIds);
+    List<User> membersRecords = this.userService.findUsersNickname(allMembersIds);
 
     HashMap<String, String> membersRecordsHash = new HashMap<>();
     for (int i = 0; i < membersRecords.size(); i++) {
@@ -302,13 +255,13 @@ public class ChannelController {
     channel.setName(requestBody.getName());
     channel.setMembers(members);
 
-    channel = channelService.save(channel);
-    messages = messageService.saveAll(messages);
+    channel = this.channelService.save(channel);
+    messages = this.messageService.saveAll(messages);
 
     Message lastMessage = messages.get(messages.size() - 1);
     channel.setLastMessage(lastMessage);
 
-    ChatChannelDTO channelDTO = new ChatChannelDTO(channel, null, 0);
+    ChatChannelDTO channelDTO = new ChatChannelDTO(channel);
     List<ChatMessageDTO> messagesDTOs = messages.stream()
         .map(message -> new ChatMessageDTO(message))
         .collect(Collectors.toList());
@@ -317,7 +270,7 @@ public class ChannelController {
     for (Member member : channel.getMembers()) {
       unreadMessagesHash.put(
           member.getUserId(),
-          messageService.countUnreadMessages(channel.getId(), member.getLastSeen()));
+          this.messageService.countUnreadMessages(channel.getId(), member.getLastSeen()));
     }
 
     this.socketIoService.emit(SocketEvents.IO_REMOVED_FROM_GROUP_CHANNEL,
@@ -334,10 +287,10 @@ public class ChannelController {
   public ChannelLeaveResponse groupLeave(@PathVariable("channelId") String channelId,
       @RequestHeader HttpHeaders headers) {
 
-    User loggedInUser = userService.getLoggedInUser();
-    String loggedInUserId = loggedInUser.getId().toString();
+    User loggedInUser = this.userService.getLoggedInUser();
+    String loggedInUserId = loggedInUser.getId();
 
-    Channel channel = channelService.findById(channelId);
+    Channel channel = this.channelService.findById(channelId);
     if (channel == null || !channel.getIsGroup()) {
       throw new CantLeaveThisChannelException();
     }
@@ -347,7 +300,7 @@ public class ChannelController {
     Boolean loggedInMemberIsAdm = false;
 
     for (Member member : channel.getMembers()) {
-      if (loggedInMember == null && member.getUserId().toString().equals(loggedInUserId)) {
+      if (loggedInMember == null && member.getUserId().equals(loggedInUserId)) {
         loggedInMemberIsAdm = member.getIsAdm();
         loggedInMember = member;
       } else if (member.getIsAdm()) {
@@ -362,13 +315,13 @@ public class ChannelController {
     channel.getMembers().remove(loggedInMember);
 
     if (channel.getMembers().size() == 1) {
-      ChatChannelDTO channelDTO = new ChatChannelDTO(channel, null, 0);
+      ChatChannelDTO channelDTO = new ChatChannelDTO(channel);
 
       // Remove the last member too and delete the channel
       String lastMemberId = channel.getMembers().get(0).getUserId();
       List<String> removedMembers = List.of(loggedInUserId, lastMemberId);
 
-      channelService.delete(channel);
+      this.channelService.delete(channel);
 
       this.socketIoService.emit(SocketEvents.IO_REMOVED_FROM_GROUP_CHANNEL,
           new RemovedFromGroupChannel(channelDTO, removedMembers));
@@ -384,12 +337,12 @@ public class ChannelController {
       message.setBody(String.format("%s left the group", loggedInUser.getNickname()));
       message.setType(MessageType.TEXT);
 
-      message = messageService.save(message);
-      channel = channelService.save(channel);
+      message = this.messageService.save(message);
+      channel = this.channelService.save(channel);
 
       channel.setLastMessage(message);
 
-      ChatChannelDTO channelDTO = new ChatChannelDTO(channel, null, 0);
+      ChatChannelDTO channelDTO = new ChatChannelDTO(channel);
       List<String> removedMembers = List.of(loggedInUserId);
       List<ChatMessageDTO> messagesDTOs = List.of(new ChatMessageDTO(message));
 
@@ -397,7 +350,7 @@ public class ChannelController {
       for (Member member : channel.getMembers()) {
         unreadMessagesHash.put(
             member.getUserId(),
-            messageService.countUnreadMessages(channel.getId(), member.getLastSeen()));
+            this.messageService.countUnreadMessages(channel.getId(), member.getLastSeen()));
       }
 
       this.socketIoService.emit(SocketEvents.IO_REMOVED_FROM_GROUP_CHANNEL,

@@ -25,7 +25,7 @@ public class SkyappApplication implements CommandLineRunner {
 
   @Override
   public void run(String... arg) throws Exception {
-    storageService.init();
+    this.storageService.init();
   }
 
   @Bean

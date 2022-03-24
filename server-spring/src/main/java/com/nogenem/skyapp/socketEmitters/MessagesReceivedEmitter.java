@@ -21,23 +21,22 @@ public class MessagesReceivedEmitter implements ISocketEmitter {
   public void emit(SocketIoNamespace namespace, Set<String> clientsIds, ISocketEventData data) {
     MessagesReceived tmpData = (MessagesReceived) data;
 
-    ChatChannelDTO channel = tmpData.getChannel();
-    List<ChatMessageDTO> messages = tmpData.getMessages();
-    String fromId = messages.get(0).getFromId();
+    ChatChannelDTO channelDTO = tmpData.getChannelDTO();
+    List<ChatMessageDTO> messagesDTOs = tmpData.getMessagesDTOs();
+    String fromId = messagesDTOs.get(0).getFromId();
 
-    JSONArray messagesJson = new JSONArray();
-    for (ChatMessageDTO message : messages) {
-      messagesJson.put(message.toJSON());
+    JSONArray arr = new JSONArray();
+    for (ChatMessageDTO messageDTO : messagesDTOs) {
+      arr.put(messageDTO.toJSON());
     }
 
-    List<ChatMemberDTO> members = channel.getMembers();
-    for (int i = 0; i < members.size(); i++) {
-      String userId = members.get(i).getUserId();
+    for (ChatMemberDTO memberDTO : channelDTO.getMembers()) {
+      String userId = memberDTO.getUserId();
       if (fromId == null || fromId.isEmpty() || !fromId.equals(userId)) {
         namespace.broadcast(
             userId,
             SocketEvents.IO_MESSAGES_RECEIVED,
-            messagesJson);
+            arr);
       }
     }
   }

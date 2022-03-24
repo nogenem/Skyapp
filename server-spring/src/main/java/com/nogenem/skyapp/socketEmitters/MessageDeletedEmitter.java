@@ -1,6 +1,5 @@
 package com.nogenem.skyapp.socketEmitters;
 
-import java.util.List;
 import java.util.Set;
 
 import com.nogenem.skyapp.DTO.ChatChannelDTO;
@@ -21,26 +20,22 @@ public class MessageDeletedEmitter implements ISocketEmitter {
   public void emit(SocketIoNamespace namespace, Set<String> clientsIds, ISocketEventData data) {
     MessageDeleted tmpData = (MessageDeleted) data;
 
-    ChatChannelDTO channelDTO = tmpData.getChannel();
-    ChatMessageDTO messageDTO = tmpData.getMessage();
-    ChatMessageDTO lastMessageDTO = tmpData.getLastMessage();
+    ChatChannelDTO channelDTO = tmpData.getChannelDTO();
+    ChatMessageDTO messageDTO = tmpData.getMessageDTO();
+    ChatMessageDTO lastMessageDTO = tmpData.getLastMessageDTO();
     String fromId = messageDTO.getFromId();
 
-    JSONObject message = messageDTO.toJSON();
-    JSONObject lastMessage = lastMessageDTO != null ? lastMessageDTO.toJSON() : null;
+    JSONObject obj = new JSONObject();
+    obj.put("message", messageDTO.toJSON());
+    obj.put("lastMessage", lastMessageDTO != null ? lastMessageDTO.toJSON() : JSONObject.NULL);
 
-    JSONObject ret = new JSONObject();
-    ret.put("message", message);
-    ret.put("lastMessage", lastMessage != null ? lastMessage : JSONObject.NULL);
-
-    List<ChatMemberDTO> members = channelDTO.getMembers();
-    for (int i = 0; i < members.size(); i++) {
-      String userId = members.get(i).getUserId();
+    for (ChatMemberDTO memberDTO : channelDTO.getMembers()) {
+      String userId = memberDTO.getUserId();
       if (fromId == null || fromId.isEmpty() || !fromId.equals(userId)) {
         namespace.broadcast(
             userId,
             SocketEvents.IO_MESSAGE_DELETED,
-            ret);
+            obj);
       }
     }
   }

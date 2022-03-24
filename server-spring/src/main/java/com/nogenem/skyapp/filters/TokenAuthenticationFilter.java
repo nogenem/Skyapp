@@ -34,8 +34,8 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
 
-    String token = getTokenFromHeader(request);
-    String userId = tokenService.getUserIdFromToken(token);
+    String token = this.getTokenFromHeader(request);
+    String userId = this.tokenService.getUserIdFromToken(token);
 
     if (userId != null && !userId.isEmpty()) {
       authenticate(userId);
@@ -55,7 +55,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
   }
 
   private void authenticate(String userId) {
-    Optional<User> optionalUser = userRepository.findById(userId);
+    Optional<User> optionalUser = this.userRepository.findById(userId);
 
     if (optionalUser.isPresent()) {
       User user = optionalUser.get();

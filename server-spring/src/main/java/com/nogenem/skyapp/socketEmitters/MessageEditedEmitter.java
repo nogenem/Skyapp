@@ -1,6 +1,5 @@
 package com.nogenem.skyapp.socketEmitters;
 
-import java.util.List;
 import java.util.Set;
 
 import com.nogenem.skyapp.DTO.ChatChannelDTO;
@@ -21,20 +20,19 @@ public class MessageEditedEmitter implements ISocketEmitter {
   public void emit(SocketIoNamespace namespace, Set<String> clientsIds, ISocketEventData data) {
     MessageEdited tmpData = (MessageEdited) data;
 
-    ChatChannelDTO channelDTO = tmpData.getChannel();
-    ChatMessageDTO messageDTO = tmpData.getMessage();
+    ChatChannelDTO channelDTO = tmpData.getChannelDTO();
+    ChatMessageDTO messageDTO = tmpData.getMessageDTO();
     String fromId = messageDTO.getFromId();
 
-    JSONObject message = messageDTO.toJSON();
+    JSONObject obj = messageDTO.toJSON();
 
-    List<ChatMemberDTO> members = channelDTO.getMembers();
-    for (int i = 0; i < members.size(); i++) {
-      String userId = members.get(i).getUserId();
+    for (ChatMemberDTO memberDTO : channelDTO.getMembers()) {
+      String userId = memberDTO.getUserId();
       if (fromId == null || fromId.isEmpty() || !fromId.equals(userId)) {
         namespace.broadcast(
             userId,
             SocketEvents.IO_MESSAGE_EDITED,
-            message);
+            obj);
       }
     }
   }

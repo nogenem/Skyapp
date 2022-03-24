@@ -33,7 +33,7 @@ public class ApiResponseControllerAdvice implements ResponseBodyAdvice<ApiRespon
       ServerHttpResponse response) {
 
     Locale locale = LocaleContextHolder.getLocale();
-    body.setMessage(messageSource.getMessage(body.getMessage(), body.getArgs(), locale));
+    body.setMessage(this.messageSource.getMessage(body.getMessage(), body.getArgs(), locale));
 
     return body;
   }

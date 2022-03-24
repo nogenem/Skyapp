@@ -11,6 +11,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class GroupChannelUpdated implements ISocketEventData {
-  private ChatChannelDTO channel;
+  private ChatChannelDTO channelDTO;
   private HashMap<String, Integer> unreadMessagesHash;
 }

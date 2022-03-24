@@ -25,6 +25,10 @@ public class ChatChannelDTO implements ISocketEventData {
   private Integer unreadMsgs;
   private ChatMessageDTO lastMessage;
 
+  public ChatChannelDTO(Channel channel) {
+    this(channel, null, 0);
+  }
+
   public ChatChannelDTO(Channel channel, Integer otherMemberIdx, Integer unreadMsgs) {
     this._id = channel.getId();
     this.name = channel.getName();

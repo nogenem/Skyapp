@@ -26,12 +26,12 @@ public class ChatService {
   private final MessageRepository messageRepository;
 
   public List<Channel> getUserChannelsWithLastMessage(String userId) {
-    return this.channelRepository.getUserChannelsWithLastMessage(userId).getMappedResults();
+    return this.channelRepository.findUserChannelsWithLastMessage(userId).getMappedResults();
   }
 
   public ChatInitialData getChatInitialData(String currentUserId, HashMap<String, String> currentUsers) {
     List<Channel> tmpChannels = this.getUserChannelsWithLastMessage(currentUserId);
-    List<User> tmpUsers = this.userRepository.getOtherUsers(currentUserId);
+    List<User> tmpUsers = this.userRepository.findOtherUsers(currentUserId);
 
     HashMap<String, String> userIdToChannelId = new HashMap<>();
     ChatInitialData initialData = new ChatInitialData();
@@ -46,7 +46,7 @@ public class ChatService {
           .orElse(null);
 
       if (member != null) {
-        unreadMsgs = messageRepository.countUnreadMessages(channel.getId(), member.getLastSeen());
+        unreadMsgs = this.messageRepository.countUnreadMessages(channel.getId(), member.getLastSeen());
 
         if (!channel.getIsGroup()) {
           int memberIdx = channel.getMembers().indexOf(member);

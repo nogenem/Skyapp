@@ -97,7 +97,7 @@ public class ExceptionControllerAdvice {
       for (final TranslatableEntry entry : item.getValue()) {
         exception.put(
             item.getKey(),
-            messageSource.getMessage(entry.getMessage(), entry.getArgs(), locale));
+            this.messageSource.getMessage(entry.getMessage(), entry.getArgs(), locale));
       }
     }
 

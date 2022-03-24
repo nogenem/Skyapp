@@ -1,6 +1,7 @@
 package com.nogenem.skyapp.controller;
 
 import java.awt.image.BufferedImage;
+
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -75,9 +76,9 @@ public class MessageController {
       @RequestParam(defaultValue = "-createdAt") String sort,
       @RequestHeader HttpHeaders headers) {
 
-    User loggedInUser = userService.getLoggedInUser();
+    User loggedInUser = this.userService.getLoggedInUser();
 
-    Channel channel = this.channelService.getChannelByIdAndUserId(channelId, loggedInUser.getId());
+    Channel channel = this.channelService.findByIdAndMemberId(channelId, loggedInUser.getId());
     if (channel == null) {
       throw new NotMemberOfChannelException();
     }
@@ -95,9 +96,9 @@ public class MessageController {
       @Valid @RequestBody StoreMessageRequestBody requestBody,
       @RequestHeader HttpHeaders headers) {
 
-    User loggedInUser = userService.getLoggedInUser();
+    User loggedInUser = this.userService.getLoggedInUser();
 
-    Channel channel = this.channelService.getChannelByIdAndUserId(channelId, loggedInUser.getId());
+    Channel channel = this.channelService.findByIdAndMemberId(channelId, loggedInUser.getId());
     if (channel == null) {
       throw new NotMemberOfChannelException();
     }
@@ -108,9 +109,9 @@ public class MessageController {
     message.setBody(requestBody.getBody());
     message.setType(MessageType.TEXT);
 
-    this.messageService.save(message);
+    message = this.messageService.save(message);
 
-    ChatChannelDTO channelDTO = new ChatChannelDTO(channel, null, -1);
+    ChatChannelDTO channelDTO = new ChatChannelDTO(channel);
     List<ChatMessageDTO> messagesDTOs = List.of(message).stream()
         .map(m -> new ChatMessageDTO(m))
         .collect(Collectors.toList());
@@ -127,9 +128,9 @@ public class MessageController {
       @Valid @RequestBody UpdateMessageRequestBody requestBody,
       @RequestHeader HttpHeaders headers) {
 
-    User loggedInUser = userService.getLoggedInUser();
+    User loggedInUser = this.userService.getLoggedInUser();
 
-    Channel channel = this.channelService.getChannelByIdAndUserId(channelId, loggedInUser.getId());
+    Channel channel = this.channelService.findByIdAndMemberId(channelId, loggedInUser.getId());
     if (channel == null) {
       throw new NotMemberOfChannelException();
     }
@@ -141,10 +142,11 @@ public class MessageController {
     }
 
     message.setBody(requestBody.getNewBody());
-    this.messageService.save(message);
+
+    message = this.messageService.save(message);
 
     ChatMessageDTO messageDTO = new ChatMessageDTO(message);
-    ChatChannelDTO channelDTO = new ChatChannelDTO(channel, null, -1);
+    ChatChannelDTO channelDTO = new ChatChannelDTO(channel);
 
     this.socketIoService.emit(SocketEvents.IO_MESSAGE_EDITED,
         new MessageEdited(channelDTO, messageDTO));
@@ -157,9 +159,9 @@ public class MessageController {
       @RequestParam("files") MultipartFile[] files,
       @RequestHeader HttpHeaders headers) {
 
-    User loggedInUser = userService.getLoggedInUser();
+    User loggedInUser = this.userService.getLoggedInUser();
 
-    Channel channel = this.channelService.getChannelByIdAndUserId(channelId, loggedInUser.getId());
+    Channel channel = this.channelService.findByIdAndMemberId(channelId, loggedInUser.getId());
     if (channel == null) {
       throw new NotMemberOfChannelException();
     }
@@ -195,20 +197,10 @@ public class MessageController {
       attachments.add(attachment);
     }
 
-    List<Message> messages = new ArrayList<>();
-    for (Attachment attachment : attachments) {
-      Message message = new Message();
-      message.setChannelId(channelId);
-      message.setFromId(loggedInUser.getId());
-      message.setBody(attachment);
-      message.setType(MessageType.UPLOADED_FILE);
+    List<Message> messages = this.messageService.createMessagesWithAttachment(channelId, attachments,
+        loggedInUser.getId());
 
-      messages.add(message);
-    }
-
-    messages = messageService.saveAll(messages);
-
-    ChatChannelDTO channelDTO = new ChatChannelDTO(channel, null, 0);
+    ChatChannelDTO channelDTO = new ChatChannelDTO(channel);
     List<ChatMessageDTO> messagesDTOs = messages.stream()
         .map(message -> new ChatMessageDTO(message))
         .collect(Collectors.toList());
@@ -224,9 +216,9 @@ public class MessageController {
       @PathVariable("messageId") String messageId,
       @RequestHeader HttpHeaders headers) {
 
-    User loggedInUser = userService.getLoggedInUser();
+    User loggedInUser = this.userService.getLoggedInUser();
 
-    Channel channel = this.channelService.getChannelByIdAndUserId(channelId, loggedInUser.getId());
+    Channel channel = this.channelService.findByIdAndMemberId(channelId, loggedInUser.getId());
     if (channel == null) {
       throw new NotMemberOfChannelException();
     }
@@ -244,9 +236,9 @@ public class MessageController {
       this.filesStorageService.delete(attachment.getPath());
     }
 
-    Message lastMessageRecord = this.messageService.getLastMessage(channelId);
+    Message lastMessageRecord = this.messageService.findLastMessage(channelId);
 
-    ChatChannelDTO channelDTO = new ChatChannelDTO(channel, null, 0);
+    ChatChannelDTO channelDTO = new ChatChannelDTO(channel);
     ChatMessageDTO messageDTO = new ChatMessageDTO(message);
     ChatMessageDTO lastMessageDTO = lastMessageRecord != null ? new ChatMessageDTO(lastMessageRecord) : null;
 

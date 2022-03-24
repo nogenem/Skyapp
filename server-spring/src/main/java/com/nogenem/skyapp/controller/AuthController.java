@@ -60,42 +60,42 @@ public class AuthController {
 
     User user = null;
     try {
-      user = authService.save(requestBody);
+      user = this.authService.create(requestBody);
     } catch (DuplicateKeyException ex) {
       throw new EmailAlreadyTakenException();
     }
 
     try {
       String origin = Utils.getOriginFromHeaders(headers);
-      mailService.sendConfirmationEmail(user.getEmail(), user.getConfirmationToken(), origin);
+      this.mailService.sendConfirmationEmail(user.getEmail(), user.getConfirmationToken(), origin);
     } catch (Exception e) {
       e.printStackTrace();
       throw new UnableToSendConfirmationEmailException();
     }
 
-    return new SignUpResponse(new UserDTO(user, tokenService.generateToken(user, true)));
+    return new SignUpResponse(new UserDTO(user, this.tokenService.generateToken(user, true)));
   }
 
   @PostMapping("/signin")
   public SignInResponse signin(@Valid @RequestBody SignInRequestBody requestBody, @RequestHeader HttpHeaders headers) {
 
-    User user = authService.findByEmail(requestBody.getEmail());
-    if (user == null || !authService.isValidPassword(user.getPasswordHash(), requestBody.getPassword())) {
+    User user = this.authService.findByEmail(requestBody.getEmail());
+    if (user == null || !this.authService.isValidPassword(user.getPasswordHash(), requestBody.getPassword())) {
       throw new InvalidCredentialsException();
     }
 
-    return new SignInResponse(new UserDTO(user, tokenService.generateToken(user, !requestBody.isRememberMe())));
+    return new SignInResponse(new UserDTO(user, this.tokenService.generateToken(user, !requestBody.isRememberMe())));
   }
 
   @PostMapping("/confirmation")
   public ConfirmationResponse confirmation(@Valid @RequestBody ConfirmationRequestBody requestBody,
       @RequestHeader HttpHeaders headers) {
 
-    if (!tokenService.isValidToken(requestBody.getToken())) {
+    if (!this.tokenService.isValidToken(requestBody.getToken())) {
       throw new InvalidOrExpiredTokenException();
     }
 
-    User user = authService.findByConfirmationToken(requestBody.getToken());
+    User user = this.authService.findByConfirmationToken(requestBody.getToken());
     if (user == null) {
       throw new InvalidOrExpiredTokenException();
     }
@@ -103,8 +103,8 @@ public class AuthController {
     user.setConfirmationToken("");
     user.setConfirmed(true);
 
-    user = authService.update(user);
-    UserDTO userDTO = new UserDTO(user, tokenService.generateToken(user, true));
+    user = this.authService.save(user);
+    UserDTO userDTO = new UserDTO(user, this.tokenService.generateToken(user, true));
 
     this.socketIoService.emit(SocketEvents.IO_NEW_USER, userDTO);
 
@@ -116,22 +116,22 @@ public class AuthController {
       @Valid @RequestBody ResendConfirmationEmailRequestBody requestBody,
       @RequestHeader HttpHeaders headers) {
 
-    User user = authService.findByConfirmationToken(requestBody.getToken());
+    User user = this.authService.findByConfirmationToken(requestBody.getToken());
     if (user == null) {
       throw new InvalidOrExpiredTokenException();
     }
 
-    if (tokenService.isValidToken(requestBody.getToken())) {
+    if (this.tokenService.isValidToken(requestBody.getToken())) {
       throw new LastEmailSentIsStillValidException();
     }
 
-    user.setConfirmationToken(tokenService.generateToken(user, true));
+    user.setConfirmationToken(this.tokenService.generateToken(user, true));
 
-    user = authService.update(user);
+    user = this.authService.save(user);
 
     try {
       String origin = Utils.getOriginFromHeaders(headers);
-      mailService.sendConfirmationEmail(user.getEmail(), user.getConfirmationToken(), origin);
+      this.mailService.sendConfirmationEmail(user.getEmail(), user.getConfirmationToken(), origin);
     } catch (Exception e) {
       e.printStackTrace();
       throw new UnableToSendConfirmationEmailException();
@@ -145,12 +145,12 @@ public class AuthController {
       @Valid @RequestBody ValidateTokenRequestBody requestBody,
       @RequestHeader HttpHeaders headers) {
 
-    String userId = tokenService.getUserIdFromToken(requestBody.getToken());
+    String userId = this.tokenService.getUserIdFromToken(requestBody.getToken());
     if (userId == null || userId.isEmpty()) {
       throw new InvalidOrExpiredTokenException();
     }
 
-    User user = authService.findById(userId);
+    User user = this.authService.findById(userId);
     if (user == null) {
       throw new InvalidOrExpiredTokenException();
     }
@@ -163,25 +163,25 @@ public class AuthController {
       @Valid @RequestBody ForgotPasswordRequestBody requestBody,
       @RequestHeader HttpHeaders headers) {
 
-    User user = authService.findByEmail(requestBody.getEmail());
+    User user = this.authService.findByEmail(requestBody.getEmail());
     if (user == null) {
       throw new NoUserWithSuchEmailException();
     }
 
     String resetPasswordToken = user.getResetPasswordToken();
     if (resetPasswordToken != null && !resetPasswordToken.isEmpty()) {
-      if (tokenService.isValidToken(resetPasswordToken)) {
+      if (this.tokenService.isValidToken(resetPasswordToken)) {
         throw new LastEmailSentIsStillValidException();
       }
     }
 
-    user.setResetPasswordToken(tokenService.generateToken(user, true));
+    user.setResetPasswordToken(this.tokenService.generateToken(user, true));
 
-    user = authService.update(user);
+    user = this.authService.save(user);
 
     try {
       String origin = Utils.getOriginFromHeaders(headers);
-      mailService.sendResetPasswordEmail(user.getEmail(), user.getResetPasswordToken(), origin);
+      this.mailService.sendResetPasswordEmail(user.getEmail(), user.getResetPasswordToken(), origin);
     } catch (Exception e) {
       e.printStackTrace();
       throw new UnableToSendResetPasswordEmailException();
@@ -195,20 +195,20 @@ public class AuthController {
       @Valid @RequestBody ResetPasswordRequestBody requestBody,
       @RequestHeader HttpHeaders headers) {
 
-    if (!tokenService.isValidToken(requestBody.getToken())) {
+    if (!this.tokenService.isValidToken(requestBody.getToken())) {
       throw new InvalidOrExpiredTokenException();
     }
 
-    User user = authService.findByResetPasswordToken(requestBody.getToken());
+    User user = this.authService.findByResetPasswordToken(requestBody.getToken());
     if (user == null) {
       throw new InvalidOrExpiredTokenException();
     }
 
-    authService.updatePasswordHash(user, requestBody.getNewPassword());
+    this.authService.updatePasswordHash(user, requestBody.getNewPassword());
     user.setResetPasswordToken("");
 
-    user = authService.update(user);
+    user = this.authService.save(user);
 
-    return new ResetPasswordResponse(new UserDTO(user, tokenService.generateToken(user, true)));
+    return new ResetPasswordResponse(new UserDTO(user, this.tokenService.generateToken(user, true)));
   }
 }

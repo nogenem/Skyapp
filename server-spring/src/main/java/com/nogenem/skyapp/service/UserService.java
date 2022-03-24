@@ -1,7 +1,6 @@
 package com.nogenem.skyapp.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import com.nogenem.skyapp.model.User;
 import com.nogenem.skyapp.repository.UserRepository;
@@ -18,28 +17,23 @@ public class UserService {
   private final UserRepository userRepository;
 
   public List<User> findAll() {
-    return userRepository.findAll();
+    return this.userRepository.findAll();
   }
 
-  public List<User> getUsersNickname(Object[] usersIds) {
-    return userRepository.getUsersNickname(usersIds);
+  public List<User> findUsersNickname(Object[] usersIds) {
+    return this.userRepository.findUsersNickname(usersIds);
   }
 
   public Integer countUsersIn(Object[] usersIds) {
-    return userRepository.countUsersIn(usersIds);
+    return this.userRepository.countUsersIn(usersIds);
   }
 
   public User findById(String id) {
-    Optional<User> user = userRepository.findById(id);
-    if (user.isPresent()) {
-      return user.get();
-    } else {
-      return null;
-    }
+    return this.userRepository.findById(id).orElse(null);
   }
 
   public User findByEmail(String email) {
-    return userRepository.findByEmail(email);
+    return this.userRepository.findByEmail(email).orElse(null);
   }
 
   public User getLoggedInUser() {

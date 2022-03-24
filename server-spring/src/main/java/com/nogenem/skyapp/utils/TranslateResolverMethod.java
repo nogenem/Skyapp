@@ -32,7 +32,7 @@ public class TranslateResolverMethod implements TemplateMethodModelEx {
       args = arguments.subList(1, arguments.size()).toArray();
     }
 
-    return this.messageSource.getMessage(code, args, locale);
+    return this.messageSource.getMessage(code, args, this.locale);
   }
 
 }

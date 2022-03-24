@@ -8,9 +8,6 @@ import org.springframework.util.StringUtils;
 
 public final class Utils {
 
-  private Utils() {
-  }
-
   public static String getOriginFromHeaders(HttpHeaders headers) throws MalformedURLException {
     if (headers.containsKey("x-forwarded-host")) {
       String origin = String.format("%s://%s", headers.get("x-forwarded-proto").get(0),

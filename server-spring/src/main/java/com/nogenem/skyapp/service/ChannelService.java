@@ -1,10 +1,12 @@
 package com.nogenem.skyapp.service;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 
 import com.nogenem.skyapp.model.Channel;
+import com.nogenem.skyapp.model.Member;
 import com.nogenem.skyapp.repository.ChannelRepository;
 
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
@@ -28,16 +30,11 @@ public class ChannelService {
   }
 
   public Channel findById(String channelId) {
-    Optional<Channel> channel = this.channelRepository.findById(channelId);
-    if (channel.isPresent()) {
-      return channel.get();
-    } else {
-      return null;
-    }
+    return this.channelRepository.findById(channelId).orElse(null);
   }
 
-  public Channel getChannelByIdAndUserId(String channelId, String userId) {
-    return this.channelRepository.getChannelByIdAndUserId(channelId, userId);
+  public Channel findByIdAndMemberId(String channelId, String memberId) {
+    return this.channelRepository.findByIdAndMemberId(channelId, memberId).orElse(null);
   }
 
   public Channel save(Channel channel) {
@@ -45,8 +42,7 @@ public class ChannelService {
   }
 
   public Boolean privateChannelExists(String userId1, String userId2) {
-    Channel channel = this.channelRepository.getPrivateChannel(userId1, userId2);
-    return channel != null;
+    return this.channelRepository.findPrivateChannel(userId1, userId2).isPresent();
   }
 
   public void delete(Channel channel) {
@@ -62,6 +58,42 @@ public class ChannelService {
     update.set("members.$.lastSeen", lastSeen);
 
     return this.template.findAndModify(query, update, new FindAndModifyOptions().returnNew(true), Channel.class);
+  }
+
+  public Channel createPrivateChannel(String member1Id, String member2Id) {
+    Instant now = Instant.now();
+    List<Member> members = new ArrayList<>();
+    members.add(new Member(member1Id, false, now));
+    members.add(new Member(member2Id, false, now));
+
+    Channel channel = new Channel();
+    channel.setName("private channel");
+    channel.setIsGroup(false);
+    channel.setMembers(members);
+    channel.setCreatedAt(now);
+    channel.setUpdatedAt(now);
+
+    return this.save(channel);
+  }
+
+  public Channel createGroupChannel(String name, String[] membersIds, HashMap<String, Boolean> adminsIdsHash,
+      String loggedInUserId) {
+    Instant now = Instant.now();
+
+    List<Member> members = new ArrayList<>();
+    members.add(new Member(loggedInUserId, true, now));
+    for (int i = 0; i < membersIds.length; i++) {
+      members.add(new Member(membersIds[i], adminsIdsHash.containsKey(membersIds[i]), now));
+    }
+
+    Channel channel = new Channel();
+    channel.setName(name);
+    channel.setIsGroup(true);
+    channel.setMembers(members);
+    channel.setCreatedAt(now);
+    channel.setUpdatedAt(now);
+
+    return this.save(channel);
   }
 
 }

@@ -38,14 +38,14 @@ public class SocketIoController implements HandshakeInterceptor, WebSocketHandle
   @RequestMapping(value = "/socket.io/*", method = { RequestMethod.GET, RequestMethod.POST,
       RequestMethod.OPTIONS }, headers = "Connection!=Upgrade")
   public void socketIo(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    socketIoService.getEngineIoServer().handleRequest(request, response);
+    this.socketIoService.getEngineIoServer().handleRequest(request, response);
   }
 
   @Override
   public void afterConnectionEstablished(WebSocketSession session) throws Exception {
     final EngineIoSpringWebSocket webSocket = new EngineIoSpringWebSocket(session);
     session.getAttributes().put(ATTRIBUTE_ENGINEIO_BRIDGE, webSocket);
-    socketIoService.getEngineIoServer().handleWebSocket(webSocket);
+    this.socketIoService.getEngineIoServer().handleWebSocket(webSocket);
   }
 
   @Override

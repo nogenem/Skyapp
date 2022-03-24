@@ -21,7 +21,7 @@ public class PublicController {
   @GetMapping("/uploads/{filename:.+}")
   @ResponseBody
   public ResponseEntity<Resource> getFile(@PathVariable String filename) {
-    Resource file = filesStorageService.load(filename);
+    Resource file = this.filesStorageService.load(filename);
     return ResponseEntity.ok()
         .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"").body(file);
   }

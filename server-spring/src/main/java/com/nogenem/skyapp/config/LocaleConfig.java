@@ -13,7 +13,7 @@ import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 @Configuration
 public class LocaleConfig {
 
-  private final String COOKIE_NAME = "i18next";
+  private static final String COOKIE_NAME = "i18next";
 
   @Bean
   public LocaleResolver localeResolver() {

@@ -38,6 +38,7 @@ public class MailService {
   private final ICUMessageSource messageSource;
   private final JavaMailSender mailSender;
   private final FreeMarkerConfigurer freeMarker;
+
   private final ScheduledExecutorService quickService = Executors.newScheduledThreadPool(N_THREADS);
 
   public MailService(JavaMailSender mailSender, FreeMarkerConfigurer freeMarker, ICUMessageSource messageSource) {
@@ -53,9 +54,9 @@ public class MailService {
     mail.setFrom(this.getFromEmail());
     mail.setText(body);
 
-    quickService.submit(() -> {
+    this.quickService.submit(() -> {
       try {
-        mailSender.send(mail);
+        this.mailSender.send(mail);
       } catch (Exception e) {
         e.printStackTrace();
       }
@@ -63,7 +64,7 @@ public class MailService {
   }
 
   public void sendSimpleHtmlMail(String toEmail, String subject, String body) throws MessagingException {
-    MimeMessage mail = mailSender.createMimeMessage();
+    MimeMessage mail = this.mailSender.createMimeMessage();
     MimeMessageHelper helper = new MimeMessageHelper(mail, true, "UTF-8");
 
     helper.setTo(toEmail);
@@ -71,9 +72,9 @@ public class MailService {
     helper.setFrom(this.getFromEmail());
     helper.setText(body, true);
 
-    quickService.submit(() -> {
+    this.quickService.submit(() -> {
       try {
-        mailSender.send(mail);
+        this.mailSender.send(mail);
       } catch (Exception e) {
         e.printStackTrace();
       }
@@ -85,7 +86,7 @@ public class MailService {
       ParseException, MessagingException, IOException, TemplateException {
 
     Object[] args = null;
-    String subject = messageSource.getMessage("messages.welcome_to_skyapp", args, LocaleContextHolder.getLocale());
+    String subject = this.messageSource.getMessage("messages.welcome_to_skyapp", args, LocaleContextHolder.getLocale());
 
     Map<String, Object> model = new HashMap<>();
     model.put("url", origin + "/confirmation/" + token);
@@ -98,7 +99,7 @@ public class MailService {
       ParseException, MessagingException, IOException, TemplateException {
 
     Object[] args = null;
-    String subject = messageSource.getMessage("messages.reset_password", args, LocaleContextHolder.getLocale());
+    String subject = this.messageSource.getMessage("messages.reset_password", args, LocaleContextHolder.getLocale());
 
     Map<String, Object> model = new HashMap<>();
     model.put("url", origin + "/reset_password/" + token);
@@ -109,17 +110,17 @@ public class MailService {
   private String geContentFromTemplate(String templatePath, Map<String, Object> model)
       throws TemplateNotFoundException, MalformedTemplateNameException, ParseException, IOException, TemplateException {
 
-    model.put("t", new TranslateResolverMethod(messageSource, LocaleContextHolder.getLocale()));
+    model.put("t", new TranslateResolverMethod(this.messageSource, LocaleContextHolder.getLocale()));
 
     StringBuffer content = new StringBuffer();
     content.append(FreeMarkerTemplateUtils
-        .processTemplateIntoString(freeMarker.getConfiguration().getTemplate(templatePath), model));
+        .processTemplateIntoString(this.freeMarker.getConfiguration().getTemplate(templatePath), model));
 
     return content.toString();
   }
 
   private String getFromEmail() {
-    return String.format("%s <%s>", emailUsername, emailUsername);
+    return String.format("%s <%s>", this.emailUsername, this.emailUsername);
   }
 
 }

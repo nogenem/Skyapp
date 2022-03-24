@@ -17,15 +17,16 @@ public class RemovedFromGroupChannelEmitter implements ISocketEmitter {
   @Override
   public void emit(SocketIoNamespace namespace, Set<String> clientsIds, ISocketEventData data) {
     RemovedFromGroupChannel tmpData = (RemovedFromGroupChannel) data;
-    String channelId = tmpData.getChannel().get_id();
-    List<String> members = tmpData.getMembers();
+
+    String channelId = tmpData.getChannelDTO().get_id();
+    List<String> membersIds = tmpData.getMembersIds();
 
     JSONObject obj = new JSONObject();
     obj.put("channelId", channelId);
 
-    for (int i = 0; i < members.size(); i++) {
+    for (int i = 0; i < membersIds.size(); i++) {
       namespace.broadcast(
-          members.get(i),
+          membersIds.get(i),
           SocketEvents.IO_REMOVED_FROM_GROUP_CHANNEL,
           obj);
     }

@@ -1,6 +1,5 @@
 package com.nogenem.skyapp.socketEmitters;
 
-import java.util.List;
 import java.util.Set;
 
 import com.nogenem.skyapp.DTO.ChatChannelDTO;
@@ -9,17 +8,20 @@ import com.nogenem.skyapp.constants.SocketEvents;
 import com.nogenem.skyapp.interfaces.ISocketEmitter;
 import com.nogenem.skyapp.interfaces.ISocketEventData;
 
+import org.json.JSONObject;
+
 import io.socket.socketio.server.SocketIoNamespace;
 
 public class GroupChannelCreatedEmitter implements ISocketEmitter {
 
   @Override
   public void emit(SocketIoNamespace namespace, Set<String> clientsIds, ISocketEventData data) {
-    ChatChannelDTO channel = (ChatChannelDTO) data;
-    List<ChatMemberDTO> members = channel.getMembers();
+    ChatChannelDTO channelDTO = (ChatChannelDTO) data;
 
-    for (int i = 0; i < members.size(); i++) {
-      namespace.broadcast(members.get(i).getUserId(), SocketEvents.IO_GROUP_CHANNEL_CREATED, channel.toJSON());
+    JSONObject obj = channelDTO.toJSON();
+
+    for (ChatMemberDTO memberDTO : channelDTO.getMembers()) {
+      namespace.broadcast(memberDTO.getUserId(), SocketEvents.IO_GROUP_CHANNEL_CREATED, obj);
     }
   }
 

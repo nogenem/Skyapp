@@ -38,7 +38,7 @@ public class UserController {
       @Valid @RequestBody UpdateStatusRequestBody requestBody,
       @RequestHeader HttpHeaders headers) {
 
-    User loggedInUser = userService.getLoggedInUser();
+    User loggedInUser = this.userService.getLoggedInUser();
     UserStatus newStatus = requestBody.getNewStatus();
 
     if (loggedInUser.getStatus() == newStatus) {
@@ -60,7 +60,7 @@ public class UserController {
       @Valid @RequestBody UpdateThoughtsRequestBody requestBody,
       @RequestHeader HttpHeaders headers) {
 
-    User loggedInUser = userService.getLoggedInUser();
+    User loggedInUser = this.userService.getLoggedInUser();
     String newThoughts = requestBody.getNewThoughts();
 
     if (loggedInUser.getThoughts().equals(newThoughts)) {
