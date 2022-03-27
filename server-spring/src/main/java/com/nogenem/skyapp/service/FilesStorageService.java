@@ -25,6 +25,10 @@ public class FilesStorageService {
   // https://www.bezkoder.com/spring-boot-file-upload/
   public static final Path ROOT = Paths.get("uploads");
 
+  public FilesStorageService() {
+    this.init();
+  }
+
   public void init() {
     try {
       if (!Files.exists(ROOT)) {
