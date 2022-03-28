@@ -2,7 +2,13 @@ package com.nogenem.skyapp.utils;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.nogenem.skyapp.convertor.MessageTypeConverters;
+import com.nogenem.skyapp.convertor.UserStatusConverters;
+
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.util.StringUtils;
 
@@ -39,4 +45,12 @@ public final class Utils {
     return null;
   }
 
+  public static List<Converter<?, ?>> getMongoConvertersList() {
+    List<Converter<?, ?>> converters = new ArrayList<>();
+    converters.add(new UserStatusConverters.UserStatusWritingConverter());
+    converters.add(new UserStatusConverters.UserStatusReadingConverter());
+    converters.add(new MessageTypeConverters.MessageTypeWritingConverter());
+    converters.add(new MessageTypeConverters.MessageTypeReadingConverter());
+    return converters;
+  }
 }

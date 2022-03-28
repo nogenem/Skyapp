@@ -1,13 +1,15 @@
 package com.nogenem.skyapp.config;
 
+import java.util.List;
+
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
-import com.nogenem.skyapp.convertor.MessageTypeConverters;
-import com.nogenem.skyapp.convertor.UserStatusConverters;
+import com.nogenem.skyapp.utils.Utils;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.mongodb.MongoDatabaseFactory;
 import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
 import org.springframework.data.mongodb.core.convert.DbRefResolver;
@@ -38,10 +40,8 @@ public class MongoConfig extends AbstractMongoClientConfiguration {
 
   @Override
   protected void configureConverters(MongoConverterConfigurationAdapter adapter) {
-    adapter.registerConverter(new UserStatusConverters.UserStatusWritingConverter());
-    adapter.registerConverter(new UserStatusConverters.UserStatusReadingConverter());
-    adapter.registerConverter(new MessageTypeConverters.MessageTypeWritingConverter());
-    adapter.registerConverter(new MessageTypeConverters.MessageTypeReadingConverter());
+    List<Converter<?, ?>> converters = Utils.getMongoConvertersList();
+    adapter.registerConverters(converters);
   }
 
   // remove _class
