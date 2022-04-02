@@ -39,6 +39,11 @@ public class MongoConfig extends AbstractMongoClientConfiguration {
   }
 
   @Override
+  public boolean autoIndexCreation() {
+    return true;
+  }
+
+  @Override
   protected void configureConverters(MongoConverterConfigurationAdapter adapter) {
     List<Converter<?, ?>> converters = Utils.getMongoConvertersList();
     adapter.registerConverters(converters);

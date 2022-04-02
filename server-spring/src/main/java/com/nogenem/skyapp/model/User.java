@@ -17,13 +17,17 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.FieldType;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Document(collection = "users")
 @Data
 @JsonPropertyOrder(value = { "_id" })
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
 
   @Id
