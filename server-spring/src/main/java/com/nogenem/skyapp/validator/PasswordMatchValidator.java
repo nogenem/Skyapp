@@ -10,6 +10,11 @@ public class PasswordMatchValidator implements ConstraintValidator<PasswordMatch
 
   @Override
   public boolean isValid(IHasPasswordAndConfirmation value, ConstraintValidatorContext context) {
+    if(value.getPassword() == null && value.getPasswordConfirmation() == null) {
+      return true;
+    } else if(value.getPassword() == null || value.getPasswordConfirmation() == null) {
+      return false;
+    }
     return value.getPassword().equals(value.getPasswordConfirmation());
   }
 
