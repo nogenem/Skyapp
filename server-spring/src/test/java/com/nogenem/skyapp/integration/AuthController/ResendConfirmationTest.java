@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.nogenem.skyapp.BaseIntegrationTest;
+import com.nogenem.skyapp.ModelFactory;
 import com.nogenem.skyapp.model.User;
 import com.nogenem.skyapp.repository.UserRepository;
 import com.nogenem.skyapp.requestBody.auth.ResendConfirmationEmailRequestBody;
@@ -42,7 +43,7 @@ public class ResendConfirmationTest extends BaseIntegrationTest {
     String oldConfirmationToken = "some-confirmation-token";
     String newConfirmationToken = "another-confirmation-token";
 
-    User user = this.getTestUser();
+    User user = ModelFactory.getTestUser();
     user.setConfirmationToken(oldConfirmationToken);
     this.userRepo.save(user);
 
@@ -83,7 +84,7 @@ public class ResendConfirmationTest extends BaseIntegrationTest {
   public void shouldNotBeAbleToResendConfirmationEmailWithAStillValidToken() throws Exception {
     String confirmationToken = "some-confirmation-token";
 
-    User user = this.getTestUser();
+    User user = ModelFactory.getTestUser();
     user.setConfirmationToken(confirmationToken);
     this.userRepo.save(user);
 

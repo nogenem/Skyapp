@@ -13,6 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.Optional;
 
 import com.nogenem.skyapp.BaseIntegrationTest;
+import com.nogenem.skyapp.ModelFactory;
 import com.nogenem.skyapp.model.User;
 import com.nogenem.skyapp.repository.UserRepository;
 import com.nogenem.skyapp.requestBody.auth.SignUpRequestBody;
@@ -88,7 +89,7 @@ public class SignUpTest extends BaseIntegrationTest {
   public void shouldNotBeAbleToSignUpWithAnAlreadyExistingEmail() throws Exception {
     String email = "test@test.com";
 
-    User user = this.getTestUser();
+    User user = ModelFactory.getTestUser();
     user.setEmail(email);
     this.userRepo.save(user);
 

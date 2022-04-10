@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.nogenem.skyapp.BaseIntegrationTest;
+import com.nogenem.skyapp.ModelFactory;
 import com.nogenem.skyapp.model.User;
 import com.nogenem.skyapp.repository.UserRepository;
 import com.nogenem.skyapp.requestBody.auth.SignInRequestBody;
@@ -37,7 +38,7 @@ public class SignInTest extends BaseIntegrationTest {
   public void shouldBeAbleToSignIn() throws Exception {
     String token = "some-token";
 
-    User user = this.getTestUser();
+    User user = ModelFactory.getTestUser();
     this.userRepo.save(user);
 
     SignInRequestBody requestBody = new SignInRequestBody(user.getEmail(), user.getPasswordHash(), false);
@@ -73,7 +74,7 @@ public class SignInTest extends BaseIntegrationTest {
     String password1 = "test123";
     String password2 = "another-password";
 
-    User user = this.getTestUser();
+    User user = ModelFactory.getTestUser();
     user.setPasswordHash(password1);
     this.userRepo.save(user);
 

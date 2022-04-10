@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.nogenem.skyapp.BaseIntegrationTest;
+import com.nogenem.skyapp.ModelFactory;
 import com.nogenem.skyapp.model.User;
 import com.nogenem.skyapp.repository.UserRepository;
 import com.nogenem.skyapp.requestBody.auth.ResetPasswordRequestBody;
@@ -38,7 +39,7 @@ public class ResetPasswordTest extends BaseIntegrationTest {
     String newPassword = "new-password";
     String resetPasswordToken = "some-reset-password-token";
 
-    User user = this.getTestUser();
+    User user = ModelFactory.getTestUser();
     user.setResetPasswordToken(resetPasswordToken);
     this.userRepo.save(user);
 
@@ -66,7 +67,7 @@ public class ResetPasswordTest extends BaseIntegrationTest {
     String resetPasswordToken1 = "some-reset-password-token";
     String resetPasswordToken2 = "another-reset-password-token";
 
-    User user = this.getTestUser();
+    User user = ModelFactory.getTestUser();
     user.setResetPasswordToken(resetPasswordToken1);
     this.userRepo.save(user);
 
@@ -89,7 +90,7 @@ public class ResetPasswordTest extends BaseIntegrationTest {
     String newPassword2 = "new-password-2";
     String resetPasswordToken = "some-reset-password-token";
 
-    User user = this.getTestUser();
+    User user = ModelFactory.getTestUser();
     user.setResetPasswordToken(resetPasswordToken);
     this.userRepo.save(user);
 

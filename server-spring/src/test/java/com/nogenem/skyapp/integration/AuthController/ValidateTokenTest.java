@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.nogenem.skyapp.BaseIntegrationTest;
+import com.nogenem.skyapp.ModelFactory;
 import com.nogenem.skyapp.model.User;
 import com.nogenem.skyapp.repository.UserRepository;
 import com.nogenem.skyapp.requestBody.auth.ValidateTokenRequestBody;
@@ -33,7 +34,7 @@ public class ValidateTokenTest extends BaseIntegrationTest {
     String userId = "123";
     String token = "some-token";
 
-    User user = this.getTestUser();
+    User user = ModelFactory.getTestUser();
     user.setId(userId);
     this.userRepo.save(user);
 
@@ -57,7 +58,7 @@ public class ValidateTokenTest extends BaseIntegrationTest {
     String token2 = "another-token";
     String userId = "123";
 
-    User user = this.getTestUser();
+    User user = ModelFactory.getTestUser();
     user.setId(userId);
     this.userRepo.save(user);
 

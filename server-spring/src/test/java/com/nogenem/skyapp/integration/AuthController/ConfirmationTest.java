@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.nogenem.skyapp.BaseIntegrationTest;
+import com.nogenem.skyapp.ModelFactory;
 import com.nogenem.skyapp.constants.SocketEvents;
 import com.nogenem.skyapp.model.User;
 import com.nogenem.skyapp.repository.UserRepository;
@@ -41,7 +42,7 @@ public class ConfirmationTest extends BaseIntegrationTest {
   public void shouldBeAbleToConfirmSignUp() throws Exception {
     String confirmationToken = "some-confirmation-token";
 
-    User user = this.getTestUser();
+    User user = ModelFactory.getTestUser();
     user.setConfirmationToken(confirmationToken);
     this.userRepo.save(user);
 
@@ -69,7 +70,7 @@ public class ConfirmationTest extends BaseIntegrationTest {
     String confirmationToken1 = "some-confirmation-token";
     String confirmationToken2 = "another-confirmation-token";
 
-    User user = this.getTestUser();
+    User user = ModelFactory.getTestUser();
     user.setConfirmationToken(confirmationToken1);
     this.userRepo.save(user);
 
@@ -90,7 +91,7 @@ public class ConfirmationTest extends BaseIntegrationTest {
   public void shouldNotBeAbleToConfirmWithTheSameTokenTwice() throws Exception {
     String confirmationToken = "some-confirmation-token";
 
-    User user = this.getTestUser();
+    User user = ModelFactory.getTestUser();
     user.setConfirmationToken(confirmationToken);
     this.userRepo.save(user);
 

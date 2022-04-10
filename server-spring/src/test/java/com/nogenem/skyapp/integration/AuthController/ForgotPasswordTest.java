@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.nogenem.skyapp.BaseIntegrationTest;
+import com.nogenem.skyapp.ModelFactory;
 import com.nogenem.skyapp.model.User;
 import com.nogenem.skyapp.repository.UserRepository;
 import com.nogenem.skyapp.requestBody.auth.ForgotPasswordRequestBody;
@@ -41,7 +42,7 @@ public class ForgotPasswordTest extends BaseIntegrationTest {
   public void shouldBeAbleToSendAResetPasswordEmail() throws Exception {
     String resetPasswordToken = "some-token";
 
-    User user = this.getTestUser();
+    User user = ModelFactory.getTestUser();
     this.userRepo.save(user);
 
     ForgotPasswordRequestBody requestBody = new ForgotPasswordRequestBody(user.getEmail());
@@ -80,7 +81,7 @@ public class ForgotPasswordTest extends BaseIntegrationTest {
   public void shouldNotBeAbleToSendAResetPasswordEmailWithAStilValidToken() throws Exception {
     String resetPasswordToken = "some-token";
 
-    User user = this.getTestUser();
+    User user = ModelFactory.getTestUser();
     user.setResetPasswordToken(resetPasswordToken);
     this.userRepo.save(user);
 

@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.nogenem.skyapp.BaseIntegrationTest;
+import com.nogenem.skyapp.ModelFactory;
 import com.nogenem.skyapp.constants.SocketEvents;
 import com.nogenem.skyapp.model.Channel;
 import com.nogenem.skyapp.model.User;
@@ -42,10 +43,10 @@ public class PrivateStoreTest extends BaseIntegrationTest {
   @Test
   @DisplayName("should be able to create a new private channel")
   public void shouldBeAbleToCreatePrivateChannel() throws Exception {
-    User loggedInUser = this.getTestUser();
+    User loggedInUser = ModelFactory.getTestUser();
     this.userRepo.save(loggedInUser);
 
-    User otherUser = this.getTestUser();
+    User otherUser = ModelFactory.getTestUser();
     this.userRepo.save(otherUser);
 
     StorePrivateChannelRequestBody requestBody = new StorePrivateChannelRequestBody(otherUser.getId());
@@ -69,7 +70,7 @@ public class PrivateStoreTest extends BaseIntegrationTest {
   public void shouldNotBeAbleToCreatePrivateChannelWithInvalidUserId() throws Exception {
     String otherUserId = "some-user-id";
 
-    User loggedInUser = this.getTestUser();
+    User loggedInUser = ModelFactory.getTestUser();
     this.userRepo.save(loggedInUser);
 
     StorePrivateChannelRequestBody requestBody = new StorePrivateChannelRequestBody(otherUserId);
@@ -86,13 +87,13 @@ public class PrivateStoreTest extends BaseIntegrationTest {
   @Test
   @DisplayName("should not be able to create a new private channel if the users are already chatting")
   public void shouldNotBeAbleToCreatePrivateChannelIfUsersAreAlreadyChatting() throws Exception {
-    User loggedInUser = this.getTestUser();
+    User loggedInUser = ModelFactory.getTestUser();
     this.userRepo.save(loggedInUser);
 
-    User otherUser = this.getTestUser();
+    User otherUser = ModelFactory.getTestUser();
     this.userRepo.save(otherUser);
 
-    Channel channel = this.getTestChannel(List.of(loggedInUser, otherUser));
+    Channel channel = ModelFactory.getTestChannel(List.of(loggedInUser, otherUser));
     this.channelRepo.save(channel);
 
     StorePrivateChannelRequestBody requestBody = new StorePrivateChannelRequestBody(otherUser.getId());
