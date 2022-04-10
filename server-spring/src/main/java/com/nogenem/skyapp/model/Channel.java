@@ -13,11 +13,15 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.ReadOnlyProperty;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Document(collection = "channels")
-@Data
 @JsonPropertyOrder(value = { "_id" })
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Channel {
 
   @Id

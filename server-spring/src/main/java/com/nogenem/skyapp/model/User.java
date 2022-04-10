@@ -1,5 +1,6 @@
 package com.nogenem.skyapp.model;
 
+import java.security.Principal;
 import java.time.Instant;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -24,11 +25,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Document(collection = "users")
-@Data
 @JsonPropertyOrder(value = { "_id" })
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
+public class User implements Principal {
 
   @Id
   @JsonProperty("_id")
@@ -61,5 +62,10 @@ public class User {
 
   @LastModifiedDate
   private Instant updatedAt;
+
+  @Override
+  public String getName() {
+    return this.getNickname();
+  }
 
 }
