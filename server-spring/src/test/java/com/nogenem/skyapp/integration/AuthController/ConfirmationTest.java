@@ -10,11 +10,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.time.Instant;
-
 import com.nogenem.skyapp.BaseIntegrationTest;
 import com.nogenem.skyapp.constants.SocketEvents;
-import com.nogenem.skyapp.enums.UserStatus;
 import com.nogenem.skyapp.model.User;
 import com.nogenem.skyapp.repository.UserRepository;
 import com.nogenem.skyapp.requestBody.auth.ConfirmationRequestBody;
@@ -43,9 +40,9 @@ public class ConfirmationTest extends BaseIntegrationTest {
   @DisplayName("should be able to confirm the sign up")
   public void shouldBeAbleToConfirmSignUp() throws Exception {
     String confirmationToken = "some-confirmation-token";
-    User user = new User(
-      "123", "Test 1", "test@test.com", "test123", false, confirmationToken, "", UserStatus.ACTIVE,
-      "", Instant.now(), Instant.now());
+
+    User user = this.getTestUser();
+    user.setConfirmationToken(confirmationToken);
     this.userRepo.save(user);
 
     ConfirmationRequestBody requestBody = new ConfirmationRequestBody(confirmationToken);
@@ -72,9 +69,8 @@ public class ConfirmationTest extends BaseIntegrationTest {
     String confirmationToken1 = "some-confirmation-token";
     String confirmationToken2 = "another-confirmation-token";
 
-    User user = new User(
-      "123", "Test 1", "test@test.com", "test123", false, confirmationToken1, "", UserStatus.ACTIVE,
-      "", Instant.now(), Instant.now());
+    User user = this.getTestUser();
+    user.setConfirmationToken(confirmationToken1);
     this.userRepo.save(user);
 
     ConfirmationRequestBody requestBody = new ConfirmationRequestBody(confirmationToken2);
@@ -93,9 +89,9 @@ public class ConfirmationTest extends BaseIntegrationTest {
   @DisplayName("should not be able to confirm with the same token twice")
   public void shouldNotBeAbleToConfirmWithTheSameTokenTwice() throws Exception {
     String confirmationToken = "some-confirmation-token";
-    User user = new User(
-      "123", "Test 1", "test@test.com", "test123", false, confirmationToken, "", UserStatus.ACTIVE,
-      "", Instant.now(), Instant.now());
+
+    User user = this.getTestUser();
+    user.setConfirmationToken(confirmationToken);
     this.userRepo.save(user);
 
     ConfirmationRequestBody requestBody = new ConfirmationRequestBody(confirmationToken);

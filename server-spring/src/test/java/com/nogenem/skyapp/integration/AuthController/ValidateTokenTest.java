@@ -6,10 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.time.Instant;
-
 import com.nogenem.skyapp.BaseIntegrationTest;
-import com.nogenem.skyapp.enums.UserStatus;
 import com.nogenem.skyapp.model.User;
 import com.nogenem.skyapp.repository.UserRepository;
 import com.nogenem.skyapp.requestBody.auth.ValidateTokenRequestBody;
@@ -33,11 +30,11 @@ public class ValidateTokenTest extends BaseIntegrationTest {
   @Test
   @DisplayName("should be able to validate a valid token")
   public void shouldBeAbleToValidateAValidToken() throws Exception {
-    String token = "some-token";
     String userId = "123";
-    User user = new User(
-        userId, "Test 1", "test@test.com", "test123", false, "", "", UserStatus.ACTIVE,
-        "", Instant.now(), Instant.now());
+    String token = "some-token";
+
+    User user = this.getTestUser();
+    user.setId(userId);
     this.userRepo.save(user);
 
     ValidateTokenRequestBody requestBody = new ValidateTokenRequestBody(token);
@@ -58,11 +55,10 @@ public class ValidateTokenTest extends BaseIntegrationTest {
   public void shouldNotBeAbleToValidateAnInvalidToken() throws Exception {
     String token1 = "some-token";
     String token2 = "another-token";
-
     String userId = "123";
-    User user = new User(
-        userId, "Test 1", "test@test.com", "test123", false, "", "", UserStatus.ACTIVE,
-        "", Instant.now(), Instant.now());
+
+    User user = this.getTestUser();
+    user.setId(userId);
     this.userRepo.save(user);
 
     ValidateTokenRequestBody requestBody = new ValidateTokenRequestBody(token2);

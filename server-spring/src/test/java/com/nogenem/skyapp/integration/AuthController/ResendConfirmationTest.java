@@ -8,13 +8,10 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-
-import java.time.Instant;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.nogenem.skyapp.BaseIntegrationTest;
-import com.nogenem.skyapp.enums.UserStatus;
 import com.nogenem.skyapp.model.User;
 import com.nogenem.skyapp.repository.UserRepository;
 import com.nogenem.skyapp.requestBody.auth.ResendConfirmationEmailRequestBody;
@@ -44,9 +41,9 @@ public class ResendConfirmationTest extends BaseIntegrationTest {
   public void shouldBeAbleToResendConfirmationEmail() throws Exception {
     String oldConfirmationToken = "some-confirmation-token";
     String newConfirmationToken = "another-confirmation-token";
-    User user = new User(
-      "123", "Test 1", "test@test.com", "test123", false, oldConfirmationToken, "", UserStatus.ACTIVE,
-      "", Instant.now(), Instant.now());
+
+    User user = this.getTestUser();
+    user.setConfirmationToken(oldConfirmationToken);
     this.userRepo.save(user);
 
     ResendConfirmationEmailRequestBody requestBody = new ResendConfirmationEmailRequestBody(oldConfirmationToken);
@@ -85,9 +82,9 @@ public class ResendConfirmationTest extends BaseIntegrationTest {
   @DisplayName("should not be able to resend a confirmation email with a still valid token")
   public void shouldNotBeAbleToResendConfirmationEmailWithAStillValidToken() throws Exception {
     String confirmationToken = "some-confirmation-token";
-    User user = new User(
-      "123", "Test 1", "test@test.com", "test123", false, confirmationToken, "", UserStatus.ACTIVE,
-      "", Instant.now(), Instant.now());
+
+    User user = this.getTestUser();
+    user.setConfirmationToken(confirmationToken);
     this.userRepo.save(user);
 
     ResendConfirmationEmailRequestBody requestBody = new ResendConfirmationEmailRequestBody(confirmationToken);
@@ -101,4 +98,5 @@ public class ResendConfirmationTest extends BaseIntegrationTest {
     resultActions.andExpect(status().isBadRequest())
       .andExpect(jsonPath("$.errors").isNotEmpty());
   }
+
 }

@@ -7,10 +7,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.time.Instant;
-
 import com.nogenem.skyapp.BaseIntegrationTest;
-import com.nogenem.skyapp.enums.UserStatus;
 import com.nogenem.skyapp.model.User;
 import com.nogenem.skyapp.repository.UserRepository;
 import com.nogenem.skyapp.requestBody.auth.ResetPasswordRequestBody;
@@ -41,9 +38,8 @@ public class ResetPasswordTest extends BaseIntegrationTest {
     String newPassword = "new-password";
     String resetPasswordToken = "some-reset-password-token";
 
-    User user = new User(
-      "123", "Test 1", "test@test.com", "test123", false, "", resetPasswordToken, UserStatus.ACTIVE,
-      "", Instant.now(), Instant.now());
+    User user = this.getTestUser();
+    user.setResetPasswordToken(resetPasswordToken);
     this.userRepo.save(user);
 
     ResetPasswordRequestBody requestBody = new ResetPasswordRequestBody(newPassword, newPassword, resetPasswordToken);
@@ -70,9 +66,8 @@ public class ResetPasswordTest extends BaseIntegrationTest {
     String resetPasswordToken1 = "some-reset-password-token";
     String resetPasswordToken2 = "another-reset-password-token";
 
-    User user = new User(
-      "123", "Test 1", "test@test.com", "test123", false, "", resetPasswordToken1, UserStatus.ACTIVE,
-      "", Instant.now(), Instant.now());
+    User user = this.getTestUser();
+    user.setResetPasswordToken(resetPasswordToken1);
     this.userRepo.save(user);
 
     ResetPasswordRequestBody requestBody = new ResetPasswordRequestBody(newPassword, newPassword, resetPasswordToken2);
@@ -94,9 +89,8 @@ public class ResetPasswordTest extends BaseIntegrationTest {
     String newPassword2 = "new-password-2";
     String resetPasswordToken = "some-reset-password-token";
 
-    User user = new User(
-      "123", "Test 1", "test@test.com", "test123", false, "", resetPasswordToken, UserStatus.ACTIVE,
-      "", Instant.now(), Instant.now());
+    User user = this.getTestUser();
+    user.setResetPasswordToken(resetPasswordToken);
     this.userRepo.save(user);
 
     ResetPasswordRequestBody requestBody = new ResetPasswordRequestBody(newPassword1, newPassword1, resetPasswordToken);

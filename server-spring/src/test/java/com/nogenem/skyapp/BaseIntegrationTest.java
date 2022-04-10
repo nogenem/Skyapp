@@ -1,6 +1,10 @@
 package com.nogenem.skyapp;
 
+import java.time.Instant;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nogenem.skyapp.enums.UserStatus;
+import com.nogenem.skyapp.model.User;
 
 import org.junit.jupiter.api.AfterEach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +35,12 @@ public class BaseIntegrationTest {
     mongoTemplate.getDb().listCollectionNames().forEach(name -> {
       mongoTemplate.remove(new Query(), name);
     });
+  }
+
+  protected User getTestUser() {
+    return new User(
+      "123", "Test 1", "test@test.com", "test123", false, "", "", UserStatus.ACTIVE,
+      "", Instant.now(), Instant.now());
   }
 
 }

@@ -4,13 +4,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-
-import java.time.Instant;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.nogenem.skyapp.BaseIntegrationTest;
-import com.nogenem.skyapp.enums.UserStatus;
 import com.nogenem.skyapp.model.User;
 import com.nogenem.skyapp.repository.UserRepository;
 import com.nogenem.skyapp.requestBody.auth.SignInRequestBody;
@@ -38,15 +35,14 @@ public class SignInTest extends BaseIntegrationTest {
   @Test
   @DisplayName("should be able to sign in")
   public void shouldBeAbleToSignIn() throws Exception {
-    User user = new User(
-        "123", "Test 1", "test@test.com", "test123", false, "", "", UserStatus.ACTIVE,
-        "", Instant.now(), Instant.now());
+    String token = "some-token";
+
+    User user = this.getTestUser();
     this.userRepo.save(user);
 
     SignInRequestBody requestBody = new SignInRequestBody(user.getEmail(), user.getPasswordHash(), false);
 
     when(this.bCryptPasswordEncoder.matches(eq(user.getPasswordHash()), eq(user.getPasswordHash()))).thenReturn(true);
-    String token = "some-token";
     when(this.tokenService.generateToken(any(), any())).thenReturn(token);
 
     ResultActions resultActions = this.mvc.perform(post("/api/auth/signin")
@@ -77,9 +73,8 @@ public class SignInTest extends BaseIntegrationTest {
     String password1 = "test123";
     String password2 = "another-password";
 
-    User user = new User(
-        "123", "Test 1", "test@test.com", password1, false, "", "", UserStatus.ACTIVE,
-        "", Instant.now(), Instant.now());
+    User user = this.getTestUser();
+    user.setPasswordHash(password1);
     this.userRepo.save(user);
 
     SignInRequestBody requestBody = new SignInRequestBody(user.getEmail(), password2, false);

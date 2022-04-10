@@ -10,11 +10,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.time.Instant;
 import java.util.Optional;
 
 import com.nogenem.skyapp.BaseIntegrationTest;
-import com.nogenem.skyapp.enums.UserStatus;
 import com.nogenem.skyapp.model.User;
 import com.nogenem.skyapp.repository.UserRepository;
 import com.nogenem.skyapp.requestBody.auth.SignUpRequestBody;
@@ -47,9 +45,10 @@ public class SignUpTest extends BaseIntegrationTest {
   @DisplayName("should be able to sign up and should send a confirmation email")
   public void shouldBeAbleToSignUpAndSendConfirmationEmail() throws Exception {
     String email = "test@test.com";
+    String confirmationToken = "some-token";
+
     SignUpRequestBody requestBody = new SignUpRequestBody("Test 1", email, "test123", "test123");
 
-    String confirmationToken = "some-token";
     when(this.tokenService.generateToken(any(), any())).thenReturn(confirmationToken);
 
     ResultActions resultActions = this.mvc.perform(post("/api/auth/signup")
@@ -70,6 +69,7 @@ public class SignUpTest extends BaseIntegrationTest {
   @DisplayName("should not be able to sign up with missing credentials")
   public void shouldNotBeAbleToSignUpWithMissingCredentials() throws Exception {
     String email = "test@test.com";
+
     SignUpRequestBody requestBody = new SignUpRequestBody("Test 1", email, "", "");
 
     ResultActions resultActions = this.mvc.perform(post("/api/auth/signup")
@@ -88,9 +88,8 @@ public class SignUpTest extends BaseIntegrationTest {
   public void shouldNotBeAbleToSignUpWithAnAlreadyExistingEmail() throws Exception {
     String email = "test@test.com";
 
-    User user = new User(
-        "123", "Test 1", email, "test123", false, "", "", UserStatus.ACTIVE,
-        "", Instant.now(), Instant.now());
+    User user = this.getTestUser();
+    user.setEmail(email);
     this.userRepo.save(user);
 
     SignUpRequestBody requestBody = new SignUpRequestBody("Test 2", email, "test123", "test123");

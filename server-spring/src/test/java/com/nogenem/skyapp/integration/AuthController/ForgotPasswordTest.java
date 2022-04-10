@@ -11,10 +11,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.time.Instant;
-
 import com.nogenem.skyapp.BaseIntegrationTest;
-import com.nogenem.skyapp.enums.UserStatus;
 import com.nogenem.skyapp.model.User;
 import com.nogenem.skyapp.repository.UserRepository;
 import com.nogenem.skyapp.requestBody.auth.ForgotPasswordRequestBody;
@@ -43,9 +40,8 @@ public class ForgotPasswordTest extends BaseIntegrationTest {
   @DisplayName("should be able send a reset password email")
   public void shouldBeAbleToSendAResetPasswordEmail() throws Exception {
     String resetPasswordToken = "some-token";
-    User user = new User(
-      "123", "Test 1", "test@test.com", "test123", false, "", "", UserStatus.ACTIVE,
-      "", Instant.now(), Instant.now());
+
+    User user = this.getTestUser();
     this.userRepo.save(user);
 
     ForgotPasswordRequestBody requestBody = new ForgotPasswordRequestBody(user.getEmail());
@@ -83,9 +79,9 @@ public class ForgotPasswordTest extends BaseIntegrationTest {
   @DisplayName("should not be able send a reset password email with a still valid token")
   public void shouldNotBeAbleToSendAResetPasswordEmailWithAStilValidToken() throws Exception {
     String resetPasswordToken = "some-token";
-    User user = new User(
-      "123", "Test 1", "test@test.com", "test123", false, "", resetPasswordToken, UserStatus.ACTIVE,
-      "", Instant.now(), Instant.now());
+
+    User user = this.getTestUser();
+    user.setResetPasswordToken(resetPasswordToken);
     this.userRepo.save(user);
 
     ForgotPasswordRequestBody requestBody = new ForgotPasswordRequestBody(user.getEmail());
