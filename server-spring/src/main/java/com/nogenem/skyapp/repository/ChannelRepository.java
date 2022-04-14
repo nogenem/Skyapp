@@ -1,5 +1,6 @@
 package com.nogenem.skyapp.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.nogenem.skyapp.model.Channel;
@@ -92,4 +93,6 @@ public interface ChannelRepository extends MongoRepository<Channel, String> {
       "  ]" +
       "}")
   Optional<Channel> findByIdAndMemberId(String channelId, String memberId);
+
+  List<Channel> findByName(String name);
 }
