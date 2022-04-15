@@ -15,14 +15,18 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.FieldType;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 // https://stackoverflow.com/questions/48010606/using-objectid-as-string-in-java-manual-reference-with-spring-data-mongodb
 // https://stackoverflow.com/questions/64163644/spring-mongodb-manual-reference
 
 @Document(collection = "messages")
-@Data
 @JsonPropertyOrder(value = { "_id" })
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Message {
 
   @Id

@@ -70,7 +70,7 @@ public class MessageController {
   private final FilesStorageService filesStorageService;
 
   @GetMapping("/{channelId}/messages")
-  public PaginatedMessagesResponse all(@PathVariable("channelId") String channelId,
+  public PaginatedMessagesResponse messageAll(@PathVariable("channelId") String channelId,
       @RequestParam(defaultValue = "0") int offset,
       @RequestParam(defaultValue = "30") int limit,
       @RequestParam(defaultValue = "-createdAt") String sort,

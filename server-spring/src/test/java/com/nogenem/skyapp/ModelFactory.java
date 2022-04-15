@@ -4,9 +4,11 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.nogenem.skyapp.enums.MessageType;
 import com.nogenem.skyapp.enums.UserStatus;
 import com.nogenem.skyapp.model.Channel;
 import com.nogenem.skyapp.model.Member;
+import com.nogenem.skyapp.model.Message;
 import com.nogenem.skyapp.model.User;
 
 import org.bson.types.ObjectId;
@@ -41,6 +43,15 @@ final public class ModelFactory {
 
   private static String getNewObjectIdString() {
     return (new ObjectId()).toString();
+  }
+
+  public static Message getTestMessage() {
+    String id = ModelFactory.getNewObjectIdString();
+    String channelId = ModelFactory.getNewObjectIdString();
+    String fromId = ModelFactory.getNewObjectIdString();
+    Object body = "Some message";
+    MessageType type = MessageType.TEXT;
+    return new Message(id, channelId, fromId, body, type, Instant.now(), Instant.now());
   }
 
 }
