@@ -44,4 +44,6 @@ public interface MessageRepository extends MongoRepository<Message, String> {
   public Stream<Message> findStreamOfLatestMessages(String channelId);
 
   List<Message> findByBody(Object body);
+
+  List<Message> findByChannelId(String channelId);
 }

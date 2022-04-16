@@ -155,7 +155,8 @@ public class MessageController {
   }
 
   @PostMapping("/{channelId}/files")
-  public FilesStoreResponse filesStore(@PathVariable("channelId") String channelId,
+  @ResponseStatus(HttpStatus.CREATED)
+  public FilesStoreResponse fileMessageStore(@PathVariable("channelId") String channelId,
       @RequestParam("files") MultipartFile[] files,
       @RequestHeader HttpHeaders headers) {
 
