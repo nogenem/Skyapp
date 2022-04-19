@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.nogenem.skyapp.enums.MessageType;
 import com.nogenem.skyapp.enums.UserStatus;
+import com.nogenem.skyapp.model.Attachment;
 import com.nogenem.skyapp.model.Channel;
 import com.nogenem.skyapp.model.Member;
 import com.nogenem.skyapp.model.Message;
@@ -52,6 +53,10 @@ final public class ModelFactory {
     Object body = "Some message";
     MessageType type = MessageType.TEXT;
     return new Message(id, channelId, fromId, body, type, Instant.now(), Instant.now());
+  }
+
+  public static Attachment getTestAttachment() {
+    return new Attachment("some_file_name.txt", 10000, "c:/some/path", "text/plain", null);
   }
 
 }
