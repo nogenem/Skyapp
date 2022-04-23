@@ -8,7 +8,7 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.nogenem.skyapp.BaseIntegrationTest;
+import com.nogenem.skyapp.BaseSpringTest;
 import com.nogenem.skyapp.ModelFactory;
 import com.nogenem.skyapp.constants.SocketEvents;
 import com.nogenem.skyapp.enums.UserStatus;
@@ -24,7 +24,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
-public class StatusUpdateTest extends BaseIntegrationTest {
+public class StatusUpdateTest extends BaseSpringTest {
 
   @MockBean
   private SocketIoService socketIoService;

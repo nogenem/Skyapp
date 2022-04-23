@@ -11,7 +11,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.nogenem.skyapp.BaseIntegrationTest;
+import com.nogenem.skyapp.BaseSpringTest;
 import com.nogenem.skyapp.ModelFactory;
 import com.nogenem.skyapp.model.User;
 import com.nogenem.skyapp.repository.UserRepository;
@@ -26,7 +26,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
-public class ForgotPasswordTest extends BaseIntegrationTest {
+public class ForgotPasswordTest extends BaseSpringTest {
 
   @MockBean
   private MailService mailService;

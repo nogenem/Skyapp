@@ -19,7 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc
 @AutoConfigureDataMongo
 @SpringBootTest
-public class BaseIntegrationTest {
+public class BaseSpringTest {
 
   @Autowired
   private MongoTemplate mongoTemplate;

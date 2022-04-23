@@ -12,7 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.Optional;
 
-import com.nogenem.skyapp.BaseIntegrationTest;
+import com.nogenem.skyapp.BaseSpringTest;
 import com.nogenem.skyapp.ModelFactory;
 import com.nogenem.skyapp.model.User;
 import com.nogenem.skyapp.repository.UserRepository;
@@ -28,7 +28,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
-public class SignUpTest extends BaseIntegrationTest {
+public class SignUpTest extends BaseSpringTest {
 
   @MockBean
   private MailService mailService;

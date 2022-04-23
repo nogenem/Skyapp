@@ -7,7 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.List;
 
-import com.nogenem.skyapp.BaseIntegrationTest;
+import com.nogenem.skyapp.BaseSpringTest;
 import com.nogenem.skyapp.ModelFactory;
 import com.nogenem.skyapp.model.Channel;
 import com.nogenem.skyapp.model.Message;
@@ -25,7 +25,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
-public class MessageStoreTest extends BaseIntegrationTest {
+public class MessageStoreTest extends BaseSpringTest {
 
   @MockBean
   private SocketIoService socketIoService;
