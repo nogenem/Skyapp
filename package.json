@@ -6,11 +6,15 @@
   "author": "Gilney N. Mathias <gilney_salvo@hotmail.com>",
   "license": "MIT",
   "scripts": {
-    "dev:react": "cd client-react && yarn start",
-    "dev:node": "cd server-node && yarn dev:server",
-    "dev:react-node": "concurrently -n client,server -c blue,green \"yarn dev:react\" \"yarn dev:node\""
+    "start": "node ./scripts/choose-client-server.js",
+    "dev:client-react": "cd client-react && yarn start",
+    "dev:server-node": "cd server-node && yarn dev:server",
+    "dev:server-spring": "cd server-spring && ./mvnw spring-boot:run"
   },
   "dependencies": {
     "concurrently": "^5.1.0"
+  },
+  "devDependencies": {
+    "prompts": "^2.4.2"
   }
 }
