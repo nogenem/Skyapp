@@ -23,7 +23,7 @@ public class Member {
   private String id;
 
   @NonNull
-  @Indexed(unique = true, name = "members.userId_1")
+  @Indexed(name = "userId_1")
   @Field(targetType = FieldType.OBJECT_ID)
   private String userId;
 
