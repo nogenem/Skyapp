@@ -20,10 +20,9 @@ public class PrivateChannelCreatedEmitter implements ISocketEmitter {
     ChatChannelDTO channelDTO = (ChatChannelDTO) data;
     List<ChatMemberDTO> membersDTOs = channelDTO.getMembers();
 
-    JSONObject obj = channelDTO.toJSON();
-
     for (int i = 0; i < membersDTOs.size(); i++) {
       channelDTO.setOtherMemberIdx(i == 0 ? 1 : 0);
+      JSONObject obj = channelDTO.toJSON();
 
       namespace.broadcast(membersDTOs.get(i).getUserId(), SocketEvents.IO_PRIVATE_CHANNEL_CREATED, obj);
     }
